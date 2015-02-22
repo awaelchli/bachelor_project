@@ -1,7 +1,7 @@
 clear;
 
 %% Parameters
-path = '../lightFields/messerschmitt/7x7x384x512/';
+path = 'lightFields/messerschmitt/7x7x384x512/';
 imageType = 'png';
 resolution = [7, 7, 384, 512];      % Light Field resolution
 fov = degtorad(10);                 % Field of View in radians
