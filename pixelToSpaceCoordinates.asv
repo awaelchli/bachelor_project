@@ -1,0 +1,13 @@
+function [ u, v ] = pixelToSpaceCoordinates( x, y, resolution, size)
+%   x:              Pixel coordinate x
+%   y:              Pixel coordinate y
+%   resolution:     [width, height] Resolution of the layer in pixels
+%   size:           [width, height] Size of the layer in mm
+
+sizeOfPixel = size ./ resolution;
+
+coord = 0.5 * sizeOfPixel + [x, y] .* sizeOfPixel;
+u = coord(1);
+v = coord(2);
+end
+
