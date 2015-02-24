@@ -5,32 +5,20 @@ path = 'lightFields/messerschmitt/7x7x384x512/';
 imageType = 'png';
 resolution = [7, 7, 384, 512];      % Light Field resolution
 fov = degtorad(10);                 % Field of View in radians
-Nlayers = 5;                        % Number of layers
+Nlayers = 2;                        % Number of layers
 layerDist = 3;                      % Distance between layers in mm
 layerW = 100;                       % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
 height = (Nlayers - 1) * layerDist; % Height of layer stack
 
-
-
-%%
+%% Loading the light field
 lightField = loadLightField(path, imageType, [resolution 3]);
 
-% imshow(squeeze(lightField(2,3, :, :, :)));
-
-lightField = log(lightField);
-
-% Use red component only
-Lred = lightField(:, :, :, :, 1);
-% L represents the light field as a column vector
-L = reshape(Lred, prod(resolution), 1);
-
-tic;
-
 %% Counting the number of non-zero elements in matrix
+tic;
 fprintf('Counting the number of non-zero elements in matrix...\n');
-% nzCount = 47880922;
+
 nzCount = 0;
 for imageX = 1 : resolution(2)
     for imageY = 1 : resolution(1)
@@ -41,8 +29,7 @@ for imageX = 1 : resolution(2)
                     [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
                     [u, v] = pixelToSpaceCoordinates(pixelX, pixelY, resolution([4, 3]), layerSize);
                     intersection = [u, v] + (layer * layerDist - (height / 2)) * [angleX, angleY];
-                    %intersectionP = floor(intersection .* resolution([4, 3]) ./ layerSize);
-                    
+                
                     if( all(intersection >= 0) && all(intersection < layerSize) )
                         % Increment non-zero element counter
                         nzCount = nzCount + 1;
@@ -54,7 +41,7 @@ for imageX = 1 : resolution(2)
     end
 end
 
-fprintf('Counting non-zero elements took %i seconds.\n', toc);
+fprintf('Counting non-zero elements took %i minutes.\n', floor(toc / 60));
 
 %% Computing index arrays for sparse matrix P
 I = zeros(nzCount, 1);     % row indices
@@ -101,15 +88,47 @@ for imageX = 1 : resolution(2)
     end
 end
 
-P = sparse(I, J, S, size(L, 1), prod([Nlayers resolution([3, 4])]), nzCount);
-fprintf('Done calculating P. Calculation took %i seconds.\n', toc);
+P = sparse(I, J, S, prod(resolution), prod([Nlayers resolution([3, 4])]), nzCount);
+fprintf('Done calculating P. Calculation took %i minutes.\n', floor(toc / 60));
 
-%% Run least squares optimization 
-% not yet working
-lb = zeros(size(P, 2), 1);                 % lower bound is zero
-ub = ones(size(P, 2), 1) * inf;            % no upper bound
-layers = lsqlin(P, [], [], [], [], [], lb, ub);
+%% Convert to log light field and separate rgb channels
 
-layers = reshape(layers, Nlayers, resolution(3), resolution(4));
+lightField(lightField < eps) = eps;
+lightField = log(lightField);
 
-imshow(squeeze(layers(1, :, :)));
+% RGB components of light field
+Lr = lightField(:, :, :, :, 1);
+Lg = lightField(:, :, :, :, 2);
+Lb = lightField(:, :, :, :, 3);
+
+% Convert the light field to a column vector for each channel
+Lr = reshape(Lr, prod(resolution), 1);
+Lg = reshape(Lg, prod(resolution), 1);
+Lb = reshape(Lb, prod(resolution), 1);
+
+%% Run least squares optimization for each color channel
+lb = zeros(size(P, 2), 1) + log(0.001);
+ub = zeros(size(P, 2), 1); 
+options = optimset('Display', 'final', 'MaxIter', 15);
+
+layersR = lsqlin(P, Lr, [], [], [], [], lb, ub, [], options);
+layersG = lsqlin(P, Lg, [], [], [], [], lb, ub, [], options);
+layersB = lsqlin(P, Lb, [], [], [], [], lb, ub, [], options);
+
+layersR = reshape(layersR, Nlayers, resolution(3), resolution(4));
+layersG = reshape(layersG, Nlayers, resolution(3), resolution(4));
+layersB = reshape(layersB, Nlayers, resolution(3), resolution(4));
+
+layersR = exp(layersR);
+layersG = exp(layersG);
+layersB = exp(layersB);
+
+%% Display layers
+for layer = 1 : Nlayers
+    
+    r = squeeze(layersR(layer, :, :));
+    g = squeeze(layersG(layer, :, :));
+    b = squeeze(layersB(layer, :, :));
+    im = cat(3, r, g, b);
+    subplot(1, Nlayers, layer), subimage(im);
+end
