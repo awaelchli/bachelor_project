@@ -1,11 +1,11 @@
 clear;
-
 %% Parameters
-path = 'lightFields/messerschmitt/7x7x384x512/';
+% path = 'lightFields/messerschmitt/7x7x384x512/';
+path = 'lightFields/dragon/';
 imageType = 'png';
-resolution = [7, 7, 384, 512];      % Light Field resolution
-fov = degtorad(10);                 % Field of View in radians
-Nlayers = 2;                        % Number of layers
+resolution = [7, 7, 384, 512];      % Light field resolution
+fov = degtorad(10);                 % Field of view in radians
+Nlayers = 5;                        % Number of layers
 layerDist = 3;                      % Distance between layers in mm
 layerW = 100;                       % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
@@ -22,12 +22,16 @@ fprintf('Counting the number of non-zero elements in matrix...\n');
 nzCount = 0;
 for imageX = 1 : resolution(2)
     for imageY = 1 : resolution(1)
+        
+        [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
+        
         for pixelX = 1 : resolution(4)
             for pixelY = 1 : resolution(3)
+                
+                [u, v] = pixelToSpaceCoordinates(pixelX, pixelY, resolution([4, 3]), layerSize);
+                
                 for layer = 1 : Nlayers
                     
-                    [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
-                    [u, v] = pixelToSpaceCoordinates(pixelX, pixelY, resolution([4, 3]), layerSize);
                     intersection = [u, v] + (layer * layerDist - (height / 2)) * [angleX, angleY];
                 
                     if( all(intersection >= 0) && all(intersection < layerSize) )
@@ -55,6 +59,10 @@ fprintf('Computing matrix P...\n');
 tic;
 for imageX = 1 : resolution(2)
     for imageY = 1 : resolution(1)
+        
+        % compute angles for incoming rays from current view
+        [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
+        
         for pixelX = 1 : resolution(4)
             for pixelY = 1 : resolution(3)
                 
@@ -62,15 +70,13 @@ for imageX = 1 : resolution(2)
                 % a column vector
                 row = sub2ind(resolution, imageY, imageX, pixelY, pixelX);
                 
+                [u, v] = pixelToSpaceCoordinates(pixelX, pixelY, resolution([4, 3]), layerSize);
+                
                 for layer = 1 : Nlayers
                     % compute if and where the ray penetrates the layer
-                    [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
-                    [u, v] = pixelToSpaceCoordinates(pixelX, pixelY, resolution([4, 3]), layerSize);
                     intersection = [u, v] + (layer * layerDist - (height / 2)) * [angleX, angleY];
-                    
                     % convert space coordinates to pixel coordinates
                     intersectionP = floor(intersection .* resolution([4, 3]) ./ layerSize);
-                    
                     % check if intersection is out of bounds
                     if( all(intersection >= 0) && all(intersection < layerSize) )
                         % ray intersects with this layer
@@ -92,7 +98,6 @@ P = sparse(I, J, S, prod(resolution), prod([Nlayers resolution([3, 4])]), nzCoun
 fprintf('Done calculating P. Calculation took %i minutes.\n', floor(toc / 60));
 
 %% Convert to log light field and separate rgb channels
-
 lightField(lightField < eps) = eps;
 lightField = log(lightField);
 
@@ -107,9 +112,9 @@ Lg = reshape(Lg, prod(resolution), 1);
 Lb = reshape(Lb, prod(resolution), 1);
 
 %% Run least squares optimization for each color channel
-lb = zeros(size(P, 2), 1) + log(0.001);
+lb = zeros(size(P, 2), 1) + log(0.01);
 ub = zeros(size(P, 2), 1); 
-options = optimset('Display', 'final', 'MaxIter', 15);
+options = optimset('Display', 'final', 'MaxIter', 10);
 
 layersR = lsqlin(P, Lr, [], [], [], [], lb, ub, [], options);
 layersG = lsqlin(P, Lg, [], [], [], [], lb, ub, [], options);
@@ -123,12 +128,12 @@ layersR = exp(layersR);
 layersG = exp(layersG);
 layersB = exp(layersB);
 
-%% Display layers
+%% Save and display each layer
 for layer = 1 : Nlayers
-    
     r = squeeze(layersR(layer, :, :));
     g = squeeze(layersG(layer, :, :));
     b = squeeze(layersB(layer, :, :));
     im = cat(3, r, g, b);
+    imwrite(im, [num2str(layer) '.png']);
     subplot(1, Nlayers, layer), subimage(im);
 end

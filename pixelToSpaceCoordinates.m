@@ -1,4 +1,4 @@
-function [ u, v ] = pixelToSpaceCoordinates( x, y, resolution, size)
+function [ u, v ] = pixelToSpaceCoordinates( x, y, resolution, size )
 %   x:              Pixel coordinate x
 %   y:              Pixel coordinate y
 %   resolution:     [width, height] Resolution of the layer in pixels

@@ -1,4 +1,4 @@
-function [ angleX, angleY ] = computeRayAngles( camX, camY, fov, resolution)
+function [ angleX, angleY ] = computeRayAngles( camX, camY, fov, resolution )
 %   camX:           X coordinate of camera
 %   camY:           Y coordinate of camera
 %   fov:            Field of View in radians
