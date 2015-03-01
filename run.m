@@ -1,59 +1,37 @@
 clear;
 %% Parameters
-% path = 'lightFields/messerschmitt/7x7x384x512/';
-path = 'lightFields/dragon/';
+path = 'lightFields/messerschmitt/7x7x384x512/';
+% path = 'lightFields/dice/';
 imageType = 'png';
 resolution = [7, 7, 384, 512];      % Light field resolution
 fov = degtorad(10);                 % Field of view in radians
-Nlayers = 5;                        % Number of layers
-layerDist = 3;                      % Distance between layers in mm
-layerW = 100;                       % Width and height of layers in mm
+Nlayers = 3;                        % Number of layers
+layerDist = 2;                      % Distance between layers in mm
+layerW = 180;                       % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
 height = (Nlayers - 1) * layerDist; % Height of layer stack
+outFolder = 'output/';               % Output folder to store the layers
 
 %% Loading the light field
 lightField = loadLightField(path, imageType, [resolution 3]);
 
-%% Counting the number of non-zero elements in matrix
-tic;
-fprintf('Counting the number of non-zero elements in matrix...\n');
-
-nzCount = 0;
-for imageX = 1 : resolution(2)
-    for imageY = 1 : resolution(1)
-        
-        [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
-        
-        for pixelX = 1 : resolution(4)
-            for pixelY = 1 : resolution(3)
-                
-                [u, v] = pixelToSpaceCoordinates(pixelX, pixelY, resolution([4, 3]), layerSize);
-                
-                for layer = 1 : Nlayers
-                    
-                    intersection = [u, v] + (layer * layerDist - (height / 2)) * [angleX, angleY];
-                
-                    if( all(intersection >= 0) && all(intersection < layerSize) )
-                        % Increment non-zero element counter
-                        nzCount = nzCount + 1;
-                    end
-                    
-                end
-            end
-        end
-    end
-end
-
-fprintf('Counting non-zero elements took %i minutes.\n', floor(toc / 60));
+% lightField = lightField(3:5, 3:5, :, :, :);
+% r = size(lightField);
+% resolution = r(1:4);
 
 %% Computing index arrays for sparse matrix P
-I = zeros(nzCount, 1);     % row indices
-J = zeros(nzCount, 1);     % column indices  
-S = ones(nzCount, 1);      % values
+% upper bound for number of non-zero values in the matrix P
+maxNonZeros = prod(resolution) * Nlayers; 
+
+I = zeros(maxNonZeros, 1);   % row indices
+J = zeros(maxNonZeros, 1);      % column indices  
+S = ones(maxNonZeros, 1);       % values
 
 % index of the current non-zero element used in the for loop below.
-index = 1;
+index = 0;
+
+% lightFieldVector = zeros(prod(resolution), 3);
 
 fprintf('Computing matrix P...\n');
 tic;
@@ -68,7 +46,12 @@ for imageX = 1 : resolution(2)
                 
                 % convert subscript indices to a linear index since L is
                 % a column vector
+                
                 row = sub2ind(resolution, imageY, imageX, pixelY, pixelX);
+%                 row = ((imageY - 1) * resolution(2) + imageX - 1) * resolution(3) * resolution(4) + ...
+%                        (pixelY - 1) * resolution(4) + pixelX;
+                   
+%                 lightFieldVector(row, :) = lightField(imageY, imageX, pixelY, pixelX, :);
                 
                 [u, v] = pixelToSpaceCoordinates(pixelX, pixelY, resolution([4, 3]), layerSize);
                 
@@ -80,12 +63,15 @@ for imageX = 1 : resolution(2)
                     % check if intersection is out of bounds
                     if( all(intersection >= 0) && all(intersection < layerSize) )
                         % ray intersects with this layer
-                        
+%                         fprintf('hit\n');
                         col = sub2ind([Nlayers resolution([3, 4])], layer, intersectionP(2) + 1, intersectionP(1) + 1);
+%                         col = (layer - 1) * resolution(3) * resolution(4) + (intersectionP(2) - 1) * resolution(4) + intersectionP(1);
                         
+                        index = index + 1;
                         I(index) = row;
                         J(index) = col;
-                        index = index + 1;
+%                     else
+%                         fprintf('miss\n');
                     end
                 end
             end
@@ -94,11 +80,12 @@ for imageX = 1 : resolution(2)
     end
 end
 
-P = sparse(I, J, S, prod(resolution), prod([Nlayers resolution([3, 4])]), nzCount);
+P = sparse(I(1:index), J(1:index), S(1:index), prod(resolution), prod([Nlayers resolution([3, 4])]), index);
+save('P.mat', 'P');
 fprintf('Done calculating P. Calculation took %i minutes.\n', floor(toc / 60));
 
 %% Convert to log light field and separate rgb channels
-lightField(lightField < eps) = eps;
+lightField(lightField < 0.01) = 0.01;
 lightField = log(lightField);
 
 % RGB components of light field
@@ -111,29 +98,69 @@ Lr = reshape(Lr, prod(resolution), 1);
 Lg = reshape(Lg, prod(resolution), 1);
 Lb = reshape(Lb, prod(resolution), 1);
 
+% lightFieldVector(lightFieldVector < 0.01) = 0.01;
+% lightFieldVector = log(lightFieldVector);
+
 %% Run least squares optimization for each color channel
+tic;
 lb = zeros(size(P, 2), 1) + log(0.01);
 ub = zeros(size(P, 2), 1); 
+% lb = zeros(size(P, 2), 1);
+% ub = ones(size(P, 2), 1);
 options = optimset('Display', 'final', 'MaxIter', 10);
+
+% layersR = lsqlin(P, lightFieldVector(:, 1), [], [], [], [], lb, ub, [], options);
+% layersG = lsqlin(P, lightFieldVector(:, 2), [], [], [], [], lb, ub, [], options);
+% layersB = lsqlin(P, lightFieldVector(:, 3), [], [], [], [], lb, ub, [], options);
 
 layersR = lsqlin(P, Lr, [], [], [], [], lb, ub, [], options);
 layersG = lsqlin(P, Lg, [], [], [], [], lb, ub, [], options);
 layersB = lsqlin(P, Lb, [], [], [], [], lb, ub, [], options);
 
+fprintf('Optimization took %i minutes.\n', floor(toc / 60));
+
 layersR = reshape(layersR, Nlayers, resolution(3), resolution(4));
 layersG = reshape(layersG, Nlayers, resolution(3), resolution(4));
 layersB = reshape(layersB, Nlayers, resolution(3), resolution(4));
 
+%% Rebuild layers
+
 layersR = exp(layersR);
 layersG = exp(layersG);
 layersB = exp(layersB);
+% 
+% for layer = 1 : Nlayers
+%     
+%     for i = layer * resolution(3) * resolution(4)
+% end
 
 %% Save and display each layer
+close all;
 for layer = 1 : Nlayers
     r = squeeze(layersR(layer, :, :));
     g = squeeze(layersG(layer, :, :));
     b = squeeze(layersB(layer, :, :));
     im = cat(3, r, g, b);
-    imwrite(im, [num2str(layer) '.png']);
-    subplot(1, Nlayers, layer), subimage(im);
+    % add padding to image
+    padding = 20;
+    im = padarray(im, [padding, padding], 1);
+    pixelSize = layerSize ./ [resolution(4) resolution(3)];
+    w = size(im, 2);
+    h = size(im, 1);
+    printSize = layerSize + 2 * padding * pixelSize;
+    % insert markers that help for alignment
+    offset = 10;
+    pos = [offset offset; 
+           w - offset offset; 
+           offset h - offset];  
+    im = insertMarker(im, pos, 'Color', 'Black', 'Size', 10);
+    % insert layer number
+    im = insertText(im, [w - offset h - offset], layer, ...
+                    'AnchorPoint', 'Center', 'BoxOpacity', 0);
+    % save images and print to pdf
+    if(~exist(outFolder, 'dir'))
+        mkdir(outFolder);
+    end
+    imwrite(im, [outFolder num2str(layer) '.png']);
+    printToPDF(im, printSize, [outFolder num2str(layer) '.pdf']);
 end
