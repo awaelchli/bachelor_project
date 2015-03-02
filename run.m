@@ -146,17 +146,19 @@ for layer = 1 : Nlayers
     h = size(im, 1);
 %     printSize = layerSize - 2 * padding * pixelSize;
     printSize = layerSize;
+    
     % insert markers that help for alignment
     offset = 10;
     pos = [offset offset; 
            w - offset offset; 
            offset h - offset];  
     im = insertMarker(im, pos, 'Color', 'Black', 'Size', 10);
+   
     % insert layer number
     im = insertText(im, [w - offset h - offset], layer, ...
                     'AnchorPoint', 'Center', 'BoxOpacity', 0);
+   
     % save images and print to pdf
-    
     imwrite(im, [outFolder num2str(layer) '.png']);
     printToPDF(im, printSize, [outFolder num2str(layer) '.pdf']);
 end
