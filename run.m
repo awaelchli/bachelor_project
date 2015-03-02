@@ -183,21 +183,3 @@ for layer = 1 : Nlayers
     imwrite(im, [outFolder num2str(layer) '.png']);
     printToPDF(im, printSize, [outFolder num2str(layer) '.pdf']);
 end
-
-%% Reconstruct light field from attenuation layers and evaluate error
-
-lightFieldRecVector = zeros(size(lightFieldVector));
-lightFieldRecVector(:, 1) =  P * log(layersR);
-lightFieldRecVector(:, 2) =  P * log(layersG);
-lightFieldRecVector(:, 3) =  P * log(layersB);
-
-% convert the light field vector to the 4D light field
-lightFieldRec = permute(reshape(lightFieldRecVector, [resolution([4, 3, 2, 1]) 3]), [4, 3, 2, 1, 5]);
-
-lightFieldRec = exp(lightFieldRec);
-
-% show the central view
-figure('Name', 'Light field reconstruction')
-imshow(squeeze(lightFieldRec(median(1:resolution(2)), median(1:resolution(1)), :, :, :)))
-title('Central view');
-                
