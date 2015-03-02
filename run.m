@@ -1,24 +1,25 @@
 clear;
 %% Parameters
-path = 'lightFields/messerschmitt/7x7x384x512/';
-% path = 'lightFields/dice/';
+%path = 'lightFields/messerschmitt/7x7x384x512/';
+path = 'lightFields/dice/';
 imageType = 'png';
-resolution = [7, 7, 384, 512];      % Light field resolution
-fov = degtorad(10);                 % Field of view in radians
-Nlayers = 3;                        % Number of layers
-layerDist = 2;                      % Distance between layers in mm
-layerW = 180;                       % Width and height of layers in mm
+resolution = [7, 7, 384, 512];          % Light field resolution
+fov = degtorad(10);                     % Field of view in radians
+lightFieldSize = [100, 75];
+Nlayers = 5;                            % Number of layers
+layerDist = 2;                          % Distance between layers in mm
+layerW = 100;                           % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
-height = (Nlayers - 1) * layerDist; % Height of layer stack
-outFolder = 'output/';               % Output folder to store the layers
+height = (Nlayers - 1) * layerDist;     % Height of layer stack
+outFolder = 'output/';                  % Output folder to store the layers
 
 %% Loading the light field
 lightField = loadLightField(path, imageType, [resolution 3]);
 
-lightField = lightField(3:5, 3:5, :, :, :);
-r = size(lightField);
-resolution = r(1:4);
+% lightField = lightField(3:5, 3:5, :, :, :);
+% r = size(lightField);
+% resolution = r(1:4);
 
 %% Computing index arrays for sparse matrix P
 % upper bound for number of non-zero values in the matrix P
@@ -40,6 +41,8 @@ for imageX = 1 : resolution(2)
         
         % compute angles for incoming rays from current view
         [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
+        fprintf('angleX: %i, ', angleX);
+        fprintf('angleY: %i \n', angleY);
         
         for pixelX = 1 : resolution(4)
             for pixelY = 1 : resolution(3)
@@ -57,9 +60,10 @@ for imageX = 1 : resolution(2)
                 
                 for layer = 1 : Nlayers
                     % compute if and where the ray penetrates the layer
-                    intersection = [u, v] + (layer * layerDist - (height / 2)) * [angleX, angleY];
+                    intersection = [u, v] + ((layer - 1) * layerDist - (height / 2)) * [angleX, angleY];
+                    % rayPositionsX = lightFieldPixelCentersX - lightFieldOrigin(3)*vx + layerOrigin(3)*vx;
                     % convert space coordinates to pixel coordinates
-                    intersectionP = floor(intersection .* resolution([4, 3]) ./ layerSize);
+                    intersectionP = ceil(intersection .* resolution([4, 3]) ./ layerSize);
                     % check if intersection is out of bounds
                     if( all(intersection >= 0) && all(intersection < layerSize) )
                         % ray intersects with this layer
@@ -123,7 +127,7 @@ fprintf('Optimization took %i minutes.\n', floor(toc / 60));
 % layersG = reshape(layersG, Nlayers, resolution(3), resolution(4));
 % layersB = reshape(layersB, Nlayers, resolution(3), resolution(4));
 
-%% Rebuild layers
+%% Extract layers from optimization
 
 layersR = exp(layersR);
 layersG = exp(layersG);
@@ -134,6 +138,7 @@ layers = zeros(Nlayers, resolution(3), resolution(4), 3);
 for layer = 1 : Nlayers
     for y = 1 : resolution(3)
         for x = 1 : resolution(4)
+            % convert layer-pixel coordinates to linear index
             idx = (layer - 1) * resolution(3) * resolution(4) + (y - 1) * resolution(4) + x;
             r = layersR(idx);
             g = layersG(idx);
@@ -145,6 +150,9 @@ end
 
 %% Save and display each layer
 close all;
+
+layerSize = [180, 180 * (resolution(3) / resolution(4))];
+
 for layer = 1 : Nlayers
 %     r = squeeze(layersR(layer, :, :));
 %     g = squeeze(layersG(layer, :, :));
@@ -157,7 +165,8 @@ for layer = 1 : Nlayers
     pixelSize = layerSize ./ [resolution(4) resolution(3)];
     w = size(im, 2);
     h = size(im, 1);
-    printSize = layerSize + 2 * padding * pixelSize;
+%     printSize = layerSize - 2 * padding * pixelSize;
+    printSize = layerSize;
     % insert markers that help for alignment
     offset = 10;
     pos = [offset offset; 
