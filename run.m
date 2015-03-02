@@ -16,9 +16,9 @@ outFolder = 'output/';               % Output folder to store the layers
 %% Loading the light field
 lightField = loadLightField(path, imageType, [resolution 3]);
 
-% lightField = lightField(3:5, 3:5, :, :, :);
-% r = size(lightField);
-% resolution = r(1:4);
+lightField = lightField(3:5, 3:5, :, :, :);
+r = size(lightField);
+resolution = r(1:4);
 
 %% Computing index arrays for sparse matrix P
 % upper bound for number of non-zero values in the matrix P
@@ -31,7 +31,7 @@ S = ones(maxNonZeros, 1);       % values
 % index of the current non-zero element used in the for loop below.
 index = 0;
 
-% lightFieldVector = zeros(prod(resolution), 3);
+lightFieldVector = zeros(prod(resolution), 3);
 
 fprintf('Computing matrix P...\n');
 tic;
@@ -47,11 +47,11 @@ for imageX = 1 : resolution(2)
                 % convert subscript indices to a linear index since L is
                 % a column vector
                 
-                row = sub2ind(resolution, imageY, imageX, pixelY, pixelX);
-%                 row = ((imageY - 1) * resolution(2) + imageX - 1) * resolution(3) * resolution(4) + ...
-%                        (pixelY - 1) * resolution(4) + pixelX;
+%                 row = sub2ind(resolution, imageY, imageX, pixelY, pixelX);
+                row = ((imageY - 1) * resolution(2) + imageX - 1) * resolution(3) * resolution(4) + ...
+                       (pixelY - 1) * resolution(4) + pixelX;
                    
-%                 lightFieldVector(row, :) = lightField(imageY, imageX, pixelY, pixelX, :);
+                lightFieldVector(row, :) = lightField(imageY, imageX, pixelY, pixelX, :);
                 
                 [u, v] = pixelToSpaceCoordinates(pixelX, pixelY, resolution([4, 3]), layerSize);
                 
@@ -64,8 +64,8 @@ for imageX = 1 : resolution(2)
                     if( all(intersection >= 0) && all(intersection < layerSize) )
                         % ray intersects with this layer
 %                         fprintf('hit\n');
-                        col = sub2ind([Nlayers resolution([3, 4])], layer, intersectionP(2) + 1, intersectionP(1) + 1);
-%                         col = (layer - 1) * resolution(3) * resolution(4) + (intersectionP(2) - 1) * resolution(4) + intersectionP(1);
+%                         col = sub2ind([Nlayers resolution([3, 4])], layer, intersectionP(2) + 1, intersectionP(1) + 1);
+                        col = (layer - 1) * resolution(3) * resolution(4) + (intersectionP(2) - 1) * resolution(4) + intersectionP(1);
                         
                         index = index + 1;
                         I(index) = row;
@@ -85,21 +85,21 @@ save('P.mat', 'P');
 fprintf('Done calculating P. Calculation took %i minutes.\n', floor(toc / 60));
 
 %% Convert to log light field and separate rgb channels
-lightField(lightField < 0.01) = 0.01;
-lightField = log(lightField);
+% lightField(lightField < 0.01) = 0.01;
+% lightField = log(lightField);
+% 
+% % RGB components of light field
+% Lr = lightField(:, :, :, :, 1);
+% Lg = lightField(:, :, :, :, 2);
+% Lb = lightField(:, :, :, :, 3);
+% 
+% % Convert the light field to a column vector for each channel
+% Lr = reshape(Lr, prod(resolution), 1);
+% Lg = reshape(Lg, prod(resolution), 1);
+% Lb = reshape(Lb, prod(resolution), 1);
 
-% RGB components of light field
-Lr = lightField(:, :, :, :, 1);
-Lg = lightField(:, :, :, :, 2);
-Lb = lightField(:, :, :, :, 3);
-
-% Convert the light field to a column vector for each channel
-Lr = reshape(Lr, prod(resolution), 1);
-Lg = reshape(Lg, prod(resolution), 1);
-Lb = reshape(Lb, prod(resolution), 1);
-
-% lightFieldVector(lightFieldVector < 0.01) = 0.01;
-% lightFieldVector = log(lightFieldVector);
+lightFieldVector(lightFieldVector < 0.01) = 0.01;
+lightFieldVector = log(lightFieldVector);
 
 %% Run least squares optimization for each color channel
 tic;
@@ -107,40 +107,50 @@ lb = zeros(size(P, 2), 1) + log(0.01);
 ub = zeros(size(P, 2), 1); 
 % lb = zeros(size(P, 2), 1);
 % ub = ones(size(P, 2), 1);
-options = optimset('Display', 'final', 'MaxIter', 10);
+options = optimset('Display', 'iter', 'MaxIter', 10);
 
-% layersR = lsqlin(P, lightFieldVector(:, 1), [], [], [], [], lb, ub, [], options);
-% layersG = lsqlin(P, lightFieldVector(:, 2), [], [], [], [], lb, ub, [], options);
-% layersB = lsqlin(P, lightFieldVector(:, 3), [], [], [], [], lb, ub, [], options);
+layersR = lsqlin(P, lightFieldVector(:, 1), [], [], [], [], lb, ub, [], options);
+layersG = lsqlin(P, lightFieldVector(:, 2), [], [], [], [], lb, ub, [], options);
+layersB = lsqlin(P, lightFieldVector(:, 3), [], [], [], [], lb, ub, [], options);
 
-layersR = lsqlin(P, Lr, [], [], [], [], lb, ub, [], options);
-layersG = lsqlin(P, Lg, [], [], [], [], lb, ub, [], options);
-layersB = lsqlin(P, Lb, [], [], [], [], lb, ub, [], options);
+% layersR = lsqlin(P, Lr, [], [], [], [], lb, ub, [], options);
+% layersG = lsqlin(P, Lg, [], [], [], [], lb, ub, [], options);
+% layersB = lsqlin(P, Lb, [], [], [], [], lb, ub, [], options);
 
 fprintf('Optimization took %i minutes.\n', floor(toc / 60));
-
-layersR = reshape(layersR, Nlayers, resolution(3), resolution(4));
-layersG = reshape(layersG, Nlayers, resolution(3), resolution(4));
-layersB = reshape(layersB, Nlayers, resolution(3), resolution(4));
+% 
+% layersR = reshape(layersR, Nlayers, resolution(3), resolution(4));
+% layersG = reshape(layersG, Nlayers, resolution(3), resolution(4));
+% layersB = reshape(layersB, Nlayers, resolution(3), resolution(4));
 
 %% Rebuild layers
 
 layersR = exp(layersR);
 layersG = exp(layersG);
 layersB = exp(layersB);
-% 
-% for layer = 1 : Nlayers
-%     
-%     for i = layer * resolution(3) * resolution(4)
-% end
+
+layers = zeros(Nlayers, resolution(3), resolution(4), 3);
+
+for layer = 1 : Nlayers
+    for y = 1 : resolution(3)
+        for x = 1 : resolution(4)
+            idx = (layer - 1) * resolution(3) * resolution(4) + (y - 1) * resolution(4) + x;
+            r = layersR(idx);
+            g = layersG(idx);
+            b = layersB(idx);
+            layers(layer, y, x, :) = [r g b];
+        end
+    end
+end
 
 %% Save and display each layer
 close all;
 for layer = 1 : Nlayers
-    r = squeeze(layersR(layer, :, :));
-    g = squeeze(layersG(layer, :, :));
-    b = squeeze(layersB(layer, :, :));
-    im = cat(3, r, g, b);
+%     r = squeeze(layersR(layer, :, :));
+%     g = squeeze(layersG(layer, :, :));
+%     b = squeeze(layersB(layer, :, :));
+%     im = cat(3, r, g, b);
+    im = cat(3, squeeze(layers(layer, :, :, :)));
     % add padding to image
     padding = 20;
     im = padarray(im, [padding, padding], 1);
