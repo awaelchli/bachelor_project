@@ -96,20 +96,23 @@ lightFieldVector = log(lightFieldVector);
 
 %% Run least squares optimization for each color channel
 tic;
-lb = zeros(size(P, 2), 1) + log(0.01);
 ub = zeros(size(P, 2), 1); 
-% lb = zeros(size(P, 2), 1);
-% ub = ones(size(P, 2), 1);
-options = optimset('Display', 'iter', 'MaxIter', iterations);
+lb = zeros(size(P, 2), 1) + log(0.01);
+
+% The Jacobian matrix of Px - d is just P. 
+Id = speye(size(P));
+W = @(Jinfo, Y, flag) jacobiMultFun(P, Y , flag);
+
+options = optimset('Display', 'iter', 'MaxIter', iterations, 'JacobMult', W);
 
 fprintf('Running optimization for red color channel...\n');
-layersR = lsqlin(P, lightFieldVector(:, 1), [], [], [], [], lb, ub, [], options);
+layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, [], options);
 
 fprintf('Running optimization for green color channel...\n');
-layersG = lsqlin(P, lightFieldVector(:, 2), [], [], [], [], lb, ub, [], options);
+layersG = lsqlin(Id, lightFieldVector(:, 2), [], [], [], [], lb, ub, [], options);
 
 fprintf('Running optimization for blue color channel...\n');
-layersB = lsqlin(P, lightFieldVector(:, 3), [], [], [], [], lb, ub, [], options);
+layersB = lsqlin(Id, lightFieldVector(:, 3), [], [], [], [], lb, ub, [], options);
 
 fprintf('Optimization took %i minutes.\n', floor(toc / 60));
 
@@ -126,7 +129,7 @@ layers = permute(reshape(layers, resolution(4), resolution(3), Nlayers, 3), [3, 
 %% Save and display each layer
 close all;
 
-layerSize = [180, 180 * (resolution(3) / resolution(4))];
+%layerSize = [180, 180 * (resolution(3) / resolution(4))];
 
 if(exist(outFolder, 'dir'))
     rmdir(outFolder, 's');
