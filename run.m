@@ -9,13 +9,16 @@ resolution = [7, 7, 384, 512];          % Light field resolution
 fov = degtorad(10);                     % Field of view in radians
 lightFieldSize = [100, 75];
 Nlayers = 5;                            % Number of layers
-layerDist = 2;                          % Distance between layers in mm
+layerDist = 4.175;                          % Distance between layers in mm
 layerW = 100;                           % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
 height = (Nlayers - 1) * layerDist;     % Height of layer stack
 iterations = 10;                        % Maximum number of iterations in optimization process
 outFolder = 'output/';                  % Output folder to store the layers
+
+originLayers = [0, 0, 0];               % origin of the attenuator (layer stack), [x y z] in mm
+originLF = [0, 0, -height / 2];         % origin of the light field, relative to the attenuator
 
 %% Loading the light field
 lightField = loadLightField(path, imageType, [resolution 3]);
@@ -38,56 +41,90 @@ J = zeros(maxNonZeros, 1);      % column indices
 S = ones(maxNonZeros, 1);       % values
 
 % index of the current non-zero element used in the for loop below.
-index = 0;
+index = 1;
+
+% 2D pixel positions (relative to one layer) in coordinates of the light field
+[posX, posY] = pixelToSpaceCoordinates(resolution([4, 3]), layerSize, originLF);
+% The scale is 1 / pixelSize, it is used to go from space coordinates to
+% pixel indices
+scale = resolution([4, 3]) ./ layerSize;
 
 fprintf('Computing matrix P...\n');
 tic;
+
+angles = zeros(7, 7, 2);
 
 for imageX = 1 : resolution(2)
     for imageY = 1 : resolution(1)
         
         % compute relative angles for incoming rays from current view
         [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
+       
         
-        for pixelX = 1 : resolution(4)
-            for pixelY = 1 : resolution(3)
-                
-                % convert subscript indices to a linear index since L is
-                % a column vector
-                
-%                 row = sub2ind(resolution, imageY, imageX, pixelY, pixelX);
-                row = ((imageY - 1) * resolution(2) + imageX - 1) * resolution(3) * resolution(4) + ...
-                       (pixelY - 1) * resolution(4) + pixelX;
-                
-                [u, v] = pixelToSpaceCoordinates(pixelX, pixelY, resolution([4, 3]), layerSize);
-                
-                for layer = 1 : Nlayers
-                    % compute if and where the ray penetrates the layer
-                    intersection = [u, v] + ((layer - 1) * layerDist - (height / 2)) * [angleX, angleY];
-                    % rayPositionsX = lightFieldPixelCentersX - lightFieldOrigin(3)*vx + layerOrigin(3)*vx;
-                    % convert space coordinates to pixel coordinates
-                    intersectionP = ceil(intersection .* resolution([4, 3]) ./ layerSize);
-                    % check if intersection is out of bounds
-                    if( all(intersection >= 0) && all(intersection < layerSize) )
-                        % ray intersects with this layer
-
-%                         col = sub2ind([Nlayers resolution([3, 4])], layer, intersectionP(2) + 1, intersectionP(1) + 1);
-                        col = (layer - 1) * resolution(3) * resolution(4) + (intersectionP(2) - 1) * resolution(4) + intersectionP(1);
-                        
-                        index = index + 1;
-                        I(index) = row;
-                        J(index) = col;
-                    end
-                end
-            end
+        angles(imageY, imageX, :) = [angleX, angleY];
+        
+        
+        
+        % intersection points of rays with relative angles [angleX, angleY]
+        % on the first layer (most bottom layer), can go outside of layer
+        % boudaries
+        posXL1 = posX + (originLayers(3) - originLF(3)) * angleX;
+        posYL1 = posY + (originLayers(3) - originLF(3)) * angleY;
+        
+        for layer = 1 : Nlayers
+            
+            % shift intersection points according to current layer
+            posXCurrentLayer = posXL1 - (layer - 1) * layerDist * angleX;
+            posYCurrentLayer = posYL1 - (layer - 1) * layerDist * angleY;
+            
+            % pixel indices 
+            pixelsX = ceil(scale(1) * (posXCurrentLayer - originLayers(1)));
+            pixelsY = ceil(scale(2) * (posYCurrentLayer - originLayers(1)));
+            
+            % pixels indices outside of bounds get removed
+            pixelsX(pixelsX > resolution(4)) = 0;
+            pixelsX(pixelsX < 1) = 0;
+            pixelsY(pixelsY > resolution(3)) = 0;
+            pixelsY(pixelsY < 1) = 0;
+            
+            % pick out the indices that are inside bounds
+            indicesX = find(pixelsX);
+            indicesY = find(pixelsY);
+            
+            % make as many copies of the X-indices as there are Y-indices
+            indicesX = repmat(indicesX, numel(indicesY), 1);
+            % make as many copies of the Y-indices as there are X-indices
+            indicesY = repmat(indicesY', 1, size(indicesX, 2));
+            
+            % make copies of the image indices
+            imageIndicesX = imageX + zeros(size(indicesX));
+            imageIndicesY = imageY + zeros(size(indicesX));
+            
+            % convert the 4D subscipts to row indices all at once
+            rows = sub2ind(resolution([4, 3, 2, 1]), indicesX(:), indicesY(:), imageIndicesX(:), imageIndicesY(:));
+            
+            % !!! Note: Here, light field resolution is the same as layer
+            % resolution. Support for different light field and layer
+            % resolution is currently not supported !!!
+            layerIndices = layer + zeros(size(indicesX));
+            
+            % convert the subscripts to column indices
+            columns = sub2ind([resolution([4, 3]) Nlayers], indicesX(:), indicesY(:), layerIndices(:));
+            
+            % insert the calculated indices into the sparse arrays
+            numInsertions = numel(rows);
+            I(index : index + numInsertions - 1) = rows;
+            J(index : index + numInsertions - 1) = columns;
+            
+            index = index + numInsertions ;
+           
         end
-       	fprintf('Done with view %i:%i\n', imageX, imageY);
     end
 end
 
-P = sparse(I(1:index), J(1:index), S(1:index), prod(resolution), prod([Nlayers resolution([3, 4])]), index);
+P = sparse(I(1:index - 1), J(1:index - 1), S(1:index - 1), prod(resolution), prod([Nlayers resolution([3, 4])]), index - 1);
 save('P.mat', 'P');
-fprintf('Done calculating P. Calculation took %i minutes.\n', floor(toc / 60));
+fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
 %% Convert to log light field
 
@@ -103,16 +140,20 @@ lb = zeros(size(P, 2), 1) + log(0.01);
 Id = speye(size(P));
 W = @(Jinfo, Y, flag) jacobiMultFun(P, Y , flag);
 
-options = optimset('Display', 'iter', 'MaxIter', iterations, 'JacobMult', W);
+options = optimset('MaxIter', iterations, 'JacobMult', W);
+% options = optimset('MaxIter', iterations);
 
 fprintf('Running optimization for red color channel...\n');
 layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, [], options);
+% layersR = lsqlin(P, lightFieldVector(:, 1), [], [], [], [], lb, ub, [], options);
 
 fprintf('Running optimization for green color channel...\n');
 layersG = lsqlin(Id, lightFieldVector(:, 2), [], [], [], [], lb, ub, [], options);
+% layersG = lsqlin(P, lightFieldVector(:, 2), [], [], [], [], lb, ub, [], options);
 
 fprintf('Running optimization for blue color channel...\n');
 layersB = lsqlin(Id, lightFieldVector(:, 3), [], [], [], [], lb, ub, [], options);
+% layersB = lsqlin(P, lightFieldVector(:, 3), [], [], [], [], lb, ub, [], options);
 
 fprintf('Optimization took %i minutes.\n', floor(toc / 60));
 
@@ -169,9 +210,9 @@ end
 %% Reconstruct light field from attenuation layers and evaluate error
 
 lightFieldRecVector = zeros(size(lightFieldVector));
-lightFieldRecVector(:, 1) =  P * log(layersR);
-lightFieldRecVector(:, 2) =  P * log(layersG);
-lightFieldRecVector(:, 3) =  P * log(layersB);
+lightFieldRecVector(:, 1) = P * log(layersR);
+lightFieldRecVector(:, 2) = P * log(layersG);
+lightFieldRecVector(:, 3) = P * log(layersB);
 
 % convert the light field vector to the 4D light field
 lightFieldRec = permute(reshape(lightFieldRecVector, [resolution([4, 3, 2, 1]) 3]), [4, 3, 2, 1, 5]);
