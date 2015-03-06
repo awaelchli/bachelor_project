@@ -1,4 +1,4 @@
-clear;
+% clear;
 %% Parameters
 % Note: paths are relative to the current folder
 %
@@ -7,14 +7,15 @@ path = 'lightFields/dice/';
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
 fov = degtorad(10);                     % Field of view in radians
-lightFieldSize = [100, 75];
+% lightFieldSize = [100, 75];
 Nlayers = 5;                            % Number of layers
-layerDist = 4.175;                          % Distance between layers in mm
+layerDist = 2;
+% layerDist = 4.175;                          % Distance between layers in mm
 layerW = 100;                           % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
 height = (Nlayers - 1) * layerDist;     % Height of layer stack
-iterations = 10;                        % Maximum number of iterations in optimization process
+iterations = 15;                        % Maximum number of iterations in optimization process
 outFolder = 'output/';                  % Output folder to store the layers
 
 originLayers = [0, 0, 0];               % origin of the attenuator (layer stack), [x y z] in mm
@@ -30,7 +31,12 @@ lightField = loadLightField(path, imageType, [resolution 3]);
 % convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
 % and each column of this matrix represents a color channel of the light
 % field
+
+
 lightFieldVector = reshape(permute(lightField, [4, 3, 2, 1, 5]), [], 3);
+
+
+% lightFieldVector = reshape(lightField, [], 3);
 
 %% Computing index arrays for sparse matrix P
 % upper bound for number of non-zero values in the matrix P
@@ -52,19 +58,12 @@ scale = resolution([4, 3]) ./ layerSize;
 fprintf('Computing matrix P...\n');
 tic;
 
-angles = zeros(7, 7, 2);
-
 for imageX = 1 : resolution(2)
     for imageY = 1 : resolution(1)
         
         % compute relative angles for incoming rays from current view
         [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
        
-        
-        angles(imageY, imageX, :) = [angleX, angleY];
-        
-        
-        
         % intersection points of rays with relative angles [angleX, angleY]
         % on the first layer (most bottom layer), can go outside of layer
         % boudaries
@@ -74,12 +73,12 @@ for imageX = 1 : resolution(2)
         for layer = 1 : Nlayers
             
             % shift intersection points according to current layer
-            posXCurrentLayer = posXL1 - (layer - 1) * layerDist * angleX;
-            posYCurrentLayer = posYL1 - (layer - 1) * layerDist * angleY;
+%             posXCurrentLayer = posXL1 - (layer - 1) * layerDist * angleX;
+%             posYCurrentLayer = posYL1 - (layer - 1) * layerDist * angleY;
             
             % pixel indices 
-            pixelsX = ceil(scale(1) * (posXCurrentLayer - originLayers(1)));
-            pixelsY = ceil(scale(2) * (posYCurrentLayer - originLayers(1)));
+            pixelsX = ceil(scale(1) * (posXL1 - originLayers(1)));
+            pixelsY = ceil(scale(2) * (posYL1 - originLayers(2)));
             
             % pixels indices outside of bounds get removed
             pixelsX(pixelsX > resolution(4)) = 0;
@@ -103,13 +102,28 @@ for imageX = 1 : resolution(2)
             % convert the 4D subscipts to row indices all at once
             rows = sub2ind(resolution([4, 3, 2, 1]), indicesX(:), indicesY(:), imageIndicesX(:), imageIndicesY(:));
             
+%             rows = sub2ind(resolution, imageIndicesY(:), imageIndicesX(:), indicesY(:), indicesX(:));
+%             sub2ind(lightFieldResolution, validVYIndices(:), validVXIndices(:), validYIndices(:), validXIndices(:));
+            
+            
             % !!! Note: Here, light field resolution is the same as layer
             % resolution. Support for different light field and layer
             % resolution is currently not supported !!!
             layerIndices = layer + zeros(size(indicesX));
             
+            
+            
+            pixelsX = pixelsX(pixelsX ~= 0);
+            pixelsY = pixelsY(pixelsY ~= 0);
+            indicesX = repmat(pixelsX, [numel(pixelsY) 1]);
+            indicesY = repmat(pixelsY', [1 size(pixelsX,2)]);  
+            
             % convert the subscripts to column indices
             columns = sub2ind([resolution([4, 3]) Nlayers], indicesX(:), indicesY(:), layerIndices(:));
+            
+%             columns = sub2ind([resolution([3, 4]) Nlayers], indicesY(:), indicesX(:), layerIndices(:));
+            
+%              matrixColumns   = sub2ind(layerResolution, validYYIndices(:), validXXIndices(:), validZZIndices(:));      
             
             % insert the calculated indices into the sparse arrays
             numInsertions = numel(rows);
@@ -117,6 +131,9 @@ for imageX = 1 : resolution(2)
             J(index : index + numInsertions - 1) = columns;
             
             index = index + numInsertions ;
+            
+            posXL1 = posXL1 - layerDist * angleX;
+            posYL1 = posYL1 - layerDist * angleY;
            
         end
     end
@@ -135,6 +152,7 @@ lightFieldVector = log(lightFieldVector);
 tic;
 ub = zeros(size(P, 2), 1); 
 lb = zeros(size(P, 2), 1) + log(0.01);
+x0 = zeros(size(P, 2), 1);
 
 % The Jacobian matrix of Px - d is just P. 
 Id = speye(size(P));
@@ -144,15 +162,15 @@ options = optimset('MaxIter', iterations, 'JacobMult', W);
 % options = optimset('MaxIter', iterations);
 
 fprintf('Running optimization for red color channel...\n');
-layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, [], options);
+layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, x0, options);
 % layersR = lsqlin(P, lightFieldVector(:, 1), [], [], [], [], lb, ub, [], options);
 
 fprintf('Running optimization for green color channel...\n');
-layersG = lsqlin(Id, lightFieldVector(:, 2), [], [], [], [], lb, ub, [], options);
+layersG = lsqlin(Id, lightFieldVector(:, 2), [], [], [], [], lb, ub, x0, options);
 % layersG = lsqlin(P, lightFieldVector(:, 2), [], [], [], [], lb, ub, [], options);
 
 fprintf('Running optimization for blue color channel...\n');
-layersB = lsqlin(Id, lightFieldVector(:, 3), [], [], [], [], lb, ub, [], options);
+layersB = lsqlin(Id, lightFieldVector(:, 3), [], [], [], [], lb, ub, x0, options);
 % layersB = lsqlin(P, lightFieldVector(:, 3), [], [], [], [], lb, ub, [], options);
 
 fprintf('Optimization took %i minutes.\n', floor(toc / 60));
@@ -162,10 +180,22 @@ fprintf('Optimization took %i minutes.\n', floor(toc / 60));
 layersR = exp(layersR);
 layersG = exp(layersG);
 layersB = exp(layersB);
+%%
+% layersR = reshape(layersR, resolution(3), resolution(4), Nlayers);
+% layersG = reshape(layersG, resolution(3), resolution(4), Nlayers);
+% layersB = reshape(layersB, resolution(3), resolution(4), Nlayers);
+
 
 % convert the layers from column vector to a matrix of dimension [Nlayers, height, width, channel]
 layers = cat(2, layersR, layersG, layersB);
+% layers = cat(4, layersR, layersG, layersB);
 layers = permute(reshape(layers, resolution(4), resolution(3), Nlayers, 3), [3, 2, 1, 4]);
+
+% layers = reshape(layers, resolution(3), resolution(4), Nlayers, 3);
+
+
+
+% columns = sub2ind([resolution([3, 4]) Nlayers], indicesY(:), indicesX(:), layerIndices(:));
 
 %% Save and display each layer
 close all;
