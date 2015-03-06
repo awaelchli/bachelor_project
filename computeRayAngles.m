@@ -7,7 +7,6 @@ function [ angleX, angleY ] = computeRayAngles( camX, camY, fov, resolution )
 max = tan(fov / 2);
 angleX = -max + (camX - 1) * 2 * max / (resolution(1) - 1);
 angleY = -max + (camY - 1) * 2 * max / (resolution(2) - 1);
-% angleY = max - (camY - 1) * 2 * max / resolution(2);
 
 end
 
