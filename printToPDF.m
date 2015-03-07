@@ -10,7 +10,7 @@ set(gca, 'XTick', [], 'YTick', [])
 % axis off
 set(fig, 'PaperPositionMode', 'manual')
 set(fig, 'PaperUnits', 'centimeters')
-set(fig, 'PaperPosition',[0 0 size(1) / 10 size(2) / 10])
+set(fig, 'PaperPosition',[1 1 size(1) / 10 size(2) / 10])
 set(fig, 'PaperType', 'A4')
 set(fig, 'PaperOrientation', 'portrait')
 
