@@ -215,7 +215,18 @@ lightFieldRec = reshape(lightFieldRecVector, [resolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
 
-% show the central view
+center = [median(1:resolution(2)), median(1:resolution(1))];
+centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
+centerLF = squeeze(lightField(center(1), center(2), :, :, :));
+
+% show the central view from reconstruction
 figure('Name', 'Light field reconstruction')
-imshow(squeeze(lightFieldRec(median(1:resolution(2)), median(1:resolution(1)), :, :, :)))
+imshow(centerRec)
 title('Central view');
+
+% show the absolute error
+error = abs(centerRec - centerLF);
+figure('Name', 'Absolute Error')
+imshow(error)
+title('Central view');
+
