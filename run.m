@@ -3,12 +3,13 @@
 % Note: paths are relative to the current folder
 %
 % path = 'lightFields/messerschmitt/7x7x384x512/';
-path = 'lightFields/dice/';
+% path = 'lightFields/dice/';
+path = 'lightFields/dragon/';
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
 fov = degtorad(10);                     % Field of view in radians
 Nlayers = 5;                            % Number of layers
-layerDist = 2;
+layerDist = 4;
 layerW = 120;                           % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
@@ -28,7 +29,9 @@ lightField = loadLightField(path, imageType, [resolution 3]);
 % convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
 % and each column of this matrix represents a color channel of the light
 % field
-lightFieldVector = reshape(permute(lightField, [4, 3, 2, 1, 5]), [], 3);
+
+% lightFieldVector = reshape(permute(lightField, [4, 3, 2, 1, 5]), [], 3);
+lightFieldVector = reshape(lightField, [], 3);
 
 %% Computing index arrays for sparse matrix P
 % upper bound for number of non-zero values in the matrix P
@@ -92,7 +95,8 @@ for imageX = 1 : resolution(2)
             imageIndicesY = imageY + zeros(size(indicesX));
             
             % convert the 4D subscipts to row indices all at once
-            rows = sub2ind(resolution([4, 3, 2, 1]), indicesX(:), indicesY(:), imageIndicesX(:), imageIndicesY(:));
+%             rows = sub2ind(resolution([4, 3, 2, 1]), indicesX(:), indicesY(:), imageIndicesX(:), imageIndicesY(:));
+            rows = sub2ind(resolution, imageIndicesY(:), imageIndicesX(:), indicesY(:), indicesX(:));
             
             % !!! Note: Here, light field resolution is the same as layer
             % resolution. Support for different light field and layer
@@ -105,8 +109,9 @@ for imageX = 1 : resolution(2)
             indicesY = repmat(pixelsY', [1 size(pixelsX,2)]);  
             
             % convert the subscripts to column indices
-            columns = sub2ind([resolution([4, 3]) Nlayers], indicesX(:), indicesY(:), layerIndices(:));
-            
+%             columns = sub2ind([resolution([4, 3]) Nlayers], indicesX(:), indicesY(:), layerIndices(:));
+            columns = sub2ind([resolution([3, 4]) Nlayers], indicesY(:), indicesX(:), layerIndices(:));
+             
             % insert the calculated indices into the sparse arrays
             numInsertions = numel(rows);
             I(index : index + numInsertions - 1) = rows;
@@ -157,7 +162,8 @@ layersB = exp(layersB);
 
 % convert the layers from column vector to a matrix of dimension [Nlayers, height, width, channel]
 layers = cat(2, layersR, layersG, layersB);
-layers = permute(reshape(layers, resolution(4), resolution(3), Nlayers, 3), [3, 2, 1, 4]);
+% layers = permute(reshape(layers, resolution(4), resolution(3), Nlayers, 3), [3, 2, 1, 4]);
+layers = reshape(layers, resolution(3), resolution(4), Nlayers, 3);
 
 %% Save and display each layer
 close all;
@@ -169,7 +175,8 @@ mkdir(outFolder);
 
 for layer = 1 : Nlayers
     % current image of layer
-    im = cat(3, squeeze(layers(layer, :, :, :)));
+%     im = cat(3, squeeze(layers(layer, :, :, :)));
+    im = cat(3, squeeze(layers(:, :, layer, :)));
     
     % add padding to image
     padding = 20;
@@ -203,7 +210,8 @@ lightFieldRecVector(:, 2) = P * log(layersG);
 lightFieldRecVector(:, 3) = P * log(layersB);
 
 % convert the light field vector to the 4D light field
-lightFieldRec = permute(reshape(lightFieldRecVector, [resolution([4, 3, 2, 1]) 3]), [4, 3, 2, 1, 5]);
+% lightFieldRec = permute(reshape(lightFieldRecVector, [resolution([4, 3, 2, 1]) 3]), [4, 3, 2, 1, 5]);
+lightFieldRec = reshape(lightFieldRecVector, [resolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
 
