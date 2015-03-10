@@ -3,8 +3,9 @@
 % Note: paths are relative to the current folder
 %
 % path = 'lightFields/messerschmitt/7x7x384x512/';
-% path = 'lightFields/dice/';
-path = 'lightFields/dragon/';
+path = 'lightFields/dice/';
+% path = 'lightFields/dragon/';
+% path = 'lightFields/butterfly/7x7x384x512/';
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
 fov = degtorad(10);                     % Field of view in radians
@@ -141,7 +142,7 @@ x0 = zeros(size(P, 2), 1);
 Id = speye(size(P));
 W = @(Jinfo, Y, flag) jacobiMultFun(P, Y , flag);
 
-options = optimset('MaxIter', iterations, 'JacobMult', W);
+options = optimset('MaxIter', iterations, 'Jacobian', 'on', 'JacobMult', W);
 
 fprintf('Running optimization for red color channel...\n');
 layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, x0, options);
