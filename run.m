@@ -10,8 +10,8 @@ imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
 fov = degtorad(10);                     % Field of view in radians
 Nlayers = 5;                            % Number of layers
-layerDist = 4;
-layerW = 120;                           % Width and height of layers in mm
+layerDist = 4.175;
+layerW = 180;                           % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
 height = (Nlayers - 1) * layerDist;     % Height of layer stack
@@ -43,7 +43,7 @@ J = zeros(maxNonZeros, 1);      % column indices
 S = ones(maxNonZeros, 1);       % values
 
 % index of the current non-zero element used in the for loop below.
-index = 1;
+c = 1;
 
 % 2D pixel positions (relative to one layer) in coordinates of the light field
 [posX, posY] = pixelToSpaceCoordinates(resolution([4, 3]), layerSize, originLF);
@@ -115,15 +115,15 @@ for imageX = 1 : resolution(2)
              
             % insert the calculated indices into the sparse arrays
             numInsertions = numel(rows);
-            I(index : index + numInsertions - 1) = rows;
-            J(index : index + numInsertions - 1) = columns;
+            I(c : c + numInsertions - 1) = rows;
+            J(c : c + numInsertions - 1) = columns;
             
-            index = index + numInsertions ;
+            c = c + numInsertions ;
         end
     end
 end
 
-P = sparse(I(1:index - 1), J(1:index - 1), S(1:index - 1), prod(resolution), prod([Nlayers resolution([3, 4])]), index - 1);
+P = sparse(I(1:c - 1), J(1:c - 1), S(1:c - 1), prod(resolution), prod([Nlayers resolution([3, 4])]), c - 1);
 % save('P.mat', 'P');
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
@@ -142,16 +142,27 @@ x0 = zeros(size(P, 2), 1);
 Id = speye(size(P));
 W = @(Jinfo, Y, flag) jacobiMultFun(P, Y , flag);
 
-options = optimset('MaxIter', iterations, 'Jacobian', 'on', 'JacobMult', W);
+options = optimset('MaxIter', iterations, 'Jacobian', 'on', 'JacobMult', W, 'UseParallel', true);
 
-fprintf('Running optimization for red color channel...\n');
-layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, x0, options);
+% fprintf('Running optimization for red color channel...\n');
+% layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, x0, options);
+% 
+% fprintf('Running optimization for green color channel...\n');
+% layersG = lsqlin(Id, lightFieldVector(:, 2), [], [], [], [], lb, ub, x0, options);
+% 
+% fprintf('Running optimization for blue color channel...\n');
+% layersB = lsqlin(Id, lightFieldVector(:, 3), [], [], [], [], lb, ub, x0, options);
+% 
 
-fprintf('Running optimization for green color channel...\n');
-layersG = lsqlin(Id, lightFieldVector(:, 2), [], [], [], [], lb, ub, x0, options);
+layers = zeros(size(P, 2), 3);
+parfor c = 1 : 3
+    % Run optimization for each channel in parallel
+    layers(:, c) = lsqlin(Id, lightFieldVector(:, c), [], [], [], [], lb, ub, x0, options);
+end
 
-fprintf('Running optimization for blue color channel...\n');
-layersB = lsqlin(Id, lightFieldVector(:, 3), [], [], [], [], lb, ub, x0, options);
+layersR = squeeze(layers(:, 1));
+layersG = squeeze(layers(:, 2));
+layersB = squeeze(layers(:, 3));
 
 fprintf('Optimization took %i minutes.\n', floor(toc / 60));
 
@@ -166,7 +177,7 @@ layers = cat(2, layersR, layersG, layersB);
 % layers = permute(reshape(layers, resolution(4), resolution(3), Nlayers, 3), [3, 2, 1, 4]);
 layers = reshape(layers, resolution(3), resolution(4), Nlayers, 3);
 
-%% Save and display each layer
+    %% Save and display each layer
 close all;
 
 if(exist(outFolder, 'dir'))
@@ -217,13 +228,19 @@ lightFieldRec = reshape(lightFieldRecVector, [resolution 3]);
 lightFieldRec = exp(lightFieldRec);
 
 center = [median(1:resolution(2)), median(1:resolution(1))];
+other = [7, 7];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
+otherRec = squeeze(lightFieldRec(other(1), other(2), :, :, :));
 
-% show the central view from reconstruction
+% show the central and custom view from reconstruction
 figure('Name', 'Light field reconstruction')
 imshow(centerRec)
 title('Central view');
+
+figure('Name', 'Light field reconstruction')
+imshow(otherRec)
+title('Custom view');
 
 % show the absolute error
 error = abs(centerRec - centerLF);
