@@ -3,9 +3,12 @@
 % Note: paths are relative to the current folder
 %
 % path = 'lightFields/messerschmitt/7x7x384x512/';
-path = 'lightFields/dice/';
+% path = 'lightFields/dice/';
+% path = 'lightFields/dice/7x7x384x512_fov20/';
 % path = 'lightFields/dragon/';
 % path = 'lightFields/butterfly/7x7x384x512/';
+path = 'lightFields/watch/';
+filename = 'rx_watch';                  % Used for h5 files
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
 fov = degtorad(10);                     % Field of view in radians
@@ -21,7 +24,16 @@ originLayers = [0, 0, 0];               % origin of the attenuator, [x y z] in m
 originLF = [0, 0, -height / 2];         % origin of the light field, relative to the attenuator
 
 %% Loading the light field
-lightField = loadLightField(path, imageType, [resolution 3]);
+
+% Load from folder containing the images
+% lightField = loadLightField(path, imageType, [resolution 3]);
+
+% Or load from h5 file
+lightField = h5read([path filename '.h5'], '/LF');
+lightField = permute(lightField, [5, 4, 3, 2, 1]);
+lightField = double(lightField) / 255;
+resolution = size(lightField);
+resolution = resolution(1 : 4);
 
 % lightField = lightField(3:5, 3:5, :, :, :);
 % r = size(lightField);
@@ -144,29 +156,33 @@ W = @(Jinfo, Y, flag) jacobiMultFun(P, Y , flag);
 
 options = optimset('MaxIter', iterations, 'Jacobian', 'on', 'JacobMult', W, 'UseParallel', true);
 
-% fprintf('Running optimization for red color channel...\n');
-% layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, x0, options);
-% 
-% fprintf('Running optimization for green color channel...\n');
-% layersG = lsqlin(Id, lightFieldVector(:, 2), [], [], [], [], lb, ub, x0, options);
-% 
-% fprintf('Running optimization for blue color channel...\n');
-% layersB = lsqlin(Id, lightFieldVector(:, 3), [], [], [], [], lb, ub, x0, options);
-% 
+fprintf('Running optimization... \n');
 
-layers = zeros(size(P, 2), 3);
-parfor c = 1 : 3
-    % Run optimization for each channel in parallel
-    layers(:, c) = lsqlin(Id, lightFieldVector(:, c), [], [], [], [], lb, ub, x0, options);
-end
+fprintf('Running optimization for red color channel...\n');
+layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, x0, options);
 
-layersR = squeeze(layers(:, 1));
-layersG = squeeze(layers(:, 2));
-layersB = squeeze(layers(:, 3));
+fprintf('Running optimization for green color channel...\n');
+layersG = lsqlin(Id, lightFieldVector(:, 2), [], [], [], [], lb, ub, x0, options);
+
+fprintf('Running optimization for blue color channel...\n');
+layersB = lsqlin(Id, lightFieldVector(:, 3), [], [], [], [], lb, ub, x0, options);
+
+
+% layers = zeros(size(P, 2), 3);
+% parfor c = 1 : 3
+%     % Run optimization for each channel in parallel (not working properly)
+%     layers(:, c) = lsqlin(Id, lightFieldVector(:, c), [], [], [], [], lb, ub, x0, options);
+% end
+
+% layers = exp(layers);
 
 fprintf('Optimization took %i minutes.\n', floor(toc / 60));
 
 %% Extract layers from optimization
+
+% layersR = squeeze(layers(:, 1));
+% layersG = squeeze(layers(:, 2));
+% layersB = squeeze(layers(:, 3));
 
 layersR = exp(layersR);
 layersG = exp(layersG);
@@ -177,7 +193,7 @@ layers = cat(2, layersR, layersG, layersB);
 % layers = permute(reshape(layers, resolution(4), resolution(3), Nlayers, 3), [3, 2, 1, 4]);
 layers = reshape(layers, resolution(3), resolution(4), Nlayers, 3);
 
-    %% Save and display each layer
+%% Save and display each layer
 close all;
 
 if(exist(outFolder, 'dir'))
