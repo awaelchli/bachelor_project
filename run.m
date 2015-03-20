@@ -7,7 +7,7 @@
 % path = 'lightFields/dice/7x7x384x512_fov20/';
 % path = 'lightFields/dragon/';
 % path = 'lightFields/butterfly/7x7x384x512/';
-path = 'lightFields/watch/';
+path = 'lightFields/rx_watch/';
 filename = 'rx_watch';                  % Used for h5 files
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
