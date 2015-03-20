@@ -11,29 +11,36 @@ path = 'lightFields/watch/';
 filename = 'rx_watch';                  % Used for h5 files
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
+channels = 3;                           % Use 3 (color) or 1 (grayscale) channels
 fov = degtorad(10);                     % Field of view in radians
 Nlayers = 5;                            % Number of layers
-layerDist = 4.175;
-layerW = 180;                           % Width and height of layers in mm
+layerDist = 4;
+layerW = 100;                           % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
 height = (Nlayers - 1) * layerDist;     % Height of layer stack
-iterations = 15;                        % Maximum number of iterations in optimization process
+iterations = 20;                        % Maximum number of iterations in optimization process
 outFolder = 'output/';                  % Output folder to store the layers
 originLayers = [0, 0, 0];               % origin of the attenuator, [x y z] in mm
 originLF = [0, 0, -height / 2];         % origin of the light field, relative to the attenuator
 
 %% Loading the light field
 
-% Load from folder containing the images
-% lightField = loadLightField(path, imageType, [resolution 3]);
+% Load from folder containing the images...
+% lightField = loadLightField(path, imageType, [resolution channels]);
 
-% Or load from h5 file
+% ... or load from h5 file
 lightField = h5read([path filename '.h5'], '/LF');
 lightField = permute(lightField, [5, 4, 3, 2, 1]);
 lightField = double(lightField) / 255;
 resolution = size(lightField);
 resolution = resolution(1 : 4);
+layerH = layerW * (resolution(3) / resolution(4));
+layerSize = [layerW, layerH];
+% read required attributes 
+focalLength = h5readatt([path filename '.h5'], '/', 'focalLength');
+fov = degtorad(1 / focalLength);
+channels = h5readatt([path filename '.h5'], '/', 'channels');
 
 % lightField = lightField(3:5, 3:5, :, :, :);
 % r = size(lightField);
@@ -43,8 +50,7 @@ resolution = resolution(1 : 4);
 % and each column of this matrix represents a color channel of the light
 % field
 
-% lightFieldVector = reshape(permute(lightField, [4, 3, 2, 1, 5]), [], 3);
-lightFieldVector = reshape(lightField, [], 3);
+lightFieldVector = reshape(lightField, [], channels);
 
 %% Computing index arrays for sparse matrix P
 % upper bound for number of non-zero values in the matrix P
@@ -108,7 +114,6 @@ for imageX = 1 : resolution(2)
             imageIndicesY = imageY + zeros(size(indicesX));
             
             % convert the 4D subscipts to row indices all at once
-%             rows = sub2ind(resolution([4, 3, 2, 1]), indicesX(:), indicesY(:), imageIndicesX(:), imageIndicesY(:));
             rows = sub2ind(resolution, imageIndicesY(:), imageIndicesX(:), indicesY(:), indicesX(:));
             
             % !!! Note: Here, light field resolution is the same as layer
@@ -122,7 +127,6 @@ for imageX = 1 : resolution(2)
             indicesY = repmat(pixelsY', [1 size(pixelsX,2)]);  
             
             % convert the subscripts to column indices
-%             columns = sub2ind([resolution([4, 3]) Nlayers], indicesX(:), indicesY(:), layerIndices(:));
             columns = sub2ind([resolution([3, 4]) Nlayers], indicesY(:), indicesX(:), layerIndices(:));
              
             % insert the calculated indices into the sparse arrays
@@ -151,46 +155,34 @@ lb = zeros(size(P, 2), 1) + log(0.01);
 x0 = zeros(size(P, 2), 1);
 
 % The Jacobian matrix of Px - d is just P. 
-Id = speye(size(P));
-W = @(Jinfo, Y, flag) jacobiMultFun(P, Y , flag);
-
-options = optimset('MaxIter', iterations, 'Jacobian', 'on', 'JacobMult', W, 'UseParallel', true);
-
-fprintf('Running optimization... \n');
-
-fprintf('Running optimization for red color channel...\n');
-layersR = lsqlin(Id, lightFieldVector(:, 1), [], [], [], [], lb, ub, x0, options);
-
-fprintf('Running optimization for green color channel...\n');
-layersG = lsqlin(Id, lightFieldVector(:, 2), [], [], [], [], lb, ub, x0, options);
-
-fprintf('Running optimization for blue color channel...\n');
-layersB = lsqlin(Id, lightFieldVector(:, 3), [], [], [], [], lb, ub, x0, options);
-
-
+% Id = speye(size(P));
+% W = @(Jinfo, Y, flag) projection(P, Y , flag);
+% 
+% options = optimset('MaxIter', iterations, 'Jacobian', 'on', 'JacobMult', W, 'UseParallel', true);
+% 
 % layers = zeros(size(P, 2), 3);
-% parfor c = 1 : 3
-%     % Run optimization for each channel in parallel (not working properly)
+% for c = 1 : channels
+%     fprintf('Running optimization for color channel %i ...\n', c);
 %     layers(:, c) = lsqlin(Id, lightFieldVector(:, c), [], [], [], [], lb, ub, x0, options);
 % end
 
-% layers = exp(layers);
+layers = zeros(size(P, 2), 3);
+for c = 1 : channels
+    fprintf('Running optimization for color channel %i ...\n', c);
+    layers(:, c) = sart(P, lightFieldVector(:, c), x0, lb, ub, iterations);
+end
 
+layers = exp(layers);
 fprintf('Optimization took %i minutes.\n', floor(toc / 60));
 
 %% Extract layers from optimization
 
-% layersR = squeeze(layers(:, 1));
-% layersG = squeeze(layers(:, 2));
-% layersB = squeeze(layers(:, 3));
-
-layersR = exp(layersR);
-layersG = exp(layersG);
-layersB = exp(layersB);
+layersR = squeeze(layers(:, 1));
+layersG = squeeze(layers(:, 2));
+layersB = squeeze(layers(:, 3));
 
 % convert the layers from column vector to a matrix of dimension [Nlayers, height, width, channel]
 layers = cat(2, layersR, layersG, layersB);
-% layers = permute(reshape(layers, resolution(4), resolution(3), Nlayers, 3), [3, 2, 1, 4]);
 layers = reshape(layers, resolution(3), resolution(4), Nlayers, 3);
 
 %% Save and display each layer
@@ -201,34 +193,8 @@ if(exist(outFolder, 'dir'))
 end
 mkdir(outFolder);
 
-for layer = 1 : Nlayers
-    % current image of layer
-%     im = cat(3, squeeze(layers(layer, :, :, :)));
-    im = cat(3, squeeze(layers(:, :, layer, :)));
-    
-    % add padding to image
-    padding = 20;
-    im = padarray(im, [padding, padding], 1);
-    pixelSize = layerSize ./ [resolution(4) resolution(3)];
-    w = size(im, 2);
-    h = size(im, 1);
-    printSize = layerSize;
-    
-    % insert markers that help for alignment
-    offset = 10;
-    pos = [offset offset; 
-           w - offset offset; 
-           offset h - offset];  
-    im = insertMarker(im, pos, 'Color', 'Black', 'Size', 10);
-   
-    % insert layer number
-    im = insertText(im, [w - offset h - offset], layer, ...
-                    'AnchorPoint', 'Center', 'BoxOpacity', 0);
-   
-    % save images and print to pdf
-    imwrite(im, [outFolder num2str(layer) '.png']);
-    printToPDF(im, printSize, [outFolder num2str(layer) '.pdf']);
-end
+printLayers(layers(:, :, 1:3, :), layerSize, outFolder, 'print1', 1);
+printLayers(layers(:, :, 4:5, :), layerSize, outFolder, 'print2', 4);
 
 %% Reconstruct light field from attenuation layers and evaluate error
 
@@ -238,7 +204,6 @@ lightFieldRecVector(:, 2) = P * log(layersG);
 lightFieldRecVector(:, 3) = P * log(layersB);
 
 % convert the light field vector to the 4D light field
-% lightFieldRec = permute(reshape(lightFieldRecVector, [resolution([4, 3, 2, 1]) 3]), [4, 3, 2, 1, 5]);
 lightFieldRec = reshape(lightFieldRecVector, [resolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
@@ -253,6 +218,7 @@ otherRec = squeeze(lightFieldRec(other(1), other(2), :, :, :));
 figure('Name', 'Light field reconstruction')
 imshow(centerRec)
 title('Central view');
+imwrite(centerRec, [outFolder 'central_view.png']);
 
 figure('Name', 'Light field reconstruction')
 imshow(otherRec)
@@ -260,7 +226,9 @@ title('Custom view');
 
 % show the absolute error
 error = abs(centerRec - centerLF);
-figure('Name', 'Absolute Error')
+figure('Name', 'Absolute Error of Central View')
 imshow(error)
 title('Central view');
+
+imwrite(error, [outFolder 'central_view_error.png']);
 
