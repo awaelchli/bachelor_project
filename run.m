@@ -7,8 +7,9 @@
 % path = 'lightFields/dice/7x7x384x512_fov20/';
 % path = 'lightFields/dragon/';
 % path = 'lightFields/butterfly/7x7x384x512/';
-path = 'lightFields/rx_watch/';
-filename = 'rx_watch';                  % Used for h5 files
+% path = 'lightFields/rx_watch/';
+path = 'lightFields/';
+filename = 'img00001';                  % Used for h5 and lfr files
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
 channels = 3;                           % Use 3 (color) or 1 (grayscale) channels
@@ -24,29 +25,43 @@ outFolder = 'output/';                  % Output folder to store the layers
 originLayers = [0, 0, 0];               % origin of the attenuator, [x y z] in mm
 originLF = [0, 0, -height / 2];         % origin of the light field, relative to the attenuator
 
-%% Loading the light field
+%% Load the light field from a folder of images
 
-% Load from folder containing the images...
 % lightField = loadLightField(path, imageType, [resolution channels]);
 
-% ... or load from h5 file
-lightField = h5read([path filename '.h5'], '/LF');
-lightField = permute(lightField, [5, 4, 3, 2, 1]);
-lightField = double(lightField) / 255;
+%% Load the light field from a H5 file
+
+% lightField = h5read([path filename '.h5'], '/LF');
+% lightField = permute(lightField, [5, 4, 3, 2, 1]);
+% lightField = double(lightField) / 255;
+% resolution = size(lightField);
+% resolution = resolution(1 : 4);
+% layerH = layerW * (resolution(3) / resolution(4));
+% layerSize = [layerW, layerH];
+% % read required attributes 
+% focalLength = h5readatt([path filename '.h5'], '/', 'focalLength');
+% fov = degtorad(1 / focalLength);
+% channels = h5readatt([path filename '.h5'], '/', 'channels');
+
+%% Load the light field from a Lytro image
+
+lytroPath = 'C:/Users/Adrian/AppData/Local/Lytro/cameras/';
+whiteImageDatabasePath = fullfile(lytroPath, 'WhiteImageDatabase.mat');
+
+LFUtilUnpackLytroArchive(lytroPath);
+LFUtilProcessWhiteImages(lytroPath);
+DecodeOptions = LFDefaultField('DecodeOptions', 'WhiteImageDatabasePath', whiteImageDatabasePath);
+[lightField, metadata, ~] = LFLytroDecodeImage([path filename '.lfr'], DecodeOptions);
+
+lightField = lightField(:, :, :, :, 1 : 3);
+lightField = double(lightField);
 resolution = size(lightField);
 resolution = resolution(1 : 4);
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
-% read required attributes 
-focalLength = h5readatt([path filename '.h5'], '/', 'focalLength');
-fov = degtorad(1 / focalLength);
-channels = h5readatt([path filename '.h5'], '/', 'channels');
 
-% lightField = lightField(3:5, 3:5, :, :, :);
-% r = size(lightField);
-% resolution = r(1:4);
-
-% convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
+%% Vectorize the light field
+% Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
 % and each column of this matrix represents a color channel of the light
 % field
 
@@ -69,7 +84,7 @@ c = 1;
 % pixel indices
 scale = resolution([4, 3]) ./ layerSize;
 
-fprintf('Computing matrix P...\n');
+fprintf('\nComputing matrix P...\n');
 tic;
 
 for imageX = 1 : resolution(2)
