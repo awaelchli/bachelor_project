@@ -9,7 +9,9 @@ function layers = sart( P, l, x0, lb, ub, iterations )
 %   iterations:     The Number of SART iterations to perform
 
 
-% The weights for the updates
+% The weights for the updates: 
+% Vector W contains the row-sums of P
+% Vector V contains the column-sums of P
 W = P * ones(size(x0));
 W(W ~= 0) = 1 ./ W(W ~= 0);
 
