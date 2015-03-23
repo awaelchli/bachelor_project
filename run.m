@@ -9,7 +9,7 @@
 % path = 'lightFields/butterfly/7x7x384x512/';
 % path = 'lightFields/rx_watch/';
 path = 'lightFields/';
-filename = 'img00001';                  % Used for h5 and lfr files
+filename = 'pens';                  % Used for h5 and lfr files
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
 channels = 3;                           % Use 3 (color) or 1 (grayscale) channels
