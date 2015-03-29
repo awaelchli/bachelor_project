@@ -9,11 +9,11 @@
 % path = 'lightFields/butterfly/7x7x384x512/';
 % path = 'lightFields/rx_watch/';
 path = 'lightFields/';
-filename = 'pens';                  % Used for h5 and lfr files
+filename = 'coke';                  % Used for h5 and lfr files
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
 channels = 3;                           % Use 3 (color) or 1 (grayscale) channels
-fov = degtorad(10);                     % Field of view in radians
+fov = degtorad(4.8);                     % Field of view in radians
 Nlayers = 5;                            % Number of layers
 layerDist = 4;
 layerW = 100;                           % Width and height of layers in mm
@@ -59,6 +59,22 @@ resolution = size(lightField);
 resolution = resolution(1 : 4);
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
+
+sensorSize = [6.5, 4.5];
+fL = metadata.devices.lens.focalLength;
+fN = metadata.devices.lens.fNumber;
+diam = fL / fN * 1000;                  % Diameter of the main lens in mm
+% Horizontal and vertical field of view
+hfov = 2 * atan(sensorSize(1) / (2 * fL));
+vfov = 2 * atan(sensorSize(2) / (2 * fL));
+
+% c = 1;
+% for y = 1 : resolution(1)
+%     for x = 1 : resolution(2)
+%         imwrite(squeeze(lightField(y, x, :, :, :)), ['lightFields/lytroTemp/' num2str(c) '.png']);
+%         c = c + 1;
+%     end
+% end
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
