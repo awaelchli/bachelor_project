@@ -7,9 +7,9 @@
 % path = 'lightFields/dice/7x7x384x512_fov20/';
 % path = 'lightFields/dragon/';
 % path = 'lightFields/butterfly/7x7x384x512/';
-% path = 'lightFields/rx_watch/';
-path = 'lightFields/';
-filename = 'coke';                  % Used for h5 and lfr files
+path = 'lightFields/rx_watch/';
+% path = 'lightFields/';
+filename = 'rx_watch';                  % Used for h5 and lfr files
 imageType = 'png';
 resolution = [7, 7, 384, 512];          % Light field resolution
 channels = 3;                           % Use 3 (color) or 1 (grayscale) channels
@@ -24,6 +24,7 @@ iterations = 20;                        % Maximum number of iterations in optimi
 outFolder = 'output/';                  % Output folder to store the layers
 originLayers = [0, 0, 0];               % origin of the attenuator, [x y z] in mm
 originLF = [0, 0, -height / 2];         % origin of the light field, relative to the attenuator
+cameraDist = 5;                         % The grid distance between the cameras in mm
 
 %% Load the light field from a folder of images
 
@@ -31,42 +32,46 @@ originLF = [0, 0, -height / 2];         % origin of the light field, relative to
 
 %% Load the light field from a H5 file
 
-% lightField = h5read([path filename '.h5'], '/LF');
-% lightField = permute(lightField, [5, 4, 3, 2, 1]);
-% lightField = double(lightField) / 255;
-% resolution = size(lightField);
-% resolution = resolution(1 : 4);
-% layerH = layerW * (resolution(3) / resolution(4));
-% layerSize = [layerW, layerH];
-% % read required attributes 
-% focalLength = h5readatt([path filename '.h5'], '/', 'focalLength');
-% fov = degtorad(1 / focalLength);
-% channels = h5readatt([path filename '.h5'], '/', 'channels');
-
-%% Load the light field from a Lytro image
-
-lytroPath = 'C:/Users/Adrian/AppData/Local/Lytro/cameras/';
-whiteImageDatabasePath = fullfile(lytroPath, 'WhiteImageDatabase.mat');
-
-LFUtilUnpackLytroArchive(lytroPath);
-LFUtilProcessWhiteImages(lytroPath);
-DecodeOptions = LFDefaultField('DecodeOptions', 'WhiteImageDatabasePath', whiteImageDatabasePath);
-[lightField, metadata, ~] = LFLytroDecodeImage([path filename '.lfr'], DecodeOptions);
-
-lightField = lightField(:, :, :, :, 1 : 3);
-lightField = double(lightField);
+lightField = h5read([path filename '.h5'], '/LF');
+lightField = permute(lightField, [5, 4, 3, 2, 1]);
+lightField = double(lightField) / 255;
 resolution = size(lightField);
 resolution = resolution(1 : 4);
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
+% read required attributes 
+focalLength = h5readatt([path filename '.h5'], '/', 'focalLength');
+focalLength = focalLength * 1000; % to mm
+fov = degtorad(90);
+channels = h5readatt([path filename '.h5'], '/', 'channels');
+% cameraDist = h5readatt([path filename '.h5'], '/', 'camDistance');
+% cameraDist = cameraDist * 1000;
+cameraDist = 20;
 
-sensorSize = [6.5, 4.5];
-fL = metadata.devices.lens.focalLength;
-fN = metadata.devices.lens.fNumber;
-diam = fL / fN * 1000;                  % Diameter of the main lens in mm
-% Horizontal and vertical field of view
-hfov = 2 * atan(sensorSize(1) / (2 * fL));
-vfov = 2 * atan(sensorSize(2) / (2 * fL));
+%% Load the light field from a Lytro image
+
+% lytroPath = 'C:/Users/Adrian/AppData/Local/Lytro/cameras/';
+% whiteImageDatabasePath = fullfile(lytroPath, 'WhiteImageDatabase.mat');
+% 
+% LFUtilUnpackLytroArchive(lytroPath);
+% LFUtilProcessWhiteImages(lytroPath);
+% DecodeOptions = LFDefaultField('DecodeOptions', 'WhiteImageDatabasePath', whiteImageDatabasePath);
+% [lightField, metadata, ~] = LFLytroDecodeImage([path filename '.lfr'], DecodeOptions);
+% 
+% lightField = lightField(:, :, :, :, 1 : 3);
+% lightField = double(lightField);
+% resolution = size(lightField);
+% resolution = resolution(1 : 4);
+% layerH = layerW * (resolution(3) / resolution(4));
+% layerSize = [layerW, layerH];
+% 
+% sensorSize = [6.5, 4.5];
+% fL = metadata.devices.lens.focalLength;
+% fN = metadata.devices.lens.fNumber;
+% diam = fL / fN * 1000;                  % Diameter of the main lens in mm
+% % Horizontal and vertical field of view
+% hfov = 2 * atan(sensorSize(1) / (2 * fL));
+% vfov = 2 * atan(sensorSize(2) / (2 * fL));
 
 % c = 1;
 % for y = 1 : resolution(1)
@@ -100,6 +105,8 @@ c = 1;
 % pixel indices
 scale = resolution([4, 3]) ./ layerSize;
 
+[anglesX, anglesY] = computeRayAngles(fov, resolution([3, 4]));
+
 fprintf('\nComputing matrix P...\n');
 tic;
 
@@ -107,19 +114,26 @@ for imageX = 1 : resolution(2)
     for imageY = 1 : resolution(1)
         
         % compute relative angles for incoming rays from current view
-        [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
+%         [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
        
         % intersection points of rays with relative angles [angleX, angleY]
         % on the first layer (most bottom layer), can go outside of layer
         % boudaries
-        posXL1 = posX + (originLayers(3) - originLF(3)) * angleX;
-        posYL1 = posY + (originLayers(3) - originLF(3)) * angleY;
+        
+        posXL1 = (imageX - 1) * cameraDist - (originLayers(3) - originLF(3)) .* anglesX;
+        posYL1 = (imageY - 1) * cameraDist - (originLayers(3) - originLF(3)) .* anglesY;
+        
+%         posXL1 = posX + (originLayers(3) - originLF(3)) * angleX;
+%         posYL1 = posY + (originLayers(3) - originLF(3)) * angleY;
         
         for layer = 1 : Nlayers
             
             % shift intersection points according to current layer
-            posXCurrentLayer = posXL1 - (layer - 1) * layerDist * angleX;
-            posYCurrentLayer = posYL1 - (layer - 1) * layerDist * angleY;
+%             posXCurrentLayer = posXL1 - (layer - 1) * layerDist * angleX;
+%             posYCurrentLayer = posYL1 - (layer - 1) * layerDist * angleY;
+            
+            posXCurrentLayer = posXL1 - (layer - 1) * layerDist .* anglesX;
+            posYCurrentLayer = posYL1 - (layer - 1) * layerDist .* anglesY;
             
             % pixel indices 
             pixelsX = ceil(scale(1) * (posXCurrentLayer - originLayers(1)));
