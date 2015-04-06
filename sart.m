@@ -6,7 +6,7 @@ function layers = sart( P, l, x0, lb, ub, iterations )
 %   l:              The light field (vectorized)
 %   x0:             The initial guess for the iterative reconstruction
 %   lb, ub:         Upper and lower bounds for the layers
-%   iterations:     The Number of SART iterations to perform
+%   iterations:     The number of SART iterations to perform
 
 
 % The weights for the updates: 
