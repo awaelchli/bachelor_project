@@ -23,9 +23,14 @@ lightFieldVector = reshape(lightField, [], channels);
 %% Computing index arrays for sparse matrix P
 
 % layerSize = [6.5, 4.5];
-originLF = [0, 0, 10000];
-cameraDist = cameraDist .* layerSize ./ [6.5, 6.5];
+cameraDist = cameraDist .* (layerSize ./ [6.5, 6.5]);
+
+fprintf('\nComputing matrix P...\n');
+tic;
 P = computeMatrixP( Nlayers, resolution, layerSize, originLF, originLayers, fov, cameraDist, layerDist );
+
+% save('P.mat', 'P');
+fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
 %% Convert to log light field
 

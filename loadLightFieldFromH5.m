@@ -13,10 +13,11 @@ focalLength = h5readatt(file, '/', 'focalLength');
 % focalLength = focalLength * 1000; % to mm
 
 fov = 2 * atan(1 / (2 * focalLength));
+fov = fov .* [1, 1];
 
 channels = h5readatt(file, '/', 'channels');
 
-cameraDist = h5readatt(file, '/', 'dH');
+cameraDist = double(h5readatt(file, '/', 'dH'));
 cameraDist = cameraDist * 1000;
 
 % fov = degtorad(90);

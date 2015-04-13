@@ -22,31 +22,18 @@ scale = [1, 1];
 
 [anglesX, anglesY] = computeRayAngles(fov, resolution([3, 4]));
 
-fprintf('\nComputing matrix P...\n');
-tic;
-
 for imageX = 1 : resolution(2)
     for imageY = 1 : resolution(1)
         
-        % compute relative angles for incoming rays from current view
-%         [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
-       
         % intersection points of rays with relative angles [angleX, angleY]
         % on the first layer (most bottom layer), can go outside of layer
         % boudaries
-        
         posXL1 = (imageX - 1) * cameraDist(2) - (originLayers(3) - originLF(3)) .* anglesX;
         posYL1 = (imageY - 1) * cameraDist(1) - (originLayers(3) - originLF(3)) .* anglesY;
         
-%         posXL1 = posX + (originLayers(3) - originLF(3)) * angleX;
-%         posYL1 = posY + (originLayers(3) - originLF(3)) * angleY;
-        
         for layer = 1 : Nlayers
             
-            % shift intersection points according to current layer
-%             posXCurrentLayer = posXL1 - (layer - 1) * layerDist * angleX;
-%             posYCurrentLayer = posYL1 - (layer - 1) * layerDist * angleY;
-            
+            % shift intersection points according to current layer            
             posXCurrentLayer = posXL1 - (layer - 1) * layerDist .* anglesX;
             posYCurrentLayer = posYL1 - (layer - 1) * layerDist .* anglesY;
             
@@ -100,9 +87,6 @@ for imageX = 1 : resolution(2)
 end
 
 P = sparse(I(1:c - 1), J(1:c - 1), S(1:c - 1), prod(resolution), prod([Nlayers resolution([3, 4])]), c - 1);
-% save('P.mat', 'P');
-fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
-
 
 end
 
