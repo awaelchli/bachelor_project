@@ -25,7 +25,7 @@ resolution = resolution(1 : 4);
 
 %% Load the light field from a Lytro image
 
-path = 'lightFields/';
+path = '../lightFields/';
 filename = 'coke';
 
 [ lightField, fov, cameraDist] = loadLightFieldFromLytro( path, filename );
