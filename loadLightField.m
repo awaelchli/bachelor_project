@@ -1,36 +1,37 @@
-function [ lightField ] = loadLightField( path, filetype, resolution )
-%   path:           Path to the image files. Assume images are sorted to
-%                   represent the light field row by row.
-%
-%   filetype:       Type of the image files
-%
-%   resolution:     [angularResY, angularResX, height, width, channels]
+%% Load the light field from a folder of images
 
-% Load images of desired filetype
-imgList = dir([path '*.' filetype]);
-numImages = size(imgList);
+% path = 'lightFields/messerschmitt/7x7x384x512/';
+path = 'lightFields/dice/';
+% path = 'lightFields/dice/7x7x384x512_fov20/';
+% path = 'lightFields/dragon/';
+% path = 'lightFields/butterfly/7x7x384x512/';
 
-if(numImages ~= resolution(1) * resolution(2))
-    error('Number of images do not correspond to angular resolution.');
-end
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [7, 7] );
 
-lightField = zeros(resolution);
+% The field of view of the lightfield (not the cameras), in X and in Y direction
+fov = degtorad(10) .* [1, 1];
 
-i = 1;
-for y = 1 : resolution(1)
-    for x = 1 : resolution(2)
-        
-        image = im2double(imread([path imgList(i).name]));
-        
-        if(~isequal(size(image), [resolution(3), resolution(4), resolution(5)]))
-            error('Files have wrong resolution / number of channels.');
-        end
-        
-        lightField(y, x, :, :, :) = image;
-        
-        i = i + 1;
-    end
-end
+resolution = size(lightField);
+resolution = resolution(1 : 4);
 
-end
+%% Load the light field from a H5 file
 
+path = 'lightFields/rx_watch/';
+filename = 'rx_watch';
+
+[ lightField, channels, focalLength, fov, cameraDist ] = loadLightFieldFromH5( path, filename );
+
+resolution = size(lightField);
+resolution = resolution(1 : 4);
+
+
+%% Load the light field from a Lytro image
+
+path = '../lightFields/';
+filename = 'coke';
+
+[ lightField, fov, cameraDist] = loadLightFieldFromLytro( path, filename );
+
+channels = 3;
+resolution = size(lightField);
+resolution = resolution(1 : 4);

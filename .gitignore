@@ -217,5 +217,6 @@ pip-log.txt
 
 # Matlab
 *.asv
-/output/*
+*/output/*
+output/*
 /lightFields/rx_watch/*
