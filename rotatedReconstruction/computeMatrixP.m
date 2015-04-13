@@ -1,5 +1,21 @@
 function [ P ] = computeMatrixP( Nlayers, resolution, layerSize, originLF, originLayers, fov, layerDist )
-%% Computing index arrays for sparse matrix P
+% Inputs:
+%
+%   Nlayers:        The number of layers in the attenuator
+%   resolution:     The resolution of the light field [viewsY, viewsX, pixelsY, pixelsX]
+%   layersSize:     The size of the layer in millimeters [width, height]
+%   originLF:       The origin of the light field relative to the origin of
+%                   the attenuator
+%   originLayers:   The origin of the attenuator
+%   fov:            The field of view [fovX, fovY] in Y and X direction of 
+%                   the light field (not the fov of the cameras)
+%   layerDist:      The distance between the layers
+%
+% Output:
+%
+%   P:              The propagation matrix, describing where each ray hits
+%                   each layer
+
 % upper bound for number of non-zero values in the matrix P
 maxNonZeros = prod(resolution) * Nlayers; 
 
@@ -84,7 +100,6 @@ for imageX = 1 : resolution(2)
 end
 
 P = sparse(I(1:c - 1), J(1:c - 1), S(1:c - 1), prod(resolution), prod([Nlayers resolution([3, 4])]), c - 1);
-
 
 end
 

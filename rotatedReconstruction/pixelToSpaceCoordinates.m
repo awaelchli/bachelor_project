@@ -9,8 +9,7 @@ function [ posX, posY ] = pixelToSpaceCoordinates( resolution, size, origin )
 %
 % Output:
 %   
-%   posX:                
-%   posY:           
+%   posX, posY:     Absolute positions of pixels in space      
 
 % Normally, the pixel is square, so the entries of sizeOfPixel will be the
 % same.
