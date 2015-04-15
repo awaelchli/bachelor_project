@@ -19,7 +19,7 @@ resolution = resolution(1 : 4);
 path = 'lightFields/rx_watch/';
 filename = 'rx_watch';
 
-[ lightField, channels, focalLength, fov, cameraDist ] = loadLightFieldFromH5( path, filename );
+[ lightField, channels, focalLength, fov, cameraDist, planeDist ] = loadLightFieldFromH5( path, filename );
 
 resolution = size(lightField);
 resolution = resolution(1 : 4);

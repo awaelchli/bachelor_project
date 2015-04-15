@@ -1,4 +1,4 @@
-function [ lightField, channels, focalLength, fov, cameraDist ] = loadLightFieldFromH5( path, filename )
+function [ lightField, channels, focalLength, fov, cameraDist, planeDist ] = loadLightFieldFromH5( path, filename )
 %
 %
 
@@ -12,15 +12,21 @@ lightField = double(lightField) / 255;
 focalLength = h5readatt(file, '/', 'focalLength');
 % focalLength = focalLength * 1000; % to mm
 
+% Diagonal field of view
 fov = 2 * atan(1 / (2 * focalLength));
 fov = fov .* [1, 1];
 
 channels = h5readatt(file, '/', 'channels');
 
-cameraDist = double(h5readatt(file, '/', 'dH'));
-cameraDist = cameraDist * 1000;
+res = size(lightField);
+dH = double(h5readatt(file, '/', 'dH'));
+dV = double(h5readatt(file, '/', 'dV'));
 
-% fov = degtorad(90);
+% Distance between two cameras
+cameraDist = [dV / res(1), dH / res(2)] * 1000;
+
+% Distance between the planes
+planeDist = double(h5readatt(file, '/', 'camDistance')) * 1000;
 
 end
 
