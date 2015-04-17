@@ -44,8 +44,8 @@ for iAngleY = 1 : resolution(3)
     end
 end
 
-cY = (CindY - min(CindY(:))) / (max(CindY(:)) - min(CindY(:)));
-imshow(cY);
+% cY = (CindY - min(CindY(:))) / (max(CindY(:)) - min(CindY(:)));
+% imshow(cY);
 
 % Shift to camera grid coordinate system
 % y' = h/2 - y
@@ -63,8 +63,8 @@ imshow(cY);
 % CindX(CindX < 0) = 0;
 % CindX(CindX > cPlane(2)) = 0;
 
-cY = (CindY - min(CindY(:))) / (max(CindY(:)) - min(CindY(:)));
-imshow(cY);
+% cY = (CindY - min(CindY(:))) / (max(CindY(:)) - min(CindY(:)));
+% imshow(cY);
 
 shiftY = anglesY * -planeDist;
 shiftX = anglesX * -planeDist;
@@ -78,9 +78,9 @@ for iAngleY = 1 : resolution(3)
     end
 end
 
-figure(2);
-pY = (PindY - min(PindY(:))) / (max(PindY(:)) - min(PindY(:)));
-imshow(pY);
+% figure(2);
+% pY = (PindY - min(PindY(:))) / (max(PindY(:)) - min(PindY(:)));
+% imshow(pY);
 
 % PindY = -PindY + vPlane(1) / 2;
 % PindX = PindX + vPlane(2) / 2;
@@ -91,16 +91,11 @@ CindX = (CindX - min(CindX(:))) ./ (max(CindX(:)) - min(CindX(:))) * (resolution
 PindY = (PindY - min(PindY(:))) ./ (max(PindY(:)) - min(PindY(:))) * (resolution(3) - 1) + 1;
 PindX = (PindX - min(PindX(:))) ./ (max(PindX(:)) - min(PindX(:))) * (resolution(4) - 1) + 1;
 
-% X1 = 1 : resolution(1);
-% X2 = 1 : resolution(2);
-% X3 = 1 : resolution(3);
-% X4 = 1 : resolution(4);
-
 CindY = repmat(CindY, 1, 1, resolution(4), resVirtualPlane(2));
 CindY = permute(CindY, [2, 4, 1, 3]);
 size(CindY)
 CindX = repmat(CindX, 1, 1, resolution(3), resVirtualPlane(1));
-CindX = permute(CindX, [4, 2, 3, 1]);
+CindX = permute(CindX, [2, 4, 3, 1]);
 size(CindX)
 
 PindY = repmat(PindY, 1, 1, resolution(4), resVirtualPlane(2));
@@ -113,7 +108,13 @@ size(PindX)
 LF = interpn(squeeze(lightField(:, :, :, :, 1)), CindY(:), CindX(:), PindY(:), PindX(:));
 LF = reshape(LF, [resVirtualPlane resolution([3, 4])]);
 
+for y = 1 : size(LF, 1)
+    for x = 1 : size(LF, 2)
+       LF(y, x, :, :) = rot90(squeeze(LF(y, x, :, :)), 1); 
+    end
+end
+
 figure;
-imshow(squeeze(LF(4, 4, :, :)));
-figure;
-imshow(squeeze(lightField(4, 4, :, :, 1)));
+imshow(squeeze(LF(1, 1, :, :)));
+% figure;
+% imshow(squeeze(lightField(4, 4, :, :, 1)));
