@@ -1,6 +1,11 @@
 % Convert a light field
 % All sizes are in millimeters 
 
+
+
+planeDist = 2;
+
+
 resVirtualPlane = resolution([1, 2]);
 % Dimension of the camera plane
 cPlane = cameraDist .* (resolution([1, 2]) - 1);
@@ -91,4 +96,24 @@ PindX = (PindX - min(PindX(:))) ./ (max(PindX(:)) - min(PindX(:))) * (resolution
 % X3 = 1 : resolution(3);
 % X4 = 1 : resolution(4);
 
-LF = interpn(squeeze(lightField(:, :, :, :, 1)), unique(CindY), unique(CindX), unique(PindY), unique(PindX));
+CindY = repmat(CindY, 1, 1, resolution(4), resVirtualPlane(2));
+CindY = permute(CindY, [2, 4, 1, 3]);
+size(CindY)
+CindX = repmat(CindX, 1, 1, resolution(3), resVirtualPlane(1));
+CindX = permute(CindX, [4, 2, 3, 1]);
+size(CindX)
+
+PindY = repmat(PindY, 1, 1, resolution(4), resVirtualPlane(2));
+PindY = permute(PindY, [2, 4, 1, 3]);
+size(PindY)
+PindX = repmat(PindX, 1, 1, resolution(3), resVirtualPlane(1));
+PindX = permute(PindX, [4, 2, 3, 1]);
+size(PindX)
+
+LF = interpn(squeeze(lightField(:, :, :, :, 1)), CindY(:), CindX(:), PindY(:), PindX(:));
+LF = reshape(LF, [resVirtualPlane resolution([3, 4])]);
+
+figure;
+imshow(squeeze(LF(4, 4, :, :)));
+figure;
+imshow(squeeze(lightField(4, 4, :, :, 1)));
