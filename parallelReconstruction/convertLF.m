@@ -45,8 +45,8 @@ imshow(cY);
 % Shift to camera grid coordinate system
 % y' = h/2 - y
 % x' = x + w/2
-CindY = -CindY + cPlane(1) / 2;
-CindX = CindX + cPlane(2) / 2;
+% CindY = -CindY + cPlane(1) / 2;
+% CindX = CindX + cPlane(2) / 2;
 
 % cY = (CindY - min(CindY(:))) / (max(CindY(:)) - min(CindY(:)));
 % imshow(cY);
@@ -67,13 +67,28 @@ shiftX = anglesX * -planeDist;
 for iAngleY = 1 : resolution(3)
     for iAngleX = 1 : resolution(4)
         
-        PindY(iAngleY, :) = posY + shiftY(iAngleY);
-        PindX(iAngleX, :) = posX + shiftX(iAngleX);
+        PindY(iAngleY, :) = CindY(iAngleY, :) - (posY + shiftY(iAngleY));
+        PindX(iAngleX, :) = CindX(iAngleX, :) - (posX + shiftX(iAngleX));
         
     end
 end
 
-PindY = -PindY + cPlane(1) / 2;
-PindX = PindX + cPlane(2) / 2;
+figure(2);
+pY = (PindY - min(PindY(:))) / (max(PindY(:)) - min(PindY(:)));
+imshow(pY);
 
-LF = interpn(lightField(:, :, :, :, 1), CindY(:), CindX(:), PindY(:), PindX(:));
+% PindY = -PindY + vPlane(1) / 2;
+% PindX = PindX + vPlane(2) / 2;
+
+% Scaling range
+CindY = (CindY - min(CindY(:))) ./ (max(CindY(:)) - min(CindY(:))) * (resolution(1) - 1) + 1;
+CindX = (CindX - min(CindX(:))) ./ (max(CindX(:)) - min(CindX(:))) * (resolution(2) - 1) + 1;
+PindY = (PindY - min(PindY(:))) ./ (max(PindY(:)) - min(PindY(:))) * (resolution(3) - 1) + 1;
+PindX = (PindX - min(PindX(:))) ./ (max(PindX(:)) - min(PindX(:))) * (resolution(4) - 1) + 1;
+
+% X1 = 1 : resolution(1);
+% X2 = 1 : resolution(2);
+% X3 = 1 : resolution(3);
+% X4 = 1 : resolution(4);
+
+LF = interpn(squeeze(lightField(:, :, :, :, 1)), unique(CindY), unique(CindX), unique(PindY), unique(PindX));
