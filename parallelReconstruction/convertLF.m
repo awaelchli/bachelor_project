@@ -110,7 +110,7 @@ LF = reshape(LF, [resVirtualPlane resolution([3, 4])]);
 
 for y = 1 : size(LF, 1)
     for x = 1 : size(LF, 2)
-       LF(y, x, :, :) = rot90(squeeze(LF(y, x, :, :)), 1); 
+       LF(y, x, :, :) = rot90(squeeze(LF(y, x, :, :)), 2); 
     end
 end
 
