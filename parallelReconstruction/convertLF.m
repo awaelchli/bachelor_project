@@ -105,16 +105,20 @@ PindX = repmat(PindX, 1, 1, resolution(3), resVirtualPlane(1));
 PindX = permute(PindX, [4, 2, 3, 1]);
 size(PindX)
 
-LF = interpn(squeeze(lightField(:, :, :, :, 1)), CindY(:), CindX(:), PindY(:), PindX(:));
-LF = reshape(LF, [resVirtualPlane resolution([3, 4])]);
+LF = zeros(prod([resVirtualPlane resolution([3, 4])]), channels);
+
+for c = 1 : channels
+    fprintf(['Converting channel ' num2str(c) ' of ' num2str(channels) ' ...\n']);
+    LF(:, c) = interpn(squeeze(lightField(:, :, :, :, c)), CindY(:), CindX(:), PindY(:), PindX(:));
+end
+
+LF = reshape(LF, [resVirtualPlane resolution([3, 4]) channels]);
 
 for y = 1 : size(LF, 1)
     for x = 1 : size(LF, 2)
-       LF(y, x, :, :) = rot90(squeeze(LF(y, x, :, :)), 2); 
+       LF(y, x, :, :, :) = rot90(squeeze(LF(y, x, :, :, :)), 2); 
     end
 end
 
 figure;
-imshow(squeeze(LF(1, 1, :, :)));
-% figure;
-% imshow(squeeze(lightField(4, 4, :, :, 1)));
+imshow(squeeze(LF(1, 1, :, :, :)));
