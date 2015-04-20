@@ -2,8 +2,7 @@
 % All sizes are in millimeters 
 
 
-
-planeDist = 2;
+% planeDist = 2;
 
 
 resVirtualPlane = resolution([1, 2]);
@@ -122,3 +121,14 @@ end
 
 figure;
 imshow(squeeze(LF(1, 1, :, :, :)));
+
+
+%% Store the converted light field if desired
+out = 'temp/';
+c = 1;
+for y = 1 : size(LF, 1)
+    for x = 1 : size(LF, 2)
+       imwrite(squeeze(LF(y, x, :, :, :)), [out num2str(c) '.png']);
+       c = c + 1;
+    end
+end
