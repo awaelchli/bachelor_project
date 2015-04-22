@@ -17,8 +17,8 @@ c = 1;
 % [posX, posY] = pixelToSpaceCoordinates(resolution([4, 3]), layerSize, originLF);
 % The scale is 1 / pixelSize, it is used to go from space coordinates back to
 % pixel indices
-% scale = resolution([4, 3]) ./ layerSize;
-scale = [1, 1];
+scale = resolution([4, 3]) ./ layerSize;
+% scale = [1, 1];
 
 [anglesX, anglesY] = computeRayAngles(fov, resolution([3, 4]));
 
