@@ -9,8 +9,8 @@ layerSize = [layerW, layerH];
 height = (Nlayers - 1) * layerDist;     % Height of layer stack
 iterations = 20;                        % Maximum number of iterations in optimization process
 outFolder = 'output/';                  % Output folder to store the layers
-originLayers = [0, 0, 0];               % origin of the attenuator, [x y z] in mm
-originLF = [0, 0, -1000];         % origin of the light field, relative to the attenuator
+originLayers = [- layerW / 2, -layerH / 2, 0];               % origin of the attenuator, [x y z] in mm
+originLF = [0, 0, -1000];               % origin of the light field, relative to the attenuator
 
 
 %% Vectorize the light field
@@ -96,11 +96,11 @@ lightFieldRecVector(:, 3) = P * log(layersB);
 lightFieldRec = reshape(lightFieldRecVector, [resolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
-
-center = [median(1:resolution(2)), median(1:resolution(1))];
-other = [7, 7];
+center = floor([median(1:resolution(2)), median(1:resolution(1))]);
+other = [3, 3];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
+otherLF = squeeze(lightField(other(1), other(2), :, :, :));
 otherRec = squeeze(lightFieldRec(other(1), other(2), :, :, :));
 
 % show the central and custom view from reconstruction
@@ -120,4 +120,11 @@ imshow(error)
 title('Central view');
 
 imwrite(error, [outFolder 'central_view_error.png']);
+
+error = abs(otherRec - otherLF);
+figure('Name', 'Absolute Error of custom view')
+imshow(error)
+title('Custom view');
+
+imwrite(error, [outFolder 'custom_view_error.png']);
 
