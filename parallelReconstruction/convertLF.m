@@ -90,22 +90,30 @@ CindX = (CindX - min(CindX(:))) ./ (max(CindX(:)) - min(CindX(:))) * (resolution
 PindY = (PindY - min(PindY(:))) ./ (max(PindY(:)) - min(PindY(:))) * (resolution(3) - 1) + 1;
 PindX = (PindX - min(PindX(:))) ./ (max(PindX(:)) - min(PindX(:))) * (resolution(4) - 1) + 1;
 
-CindY = repmat(CindY, 1, 1, resolution(4), resVirtualPlane(2));
-CindY = permute(CindY, [2, 4, 1, 3]);
+CindY = repmat(CindY, 1, 1, resolution(4), resVirtualPlane(2)); % new arrangements : (thetaY, UY, thetaX, UX)
+% CindY = permute(CindY, [2, 4, 1, 3]);
+CindY = permute(CindY, [1, 3, 2, 4]);
+% CindY = permute(CindY, [3, 4, 1, 2]);
 size(CindY)
-CindX = repmat(CindX, 1, 1, resolution(3), resVirtualPlane(1));
-CindX = permute(CindX, [2, 4, 3, 1]);
+CindX = repmat(CindX, 1, 1, resolution(3), resVirtualPlane(1)); % new arrangements : (thetaX, UX, thetaY, UY)
+CindX = permute(CindX, [3, 1, 4, 2]);
 size(CindX)
 
-PindY = repmat(PindY, 1, 1, resolution(4), resVirtualPlane(2));
-PindY = permute(PindY, [2, 4, 1, 3]);
+PindY = repmat(PindY, 1, 1, resolution(4), resVirtualPlane(2)); % new arrangements : (thetaY, UY, thetaX, UX)
+PindY = permute(PindY, [1, 3, 2, 4]);
 size(PindY)
-PindX = repmat(PindX, 1, 1, resolution(3), resVirtualPlane(1));
-PindX = permute(PindX, [4, 2, 3, 1]);
+PindX = repmat(PindX, 1, 1, resolution(3), resVirtualPlane(1)); % new arrangements : (thetaX, UX, thetaY, UY)
+PindX = permute(PindX, [3, 1, 4, 2]);
 size(PindX)
+
+CindY = permute(CindY, [3, 4, 1, 2]);
+CindX = permute(CindX, [3, 4, 1, 2]);
+PindY = permute(PindY, [3, 4, 1, 2]);
+PindX = permute(PindX, [3, 4, 1, 2]);
 
 LF = zeros(prod([resVirtualPlane resolution([3, 4])]), channels);
 
+% Interpolate for each channel
 for c = 1 : channels
     fprintf(['Converting channel ' num2str(c) ' of ' num2str(channels) ' ...\n']);
     LF(:, c) = interpn(squeeze(lightField(:, :, :, :, c)), CindY(:), CindX(:), PindY(:), PindX(:));
