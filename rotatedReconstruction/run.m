@@ -1,7 +1,7 @@
 % clear;
 %% Parameters
 
-Nlayers = 5;                            % Number of layers
+Nlayers = 3;                            % Number of layers
 layerDist = 4;
 layerW = 100;                           % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
@@ -10,7 +10,7 @@ height = (Nlayers - 1) * layerDist;     % Height of layer stack
 iterations = 20;                        % Maximum number of iterations in optimization process
 outFolder = 'output/';                  % Output folder to store the layers
 originLayers = [0, 0, 0];               % origin of the attenuator, [x y z] in mm
-originLF = [0, 0, -height / 2];         % origin of the light field, relative to the attenuator
+originLF = [0, 0, - height / 2];         % origin of the light field, relative to the attenuator
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
@@ -77,7 +77,7 @@ end
 mkdir(outFolder);
 
 printLayers(layers(:, :, 1:3, :), layerSize, outFolder, 'print1', 1);
-printLayers(layers(:, :, 4:5, :), layerSize, outFolder, 'print2', 4);
+% printLayers(layers(:, :, 4:5, :), layerSize, outFolder, 'print2', 4);
 
 %% Reconstruct light field from attenuation layers and evaluate error
 
@@ -91,10 +91,11 @@ lightFieldRec = reshape(lightFieldRecVector, [resolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
 
-center = [median(1:resolution(2)), median(1:resolution(1))];
-other = [7, 7];
+center = floor([median(1:resolution(2)), median(1:resolution(1))]);
+other = [3, 3];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
+otherLF = squeeze(lightField(other(1), other(2), :, :, :));
 otherRec = squeeze(lightFieldRec(other(1), other(2), :, :, :));
 
 % show the central and custom view from reconstruction
@@ -114,4 +115,11 @@ imshow(error)
 title('Central view');
 
 imwrite(error, [outFolder 'central_view_error.png']);
+
+error = abs(otherRec - otherLF);
+figure('Name', 'Absolute Error of custom view')
+imshow(error)
+title('Custom view');
+
+imwrite(error, [outFolder 'custom_view_error.png']);
 
