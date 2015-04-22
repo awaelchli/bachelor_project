@@ -30,9 +30,14 @@ for y = 1 : angularRes(1)
     for x = 1 : angularRes(2)
         
         image = im2double(imread([path imgList(i).name]));
-        
-        if(~isequal(size(image), [height, width, channels]))
-            error('Files have wrong resolution / number of channels.');
+        if(channels == 1)
+            if (~isequal(size(image), [height, width]))
+                error('Files have wrong resolution / number of channels.');
+            end
+        else
+            if (~isequal(size(image), [height, width, channels]))
+                error('Files have wrong resolution / number of channels.');
+            end
         end
         
         lightField(y, x, :, :, :) = image;
