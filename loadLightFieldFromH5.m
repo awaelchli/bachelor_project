@@ -1,5 +1,5 @@
 function [ lightField, channels, focalLength, fov, cameraDist, planeDist ] = loadLightFieldFromH5( path, filename )
-%
+% 
 %
 
 file = fullfile(path, [filename '.h5']);
@@ -10,11 +10,19 @@ lightField = double(lightField) / 255;
 
 % Read attributes
 focalLength = h5readatt(file, '/', 'focalLength');
-% focalLength = focalLength * 1000; % to mm
 
 % Diagonal field of view
-fov = 2 * atan(1 / (2 * focalLength));
-fov = fov .* [1, 1];
+fov_d = 2 * atan(1 / (2 * focalLength));
+
+% aspect ratio r
+r = size(lightField, 4) / size(lightField, 3);
+fov_y = fov_d / sqrt((r^2 + 1));
+fov_x = fov_y * r;
+
+fov = [fov_x, fov_y];
+% fov = fov .* [1, 1];
+
+focalLength = focalLength * 1000; % to mm
 
 channels = h5readatt(file, '/', 'channels');
 
