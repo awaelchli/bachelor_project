@@ -1,4 +1,4 @@
-function [ P ] = computeMatrixP( Nlayers, resolution, layerSize, originLF, originLayers, fov, layerDist, planeDist, camDist )
+function [ P ] = computeMatrixP( Nlayers, resolution, layerSize, originLF, originLayers, fov, layerDist )
 % Inputs:
 %
 %   Nlayers:        The number of layers in the attenuator
@@ -32,13 +32,11 @@ c = 1;
 % pixel indices
 scale = resolution([4, 3]) ./ layerSize;
 
-cameraPositions = zeros(resolution([1, 2]));
-
 for imageX = 1 : resolution(2)
     for imageY = 1 : resolution(1)
         
         % compute relative angles for incoming rays from current view
-        %[angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
+        [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
        
         % intersection points of rays with relative angles [angleX, angleY]
         % on the first layer (most bottom layer), can go outside of layer

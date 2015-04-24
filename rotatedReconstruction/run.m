@@ -12,6 +12,8 @@ outFolder = 'output/';                  % Output folder to store the layers
 originLayers = [0, 0, 0];               % origin of the attenuator, [x y z] in mm
 originLF = [0, 0, - height / 2];         % origin of the light field, relative to the attenuator
 
+
+
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
 % and each column of this matrix represents a color channel of the light

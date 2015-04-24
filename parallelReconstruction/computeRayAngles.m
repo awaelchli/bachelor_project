@@ -10,8 +10,8 @@ function [ anglesX, anglesY ] = computeRayAngles( fov, resolution )
 anglesX = 1 : resolution(2);
 anglesY = 1 : resolution(1);
 
-anglesX = (anglesX - resolution(2) / 2) * fov(2) / resolution(2);
-anglesY = (anglesY - resolution(1) / 2) * fov(1) / resolution(1);
+anglesX = (anglesX - floor(resolution(2) / 2+.5)) * fov(2) / resolution(2);
+anglesY = (anglesY - floor(resolution(2) / 2+.5)) * fov(1) / resolution(1);
 
 % Relative angles
 anglesX = tan(anglesX);

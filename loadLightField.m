@@ -16,16 +16,18 @@ resolution = resolution(1 : 4);
 
 %% Load the light field from a H5 file
 
-path = 'lightFields/fruits/';
-filename = 'fruits';
+path = 'lightFields/rx_elephant/';
+filename = 'elephant';
 
 [ lightField, channels, focalLength, fov, cameraDist, planeDist ] = loadLightFieldFromH5( path, filename );
 
 % Select smaller slice of light field
-lightField = lightField(1 : 3, 1 : 3, :, :, :);
+lightField = lightField(1 : 4, 1 : 4, :, :, :);
 
 resolution = size(lightField);
 resolution = resolution(1 : 4);
+
+lightFieldOP = convertLF( lightField, planeDist, fov, [9, 9], [300, 300]);
 
 
 %% Load the light field from a Lytro image

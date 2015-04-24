@@ -27,12 +27,12 @@ for layer = 1 : Nlayers
     pos = [offset offset;
         w - offset offset;
         offset h - offset];
-    im = insertMarker(im, pos, 'Color', 'Black', 'Size', offset);
+%     im = insertMarker(im, pos, 'Color', 'Black', 'Size', offset);
     
     % insert layer number
-    im = insertText(im, [w - offset h - offset], count, ...
-        'AnchorPoint', 'Center', 'BoxOpacity', 0, ...
-        'FontSize', 16);
+%     im = insertText(im, [w - offset h - offset], count, ...
+%         'AnchorPoint', 'Center', 'BoxOpacity', 0, ...
+%         'FontSize', 16);
     
     
     % save images and print to pdf

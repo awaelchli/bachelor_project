@@ -1,4 +1,4 @@
-function [ posX, posY ] = pixelToSpaceCoordinates( resolution, size, origin )
+function [ posX, posY ] = pixelToSpaceCoordinates( resolution, size )
 % Input:
 %
 %   resolution:     [width, height] Resolution of the layer in pixels
@@ -20,8 +20,8 @@ posX = 0.5 * sizeOfPixel(1) : sizeOfPixel(1) : size(1) - 0.5 * sizeOfPixel(1);
 posY = 0.5 * sizeOfPixel(2) : sizeOfPixel(2) : size(2) - 0.5 * sizeOfPixel(2);
 
 % Shift for new coordinate system (origin)
-posX = posX + origin(1);
-posY = posY + origin(2);
+posX = posX - size(1)/2;
+posY = posY - size(2)/2;
 
 end
 
