@@ -15,7 +15,7 @@ positionMatrixXRelativeToCam = -(cameraPosition(2) - layerPositionMatrixX);
 pixelPositionMatrixY = positionMatrixYRelativeToCam .* focalLength ./ distanceBetweenCameraPlaneAndLayer;
 pixelPositionMatrixX = positionMatrixXRelativeToCam .* focalLength ./ distanceBetweenCameraPlaneAndLayer;
 
-pixelPositionMatrixY
-pixelPositionMatrixX
+% pixelPositionMatrixY
+% pixelPositionMatrixX
 end
 

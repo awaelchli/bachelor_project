@@ -11,7 +11,7 @@ iterations = 20;                        % Maximum number of iterations in optimi
 outFolder = 'output/';                  % Output folder to store the layers
 originLayers = [0, 0, 0];               % origin of the attenuator, [x y z] in mm
 originLF = [0, 0, - height / 2];         % origin of the light field, relative to the attenuator
-
+layerResolution = resolution([3, 4]);
 
 
 %% Vectorize the light field
@@ -24,7 +24,7 @@ lightFieldVector = reshape(lightField, [], channels);
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
 tic;
-P = computeMatrixP(Nlayers, resolution, layerSize, originLF, originLayers, fov, layerDist);
+P = computeMatrixP(Nlayers, resolution, layerResolution, layerSize, originLF, originLayers, fov, layerDist, planeDist, cameraDist, focalLength);
 % save('P.mat', 'P');
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
