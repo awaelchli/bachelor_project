@@ -93,15 +93,11 @@ for imageX = 1 : resolution(2)
                                                                fov([2, 1]), ...
                                                                resolution([3, 4]));
 
-
-            [ layerPixelIndicesY, ~ ] = find(pixelIndexMatrixY);
-            [ ~, layerPixelIndicesX ] = find(pixelIndexMatrixX);
+            layerPixelIndicesY = find(pixelIndexMatrixY(:, 1)); % col vector
+            layerPixelIndicesX = find(pixelIndexMatrixX(1, :)); % row vector
             
-            layerPixelIndicesY = unique(layerPixelIndicesY);
-            layerPixelIndicesX = unique(layerPixelIndicesX);
-            
-            layerPixelIndicesY = repmat(layerPixelIndicesY', 1, numel(layerPixelIndicesX)); 
-            layerPixelIndicesX = repmat(layerPixelIndicesX, numel(layerPixelIndicesY), 1); 
+            layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
+            layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
             
             % !!! Note: Here, light field resolution is the same as layer
             % resolution. Support for different light field and layer
@@ -111,8 +107,20 @@ for imageX = 1 : resolution(2)
             % convert the subscripts to column indices
             columns = sub2ind([resolution([3, 4]) Nlayers], layerPixelIndicesY(:), layerPixelIndicesX(:), layerIndices(:));
             
-            cameraPixelIndicesY = pixelIndexMatrixY(pixelIndexMatrixY ~= 0);
-            cameraPixelIndicesX = pixelIndexMatrixX(pixelIndexMatrixX ~= 0);
+            cameraPixelIndicesY = pixelIndexMatrixY(pixelIndexMatrixY(:, 1) ~= 0, 1); % col vector
+            cameraPixelIndicesX = pixelIndexMatrixX(1, pixelIndexMatrixX(1, :) ~= 0); % row vector
+            
+%             size(cameraPixelIndicesY)
+%             size(cameraPixelIndicesX)
+            
+            cameraPixelIndicesY = repmat(cameraPixelIndicesY, 1, numel(cameraPixelIndicesX)); 
+            cameraPixelIndicesX = repmat(cameraPixelIndicesX, size(cameraPixelIndicesY, 1), 1); 
+            
+%             cameraPixelIndicesY
+%             cameraPixelIndicesX
+            
+            size(cameraPixelIndicesY)
+            size(cameraPixelIndicesX)
 
             % make copies of the image indices
             imageIndicesY = imageY + zeros(size(cameraPixelIndicesY));

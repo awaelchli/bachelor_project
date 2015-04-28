@@ -27,10 +27,10 @@ pixelPositionMatrixX = scalePositionToIndex(2) .* pixelPositionMatrixX;
 pixelPositionMatrixY = round(pixelPositionMatrixY);
 pixelPositionMatrixX = round(pixelPositionMatrixX);
 
-min(pixelPositionMatrixY(:))
-min(pixelPositionMatrixX(:))
-max(pixelPositionMatrixY(:))
-max(pixelPositionMatrixX(:))
+% min(pixelPositionMatrixY(:))
+% min(pixelPositionMatrixX(:))
+% max(pixelPositionMatrixY(:))
+% max(pixelPositionMatrixX(:))
 
 
 % set all positions that fall out as 'invalid'
