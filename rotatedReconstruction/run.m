@@ -6,13 +6,19 @@ layerDist = 4;
 layerW = 100;                           % Width and height of layers in mm
 layerH = layerW * (resolution(3) / resolution(4));
 layerSize = [layerW, layerH];
-height = (Nlayers - 1) * layerDist;     % Height of layer stack
+totalLayerThickness = (Nlayers - 1) * layerDist;     % Height of layer stack
 iterations = 20;                        % Maximum number of iterations in optimization process
 outFolder = 'output/';                  % Output folder to store the layers
-originLayers = [0, 0, 0];               % origin of the attenuator, [x y z] in mm
-originLF = [0, 0, - height / 2];         % origin of the light field, relative to the attenuator
+               % origin of the attenuator, [x y z] in mm
+originLayers = [0, 0, 0];         % origin of the light field, relative to the attenuator
 layerResolution = resolution([3, 4]);
 
+% Testing
+cameraPlaneDistance = 50;
+fov = deg2rad([90, 70]);
+focalLength = 1;
+distanceBetweenCameras = [1, 1];
+% layerResolution = [150, 200];
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
@@ -24,7 +30,7 @@ lightFieldVector = reshape(lightField, [], channels);
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
 tic;
-P = computeMatrixP(Nlayers, resolution, layerResolution, layerSize, originLF, originLayers, fov, layerDist, planeDist, cameraDist, focalLength);
+P = computeMatrixP(Nlayers, resolution, layerResolution, layerSize, originLayers, fov, layerDist, cameraPlaneDistance, distanceBetweenCameras, focalLength);
 % save('P.mat', 'P');
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 

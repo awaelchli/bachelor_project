@@ -2,11 +2,10 @@ function [ P ] = computeMatrixP( Nlayers, ...
                                  resolution, ...
                                  layerResolution, ...
                                  layerSize, ...
-                                 originLF, ...
                                  originLayers, ...
                                  fov, ...
                                  layerDist, ...
-                                 planeDist, ...
+                                 cameraPlaneDistance, ...
                                  distanceBetweenTwoCameras, ...
                                  focalLength)
 % Inputs:
@@ -47,9 +46,10 @@ c = 1;
 
 [ layerPositionMatrixY, layerPositionMatrixX ] = computePixelPositionsOnLayer(layerResolution, ...
                                                                               layerSize([2, 1]));
-
-layerPositionsZ = (Nlayers - 1) * layerDist : -layerDist : 0;
-layerPositionsZ = layerPositionsZ + originLF(3);
+% TODO : check if correct
+layerPositionsZ = -(Nlayers - 1) * layerDist/2:layerDist:(Nlayers - 1) * layerDist/2;
+% layerPositionsZ = (Nlayers - 1) * layerDist : -layerDist : 0;
+% layerPositionsZ = layerPositionsZ + originLayers(3);
 
 for imageX = 1 : resolution(2)
     for imageY = 1 : resolution(1)
@@ -75,8 +75,10 @@ for imageX = 1 : resolution(2)
 %             pixelsX = ceil(scale(1) * (posXCurrentLayer - originLayers(1)));
 %             pixelsY = ceil(scale(2) * (posYCurrentLayer - originLayers(2)));
 
-            distanceBetweenCameraPlaneAndLayer = planeDist - layerPositionsZ(layer);
+            distanceBetweenCameraPlaneAndLayer = cameraPlaneDistance + layerPositionsZ(layer);
             
+            % computing the relative location of the intersecting rays
+            % between the current camera and layer
             [ pixelPositionMatrixY, ... 
               pixelPositionMatrixX ] = computePixelPositionsOnSensorPlaneRelativeToCamera( ...
                                                                cameraPosition, ... 
@@ -84,7 +86,7 @@ for imageX = 1 : resolution(2)
                                                                distanceBetweenCameraPlaneAndLayer, ...
                                                                layerPositionMatrixY, ...
                                                                layerPositionMatrixX);
-                                                           
+            % converting the metric location to pixel indecies
             [ pixelIndexMatrixY, ...
               pixelIndexMatrixX ] = computePixelIndicesForCamera( ...
                                                                pixelPositionMatrixY, ...
@@ -93,6 +95,8 @@ for imageX = 1 : resolution(2)
                                                                fov([2, 1]), ...
                                                                resolution([3, 4]));
 
+%             size(pixelIndexMatrixY)
+%             size(pixelIndexMatrixX)
             layerPixelIndicesY = find(pixelIndexMatrixY(:, 1)); % col vector
             layerPixelIndicesX = find(pixelIndexMatrixX(1, :)); % row vector
             
@@ -119,27 +123,30 @@ for imageX = 1 : resolution(2)
 %             cameraPixelIndicesY
 %             cameraPixelIndicesX
             
-            size(cameraPixelIndicesY)
-            size(cameraPixelIndicesX)
+%             size(cameraPixelIndicesY)
+%             size(cameraPixelIndicesX)
 
             % make copies of the image indices
             imageIndicesY = imageY + zeros(size(cameraPixelIndicesY));
             imageIndicesX = imageX + zeros(size(cameraPixelIndicesX));
+            
+%             cameraPixelIndicesY = cameraPixelIndicesY';
+%             cameraPixelIndicesX = cameraPixelIndicesX';
             
             % convert the 4D subscipts to row indices all at once
             rows = sub2ind(resolution, imageIndicesY(:), imageIndicesX(:), cameraPixelIndicesY(:), cameraPixelIndicesX(:));
      
             % insert the calculated indices into the sparse arrays
             numInsertions = numel(rows);
-            I(c : c + numInsertions - 1) = rows;
-            J(c : c + numInsertions - 1) = columns;
+            I(c : c + numInsertions-1) = rows;
+            J(c : c + numInsertions-1) = columns;
             
             c = c + numInsertions ;
         end
     end
 end
 
-P = sparse(I(1:c - 1), J(1:c - 1), S(1:c - 1), prod(resolution), prod([Nlayers resolution([3, 4])]), c - 1);
+P = sparse(I(1:c-1), J(1:c-1), S(1:c-1), prod(resolution), prod([Nlayers resolution([3, 4])]), c-1);
 
 end
 

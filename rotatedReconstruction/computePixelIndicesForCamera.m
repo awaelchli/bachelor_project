@@ -13,6 +13,7 @@ maxPositionX = focalLength * tan( fov(2) / 2);
 % minPositionY = -maxPositionY;
 % minPositionX = -maxPositionX;
 
+% TODO : check the sensor size and make compatible
 sizeOfView = [2 * maxPositionY, 2 * maxPositionX];
 scalePositionToIndex = (cameraResolution - 1) ./ sizeOfView;
 
