@@ -9,29 +9,35 @@ layerSize = [layerW, layerH];
 totalLayerThickness = (Nlayers - 1) * layerDist;     % Height of layer stack
 iterations = 20;                        % Maximum number of iterations in optimization process
 outFolder = 'output/';                  % Output folder to store the layers
-               % origin of the attenuator, [x y z] in mm
-originLayers = [0, 0, 0];         % origin of the light field, relative to the attenuator
 layerResolution = resolution([3, 4]);
 
 % Testing
-cameraPlaneDistance = 50;
+cameraPlaneDistance = 1270;
 fov = deg2rad([90, 70]);
-focalLength = 1;
-distanceBetweenCameras = [1, 1];
+focalLength = 10;
+distanceBetweenCameras = [1.25, 1.25] * 10;
 % layerResolution = [150, 200];
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
 % and each column of this matrix represents a color channel of the light
 % field
-
 lightFieldVector = reshape(lightField, [], channels);
 
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
 tic;
-P = computeMatrixP(Nlayers, resolution, layerResolution, layerSize, originLayers, fov, layerDist, cameraPlaneDistance, distanceBetweenCameras, focalLength);
-% save('P.mat', 'P');
+
+P = computeMatrixP(Nlayers, ...
+                   resolution, ...
+                   layerResolution, ...
+                   layerSize, ...
+                   fov, ...
+                   layerDist, ...
+                   cameraPlaneDistance, ...
+                   distanceBetweenCameras, ...
+                   focalLength);
+
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
 %% Convert to log light field
@@ -39,13 +45,14 @@ fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 lightFieldVector(lightFieldVector < 0.01) = 0.01;
 lightFieldVector = log(lightFieldVector);
 
-%% Run least squares optimization for each color channel
+%% Set the optimization constraints
 tic;
 ub = zeros(size(P, 2), 1); 
 lb = zeros(size(P, 2), 1) + log(0.01);
 x0 = zeros(size(P, 2), 1);
+%% Run least squares optimization for each color channel
 
-% The Jacobian matrix of Px - d is just P. 
+% % The Jacobian matrix of Px - d is just P. 
 % Id = speye(size(P));
 % W = @(Jinfo, Y, flag) projection(P, Y , flag);
 % 
@@ -56,6 +63,8 @@ x0 = zeros(size(P, 2), 1);
 %     fprintf('Running optimization for color channel %i ...\n', c);
 %     layers(:, c) = lsqlin(Id, lightFieldVector(:, c), [], [], [], [], lb, ub, x0, options);
 % end
+
+%% Solve using SART
 
 layers = zeros(size(P, 2), 3);
 for c = 1 : channels
