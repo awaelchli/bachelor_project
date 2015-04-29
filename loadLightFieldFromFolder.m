@@ -11,8 +11,10 @@ function [ lightField, channels ] = loadLightFieldFromFolder( path, filetype, an
 imgList = dir([path '*.' filetype]);
 numImages = size(imgList);
 
+fprintf(['Images found: ', num2str(prod(numImages)), '\n']);
+
 if(numImages ~= angularRes(1) * angularRes(2))
-    error('Number of images do not correspond to angular resolution.');
+    error('Number of images do not correspond to angular resolution.\n');
 end
 
 % Load the first image to get the spatial resolution
