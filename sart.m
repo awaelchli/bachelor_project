@@ -20,6 +20,10 @@ V(V ~= 0) = 1 ./ V(V ~= 0);
 
 % Start with initial guess
 layers = x0;
+size(layers)
+size(W)
+size(P')
+size(V)
 
 for i = 1 : iterations
     

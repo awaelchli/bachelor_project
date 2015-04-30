@@ -12,10 +12,10 @@ outFolder = 'output/';                  % Output folder to store the layers
 layerResolution = resolution([3, 4]);
 
 % Testing
-% cameraPlaneDistance = 1270;
-% fov = deg2rad([90, 70]);
-% focalLength = 10;
-% distanceBetweenCameras = [1.25, 1.25] * 10;
+cameraPlaneDistance = 50;
+fov = deg2rad([90, 70]);
+focalLength = 1;
+distanceBetweenCameras = [1, 1];
 % layerResolution = [150, 200];
 
 %% Vectorize the light field

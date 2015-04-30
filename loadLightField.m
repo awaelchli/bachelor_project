@@ -23,7 +23,7 @@ filename = 'fruits';
 [ lightField, channels, focalLength, fov, distanceBetweenCameras, cameraPlaneDistance ] = loadLightFieldFromH5( path, filename );
 
 % Select smaller slice of light field
-% lightField = lightField(1 : 4, 1 : 4, :, :, :);
+lightField = lightField(1 : 4, 1 : 4, :, :, :);
 
 resolution = size(lightField);
 resolution = resolution(1 : 4);
