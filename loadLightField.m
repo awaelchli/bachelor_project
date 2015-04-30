@@ -17,10 +17,10 @@ resolution = resolution(1 : 4);
 
 %% Load the light field from a H5 file
 
-path = 'lightFields/rx_watch/';
-filename = 'rx_watch';
+path = 'lightFields/fruits/';
+filename = 'fruits';
 
-[ lightField, channels, focalLength, fov, cameraDist, planeDist ] = loadLightFieldFromH5( path, filename );
+[ lightField, channels, focalLength, fov, distanceBetweenCameras, cameraPlaneDistance ] = loadLightFieldFromH5( path, filename );
 
 % Select smaller slice of light field
 % lightField = lightField(1 : 4, 1 : 4, :, :, :);
@@ -36,7 +36,7 @@ resolution = resolution(1 : 4);
 path = '../lightFields/';
 filename = 'coke';
 
-[ lightField, fov, cameraDist] = loadLightFieldFromLytro( path, filename );
+[ lightField, fov, distanceBetweenCameras] = loadLightFieldFromLytro( path, filename );
 
 channels = 3;
 resolution = size(lightField);
