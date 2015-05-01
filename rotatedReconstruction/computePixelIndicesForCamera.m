@@ -18,7 +18,7 @@ maxPositionX = focalLength * tan( fov(2) / 2);
 sizeOfView = [2 * maxPositionY, 2 * maxPositionX];
 scalePositionToIndex = (cameraResolution - 1) ./ sizeOfView;
 
-% To screen coordinate system
+% To 'screen' coordinate system
 pixelPositionMatrixY = maxPositionY - pixelPositionMatrixY;
 pixelPositionMatrixX = pixelPositionMatrixX + maxPositionX;
 
