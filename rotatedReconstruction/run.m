@@ -1,39 +1,47 @@
 % clear;
 %% Parameters
 
-Nlayers = 3;                            % Number of layers
-layerDist = 4;
-layerW = 100;                           % Width and height of layers in mm
-layerH = layerW * (resolution(3) / resolution(4));
-layerSize = [layerW, layerH];
-totalLayerThickness = (Nlayers - 1) * layerDist;     % Height of layer stack
-iterations = 20;                        % Maximum number of iterations in optimization process
-outFolder = 'output/';                  % Output folder to store the layers
+NumberOfLayers = 3;
+distanceBetweenLayers = 1;
+% Layer size in mm
+layerWidth = 3;
+layerHeight = layerWidth * (resolution(3) / resolution(4));
+layerSize = [layerWidth, layerHeight];
+totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
+% Maximum number of iterations in optimization process
+iterations = 20;
+% Output folder to store the layers
+outFolder = 'output/';
 layerResolution = resolution([3, 4]);
 
-% Testing
-cameraPlaneDistance = 50;
-fov = deg2rad([90, 70]);
+% Only Testing
+cameraPlaneDistance = 3;
+fov = deg2rad([150, 150]);
 focalLength = 1;
 distanceBetweenCameras = [1, 1];
-% layerResolution = [150, 200];
+resolution = [4, 4, 100, 100];
+lightField = lightField(:, :, 1 : 100, 1 : 100, :);
+layerResolution = [100, 100];
+layerWidth = 20;
+layerHeight = 20;
+layerSize = [layerWidth, layerHeight];
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
 % and each column of this matrix represents a color channel of the light
 % field
-lightFieldVector = reshape(lightField, [], channels);
+lightFieldVector = reshape(permute(lightField, [3, 4, 1, 2, 5]), [], channels);
 
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
 tic;
 
-P = computeMatrixP(Nlayers, ...
+P = computeMatrixP(NumberOfLayers, ...
                    resolution, ...
                    layerResolution, ...
                    layerSize, ...
                    fov, ...
-                   layerDist, ...
+                   distanceBetweenLayers, ...
                    cameraPlaneDistance, ...
                    distanceBetweenCameras, ...
                    focalLength);
@@ -51,7 +59,7 @@ ub = zeros(size(P, 2), 1);
 lb = zeros(size(P, 2), 1) + log(0.01);
 x0 = zeros(size(P, 2), 1);
 %% Run least squares optimization for each color channel
-
+% 
 % % The Jacobian matrix of Px - d is just P. 
 % Id = speye(size(P));
 % W = @(Jinfo, Y, flag) projection(P, Y , flag);
@@ -83,7 +91,7 @@ layersB = squeeze(layers(:, 3));
 
 % convert the layers from column vector to a matrix of dimension [Nlayers, height, width, channel]
 layers = cat(2, layersR, layersG, layersB);
-layers = reshape(layers, resolution(3), resolution(4), Nlayers, 3);
+layers = reshape(layers, resolution(3), resolution(4), NumberOfLayers, 3);
 
 %% Save and display each layer
 close all;

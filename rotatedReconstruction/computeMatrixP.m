@@ -51,12 +51,17 @@ for camIndexX = 1 : resolution(2)
         % get the position of the current camera on the camera plane
         cameraPosition = [ cameraPositionMatrixY(camIndexY, camIndexX), ...
                            cameraPositionMatrixX(camIndexY, camIndexX) ];
+                       
+%         cameraPosition
         
         for layer = 1 : Nlayers
             
             % adjust distance for current layer; the coordinate origin is
             % at the center of the layer stack
             distanceBetweenCameraPlaneAndLayer = cameraPlaneDistance + layerPositionsZ(layer);
+            
+            
+%             distanceBetweenCameraPlaneAndLayer
             
             % computing the relative location of the intersecting rays
             % between the current camera and layer
@@ -67,19 +72,8 @@ for camIndexX = 1 : resolution(2)
                                                                distanceBetweenCameraPlaneAndLayer, ...
                                                                layerPositionMatrixY, ...
                                                                layerPositionMatrixX);
-                                                           
-%             for yf=-1:2:1
-%                 for xf=-1:2:1
-%                     if yf < 0
-%                         YF = @floor;
-%                     else
-%                         YF = @ceil;
-%                     end
-% 
-%                     
-%                 end
-%             end
-            
+
+
             % converting the metric positions to pixel indicies
 %             [ pixelIndexMatrixYFloor, ...
 %               pixelIndexMatrixXFloor ] = computePixelIndicesForCamera( ...
@@ -131,13 +125,14 @@ for camIndexX = 1 : resolution(2)
                                                 layer, ...
                                                 Nlayers, ...
                                                 resolution);
-                                            
+            
             rows = computeRowIndicesForP(camIndexY, ...
                                           camIndexX, ...
                                           pixelIndexMatrixY, ... 
                                           pixelIndexMatrixX, ...
                                           resolution);
-     
+
+
             % insert the calculated indices into the sparse arrays
             numInsertions = numel(rows);
             I(c : c + numInsertions-1) = rows;
@@ -164,6 +159,10 @@ function [ rows ] = computeRowIndicesForP(camIndexY, ...
 cameraPixelIndicesY = pixelIndexMatrixY(pixelIndexMatrixY(:, 1) ~= 0, 1); % col vector
 cameraPixelIndicesX = pixelIndexMatrixX(1, pixelIndexMatrixX(1, :) ~= 0); % row vector
 
+% cameraPixelIndicesY = 1 : resolution(3);
+% cameraPixelIndicesY = cameraPixelIndicesY';
+% cameraPixelIndicesX = 1 : resolution(4);
+
 cameraPixelIndicesY = repmat(cameraPixelIndicesY, 1, numel(cameraPixelIndicesX)); 
 cameraPixelIndicesX = repmat(cameraPixelIndicesX, size(cameraPixelIndicesY, 1), 1); 
 
@@ -172,7 +171,7 @@ imageIndicesY = camIndexY + zeros(size(cameraPixelIndicesY));
 imageIndicesX = camIndexX + zeros(size(cameraPixelIndicesX));
 
 % convert the 4D subscipts to row indices all at once
-rows = sub2ind(resolution, imageIndicesY(:), imageIndicesX(:), cameraPixelIndicesY(:), cameraPixelIndicesX(:));
+rows = sub2ind(resolution([3, 4, 1, 2]), cameraPixelIndicesY(:), cameraPixelIndicesX(:), imageIndicesY(:), imageIndicesX(:));
             
 end
 
@@ -185,19 +184,60 @@ function [ columns ] = computeColumnIndicesForP(pixelIndexMatrixY, ...
 layerPixelIndicesY = find(pixelIndexMatrixY(:, 1)); % col vector
 layerPixelIndicesX = find(pixelIndexMatrixX(1, :)); % row vector
 
+% layerPixelIndicesY = 1 : resolution(3);
+% layerPixelIndicesY = layerPixelIndicesY';
+% layerPixelIndicesX = 1 : resolution(4);
+
 layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
 layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
 
+% TODO:
 % !!! Note: Here, light field resolution is the same as layer
 % resolution. Support for different light field and layer
 % resolution is currently not supported !!!
 layerIndices = layer + zeros(size(layerPixelIndicesY));
+
+
 
 % convert the subscripts to column indices
 columns = sub2ind([resolution([3, 4]) Nlayers], layerPixelIndicesY(:), layerPixelIndicesX(:), layerIndices(:));
 
 end
 
+% ::::::::::::::::::::::::::::::::::::::::
+% CODE FROM TOMOGRAPHIC LF SYNTHESIS PAPER
+% ::::::::::::::::::::::::::::::::::::::::
+% kick out stuff that's outside
+% layerPixelIndicesForRaysX(layerPixelIndicesForRaysX>layerResolution(2)) = 0;
+% layerPixelIndicesForRaysX(layerPixelIndicesForRaysX<1) = 0;
+% layerPixelIndicesForRaysY(layerPixelIndicesForRaysY>layerResolution(1)) = 0;
+% layerPixelIndicesForRaysY(layerPixelIndicesForRaysY<1) = 0;                                        
+% 
+% % convert to matrix row indices - which rays hit some layer pixels
+% validXIndices = find(layerPixelIndicesForRaysX);
+% validYIndices = find(layerPixelIndicesForRaysY);
+% 
+% % turn it into a matrix
+% validXIndices = repmat(validXIndices, [numel(validYIndices) 1]);
+% validYIndices = repmat(validYIndices', [1 size(validXIndices,2)]);
+% % angle indices                    
+% validVXIndices = vxIdx + zeros(size(validXIndices));
+% validVYIndices = vyIdx + zeros(size(validXIndices));
+% 
+% % convert 4D subscipts to matrix indices
+% matrixRows = sub2ind(lightFieldResolution, validVYIndices(:), validVXIndices(:), validYIndices(:), validXIndices(:));
+% 
+% % convert to matrix column indices               
+% layerPixelIndicesForRaysX = layerPixelIndicesForRaysX(layerPixelIndicesForRaysX~=0);
+% layerPixelIndicesForRaysY = layerPixelIndicesForRaysY(layerPixelIndicesForRaysY~=0);
+% validXXIndices = repmat(layerPixelIndicesForRaysX, [numel(layerPixelIndicesForRaysY) 1]);
+% validYYIndices = repmat(layerPixelIndicesForRaysY', [1 size(layerPixelIndicesForRaysX,2)]);                    
+% validZZIndices = layer + zeros(size(validXXIndices));
+% 
+% % convert 3D subscripts to matrix indices
+% matrixColumns   = sub2ind(layerResolution, validYYIndices(:), validXXIndices(:), validZZIndices(:));
+%
+%::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 function [columns] = floorCeilCombinationsForColumns(pixelIndexMatrixYFloor, ...
                                                      pixelIndexMatrixXFloor, ...
