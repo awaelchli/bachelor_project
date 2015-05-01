@@ -1,30 +1,28 @@
 % clear;
 %% Parameters
 
-NumberOfLayers = 3;
-distanceBetweenLayers = 1;
-% Layer size in mm
-layerWidth = 3;
-layerHeight = layerWidth * (resolution(3) / resolution(4));
-layerSize = [layerWidth, layerHeight];
-totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
+NumberOfLayers = 2;
+distanceBetweenLayers = 4;
+cameraPlaneDistance = 54;
+fov = deg2rad([60, 60]);
+distanceCameraPlaneToSensorPlane = 10;
+distanceBetweenCameras = [20, 20];
+lightFieldResolution = [2, 2, 3, 3];
+channels = 3;
+% lightField = lightField(:, :, 1 : 100, 1 : 100, :);
+lightField = zeros([lightFieldResolution, 3]);
+layerResolution = [20, 20];
+layerWidth = 80;
+layerHeight = 80;
+
 % Maximum number of iterations in optimization process
-iterations = 20;
+maxIterations = 20;
 % Output folder to store the layers
 outFolder = 'output/';
-layerResolution = resolution([3, 4]);
 
-% Only Testing
-cameraPlaneDistance = 3;
-fov = deg2rad([150, 150]);
-focalLength = 1;
-distanceBetweenCameras = [1, 1];
-resolution = [4, 4, 100, 100];
-lightField = lightField(:, :, 1 : 100, 1 : 100, :);
-layerResolution = [100, 100];
-layerWidth = 20;
-layerHeight = 20;
+% layerHeight = layerWidth * (lightFieldResolution(3) / lightFieldResolution(4));
 layerSize = [layerWidth, layerHeight];
+totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
@@ -37,14 +35,14 @@ fprintf('\nComputing matrix P...\n');
 tic;
 
 P = computeMatrixP(NumberOfLayers, ...
-                   resolution, ...
+                   lightFieldResolution, ...
                    layerResolution, ...
                    layerSize, ...
                    fov, ...
                    distanceBetweenLayers, ...
                    cameraPlaneDistance, ...
                    distanceBetweenCameras, ...
-                   focalLength);
+                   distanceCameraPlaneToSensorPlane);
 
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
@@ -77,7 +75,7 @@ x0 = zeros(size(P, 2), 1);
 layers = zeros(size(P, 2), 3);
 for c = 1 : channels
     fprintf('Running optimization for color channel %i ...\n', c);
-    layers(:, c) = sart(P, lightFieldVector(:, c), x0, lb, ub, iterations);
+    layers(:, c) = sart(P, lightFieldVector(:, c), x0, lb, ub, maxIterations);
 end
 
 layers = exp(layers);
@@ -91,7 +89,7 @@ layersB = squeeze(layers(:, 3));
 
 % convert the layers from column vector to a matrix of dimension [Nlayers, height, width, channel]
 layers = cat(2, layersR, layersG, layersB);
-layers = reshape(layers, resolution(3), resolution(4), NumberOfLayers, 3);
+layers = reshape(layers, lightFieldResolution(3), lightFieldResolution(4), NumberOfLayers, 3);
 
 %% Save and display each layer
 close all;
@@ -112,11 +110,11 @@ lightFieldRecVector(:, 2) = P * log(layersG);
 lightFieldRecVector(:, 3) = P * log(layersB);
 
 % convert the light field vector to the 4D light field
-lightFieldRec = reshape(lightFieldRecVector, [resolution 3]);
+lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
 
-center = floor([median(1:resolution(2)), median(1:resolution(1))]);
+center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
 other = [3, 3];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));

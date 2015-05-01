@@ -12,8 +12,5 @@ positionsVectorX = -gridSize(2) / 2 : gridStepSize(2) : gridSize(2) / 2;
 gridPositionMatrixY = repmat(positionsVectorY', 1, gridResolution(2));
 gridPositionMatrixX = repmat(positionsVectorX, gridResolution(1), 1);
 
-% gridPositionMatrixY
-% gridPositionMatrixX
-
 end
 

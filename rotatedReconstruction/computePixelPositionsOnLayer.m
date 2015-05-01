@@ -4,7 +4,8 @@ function [ layerPositionMatrixY, ...
 % lengths in mm
 % arrays: [Y, X] 
 
-pixelSize = layerSize ./ (layerResolution - 1);
+pixelSize = layerSize ./ layerResolution;
+
 [ layerPositionMatrixY, layerPositionMatrixX ] = computeCenteredGridPositions(layerResolution, pixelSize);
 
 end
