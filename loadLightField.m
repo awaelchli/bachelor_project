@@ -12,8 +12,8 @@ path = 'lightFields/dice_camera/dice_5x5_ap35/';
 % The field of view of the lightfield (not the cameras), in X and in Y direction
 fov = degtorad(10) .* [1, 1];
 
-lightFieldRes = size(lightField);
-lightFieldRes = lightFieldRes(1 : 4);
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
 
 %% Load the light field from a H5 file
 
@@ -25,8 +25,8 @@ filename = 'rx_watch';
 % Select smaller slice of light field
 lightField = lightField(1 : 4, 1 : 4, :, :, :);
 
-lightFieldRes = size(lightField);
-lightFieldRes = lightFieldRes(1 : 4);
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
 
 % lightFieldOP = convertLF( lightField, planeDist, fov, [9, 9], [300, 300]);
 
@@ -39,5 +39,5 @@ filename = 'coke';
 [ lightField, fov, distanceBetweenCameras] = loadLightFieldFromLytro( path, filename );
 
 channels = 3;
-lightFieldRes = size(lightField);
-lightFieldRes = lightFieldRes(1 : 4);
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
