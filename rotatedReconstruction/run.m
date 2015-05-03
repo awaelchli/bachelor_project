@@ -1,17 +1,17 @@
 % clear;
 %% Parameters
 
-NumberOfLayers = 2;
+NumberOfLayers = 5;
 distanceBetweenLayers = 4;
-cameraPlaneDistance = 54;
-fov = deg2rad([60, 60]);
-distanceCameraPlaneToSensorPlane = 10;
-distanceBetweenCameras = [20, 20];
-lightFieldResolution = [2, 2, 3, 3];
-channels = 3;
+cameraPlaneDistance = 25;
+fov = deg2rad([90, 70]);
+distanceCameraPlaneToSensorPlane = 1;
+distanceBetweenCameras = [1, 1];
+% lightFieldResolution = [2, 2, 3, 3];
+% channels = 3;
 % lightField = lightField(:, :, 1 : 100, 1 : 100, :);
-lightField = zeros([lightFieldResolution, 3]);
-layerResolution = [20, 20];
+% lightField = zeros([lightFieldResolution, 3]);
+layerResolution = [400, 400];
 layerWidth = 80;
 layerHeight = 80;
 
@@ -89,7 +89,7 @@ layersB = squeeze(layers(:, 3));
 
 % convert the layers from column vector to a matrix of dimension [Nlayers, height, width, channel]
 layers = cat(2, layersR, layersG, layersB);
-layers = reshape(layers, lightFieldResolution(3), lightFieldResolution(4), NumberOfLayers, 3);
+layers = reshape(layers, [ layerResolution, NumberOfLayers, 3]);
 
 %% Save and display each layer
 close all;
@@ -99,7 +99,7 @@ if(exist(outFolder, 'dir'))
 end
 mkdir(outFolder);
 
-printLayers(layers(:, :, 1:3, :), layerSize, outFolder, 'print1', 1);
+printLayers(layers(:, :, 1:2, :), layerSize, outFolder, 'print1', 1);
 % printLayers(layers(:, :, 4:5, :), layerSize, outFolder, 'print2', 4);
 
 %% Reconstruct light field from attenuation layers and evaluate error

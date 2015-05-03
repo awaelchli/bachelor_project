@@ -30,14 +30,14 @@ function [ P ] = computeMatrixP( NumberOfLayers, ...
 %                   each layer
 
 % upper bound for number of non-zero values in the matrix P
-% maxNonZeros = prod(lightFieldResolution) * NumberOfLayers; 
-% 
-% I = zeros(maxNonZeros, 1);      % row indices
-% J = zeros(maxNonZeros, 1);      % column indices  
-% S = ones(maxNonZeros, 1);       % values
+maxNonZeros = prod(lightFieldResolution) * NumberOfLayers; 
+
+I = zeros(maxNonZeros, 1);      % row indices
+J = zeros(maxNonZeros, 1);      % column indices  
+S = ones(maxNonZeros, 1);       % values
 
 % index of the current non-zero element used in the for loop below.
-% c = 1;
+c = 1;
 
 P = sparse(prod(lightFieldResolution), prod([layerResolution NumberOfLayers]));
 
@@ -83,8 +83,8 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                                lightFieldResolution([3, 4]), ...
                                                                @round);
             
-            pixelIndexMatrixY
-            pixelIndexMatrixX
+%             pixelIndexMatrixY
+%             pixelIndexMatrixX
             
             
             columns = computeColumnIndicesForP(pixelIndexMatrixY, ...
@@ -101,19 +101,19 @@ for camIndexX = 1 : lightFieldResolution(2)
 
 
             % insert the calculated indices into the sparse arrays
-%             numInsertions = numel(rows);
-%             I(c : c + numInsertions-1) = rows;
-%             J(c : c + numInsertions-1) = columns;
+            numInsertions = numel(rows);
+            I(c : c + numInsertions-1) = rows;
+            J(c : c + numInsertions-1) = columns;
             
 %             S(c : c + numInsertions-1) = 0.25 * ones(1, numInsertions);
             
-%             c = c + numInsertions ;
-            P(rows, columns) = 1;
+            c = c + numInsertions ;
+%             P(rows, columns) = 1;
         end
     end
 end
 
-% P = sparse(I(1:c-1), J(1:c-1), S(1:c-1), prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c-1);
+P = sparse(I(1:c-1), J(1:c-1), S(1:c-1), prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c-1);
 
 end
 
