@@ -38,6 +38,7 @@ filename = 'coke';
 
 [ lightField, fov, distanceBetweenCameras] = loadLightFieldFromLytro( path, filename );
 
+lightField = lightField(1 : 4, 1 : 4, :, :, :);
 channels = 3;
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
