@@ -31,6 +31,7 @@ function [ P ] = computeMatrixP( NumberOfLayers, ...
 
 % upper bound for number of non-zero values in the matrix P
 maxNonZeros = prod(lightFieldResolution) * NumberOfLayers; 
+maxNonZeros = 10000;
 
 I = zeros(maxNonZeros, 1);      % row indices
 J = zeros(maxNonZeros, 1);      % column indices  
@@ -39,7 +40,7 @@ S = ones(maxNonZeros, 1);       % values
 % index of the current non-zero element used in the for loop below.
 c = 1;
 
-P = sparse(prod(lightFieldResolution), prod([layerResolution NumberOfLayers]));
+% P = sparse(prod(lightFieldResolution), prod([layerResolution NumberOfLayers]));
 
 [ cameraPositionMatrixY, cameraPositionMatrixX ] = computeCameraPositions(lightFieldResolution([1, 2]), ...
                                                                           distanceBetweenTwoCameras([2, 1]));
@@ -61,7 +62,6 @@ for camIndexX = 1 : lightFieldResolution(2)
             % adjust distance for current layer; the coordinate origin is
             % at the center of the layer stack
             distanceBetweenCameraPlaneAndLayer = cameraPlaneDistance + layerPositionsZ(layer);
-            
             
             % computing the relative location of the intersecting rays
             % between the current camera and layer
@@ -98,22 +98,48 @@ for camIndexX = 1 : lightFieldResolution(2)
                                          pixelIndexMatrixY, ... 
                                          pixelIndexMatrixX, ...
                                          lightFieldResolution);
-
+                                     
+                                     
+            for layerPixelX = 1 : layerResolution(2)
+                for layerPixelY = 1 : layerResolution(1)
+                    
+                    cameraPixelY = pixelIndexMatrixY(layerPixelY, layerPixelX);
+                    cameraPixelX = pixelIndexMatrixX(layerPixelY, layerPixelX);
+                    
+                    if(cameraPixelY ~= 0 && cameraPixelX ~= 0)
+                        column = sub2ind([layerResolution NumberOfLayers], ...
+                                                    layerPixelY, ...
+                                                    layerPixelX, ...
+                                                    layer);
+                                                
+                        row = sub2ind(lightFieldResolution([3, 4, 1, 2]), ... 
+                                                   cameraPixelY, ...
+                                                   cameraPixelX, ...
+                                                   camIndexY, ...
+                                                   camIndexX);
+                                               
+                                               
+                        I(c) = row;
+                        J(c) = column;
+                        c = c + 1 ;
+                    end
+                    
+                end
+            end
 
             % insert the calculated indices into the sparse arrays
-            numInsertions = numel(rows);
-            I(c : c + numInsertions-1) = rows;
-            J(c : c + numInsertions-1) = columns;
-            
-%             S(c : c + numInsertions-1) = 0.25 * ones(1, numInsertions);
-            
-            c = c + numInsertions ;
+%             numInsertions = numel(rows);
+%             I(c : c + numInsertions-1) = rows;
+%             J(c : c + numInsertions-1) = columns;
+%             c = c + numInsertions ;
 %             P(rows, columns) = 1;
         end
     end
 end
+% max(I(:))
+% max(J(:))
 
-P = sparse(I(1:c-1), J(1:c-1), S(1:c-1), prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c-1);
+P = sparse(I(1 : c - 1), J(1 : c - 1), S(1 : c - 1), prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
 
 end
 
@@ -148,13 +174,27 @@ function [ columns ] = computeColumnIndicesForP(pixelIndexMatrixY, ...
                                                 NumberOfLayers, ...
                                                 layerResolution)
 
+% pixelIndexMatrixY
+% pixelIndexMatrixX
+                                            
 layerPixelIndicesY = find(pixelIndexMatrixY(:, 1)); % column vector
 layerPixelIndicesX = find(pixelIndexMatrixX(1, :)); % row vector
 
+% layerPixelIndicesY
+% layerPixelIndicesX
+
+
 layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
 layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
+% 
+% layerPixelIndicesY
+% layerPixelIndicesX
 
 layerIndices = layer + zeros(size(layerPixelIndicesY));
+
+% size(layerIndices(:))
+% size(layerPixelIndicesY)
+% size(layerPixelIndicesX)
 
 % convert the subscripts to column indices
 columns = sub2ind([layerResolution NumberOfLayers], layerPixelIndicesY(:), ...

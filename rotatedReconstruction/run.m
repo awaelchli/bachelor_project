@@ -1,17 +1,17 @@
 % clear;
 %% Parameters
 
-NumberOfLayers = 5;
+NumberOfLayers = 1;
 distanceBetweenLayers = 4;
-cameraPlaneDistance = 25;
-fov = deg2rad([90, 70]);
-distanceCameraPlaneToSensorPlane = 1;
-distanceBetweenCameras = [1, 1];
-% lightFieldResolution = [2, 2, 3, 3];
-% channels = 3;
+cameraPlaneDistance = 52;
+fov = deg2rad([60, 60]);
+distanceCameraPlaneToSensorPlane = 10;
+distanceBetweenCameras = [20, 20];
+lightFieldResolution = [2, 2, 3, 3];
+channels = 3;
 % lightField = lightField(:, :, 1 : 100, 1 : 100, :);
-% lightField = zeros([lightFieldResolution, 3]);
-layerResolution = [400, 400];
+lightField = zeros([lightFieldResolution, 3]);
+layerResolution = [20, 20];
 layerWidth = 80;
 layerHeight = 80;
 
@@ -28,7 +28,11 @@ totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
 % and each column of this matrix represents a color channel of the light
 % field
+
+
 lightFieldVector = reshape(permute(lightField, [3, 4, 1, 2, 5]), [], channels);
+% lightFieldVector = reshape(lightField, [], channels);
+
 
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
@@ -115,7 +119,7 @@ lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
 lightFieldRec = exp(lightFieldRec);
 
 center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
-other = [3, 3];
+other = [2, 2];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
 otherLF = squeeze(lightField(other(1), other(2), :, :, :));
