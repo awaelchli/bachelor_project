@@ -1,5 +1,6 @@
 function [ pixelIndexMatrixY, ...
-           pixelIndexMatrixX ] = computePixelIndicesForCamera( pixelPositionMatrixY, ...
+           pixelIndexMatrixX, ...
+           weightMatrix ] = computePixelIndicesForCamera( pixelPositionMatrixY, ...
                                                                pixelPositionMatrixX, ...
                                                                distanceCameraPlaneToSensorPlane, ...
                                                                fov, ...
@@ -45,17 +46,26 @@ pixelPositionMatrixX(pixelPositionMatrixX ~= 0) = pixelPositionMatrixX(pixelPosi
 
 % pixelPositionMatrixX
 
-pixelPositionMatrixY = floorCeilOrRoundHandle(pixelPositionMatrixY);
-pixelPositionMatrixX = floorCeilOrRoundHandle(pixelPositionMatrixX);
+pixelIndexMatrixY = floorCeilOrRoundHandle(pixelPositionMatrixY);
+pixelIndexMatrixX = floorCeilOrRoundHandle(pixelPositionMatrixX);
 
-% set all positions that fall out as 'invalid'
-% pixelPositionMatrixY(pixelPositionMatrixY < 1) = 0;
-% pixelPositionMatrixX(pixelPositionMatrixX < 1) = 0;
-% pixelPositionMatrixY(pixelPositionMatrixY > cameraResolution(1)) = 0;
-% pixelPositionMatrixX(pixelPositionMatrixX > cameraResolution(2)) = 0;
+% Maximum distance from rounded/floored/ceiled values is 0.5
+distanceFromFloorCeilOrRoundY = pixelPositionMatrixY - pixelIndexMatrixY;
+distanceFromFloorCeilOrRoundX = pixelPositionMatrixX - pixelIndexMatrixX;
 
-pixelIndexMatrixY = pixelPositionMatrixY;
-pixelIndexMatrixX = pixelPositionMatrixX;
+% weightMatrixY = 1 - distanceFromFloorCeilOrRoundY;
+% weightMatrixX = 1 - distanceFromFloorCeilOrRoundX;
+
+data = cat(3, distanceFromFloorCeilOrRoundY, distanceFromFloorCeilOrRoundX);
+data = reshape(data, [], 2);
+
+mu = [0, 0];
+sigma = [ 0.4 , 0;
+          0, 0.4 ];
+      
+weights = mvnpdf(data, mu, sigma);
+
+weightMatrix = reshape(weights, size(pixelIndexMatrixY));
 
 end
 
