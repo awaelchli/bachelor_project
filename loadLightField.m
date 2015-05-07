@@ -10,7 +10,10 @@ path = 'lightFields/dice_camera/dice_5x5_ap35/';
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
 
 % The field of view of the lightfield (not the cameras), in X and in Y direction
-fov = degtorad(10) .* [1, 1];
+% fov = degtorad(10) .* [1, 1];
+cameraPlaneDistance = 1270;
+distanceBetweenCameras = [12.5, 12.5];
+
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
