@@ -4,7 +4,8 @@ function [ lightField, fov, cameraDist ] = loadLightFieldFromLytro( path, filena
 file = fullfile(path, [filename '.lfr']);
 
 % Decode the light field
-lytroPath = 'C:/Users/Adrian/AppData/Local/Lytro/cameras/';
+% lytroPath = 'C:/Users/Adrian/AppData/Local/Lytro/cameras/';
+lytroPath = 'C:/Users/waelchli/AppData/Local/Lytro/cameras/';
 whiteImageDatabasePath = fullfile(lytroPath, 'WhiteImageDatabase.mat');
 
 LFUtilUnpackLytroArchive(lytroPath);
@@ -29,7 +30,7 @@ fov = [vfov, hfov];
 viewsY = size(lightField, 1);
 viewsX = size(lightField, 2);
 
-cameraDist = [diam / (viewsY + 1), diam / (viewsX + 1)];
+cameraDist = [diam / (viewsY - 1), diam / (viewsX - 1)];
 
 end
 

@@ -6,6 +6,9 @@ function [ cameraPositionMatrixY, ...
 
 [ cameraPositionMatrixY, cameraPositionMatrixX] = computeCenteredGridPositions(cameraGridResolution, ... 
                                                                                distanceBetweenTwoCameras);
+                                                                           
+% cameraPositionMatrixY
+% cameraPositionMatrixX
 
 end
 

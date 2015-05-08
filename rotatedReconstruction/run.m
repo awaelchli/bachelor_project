@@ -30,8 +30,8 @@ totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 % field
 
 
-lightFieldVector = reshape(permute(lightField, [3, 4, 1, 2, 5]), [], channels);
-% lightFieldVector = reshape(lightField, [], channels);
+% lightFieldVector = reshape(permute(lightField, [3, 4, 1, 2, 5]), [], channels);
+lightFieldVector = reshape(lightField, [], channels);
 
 
 %% Compute the propagation matrix P
