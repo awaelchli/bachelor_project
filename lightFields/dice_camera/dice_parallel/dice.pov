@@ -1,3 +1,6 @@
+// Source: http://commons.wikimedia.org/wiki/File:PNG_transparency_demonstration_1.png
+// Modified by Adrian Wälchli, May 2015
+
 #include "colors.inc"  
 
 #declare DistanceBetweenCamerasY = 0.3;
@@ -5,7 +8,8 @@
 #declare DistanceToCameraPlane = 8;
 #declare AngularResolutionY = 3;
 #declare AngularResolutionX = 3;
-#declare FOV = 60;
+#declare FOV_horizontal = 60;
+#declare aspectRatio = 4 / 3;
 
 // The camera index is between 0 and AngularResolution - 1
 #declare CameraIndexX = mod(frame_number, AngularResolutionX);
@@ -17,7 +21,8 @@
 camera {
   location <-DistanceToCameraPlane, CameraPositionY, CameraPositionX>
   direction <0, 0, -1>     
-  angle FOV
+  angle FOV_horizontal 
+  right <0, 0, aspectRatio>
   look_at <0, CameraPositionY, CameraPositionX> 
 }
  
