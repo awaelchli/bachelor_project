@@ -1,40 +1,19 @@
 % clear;
 %% Parameters
-% 
-% NumberOfLayers = 3;
-% distanceBetweenLayers = 100;
-% cameraPlaneDistance = 1270;
-% % fov = deg2rad([23.8, 18.6673]);
-% distanceCameraPlaneToSensorPlane = 1270;
-% % distanceBetweenCameras = [20, 20];
-% % lightFieldResolution = [2, 2, 3, 3];
-% % channels = 3;
-% % lightField = lightField(:, :, 1 : 100, 1 : 100, :);
-% % lightField = zeros([lightFieldResolution, 3]);
-% layerResolution = [300, 300];
-% layerWidth = 500;
-% layerHeight = 500;
-% 
-% fov = [layerWidth/2 layerHeight/2] ./ distanceCameraPlaneToSensorPlane;
-% fov = atan(fov)*2;
-
 
 NumberOfLayers = 3;
-distanceBetweenLayers = 1;
-% cameraPlaneDistance = 2000;
-
-
-% distanceBetweenCameras = [200, 200];
-% lightFieldResolution = [2, 2, 3, 3];
-% channels = 3;
+distanceBetweenLayers = 4;
+cameraPlaneDistance = 8;
+fov = deg2rad([60, 60]);
+distanceCameraPlaneToSensorPlane = 10;
+distanceBetweenCameras = [20, 20];
+lightFieldResolution = [2, 2, 3, 3];
+channels = 3;
 % lightField = lightField(:, :, 1 : 100, 1 : 100, :);
-% lightField = zeros([lightFieldResolution, 3]);
-layerResolution = [300, 300];
-layerWidth = 2;
-layerHeight = 2;
-
-% fov = [layerWidth/2 layerHeight/2] ./ distanceCameraPlaneToSensorPlane;
-% fov = atan(fov)*2;
+lightField = zeros([lightFieldResolution, 3]);
+layerResolution = [20, 20];
+layerWidth = 80;
+layerHeight = 80;
 
 % Maximum number of iterations in optimization process
 maxIterations = 20;
@@ -50,14 +29,6 @@ totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 % and each column of this matrix represents a color channel of the light
 % field
 
-% h = fspecial('gaussian', [5 5], 2);
-% for camIndexY = 1 : size(lightField,1)
-%     for camIndexX = 1 : size(lightField,2)
-%         img = squeeze(lightField(camIndexY, camIndexX, :,:,:));
-%         img = imfilter(img,h);
-%         lightField(camIndexY, camIndexX, :,:,:) = img;
-%     end
-% end
 
 % lightFieldVector = reshape(permute(lightField, [3, 4, 1, 2, 5]), [], channels);
 lightFieldVector = reshape(lightField, [], channels);
@@ -77,38 +48,12 @@ P = computeMatrixP(NumberOfLayers, ...
                    distanceBetweenCameras, ...
                    distanceCameraPlaneToSensorPlane);
 
-% TODO : use spdiags
-% colSum = sum(P, 1);
-% for i = 1 : size(P, 2)
-%     if(colSum(i) ~= 0)
-%         P(:, i) = P(:, i) ./ colSum(i);
-%     end
-% end
-
-% P2 = P;
-
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
-%% Trying to normalize the weights
-
-% rowSum = sum(P, 2);
-% for i = 1 : size(P, 1)
-%     if(rowSum(i) ~= 0)
-%         P(i, :) = P(i, :) ./ rowSum(i);
-%     end
-% end
-% rowSums = sum(P,2);
-% rowSums = max(1, rowSums);
-% P = spdiags(1./rowSums,0,size(P,1),size(P,1))*P;
-
-% colSums = sum(P,1);
-% colSums = max(1, colSums);
-% P = spdiags(1./colSums,0,size(P,1),size(P,1))*P;
-
 %% Convert to log light field
-lightFieldVectorLogDomain = lightFieldVector;
-lightFieldVectorLogDomain(lightFieldVectorLogDomain < 0.01) = 0.01;
-lightFieldVectorLogDomain = log(lightFieldVectorLogDomain);
+
+lightFieldVector(lightFieldVector < 0.01) = 0.01;
+lightFieldVector = log(lightFieldVector);
 
 %% Set the optimization constraints
 tic;
@@ -134,7 +79,7 @@ x0 = zeros(size(P, 2), 1);
 layers = zeros(size(P, 2), 3);
 for c = 1 : channels
     fprintf('Running optimization for color channel %i ...\n', c);
-    layers(:, c) = sart(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
+    layers(:, c) = sart(P, lightFieldVector(:, c), x0, lb, ub, maxIterations);
 end
 
 layers = exp(layers);
@@ -151,32 +96,30 @@ layers = cat(2, layersR, layersG, layersB);
 layers = reshape(layers, [ layerResolution, NumberOfLayers, 3]);
 
 %% Save and display each layer
-% close all;
+close all;
 
 if(exist(outFolder, 'dir'))
     rmdir(outFolder, 's');
 end
 mkdir(outFolder);
 
-printLayers(layers(:, :, 1:NumberOfLayers, :), layerSize, outFolder, 'print1', 1);
-% printLayers(layers(:, :, 3, :), layerSize, outFolder, 'print2', 3);
+printLayers(layers(:, :, 1:2, :), layerSize, outFolder, 'print1', 1);
+% printLayers(layers(:, :, 4:5, :), layerSize, outFolder, 'print2', 4);
 
 %% Reconstruct light field from attenuation layers and evaluate error
 
-lightFieldRecVector = zeros(size(lightFieldVectorLogDomain));
+lightFieldRecVector = zeros(size(lightFieldVector));
 lightFieldRecVector(:, 1) = P * log(layersR);
 lightFieldRecVector(:, 2) = P * log(layersG);
 lightFieldRecVector(:, 3) = P * log(layersB);
 
-% lightFieldRec = permute(lightFieldRecVector, [3, 4, 1, 2, 5]);
 % convert the light field vector to the 4D light field
 lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
 
-% center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
-center = [2, 2];
-other = [3, 3];
+center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
+other = [2, 2];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
 otherLF = squeeze(lightField(other(1), other(2), :, :, :));

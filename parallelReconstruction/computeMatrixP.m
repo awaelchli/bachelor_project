@@ -30,16 +30,15 @@ function [ P ] = computeMatrixP( NumberOfLayers, ...
 %                   each layer
 
 % upper bound for number of non-zero values in the matrix P
-maxNonZeros = prod(lightFieldResolution) * NumberOfLayers; 
-maxNonZeros = 100000000;
+NumberOfNonZeroElements = prod(lightFieldResolution) * NumberOfLayers; 
+NumberOfNonZeroElements = 100000000;
 
-I = zeros(maxNonZeros, 1);      % row indices
-J = zeros(maxNonZeros, 1);      % column indices  
-S = ones(maxNonZeros, 1);       % values
+I = zeros(NumberOfNonZeroElements, 1);      % row indices
+J = zeros(NumberOfNonZeroElements, 1);      % column indices  
+S = ones(NumberOfNonZeroElements, 1);       % values
 
 % index of the current non-zero element used in the for loop below.
 c = 1;
-% P = sparse(prod(lightFieldResolution), prod([layerResolution NumberOfLayers]));
 
 [ cameraPositionMatrixY, cameraPositionMatrixX ] = computeCameraPositions(lightFieldResolution([1, 2]), ...
                                                                           distanceBetweenTwoCameras([2, 1]));
@@ -83,48 +82,11 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                                lightFieldResolution([3, 4]), ...
                                                                @round);
             
-%             pixelIndexMatrixY
-%             pixelIndexMatrixX
-            
-            
-
-                                     
-                                     
-%             for layerPixelX = 1 : layerResolution(2)
-%                 for layerPixelY = 1 : layerResolution(1)
-%                     
-%                     cameraPixelY = pixelIndexMatrixY(layerPixelY, layerPixelX);
-%                     cameraPixelX = pixelIndexMatrixX(layerPixelY, layerPixelX);
-% %                     
-%                     if(cameraPixelY ~= 0 && cameraPixelX ~= 0)
-%                         column = sub2ind([layerResolution NumberOfLayers], ...
-%                                                     layerPixelY, ...
-%                                                     layerPixelX, ...
-%                                                     layer);
-%                                                 
-%                         row = sub2ind(lightFieldResolution([3, 4, 1, 2]), ... 
-%                                                    cameraPixelY, ...
-%                                                    cameraPixelX, ...
-%                                                    camIndexY, ...
-%                                                    camIndexX);
-%                                                
-%                                                
-%                         I(c) = row;
-%                         J(c) = column;
-                        
-                        
-                    
-%                         S(c) = weightMatrix(layerPixelY, layerPixelX);
-%                         c = c + 1 ;
-%                     end
-%                     
-%                 end
-%             end
 
             % insert the calculated indices into the sparse arrays
             
-            for sy = -1:1
-                for sx = -1:1
+            for sy = 0:0 %-1:1
+                for sx = 0:0%-1:1
                     tempPixelIndexMatrixY = min(pixelIndexMatrixY+sy, lightFieldResolution(3));
                     tempPixelIndexMatrixY = max(tempPixelIndexMatrixY, 0);
                     
@@ -152,8 +114,6 @@ for camIndexX = 1 : lightFieldResolution(2)
         end
     end
 end
-% max(I(:))
-% max(J(:))
 
 P = sparse(I(1 : c - 1), J(1 : c - 1), S(1 : c - 1), prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
 
@@ -178,16 +138,16 @@ imageIndicesY = camIndexY + zeros(size(cameraPixelIndicesY));
 imageIndicesX = camIndexX + zeros(size(cameraPixelIndicesX));
 
 % convert the 4D subscipts to row indices all at once
+
 % rows = sub2ind(lightFieldResolution([3, 4, 1, 2]), cameraPixelIndicesY(:), ...
 %                                                    cameraPixelIndicesX(:), ...
 %                                                    imageIndicesY(:), ...
 %                                                    imageIndicesX(:));
                                                
-rows = sub2ind(lightFieldResolution, ...
-                                                   imageIndicesY(:), ...
-                                                   imageIndicesX(:), ...
-                                               cameraPixelIndicesY(:), ...
-                                                   cameraPixelIndicesX(:));
+rows = sub2ind(lightFieldResolution, imageIndicesY(:), ...
+                                     imageIndicesX(:), ...
+                                     cameraPixelIndicesY(:), ...
+                                     cameraPixelIndicesX(:));
             
 end
 
@@ -197,27 +157,14 @@ function [ columns ] = computeColumnIndicesForP(pixelIndexMatrixY, ...
                                                 NumberOfLayers, ...
                                                 layerResolution)
 
-% pixelIndexMatrixY
-% pixelIndexMatrixX
                                             
 layerPixelIndicesY = find(pixelIndexMatrixY(:, 1)); % column vector
 layerPixelIndicesX = find(pixelIndexMatrixX(1, :)); % row vector
 
-% layerPixelIndicesY
-% layerPixelIndicesX
-
-
 layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
 layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
-% 
-% layerPixelIndicesY
-% layerPixelIndicesX
 
 layerIndices = layer + zeros(size(layerPixelIndicesY));
-
-% size(layerIndices(:))
-% size(layerPixelIndicesY)
-% size(layerPixelIndicesX)
 
 % convert the subscripts to column indices
 columns = sub2ind([layerResolution NumberOfLayers], layerPixelIndicesY(:), ...
