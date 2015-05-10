@@ -1,0 +1,6 @@
+DistanceBetweenCamerasY = 0.3
+DistanceBetweenCamerasX = 0.3
+DistanceToCameraPlane = 8
+AngularResolutionY = 3
+AngularResolutionX = 3
+FOV = 60
