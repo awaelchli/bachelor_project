@@ -1,8 +1,13 @@
 function [ gridPositionMatrixY, ...
            gridPositionMatrixX ] = computeCenteredGridPositions( gridResolution, ...
                                                                  gridStepSize)
-% arrays [Y, X]
-% 
+% Input:        
+%
+%   gridResolution:         The resolution [Y, X] in Y- and X-direction of
+%                           the grid to be generated
+%   gridStepSize:           The size of the steps [Y, X] between the grid 
+%                           points in Y- and X-direction
+
 
 gridSize = (gridResolution - 1) .* gridStepSize;
 

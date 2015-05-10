@@ -1,14 +1,10 @@
 function [ cameraPositionMatrixY, ...
            cameraPositionMatrixX ] = computeCameraPositions( cameraGridResolution, ... 
                                                              distanceBetweenTwoCameras )
-% arrays [Y, X]
-% 
+% See also: computeCenteredGridPositions.m 
 
 [ cameraPositionMatrixY, cameraPositionMatrixX] = computeCenteredGridPositions(cameraGridResolution, ... 
                                                                                distanceBetweenTwoCameras);
-                                                                           
-% cameraPositionMatrixY
-% cameraPositionMatrixX
 
 end
 
