@@ -1,0 +1,8 @@
+\BOOKMARK [1][-]{section.0.1}{Related work}{}% 1
+\BOOKMARK [1][-]{section.0.2}{Types of light fields}{}% 2
+\BOOKMARK [1][-]{section.0.3}{A first implementation}{}% 3
+\BOOKMARK [1][-]{section.0.4}{Moving to light fields of type 1}{}% 4
+\BOOKMARK [2][-]{subsection.0.4.1}{Approach 1: From camera pixels to layer pixels}{section.0.4}% 5
+\BOOKMARK [2][-]{subsection.0.4.2}{Approach 2: Fixing holes with interpolation}{section.0.4}% 6
+\BOOKMARK [2][-]{subsection.0.4.3}{Approach 3: Converting the light field}{section.0.4}% 7
+\BOOKMARK [2][-]{subsection.0.4.4}{Approach 4: From layer pixels to camera pixels}{section.0.4}% 8
