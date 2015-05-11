@@ -17,4 +17,10 @@ G.~Wetzstein, D.~Lanman, M.~Hirsch, and R.~Raskar.
   Displays with Directional Backlighting}.
 \newblock {\em ACM Trans. Graph. (Proc. SIGGRAPH)}, 31(4):1--11, 2012.
 
+\bibitem[Yan10]{CONV_SART}
+Ming Yan.
+\newblock Convergence analysis of sart by bregman iteration and dual gradient
+  descent.
+\newblock {\em ?}, pages 1--15, 2010.
+
 \end{thebibliography}

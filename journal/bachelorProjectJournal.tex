@@ -13,25 +13,42 @@
 
 \maketitle
 \begin{abstract}
-This report presents an overview of my bachelor thesis. We discuss several approaches to problems, experiments, ideas and evaluate results. This document will be extended over time as the project continues.
+This report presents an overview of my bachelor thesis. We discuss several approaches to problems, experiments, ideas and evaluate results. This document will be extended over time as the project evolves.
 \end{abstract}
 
 \tableofcontents
+\newpage
 
 \section{Related work}
 The basis of this project are the papers from \cite{WETZ_TOMO, WETZ_TENS}. Additional papers used for the work are: Light Field Rendering by Marc Levoy and Pat Hanrahan, Fourier Slice Photography by Ren Ng, Light Field Photography with a Hand-held Plenoptic Camera by Ren Ng et al. 
 
-\section{Types of light fields}
+\section{Types of light fields} \label{sec:lftypes}
 In this project, I encountered two types of 4D light fields that are captured using camera grids. The most common way of acquiring a light field is to capture a scene with a 2D-grid of cameras where the optical axes of the cameras are orthogonal to the camera grid. Since the look-at-point of each camera is different, this setup will result in a shift in the images formed on the sensors. An alternative way to capture the scene is to fix the look-at-point for every camera, preferably at the origin of the  scene. This is the type of light fields primarily used in the paper from \cite{WETZ_TOMO}. 
 \\
 In addition, the images can be optained using either perspective or orthographic projections. We can also use sheared projections as mentioned in \cite[p.~4]{LEVO_LFREN}.
+\\\\
+TODO: Add sketches
+
 
 \section{A first implementation}
-In a first step, I tried to implement the 
+In a first step, I (re-)implemented the tomographic light field synthesis for layered 3D-displays in MATLAB, based on the theory in \cite{WETZ_TOMO} and their publicly available MATLAB code. The core problem to solve is:
+
+	\begin{equation} \label{eq:core_problem}
+		\begin{aligned}
+			& \underset{x}{\text{argmin}} & & \| Px + \bar{l} \| \\
+			& \text{subject to} & & 0 \leq x \leq 1
+		\end{aligned}
+	\end{equation}
+
+Having constructed the matrix P which defines a system of linear equations, I used the iterative  linear least squares solver \emph{lsqlin} in MATLAB to find a solution of equation \ref{eq:core_problem}. This method turns out to be too slow when the matrix is very large. I found another iterative method called The Simultaneous Algebraic Reconstruction Technique (SART) that turns out to be efficient for my problem. It is often used in tomography applications. For the definition and convergence analysis of SART, I refer to \cite{CONV_SART}.
 
 \section{Moving to light fields of type 1}
+The next challenge is to support light fields of type 1, as described in section \ref{sec:lftypes}. The motivation comes from the fact that most (online) light field archives provide datasets of this type. And there is also the plenoptic camera we can produce light fields with. 
 
-\section{Converting a light field}
+\subsection{Approach 1: From camera pixels to layer pixels}
+\subsection{Approach 2: Fixing holes with interpolation}
+\subsection{Approach 3: Converting the light field}
+\subsection{Approach 4: From layer pixels to camera pixels}
 
 
 \bibliographystyle{alpha}

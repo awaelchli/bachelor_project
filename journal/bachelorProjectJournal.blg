@@ -1,46 +1,46 @@
-This is BibTeX, Version 0.99d (TeX Live 2013/Debian)
+This is BibTeX, Version 0.99d (TeX Live 2014/W32TeX)
 Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: bachelorProjectJournal.aux
 The style file: alpha.bst
 Database file #1: lit.bib
-You've used 3 entries,
+You've used 4 entries,
             2543 wiz_defined-function locations,
-            582 strings with 4989 characters,
-and the built_in function-call counts, 1280 in all, are:
-= -- 124
-> -- 81
-< -- 0
-+ -- 30
-- -- 30
-* -- 106
-:= -- 232
-add.period$ -- 9
-call.type$ -- 3
-change.case$ -- 22
-chr.to.int$ -- 3
-cite$ -- 3
-duplicate$ -- 41
-empty$ -- 76
-format.name$ -- 33
-if$ -- 245
+            589 strings with 5172 characters,
+and the built_in function-call counts, 1652 in all, are:
+= -- 162
+> -- 89
+< -- 2
++ -- 32
+- -- 32
+* -- 126
+:= -- 290
+add.period$ -- 12
+call.type$ -- 4
+change.case$ -- 27
+chr.to.int$ -- 4
+cite$ -- 4
+duplicate$ -- 61
+empty$ -- 106
+format.name$ -- 37
+if$ -- 328
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 3
-newline$ -- 18
-num.names$ -- 9
-pop$ -- 13
+missing$ -- 4
+newline$ -- 23
+num.names$ -- 12
+pop$ -- 18
 preamble$ -- 1
-purify$ -- 25
+purify$ -- 31
 quote$ -- 0
-skip$ -- 39
+skip$ -- 55
 stack$ -- 0
-substring$ -- 49
-swap$ -- 3
-text.length$ -- 0
-text.prefix$ -- 0
+substring$ -- 71
+swap$ -- 9
+text.length$ -- 2
+text.prefix$ -- 1
 top$ -- 0
-type$ -- 24
+type$ -- 32
 warning$ -- 0
-while$ -- 12
-width$ -- 4
-write$ -- 41
+while$ -- 16
+width$ -- 6
+write$ -- 54
