@@ -1,12 +1,14 @@
-\documentclass[10pt,a4paper,titlepage]{report}
+\documentclass[11pt,a4paper,titlepage]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
 \author{Adrian Wälchli}
 \title{Bachelor Project Journal}
+
 \begin{document}
 
 \maketitle
@@ -22,10 +24,14 @@ The basis of this project are the papers from \cite{WETZ_TOMO, WETZ_TENS}. Addit
 \section{Types of light fields}
 In this project, I encountered two types of 4D light fields that are captured using camera grids. The most common way of acquiring a light field is to capture a scene with a 2D-grid of cameras where the optical axes of the cameras are orthogonal to the camera grid. Since the look-at-point of each camera is different, this setup will result in a shift in the images formed on the sensors. An alternative way to capture the scene is to fix the look-at-point for every camera, preferably at the origin of the  scene. This is the type of light fields primarily used in the paper from \cite{WETZ_TOMO}. 
 \\
-In addition, the images can be optained using either perspective or orthographic projections. 
+In addition, the images can be optained using either perspective or orthographic projections. We can also use sheared projections as mentioned in \cite[p.~4]{LEVO_LFREN}.
 
+\section{A first implementation}
+In a first step, I tried to implement the 
 
+\section{Moving to light fields of type 1}
 
+\section{Converting a light field}
 
 
 \bibliographystyle{alpha}

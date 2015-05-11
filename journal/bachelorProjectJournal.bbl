@@ -1,5 +1,10 @@
 \begin{thebibliography}{WLHR12}
 
+\bibitem[LH96]{LEVO_LFREN}
+M.~Levoy and P.~Hanrahan.
+\newblock Light field rendering.
+\newblock {\em ?}, ?(?):1--12, 1996.
+
 \bibitem[WLHR11]{WETZ_TOMO}
 G.~Wetzstein, D.~Lanman, W.~Heidrich, and R.~Raskar.
 \newblock Layered {3D}: Tomographic image synthesis for attenuation-based light
