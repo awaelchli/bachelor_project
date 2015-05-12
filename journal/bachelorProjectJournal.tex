@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper,titlepage]{report}
+\documentclass[11pt,a4paper,titlepage]{article}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amsmath}
@@ -28,7 +28,7 @@ In this project, I encountered two types of 4D light fields that are captured us
 \\
 In addition, the images can be optained using either perspective or orthographic projections. We can also use sheared projections as mentioned in \cite[p.~4]{LEVO_LFREN}.
 \\\\
-TODO: Add sketches
+TODO: Make sketches for illustration
 
 
 \section{A first implementation}
@@ -45,13 +45,43 @@ Having constructed the matrix P which defines a system of linear equations, I us
 
 \section{Moving to light fields of type 1}
 The next challenge is to support light fields of type 1, as described in section \ref{sec:lftypes}. The motivation comes from the fact that most (online) light field archives provide datasets of this type. And there is also the plenoptic camera we can produce light fields with. 
+\\
+The requirements for this setup are the following:
+
+\begin{itemize}
+	\item A camera plane of known size/camera positions
+	\item The distance from the camera plane to the scene origin
+	\item The distance from the camera plane/center of projection to the sensor plane
+	\item The field of view of the cameras
+	\item The size and placement of each layer relative to the scene origin
+\end{itemize}
+
+I make the assumption that the cameras are pinhole cameras.
 
 \subsection{Approach 1: From camera pixels to layer pixels}
-\subsection{Approach 2: Fixing holes with interpolation}
-\subsection{Approach 3: Converting the light field}
-\subsection{Approach 4: From layer pixels to camera pixels}
+My idea for this approach is to go through each pixel for each camera and trace back the ray going through this pixel and the center of projection. Knowing the ray direction, we can compute the intersection with each layer. This gives us pixel correspondences between camera pixel- and layer pixel coordinates. For the valid intersections, we would then add the value 1 in the matrix at the respective index. 
+\\
+This method does not seem to work. The main problem is that a lot of layer pixels may not be hit by rays for a camera. It heavily depends on the resolution of the cameras and the layers for this method to work.
+\\\\ TODO: Add sketch of the problem \\\\
 
+\subsection{Approach 2: Converting the light field}
+The next idea is to reparametrize the light field $l \left( c_y, c_x, y, x \right)$ to a angular (epipolar???) representation $l \left( \theta_y, \theta_x, v, u \right)$. Here, the number of angles corresponds to the resolution of the camera sensor. The motivation behind this approach is that we can fix 
+$\left( \theta_y, \theta_x \right)$ in the latter representation and get an orthogonal view. We would then plug this light field into the old algorithm to solve for the layers.
+\\
+For the reparametrization, we construct matrices
 
+\begin{align*}
+	& C_y \left( \theta_y, :, v, : \right) \\
+	& C_x \left( :, \theta_x, :, u \right) \\
+	& I_y \left(\theta_y, :, v, : \right) \\
+	& I_x \left( :, \theta_x, : u \right) 
+\end{align*}
+
+of the same dimension as the light field resolution. The ":" represents replication of the matrix in the respective dimension. We use these matrices to obtain a interpolated light field $l \left( \theta_y, \theta_x, v, u \right)$. 
+
+\subsection{Approach 3: From layer pixels to camera pixels}
+
+\newpage
 \bibliographystyle{alpha}
 \bibliography{lit}
 
