@@ -65,7 +65,7 @@ This method does not seem to work. The main problem is that a lot of layer pixel
 \\\\ TODO: Add sketch of the problem \\\\
 
 \subsection{Approach 2: Converting the light field}
-The next idea is to reparametrize the light field $l \left( c_y, c_x, y, x \right)$ to a angular (epipolar???) representation $l \left( \theta_y, \theta_x, v, u \right)$. Here, the number of angles corresponds to the resolution of the camera sensor. The motivation behind this approach is that we can fix 
+The next idea is to reparametrize the light field $l \left( c_y, c_x, y, x \right)$ to a angular (epipolar???) representation $l' \left( \theta_y, \theta_x, v, u \right)$. Here, the number of angles corresponds to the resolution of the camera sensor. The motivation behind this approach is that we can fix 
 $\left( \theta_y, \theta_x \right)$ in the latter representation and get an orthogonal view. We would then plug this light field into the old algorithm to solve for the layers.
 \\
 For the reparametrization, we construct matrices
@@ -77,9 +77,15 @@ For the reparametrization, we construct matrices
 	& I_x \left( :, \theta_x, : u \right) 
 \end{align*}
 
-of the same dimension as the light field resolution. The ":" represents replication of the matrix in the respective dimension. We use these matrices to obtain a interpolated light field $l \left( \theta_y, \theta_x, v, u \right)$. 
+of the same dimension as the light field resolution. The ":" represents replication of the matrix in the respective dimension. We use these matrices to obtain a interpolated light field $l' \left( \theta_y, \theta_x, v, u \right)$.
+\\\\ TODO: Why didn't it work in the end? 
 
 \subsection{Approach 3: From layer pixels to camera pixels}
+This idea is basically the opposite of approach 1. For every layer pixel and for every camera we compute the ray intersection on the sensor plane. These points will be rounded to their corresponding pixels. In this setup, it is very frequent that a patch of layer pixels gets mapped to the same camera pixel due to rounding and thus, one pixel from the camera would contributes to multiple layer pixels. This also results in high column sums of the matrix $P$ from equation \ref{eq:core_problem}.
+\\\\ TODO: Insert sketch for illustration
+
+\section{Creating synthetic light fields}
+To test my code I use POV-Ray to create and render the synthetic scenes. The advantage of a synthetic light field is that the cameras can be precisely placed and all the required parameters are known and can be adjusted easily. 
 
 \newpage
 \bibliographystyle{alpha}

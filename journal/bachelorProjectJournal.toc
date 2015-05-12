@@ -6,3 +6,4 @@
 \contentsline {subsection}{\numberline {4.1}Approach 1: From camera pixels to layer pixels}{3}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Approach 2: Converting the light field}{3}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}Approach 3: From layer pixels to camera pixels}{3}{subsection.4.3}
+\contentsline {section}{\numberline {5}Creating synthetic light fields}{3}{section.5}
