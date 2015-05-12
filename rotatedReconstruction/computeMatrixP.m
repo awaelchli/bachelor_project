@@ -1,15 +1,21 @@
-function [ P ] = computeMatrixP( Nlayers, resolution, layerSize, originLF, originLayers, fov, layerDist )
+function [ P ] = computeMatrixP( NumberOfLayers, ...
+                                 lightFieldResolution, ...
+                                 layerSize, ...
+                                 originOfLightField, ...
+                                 originOfLayers, ...
+                                 fov, ...
+                                 distanceBetweenLayers )
 % Inputs:
 %
-%   Nlayers:        The number of layers in the attenuator
-%   resolution:     The resolution of the light field [viewsY, viewsX, pixelsY, pixelsX]
-%   layersSize:     The size of the layer in millimeters [width, height]
-%   originLF:       The origin of the light field relative to the origin of
-%                   the attenuator
-%   originLayers:   The origin of the attenuator
-%   fov:            The field of view [fovX, fovY] in Y and X direction of 
-%                   the light field (not the fov of the cameras)
-%   layerDist:      The distance between the layers
+%   NumberOfLayers:             The number of layers in the attenuator
+%   lightFieldResolution:       The resolution of the light field [viewsY, viewsX, pixelsY, pixelsX]
+%   layerSize:                  The size of the layer in millimeters [width, height]
+%   originOfLightField:         The origin of the light field relative to the origin of
+%                               the attenuator
+%   originOfLayers:             The origin of the attenuator
+%   fov:                        The field of view [fovX, fovY] in Y and X direction of 
+%                               the light field (not the fov of the cameras)
+%   distanceBetweenLayers:      The distance between the layers
 %
 % Output:
 %
@@ -17,7 +23,7 @@ function [ P ] = computeMatrixP( Nlayers, resolution, layerSize, originLF, origi
 %                   each layer
 
 % upper bound for number of non-zero values in the matrix P
-maxNonZeros = prod(resolution) * Nlayers; 
+maxNonZeros = prod(lightFieldResolution) * NumberOfLayers; 
 
 I = zeros(maxNonZeros, 1);      % row indices
 J = zeros(maxNonZeros, 1);      % column indices  
@@ -27,37 +33,37 @@ S = ones(maxNonZeros, 1);       % values
 c = 1;
 
 % 2D pixel positions (relative to one layer) in coordinates of the light field
-[posX, posY] = pixelToSpaceCoordinates(resolution([4, 3]), layerSize, originLF);
+[posX, posY] = pixelToSpaceCoordinates(lightFieldResolution([4, 3]), layerSize, originOfLightField);
 % The scale is 1 / pixelSize, it is used to go from space coordinates back to
 % pixel indices
-scale = resolution([4, 3]) ./ layerSize;
+scale = lightFieldResolution([4, 3]) ./ layerSize;
 
-for imageX = 1 : resolution(2)
-    for imageY = 1 : resolution(1)
+for imageX = 1 : lightFieldResolution(2)
+    for imageY = 1 : lightFieldResolution(1)
         
         % compute relative angles for incoming rays from current view
-        [angleX, angleY] = computeRayAngles(imageX, imageY, fov, resolution([2, 1]));
+        [angleX, angleY] = computeRayAngles(imageX, imageY, fov, lightFieldResolution([2, 1]));
        
         % intersection points of rays with relative angles [angleX, angleY]
         % on the first layer (most bottom layer), can go outside of layer
         % boudaries
-        posXL1 = posX + (originLayers(3) - originLF(3)) * angleX;
-        posYL1 = posY + (originLayers(3) - originLF(3)) * angleY;
+        posXL1 = posX + (originOfLayers(3) - originOfLightField(3)) * angleX;
+        posYL1 = posY + (originOfLayers(3) - originOfLightField(3)) * angleY;
         
-        for layer = 1 : Nlayers
+        for layer = 1 : NumberOfLayers
             
             % shift intersection points according to current layer
-            posXCurrentLayer = posXL1 - (layer - 1) * layerDist * angleX;
-            posYCurrentLayer = posYL1 - (layer - 1) * layerDist * angleY;
+            posXCurrentLayer = posXL1 - (layer - 1) * distanceBetweenLayers * angleX;
+            posYCurrentLayer = posYL1 - (layer - 1) * distanceBetweenLayers * angleY;
             
             % pixel indices 
-            pixelsX = ceil(scale(1) * (posXCurrentLayer - originLayers(1)));
-            pixelsY = ceil(scale(2) * (posYCurrentLayer - originLayers(2)));
+            pixelsX = ceil(scale(1) * (posXCurrentLayer - originOfLayers(1)));
+            pixelsY = ceil(scale(2) * (posYCurrentLayer - originOfLayers(2)));
             
             % pixels indices outside of bounds get removed
-            pixelsX(pixelsX > resolution(4)) = 0;
+            pixelsX(pixelsX > lightFieldResolution(4)) = 0;
             pixelsX(pixelsX < 1) = 0;
-            pixelsY(pixelsY > resolution(3)) = 0;
+            pixelsY(pixelsY > lightFieldResolution(3)) = 0;
             pixelsY(pixelsY < 1) = 0;
             
             % pick out the indices that are inside bounds
@@ -74,7 +80,7 @@ for imageX = 1 : resolution(2)
             imageIndicesY = imageY + zeros(size(indicesX));
             
             % convert the 4D subscipts to row indices all at once
-            rows = sub2ind(resolution, imageIndicesY(:), imageIndicesX(:), indicesY(:), indicesX(:));
+            rows = sub2ind(lightFieldResolution, imageIndicesY(:), imageIndicesX(:), indicesY(:), indicesX(:));
             
             % !!! Note: Here, light field resolution is the same as layer
             % resolution. Support for different light field and layer
@@ -87,7 +93,7 @@ for imageX = 1 : resolution(2)
             indicesY = repmat(pixelsY', [1 size(pixelsX,2)]);  
             
             % convert the subscripts to column indices
-            columns = sub2ind([resolution([3, 4]) Nlayers], indicesY(:), indicesX(:), layerIndices(:));
+            columns = sub2ind([lightFieldResolution([3, 4]) NumberOfLayers], indicesY(:), indicesX(:), layerIndices(:));
              
             % insert the calculated indices into the sparse arrays
             numInsertions = numel(rows);
@@ -99,7 +105,7 @@ for imageX = 1 : resolution(2)
     end
 end
 
-P = sparse(I(1:c - 1), J(1:c - 1), S(1:c - 1), prod(resolution), prod([Nlayers resolution([3, 4])]), c - 1);
+P = sparse(I(1:c - 1), J(1:c - 1), S(1:c - 1), prod(lightFieldResolution), prod([NumberOfLayers lightFieldResolution([3, 4])]), c - 1);
 
 end
 
