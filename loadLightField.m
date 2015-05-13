@@ -8,36 +8,25 @@
 % path = 'lightFields/dice_camera/dice_5x5_ap35/';
 % path = 'lightFields/pink/';
 % path = '../lightFields/dice_camera/dice_parallel/3x3/';
-path = '../lightFields/dice_camera/dice_parallel/5x5-.05/';
+% path = '../lightFields/dice_camera/dice_parallel/5x5-.05/';
+path = '../lightFields/legotruck/';
 
-[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [17, 17] );
+
+lightField = lightField(1:2:17, 1:2:17, :, :, :);
+lightField = downsampleLighField(lightField, 0.4);
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
 
-cameraPlaneDistance = 6;
-distanceBetweenCameras = [0.05, 0.05];
+cameraPlaneDistance = 0;
+distanceBetweenCameras = [4 * 2, 4 * 2]; 
 fov = deg2rad([60, 45]);
+
 distanceCameraPlaneToSensorPlane = computeSensorDistanceOfCamera(fov);
 
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
-% 
-% path = '../lightFields/pink/';
-% 
-% [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [1, 120] );
-% 
-% lightField = lightField(1, 62 : -1 : 57, :, :, :);
-% 
-% lightFieldResolution = size(lightField);
-% lightFieldResolution = lightFieldResolution(1 : 4);
-% 
-% cameraPlaneDistance = 2000;
-% distanceBetweenCameras = [20, 20];
-% fov = deg2rad([60, 45]);
-% distanceCameraPlaneToSensorPlane = computeSensorDistanceOfCamera(fov);
-% 
-% aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
 %% Load the light field from a H5 file
 
@@ -58,11 +47,17 @@ lightFieldResolution = lightFieldResolution(1 : 4);
 %% Load the light field from a Lytro image
 
 path = 'lightFields/';
-filename = 'siavash';
+filename = 'pensAndSpeaker';
 
 [ lightField, fov, distanceBetweenCameras] = loadLightFieldFromLytro( path, filename );
 
-lightField = lightField(1 :2: 9, 1 :2: 9, :, :, :);
+lightField = lightField(1:2:9, 1:2:9, :, :, :);
 channels = 3;
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
+
+cameraPlaneDistance = 170;
+distanceBetweenCameras = [5, 5] / 4;
+aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
+distanceCameraPlaneToSensorPlane = computeSensorDistanceOfCamera(fov);
+% fov = 2 * atan(.5/400) + [0, 0];

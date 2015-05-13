@@ -20,7 +20,7 @@
 
 
 NumberOfLayers = 5;
-distanceBetweenLayers = 1;
+distanceBetweenLayers = 10;
 % cameraPlaneDistance = 2000;
 
 
@@ -31,8 +31,8 @@ distanceBetweenLayers = 1;
 % lightField = zeros([lightFieldResolution, 3]);
 layerResolution = [round(200 * aspectRatio), 200];
 % 4
-layerWidth = 4 * aspectRatio;
-layerHeight = 4;
+layerWidth = 20 * aspectRatio;
+layerHeight = 20;
 
 % fov = [layerWidth/2 layerHeight/2] ./ distanceCameraPlaneToSensorPlane;
 % fov = atan(fov)*2;
@@ -165,7 +165,7 @@ lightFieldRec = exp(lightFieldRec);
 
 % center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
 center = [2, 2];
-other = [3, 3];
+other = [4, 4];
 % center = [1, 3];
 % other = [1, 6];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
