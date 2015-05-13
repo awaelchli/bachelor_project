@@ -3,11 +3,11 @@
 
 #include "colors.inc"  
 
-#declare DistanceBetweenCamerasY = 0.3;
-#declare DistanceBetweenCamerasX = 0.3;
+#declare DistanceBetweenCamerasY = 0.05;
+#declare DistanceBetweenCamerasX = 0.05;
 #declare DistanceToCameraPlane = 8;
-#declare AngularResolutionY = 3;
-#declare AngularResolutionX = 3;
+#declare AngularResolutionY = 5;
+#declare AngularResolutionX = 5;
 #declare FOV_horizontal = 60;
 #declare aspectRatio = 4 / 3;
 

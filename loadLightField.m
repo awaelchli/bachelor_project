@@ -7,20 +7,37 @@
 % path = 'lightFields/butterfly/7x7x384x512/';
 % path = 'lightFields/dice_camera/dice_5x5_ap35/';
 % path = 'lightFields/pink/';
-path = 'lightFields/dice_camera/dice_parallel/3x3/';
+% path = '../lightFields/dice_camera/dice_parallel/3x3/';
+path = '../lightFields/dice_camera/dice_parallel/5x5-.05/';
 
-[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
 
-cameraPlaneDistance = 8;
-distanceBetweenCameras = [0.3, 0.3];
+cameraPlaneDistance = 6;
+distanceBetweenCameras = [0.05, 0.05];
 fov = deg2rad([60, 45]);
 distanceCameraPlaneToSensorPlane = computeSensorDistanceOfCamera(fov);
 
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
-% fov = computeFOVForCamera(distanceCameraPlaneToSensorPlane, aspectRatio);
+
+% 
+% path = '../lightFields/pink/';
+% 
+% [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [1, 120] );
+% 
+% lightField = lightField(1, 62 : -1 : 57, :, :, :);
+% 
+% lightFieldResolution = size(lightField);
+% lightFieldResolution = lightFieldResolution(1 : 4);
+% 
+% cameraPlaneDistance = 2000;
+% distanceBetweenCameras = [20, 20];
+% fov = deg2rad([60, 45]);
+% distanceCameraPlaneToSensorPlane = computeSensorDistanceOfCamera(fov);
+% 
+% aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
 %% Load the light field from a H5 file
 
