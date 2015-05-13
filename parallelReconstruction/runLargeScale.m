@@ -19,8 +19,8 @@
 % fov = atan(fov)*2;
 
 
-NumberOfLayers = 6;
-distanceBetweenLayers = 0.5;
+NumberOfLayers = 5;
+distanceBetweenLayers = 1;
 % cameraPlaneDistance = 2000;
 
 
@@ -29,7 +29,8 @@ distanceBetweenLayers = 0.5;
 % channels = 3;
 % lightField = lightField(:, :, 1 : 100, 1 : 100, :);
 % lightField = zeros([lightFieldResolution, 3]);
-layerResolution = [300 * aspectRatio, 300];
+layerResolution = [round(200 * aspectRatio), 200];
+% 4
 layerWidth = 4 * aspectRatio;
 layerHeight = 4;
 
@@ -81,19 +82,17 @@ fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
 %% Trying to normalize the weights
 
-% rowSum = sum(P, 2);
-% for i = 1 : size(P, 1)
-%     if(rowSum(i) ~= 0)
-%         P(i, :) = P(i, :) ./ rowSum(i);
-%     end
-% end
 % rowSums = sum(P,2);
 % rowSums = max(1, rowSums);
 % P = spdiags(1./rowSums,0,size(P,1),size(P,1))*P;
 
-% colSums = sum(P,1);
-% colSums = max(1, colSums);
-% P = spdiags(1./colSums,0,size(P,1),size(P,1))*P;
+
+% colSums = sum(P, 1);
+% for i = 1 : size(P, 2)
+%     if(colSums(i) ~= 0)
+%         P(:, i) = P(:, i) ./ colSums(i);
+%     end
+% end
 
 %% Convert to log light field
 lightFieldVectorLogDomain = lightFieldVector;
@@ -167,6 +166,8 @@ lightFieldRec = exp(lightFieldRec);
 % center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
 center = [2, 2];
 other = [3, 3];
+% center = [1, 3];
+% other = [1, 6];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
 otherLF = squeeze(lightField(other(1), other(2), :, :, :));

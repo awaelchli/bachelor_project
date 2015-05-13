@@ -85,8 +85,10 @@ for camIndexX = 1 : lightFieldResolution(2)
 
             % insert the calculated indices into the sparse arrays
             
-            for sy = 0:0 %-1:1
-                for sx = 0:0%-1:1
+            sigma_p = 1;
+            r = 1;
+            for sy = -r:r
+                for sx = -r:r
                     tempPixelIndexMatrixY = min(pixelIndexMatrixY+sy, lightFieldResolution(3));
                     tempPixelIndexMatrixY = max(tempPixelIndexMatrixY, 0);
                     
@@ -107,6 +109,8 @@ for camIndexX = 1 : lightFieldResolution(2)
                     numInsertions = numel(rows);
                     I(c : c + numInsertions-1) = rows;
                     J(c : c + numInsertions-1) = columns;
+                    w = exp(-(sy*sy+sx*sx)/(2*sigma_p*sigma_p));
+                    S(c : c + numInsertions-1) = S(c : c + numInsertions-1) * w;
                     c = c + numInsertions ;
                 end
             end
@@ -115,7 +119,14 @@ for camIndexX = 1 : lightFieldResolution(2)
     end
 end
 
-P = sparse(I(1 : c - 1), J(1 : c - 1), S(1 : c - 1), prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
+w = 0;
+for sy = -r:r
+    for sx = -r:r
+        w = w + exp(-(sy*sy+sx*sx)/(2*sigma_p*sigma_p));
+    end
+end
+
+P = sparse(I(1 : c - 1), J(1 : c - 1), S(1 : c - 1)/w, prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
 
 
 end
