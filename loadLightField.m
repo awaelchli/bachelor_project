@@ -9,12 +9,12 @@
 % path = 'lightFields/pink/';
 % path = '../lightFields/dice_camera/dice_parallel/3x3/';
 % path = '../lightFields/dice_camera/dice_parallel/5x5-.05/';
-path = '../lightFields/legotruck/';
+path = 'lightFields/legotruck_downsampled/';
 
-[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [17, 17] );
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [9, 9] );
 
-lightField = lightField(1:2:17, 1:2:17, :, :, :);
-lightField = downsampleLighField(lightField, 0.4);
+% lightField = lightField(1:2:17, 1:2:17, :, :, :);
+% lightField = downsampleLighField(lightField, 0.4);
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);

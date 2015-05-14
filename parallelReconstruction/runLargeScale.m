@@ -31,8 +31,8 @@ distanceBetweenLayers = 10;
 % lightField = zeros([lightFieldResolution, 3]);
 layerResolution = [round(200 * aspectRatio), 200];
 % 4
-layerWidth = 20 * aspectRatio;
-layerHeight = 20;
+layerWidth = 1000 * aspectRatio;
+layerHeight = 1000;
 
 % fov = [layerWidth/2 layerHeight/2] ./ distanceCameraPlaneToSensorPlane;
 % fov = atan(fov)*2;
