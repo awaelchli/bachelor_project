@@ -1,4 +1,4 @@
-function [ P ] = computeMatrixP( NumberOfLayers, ...
+function [ P ] = computeMatrixPInterp( NumberOfLayers, ...
                                  lightFieldResolution, ...
                                  layerResolution, ...
                                  layerSize, ...
@@ -30,15 +30,8 @@ function [ P ] = computeMatrixP( NumberOfLayers, ...
 %                   each layer
 
 % upper bound for number of non-zero values in the matrix P
-NumberOfNonZeroElements = prod(lightFieldResolution) * NumberOfLayers; 
-NumberOfNonZeroElements = 100000000;
-
-I = zeros(NumberOfNonZeroElements, 1);      % row indices
-J = zeros(NumberOfNonZeroElements, 1);      % column indices  
-S = ones(NumberOfNonZeroElements, 1);       % values
-
-% index of the current non-zero element used in the for loop below.
-c = 1;
+% NumberOfNonZeroElements = prod(lightFieldResolution) * NumberOfLayers; 
+NumberOfNonZeroElements = 10000000;
 
 [ cameraPositionMatrixY, cameraPositionMatrixX ] = computeCameraPositions(lightFieldResolution([1, 2]), ...
                                                                           distanceBetweenTwoCameras([2, 1]));
@@ -48,6 +41,20 @@ c = 1;
                                                                           
 layerPositionsZ = -(NumberOfLayers - 1) * distanceBetweenLayers / 2 : distanceBetweenLayers : (NumberOfLayers - 1) * distanceBetweenLayers / 2;
 
+sigma_p = 1;
+r = 1;
+sumW = 0;
+for sy = -r:r
+    for sx = -r:r
+        sumW = sumW + exp(-(sy*sy+sx*sx)/(2*sigma_p*sigma_p));
+    end
+end
+
+P = sparse(prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]));
+
+
+
+
 for camIndexX = 1 : lightFieldResolution(2)
     for camIndexY = 1 : lightFieldResolution(1)
     
@@ -55,8 +62,7 @@ for camIndexX = 1 : lightFieldResolution(2)
         cameraPosition = [ cameraPositionMatrixY(camIndexY, camIndexX), ...
                            cameraPositionMatrixX(camIndexY, camIndexX) ];
         
-        for layer = 1 : NumberOfLayers
-            
+        for layer = 1 : NumberOfLayers            
             % adjust distance for current layer; the coordinate origin is
             % at the center of the layer stack
             distanceBetweenCameraPlaneAndLayer = cameraPlaneDistance + layerPositionsZ(layer);
@@ -82,13 +88,17 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                                lightFieldResolution([3, 4]), ...
                                                                @round);
             
-
-            % insert the calculated indices into the sparse arrays
             
-            sigma_p = 1;
-            r = 0;
+                                                           
+            I = zeros(NumberOfNonZeroElements, 1);      % row indices
+            J = zeros(NumberOfNonZeroElements, 1);      % column indices  
+            S = ones(NumberOfNonZeroElements, 1);       % values
+            c = 1;
+            
+            % insert the calculated indices into the sparse arrays
             for sy = -r:r
                 for sx = -r:r
+
                     tempPixelIndexMatrixY = min(pixelIndexMatrixY+sy, lightFieldResolution(3));
                     tempPixelIndexMatrixY = max(tempPixelIndexMatrixY, 0);
                     
@@ -106,42 +116,26 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                  tempPixelIndexMatrixY, ... 
                                                  tempPixelIndexMatrixX, ...
                                                  lightFieldResolution);
+                    
                     numInsertions = numel(rows);
+                    w = exp(-(sy*sy+sx*sx)/(2*sigma_p*sigma_p))/sumW;
                     I(c : c + numInsertions-1) = rows;
                     J(c : c + numInsertions-1) = columns;
-                    w = exp(-(sy*sy+sx*sx)/(2*sigma_p*sigma_p));
-                    S(c : c + numInsertions-1) = S(c : c + numInsertions-1) * w;
-                    c = c + numInsertions ;
+                    S(c : c + numInsertions-1) = ones(1, numInsertions) * w;
+                    c = c + numInsertions;
+
                 end
             end
             
+           
+            P = P + sparse(I(1:c-1), J(1:c-1), S(1:c-1), prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), numel(I));
+
         end
     end
 end
 
 
-w = 0;
-for sy = -r:r
-    for sx = -r:r
-        w = w + exp(-(sy*sy+sx*sx)/(2*sigma_p*sigma_p));
-    end
-end
 
-I = I(1 : c - 1);
-J = J(1 : c - 1);
-S = S(1 : c - 1);
-
-P = sparse(I, J, S/w, prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
-
-% maxIndex = prod(lightFieldResolution);
-% for sy = 0:0
-%     for sx = -r:r
-%         w = exp(-(sy*sy+sx*sx)/(2*sigma_p*sigma_p));
-% %         P(max(min(I + sx, maxIndex)), J) = S*w;
-%         P = P + sparse(max(min(I + sx, maxIndex)), J, S/w, prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
-% %         c = c + numInsertions ;
-%     end
-% end
 end
 
 

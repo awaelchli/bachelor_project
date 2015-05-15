@@ -9,21 +9,21 @@
 % path = 'lightFields/pink/';
 % path = '../lightFields/dice_camera/dice_parallel/3x3/';
 % path = '../lightFields/dice_camera/dice_parallel/5x5-.05/';
-path = 'lightFields/legotruck_downsampled/';
+path = 'lightFields/legotruck_downsampled_cropped_small/';
 
-[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [9, 9] );
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [17, 17] );
 
-% lightField = lightField(1:2:17, 1:2:17, :, :, :);
-% lightField = downsampleLighField(lightField, 0.4);
+lightField = lightField(17:-2:1, 1:2:17, :, :, :);
+% lightField = downsampleLighField(lightField, 0.2);
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
 
-cameraPlaneDistance = 0;
+cameraPlaneDistance = 1;
 distanceBetweenCameras = [4 * 2, 4 * 2]; 
-fov = deg2rad([60, 45]);
+fov = deg2rad([120, 120]);
 
-distanceCameraPlaneToSensorPlane = computeSensorDistanceOfCamera(fov);
+distanceCameraPlaneToSensorPlane = cameraPlaneDistance *22/8;% computeSensorDistanceOfCamera(fov);
 
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 

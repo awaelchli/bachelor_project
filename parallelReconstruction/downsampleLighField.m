@@ -8,7 +8,7 @@ sampledLightField = zeros(newResolution);
 
 for y = 1 : originalResolution(1)
     for x = 1 : originalResolution(2)
-        sampledLightField(y, x, :, :, :) = imresize(squeeze(originalLightField(y, x, :, :, :)), scaleFactor);
+        sampledLightField(y, x, :, :, :) = imresize(squeeze(originalLightField(y, x, :, :, :)), scaleFactor, 'nearest');
     end
 end
 

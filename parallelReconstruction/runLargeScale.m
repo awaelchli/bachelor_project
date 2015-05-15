@@ -21,18 +21,19 @@
 
 NumberOfLayers = 5;
 distanceBetweenLayers = 10;
-% cameraPlaneDistance = 2000;
+% cameraPlaneDistance = 1;
+% fov = deg2rad([30, 30]);
 
 
-% distanceBetweenCameras = [200, 200];
+% distanceBetweenCameras = [.5, .5];
 % lightFieldResolution = [2, 2, 3, 3];
 % channels = 3;
 % lightField = lightField(:, :, 1 : 100, 1 : 100, :);
 % lightField = zeros([lightFieldResolution, 3]);
-layerResolution = [round(200 * aspectRatio), 200];
+layerResolution = [round(101 * aspectRatio), 101];
 % 4
-layerWidth = 1000 * aspectRatio;
-layerHeight = 1000;
+layerWidth = 100 * aspectRatio;
+layerHeight = 100;
 
 % fov = [layerWidth/2 layerHeight/2] ./ distanceCameraPlaneToSensorPlane;
 % fov = atan(fov)*2;
