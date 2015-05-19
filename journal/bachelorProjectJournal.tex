@@ -47,7 +47,7 @@ In addition, the images can be optained using either perspective or orthographic
 	\caption{Different methods to capture a lightfield}\label{fig:animals}
 \end{figure}
 
-\section{A first implementation}
+\section{A first implementation}	\label{sec:first_implementation}
 In a first step, I (re-)implemented the tomographic light field synthesis for layered 3D-displays in MATLAB, based on the theory in \cite{WETZ_TOMO} and their publicly available MATLAB code. The core problem to solve is:
 
 \begin{equation} \label{eq:core_problem}
@@ -96,9 +96,17 @@ This method does not seem to work. The main problem is that a lot of layer pixel
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[scale=0.5]{sketches/problem_camera_to_layers.png} 
-	\caption{Two rays hitting a cameras sensor in neighbouring pixels. The two rays intersect with the layer pixels, with multiple pixels in between.}
-	\label{fig:problem_camera_to_layers}
+	\begin{subfigure}[t]{0.4\textwidth}
+ 		\includegraphics[scale=0.3]{sketches/problem_camera_to_layers.png} 
+		\caption{Two rays hitting a cameras sensor in neighbouring pixels. The two rays intersect with the layer pixels, with multiple pixels in between.}
+		\label{fig:problem_camera_to_layers}
+	\end{subfigure}%
+	\qquad
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[scale=0.3]{sketches/problem_layers_to_camera_rounding.png}
+		\caption{Rays coming from four different layer pixels and hitting the same sensor pixel in the camera.}
+		\label{fig:problem_layers_to_camera}
+	\end{subfigure}
 \end{figure}
 
 \subsection{Approach 2: Converting the light field}
@@ -118,7 +126,14 @@ of the same dimension as the light field resolution. The ":" represents replicat
 \\\\ TODO: Why didn't it work in the end? 
 
 \subsection{Approach 3: From layer pixels to camera pixels}
-This idea is basically the opposite of approach 1. For every layer pixel and for every camera we compute the ray intersection on the sensor plane. These points will be rounded to their corresponding pixels. In this setup, it is very frequent that a patch of layer pixels gets mapped to the same camera pixel due to rounding and thus, one pixel from the camera would contribute to multiple layer pixels. This also results in high column sums of the matrix $P$ from equation \ref{eq:core_problem}.
+This idea is basically the opposite of approach 1. For every layer pixel and for every camera we compute the ray intersection on the sensor plane. The positions $x_1$ and $x_2$ shown in figure \ref{fig:cameras_layers_sketch} are computed as follows:
+
+\begin{align*}
+	& x_1 = \left( s_1 - u_1 \right) \frac{d_s}{z + d_L} & x_2 = \left( s_1 - u_2 \right) \frac{d_s}{z + d_L}
+\end{align*}
+
+These points will be scaled and rounded to their corresponding pixels. We can then construct the propagation matrix $P$ the same way as in section \ref{sec:first_implementation}.
+As demonstrated in figure \ref{fig:problem_layers_to_camera}, it often happens that a patch of layer pixels gets mapped to the same camera pixel due to rounding and thus, one pixel from the camera would contribute to multiple layer pixels. This also results in high column sums of the matrix $P$ from equation \ref{eq:core_problem}.
 
 \begin{figure}[h]
 	\centering
@@ -128,7 +143,7 @@ This idea is basically the opposite of approach 1. For every layer pixel and for
 \end{figure}
 
 \section{Creating synthetic light fields}
-To test my code I use POV-Ray to create and render the synthetic scenes. The advantage of a synthetic light field is that the cameras can be precisely placed and all the required parameters are known and can be adjusted easily. 
+I used light fields from the Heidelberg and Stanford light field archives. In addition, I also rendered synthetic scenes with POV-Ray. The advantage of a synthetic light field is that the cameras can be precisely placed and all the required parameters are known and can be adjusted easily. 
 
 \newpage
 \bibliographystyle{alpha}
