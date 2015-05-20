@@ -1,3 +1,17 @@
+% This script is used to load different types of light fields. Each
+% section can be run independently from the others and will load a
+% different scene, with different parameters.
+% 
+% NOTES: 
+%  
+% The parameters z = "cameraPlaneDistance", ds = "distanceCameraPlaneToSensorPlane" 
+% and dc = "distanceBetweenCameras" are related to disparity by 
+%
+%                       disparity = dc * ds / z.
+%
+% Use this equation to compute the missing parameter(s), depending on the
+% ones that are known.
+
 %% Template for loading a light field from a folder of images
 
 % path = 'lightFields/messerschmitt/7x7x384x512/';
