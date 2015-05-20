@@ -1,4 +1,4 @@
-%% Load the light field from a folder of images
+%% Template for loading a light field from a folder of images
 
 % path = 'lightFields/messerschmitt/7x7x384x512/';
 % path = 'lightFields/dice/';
@@ -8,7 +8,7 @@
 % path = 'lightFields/dice_camera/dice_5x5_ap35/';
 % path = 'lightFields/pink/';
 % path = '../lightFields/dice_camera/dice_parallel/3x3/';
-% path = '../lightFields/dice_camera/dice_parallel/5x5-.05/';
+% path = 'lightFields/dice_camera/dice_parallel/5x5-.05/';
 path = 'lightFields/legotruck_downsampled_cropped_small/';
 
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [17, 17] );
@@ -21,12 +21,44 @@ lightFieldResolution = lightFieldResolution(1 : 4);
 
 cameraPlaneDistance = 1;
 distanceBetweenCameras = [4 * 2, 4 * 2]; 
-fov = deg2rad([120, 120]);
-
-distanceCameraPlaneToSensorPlane = cameraPlaneDistance *22/8;% computeSensorDistanceOfCamera(fov);
-
+fov = deg2rad([60, 45]);
+distanceCameraPlaneToSensorPlane = cameraPlaneDistance * 22 / 8;
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
+
+%% Perspective lego truck scene
+
+path = 'lightFields/legotruck_downsampled_cropped/';
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [17, 17] );
+
+lightField = lightField(17:-2:1, 1:2:17, :, :, :);
+% lightField = downsampleLighField(lightField, 0.2);
+
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
+
+cameraPlaneDistance = 500;
+distanceBetweenCameras = [4 * 2, 4 * 2]; 
+% fov = deg2rad([60, 45]);
+distanceCameraPlaneToSensorPlane = 1;
+% distanceCameraPlaneToSensorPlane = cameraPlaneDistance * 22 / 8;
+aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
+fov = computeFOVForCamera(distanceCameraPlaneToSensorPlane, aspectRatio);
+
+
+%% Perspective Dice Scene
+
+path = 'lightFields/dice_camera/dice_parallel/5x5-.05/';
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
+
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
+ 
+cameraPlaneDistance = 8;
+distanceBetweenCameras = [.05, .05]; 
+fov = deg2rad([60, 45]);
+distanceCameraPlaneToSensorPlane = 1;
+aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
 %% Load the light field from a H5 file
 
