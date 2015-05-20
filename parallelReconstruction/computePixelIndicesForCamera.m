@@ -11,9 +11,8 @@ function [ pixelIndexMatrixY, ...
 maxPositionY = distanceCameraPlaneToSensorPlane * tan( fov(1) / 2);
 maxPositionX = distanceCameraPlaneToSensorPlane * tan( fov(2) / 2);
 
-% TODO : check the sensor size and make compatible
-sizeOfView = [2 * maxPositionY, 2 * maxPositionX];
-scalePositionToIndex = (cameraResolution - 1) ./ sizeOfView;
+sensorSize = [2 * maxPositionY, 2 * maxPositionX];
+scalePositionToIndex = (cameraResolution - 1) ./ sensorSize;
 
 % To 'screen' coordinate system
 pixelPositionMatrixY = maxPositionY - pixelPositionMatrixY;
@@ -21,8 +20,8 @@ pixelPositionMatrixX = pixelPositionMatrixX + maxPositionX;
 
 pixelPositionMatrixY(pixelPositionMatrixY < 0) = 0;
 pixelPositionMatrixX(pixelPositionMatrixX < 0) = 0;
-pixelPositionMatrixY(pixelPositionMatrixY > sizeOfView(1)) = 0;
-pixelPositionMatrixX(pixelPositionMatrixX > sizeOfView(2)) = 0;
+pixelPositionMatrixY(pixelPositionMatrixY > sensorSize(1)) = 0;
+pixelPositionMatrixX(pixelPositionMatrixX > sensorSize(2)) = 0;
 
 % Scale positions to the range [0, resolution - 1]
 pixelPositionMatrixY = scalePositionToIndex(1) .* pixelPositionMatrixY;
