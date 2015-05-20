@@ -1,6 +1,6 @@
 % clear;
 %% Parameters
-NumberOfLayers = 5;
+NumberOfLayers = 3;
 distanceBetweenLayers = 4;
 % Width and height of the layers in mm
 layerWidth = 100;
@@ -95,7 +95,7 @@ end
 mkdir(outFolder);
 
 printLayers(layers(:, :, 1:3, :), layerSize, outFolder, 'print1', 1);
-printLayers(layers(:, :, 4:5, :), layerSize, outFolder, 'print2', 4);
+% printLayers(layers(:, :, 4:5, :), layerSize, outFolder, 'print2', 4);
 
 %% Reconstruct light field from attenuation layers and evaluate error
 
@@ -110,34 +110,38 @@ lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
 lightFieldRec = exp(lightFieldRec);
 
 center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
-other = [7, 7];
+custom = [7, 7];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
-otherLF = squeeze(lightField(other(1), other(2), :, :, :));
-otherRec = squeeze(lightFieldRec(other(1), other(2), :, :, :));
+otherLF = squeeze(lightField(custom(1), custom(2), :, :, :));
+customRec = squeeze(lightFieldRec(custom(1), custom(2), :, :, :));
 
 % show the central and custom view from reconstruction
 figure('Name', 'Light field reconstruction')
 imshow(centerRec)
 title('Central view');
-imwrite(centerRec, [outFolder 'central_view.png']);
+imwrite(centerRec, [outFolder 'central_view_reconstruction.png']);
 
 figure('Name', 'Light field reconstruction')
-imshow(otherRec)
+imshow(customRec)
 title('Custom view');
+imwrite(customRec, [outFolder 'custom_view_reconstruction.png']);
 
 % show the absolute error
-error = abs(centerRec - centerLF);
+[error, mse] = meanSquaredErrorImage(centerRec, centerLF);
 figure('Name', 'Absolute Error of Central View')
 imshow(error)
 title('Central view');
 
+fprintf('MSE for central view: %f \n', mse);
+
 imwrite(error, [outFolder 'central_view_error.png']);
 
-error = abs(otherRec - otherLF);
+[error, mse] = meanSquaredErrorImage(customRec, otherLF);
 figure('Name', 'Absolute Error of custom view')
 imshow(error)
 title('Custom view');
 
-imwrite(error, [outFolder 'custom_view_error.png']);
+fprintf('MSE for custom view: %f \n', mse);
 
+imwrite(error, [outFolder 'custom_view_error.png']);

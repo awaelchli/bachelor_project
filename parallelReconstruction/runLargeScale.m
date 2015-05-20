@@ -1,42 +1,16 @@
 % clear;
 %% Parameters
-% 
-% NumberOfLayers = 3;
-% distanceBetweenLayers = 100;
-% cameraPlaneDistance = 1270;
-% % fov = deg2rad([23.8, 18.6673]);
-% distanceCameraPlaneToSensorPlane = 1270;
-% % distanceBetweenCameras = [20, 20];
-% % lightFieldResolution = [2, 2, 3, 3];
-% % channels = 3;
-% % lightField = lightField(:, :, 1 : 100, 1 : 100, :);
-% % lightField = zeros([lightFieldResolution, 3]);
-% layerResolution = [300, 300];
-% layerWidth = 500;
-% layerHeight = 500;
-% 
-% fov = [layerWidth/2 layerHeight/2] ./ distanceCameraPlaneToSensorPlane;
-% fov = atan(fov)*2;
+
+NumberOfLayers = 7;
+distanceBetweenLayers = 30;
+
+% layerResolution = [round(101 * aspectRatio), 101];
+layerResolution = lightFieldResolution([3, 4]);
+
+layerWidth = 400 * aspectRatio;
+layerHeight = 400;
 
 
-NumberOfLayers = 5;
-distanceBetweenLayers = 10;
-% cameraPlaneDistance = 1;
-% fov = deg2rad([30, 30]);
-
-
-% distanceBetweenCameras = [.5, .5];
-% lightFieldResolution = [2, 2, 3, 3];
-% channels = 3;
-% lightField = lightField(:, :, 1 : 100, 1 : 100, :);
-% lightField = zeros([lightFieldResolution, 3]);
-layerResolution = [round(101 * aspectRatio), 101];
-% 4
-layerWidth = 100 * aspectRatio;
-layerHeight = 100;
-
-% fov = [layerWidth/2 layerHeight/2] ./ distanceCameraPlaneToSensorPlane;
-% fov = atan(fov)*2;
 
 % Maximum number of iterations in optimization process
 maxIterations = 20;
@@ -141,7 +115,7 @@ layers = cat(2, layersR, layersG, layersB);
 layers = reshape(layers, [ layerResolution, NumberOfLayers, 3]);
 
 %% Save and display each layer
-% close all;
+close all;
 
 if(exist(outFolder, 'dir'))
     rmdir(outFolder, 's');
@@ -153,49 +127,49 @@ printLayers(layers(:, :, 1:NumberOfLayers, :), layerSize, outFolder, 'print1', 1
 
 %% Reconstruct light field from attenuation layers and evaluate error
 
-lightFieldRecVector = zeros(size(lightFieldVectorLogDomain));
+lightFieldRecVector = zeros(size(lightFieldVector));
 lightFieldRecVector(:, 1) = P * log(layersR);
 lightFieldRecVector(:, 2) = P * log(layersG);
 lightFieldRecVector(:, 3) = P * log(layersB);
 
-% lightFieldRec = permute(lightFieldRecVector, [3, 4, 1, 2, 5]);
 % convert the light field vector to the 4D light field
 lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
 
-% center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
-center = [2, 2];
-other = [4, 4];
-% center = [1, 3];
-% other = [1, 6];
+center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
+custom = [5, 5];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
-otherLF = squeeze(lightField(other(1), other(2), :, :, :));
-otherRec = squeeze(lightFieldRec(other(1), other(2), :, :, :));
+otherLF = squeeze(lightField(custom(1), custom(2), :, :, :));
+customRec = squeeze(lightFieldRec(custom(1), custom(2), :, :, :));
 
 % show the central and custom view from reconstruction
 figure('Name', 'Light field reconstruction')
 imshow(centerRec)
 title('Central view');
-imwrite(centerRec, [outFolder 'central_view.png']);
+imwrite(centerRec, [outFolder 'central_view_reconstruction.png']);
 
 figure('Name', 'Light field reconstruction')
-imshow(otherRec)
+imshow(customRec)
 title('Custom view');
+imwrite(customRec, [outFolder 'custom_view_reconstruction.png']);
 
 % show the absolute error
-error = abs(centerRec - centerLF);
+[error, mse] = meanSquaredErrorImage(centerRec, centerLF);
 figure('Name', 'Absolute Error of Central View')
 imshow(error)
 title('Central view');
 
+fprintf('MSE for central view: %f \n', mse);
+
 imwrite(error, [outFolder 'central_view_error.png']);
 
-error = abs(otherRec - otherLF);
+[error, mse] = meanSquaredErrorImage(customRec, otherLF);
 figure('Name', 'Absolute Error of custom view')
 imshow(error)
 title('Custom view');
 
-imwrite(error, [outFolder 'custom_view_error.png']);
+fprintf('MSE for custom view: %f \n', mse);
 
+imwrite(error, [outFolder 'custom_view_error.png']);
