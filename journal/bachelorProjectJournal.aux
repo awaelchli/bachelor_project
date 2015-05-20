@@ -35,26 +35,31 @@
 \@writefile{toc}{\contentsline {section}{\numberline {1}Related work}{2}{section.1}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Types of light fields}{2}{section.2}}
 \newlabel{sec:lftypes}{{2}{2}{Types of light fields}{section.2}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}A first implementation}{2}{section.3}}
-\newlabel{sec:first_implementation}{{3}{2}{A first implementation}{section.3}{}}
-\newlabel{eq:core_problem}{{1}{2}{A first implementation}{equation.3.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The rays captured by camera $i$ using orthographic projection. All rays from one camera have the same angle $\theta _i$, which is measured relative to the surface normal of the layers. $x_1$, $s_1$ and $s_2$ denote the intersections of the ray with the camera sensor and the layers. $d_L$ is the distance between the layers.\relax }}{2}{figure.caption.3}}
-\newlabel{fig:orthographic_cameras_layers_sketch}{{2}{2}{The rays captured by camera $i$ using orthographic projection. All rays from one camera have the same angle $\theta _i$, which is measured relative to the surface normal of the layers. $x_1$, $s_1$ and $s_2$ denote the intersections of the ray with the camera sensor and the layers. $d_L$ is the distance between the layers.\relax }{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Notation}{2}{section.3}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}A first implementation for orthographic projections}{2}{section.4}}
+\newlabel{sec:first_implementation}{{4}{2}{A first implementation for orthographic projections}{section.4}{}}
+\newlabel{eq:core_problem}{{1}{2}{A first implementation for orthographic projections}{equation.4.1}{}}
 \citation{CONV_SART}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Moving to light fields of type 1}{3}{section.4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Approach 1: From camera pixels to layer pixels}{3}{subsection.4.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Approach 2: Converting the light field}{3}{subsection.4.2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The rays captured by camera $i$ using orthographic projection. All rays from one camera have the same angle $\theta _i$, which is measured relative to the surface normal of the layers. $x_6^i$, $s_5^2$ and $s_7^1$ denote the intersections of the ray with the camera sensor and the layers. $d_L$ is the distance between the layers.\relax }}{3}{figure.caption.3}}
+\newlabel{fig:orthographic_cameras_layers_sketch}{{2}{3}{The rays captured by camera $i$ using orthographic projection. All rays from one camera have the same angle $\theta _i$, which is measured relative to the surface normal of the layers. $x_6^i$, $s_5^2$ and $s_7^1$ denote the intersections of the ray with the camera sensor and the layers. $d_L$ is the distance between the layers.\relax }{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Moving to light fields of type 1}{3}{section.5}}
 \newlabel{fig:problem_camera_to_layers}{{3a}{4}{Two rays hitting a cameras sensor in neighbouring pixels. The two rays intersect with the layer pixels, with multiple pixels in between.\relax }{figure.caption.4}{}}
 \newlabel{sub@fig:problem_camera_to_layers}{{a}{4}{Two rays hitting a cameras sensor in neighbouring pixels. The two rays intersect with the layer pixels, with multiple pixels in between.\relax }{figure.caption.4}{}}
 \newlabel{fig:problem_layers_to_camera}{{3b}{4}{Rays coming from four different layer pixels and hitting the same sensor pixel in the camera.\relax }{figure.caption.4}{}}
 \newlabel{sub@fig:problem_layers_to_camera}{{b}{4}{Rays coming from four different layer pixels and hitting the same sensor pixel in the camera.\relax }{figure.caption.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Approach 3: From layer pixels to camera pixels}{4}{subsection.4.3}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Creating synthetic light fields}{4}{section.5}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Problems that can arise from different resolution in image- and layer space.\relax }}{4}{figure.caption.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Approach 1: From camera pixels to layer pixels}{4}{subsection.5.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Approach 2: Converting the light field}{4}{subsection.5.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Approach 3: From layer pixels to camera pixels}{4}{subsection.5.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Two rays (red) intersecting the first layer (blue) at position $s_i^1$. The rays are captured by different cameras at positions $u_1$ and $u_2$, hitting the camera sensor at locations $x_j^1$ and $x_k^2$. The dotted lines represent the field of view of each camera.\relax }}{5}{figure.caption.5}}
+\newlabel{fig:cameras_layers_sketch}{{4}{5}{Two rays (red) intersecting the first layer (blue) at position $s_i^1$. The rays are captured by different cameras at positions $u_1$ and $u_2$, hitting the camera sensor at locations $x_j^1$ and $x_k^2$. The dotted lines represent the field of view of each camera.\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Creating synthetic light fields}{5}{section.6}}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Review of the two implementations}{5}{section.7}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Orthographic projections}{5}{subsection.7.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Perspective projections}{5}{subsection.7.2}}
 \bibstyle{alpha}
 \bibdata{lit}
 \bibcite{LEVO_LFREN}{LH96}
 \bibcite{WETZ_TOMO}{WLHR11}
 \bibcite{WETZ_TENS}{WLHR12}
 \bibcite{CONV_SART}{Yan10}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Two rays (red) intersecting the first layer (blue) at position $s_1$. The rays are captured by different cameras at positions $u_1$ and $u_2$, hitting the camera sensor at locations $x_1$ and $x_2$. The dotted lines represent the field of view of each camera.\relax }}{5}{figure.caption.5}}
-\newlabel{fig:cameras_layers_sketch}{{4}{5}{Two rays (red) intersecting the first layer (blue) at position $s_1$. The rays are captured by different cameras at positions $u_1$ and $u_2$, hitting the camera sensor at locations $x_1$ and $x_2$. The dotted lines represent the field of view of each camera.\relax }{figure.caption.5}{}}

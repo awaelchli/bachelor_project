@@ -1,8 +1,12 @@
 \BOOKMARK [1][-]{section.1}{Related work}{}% 1
 \BOOKMARK [1][-]{section.2}{Types of light fields}{}% 2
-\BOOKMARK [1][-]{section.3}{A first implementation}{}% 3
-\BOOKMARK [1][-]{section.4}{Moving to light fields of type 1}{}% 4
-\BOOKMARK [2][-]{subsection.4.1}{Approach 1: From camera pixels to layer pixels}{section.4}% 5
-\BOOKMARK [2][-]{subsection.4.2}{Approach 2: Converting the light field}{section.4}% 6
-\BOOKMARK [2][-]{subsection.4.3}{Approach 3: From layer pixels to camera pixels}{section.4}% 7
-\BOOKMARK [1][-]{section.5}{Creating synthetic light fields}{}% 8
+\BOOKMARK [1][-]{section.3}{Notation}{}% 3
+\BOOKMARK [1][-]{section.4}{A first implementation for orthographic projections}{}% 4
+\BOOKMARK [1][-]{section.5}{Moving to light fields of type 1}{}% 5
+\BOOKMARK [2][-]{subsection.5.1}{Approach 1: From camera pixels to layer pixels}{section.5}% 6
+\BOOKMARK [2][-]{subsection.5.2}{Approach 2: Converting the light field}{section.5}% 7
+\BOOKMARK [2][-]{subsection.5.3}{Approach 3: From layer pixels to camera pixels}{section.5}% 8
+\BOOKMARK [1][-]{section.6}{Creating synthetic light fields}{}% 9
+\BOOKMARK [1][-]{section.7}{Review of the two implementations}{}% 10
+\BOOKMARK [2][-]{subsection.7.1}{Orthographic projections}{section.7}% 11
+\BOOKMARK [2][-]{subsection.7.2}{Perspective projections}{section.7}% 12
