@@ -1,0 +1,2 @@
+MSE for central view: 0.006211 
+MSE for custom view: 0.018145 
