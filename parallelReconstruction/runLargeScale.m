@@ -1,16 +1,15 @@
 % clear;
-%% Parameters
+%% Parameters - Lego Truck Scene
 
-NumberOfLayers = 7;
+NumberOfLayers = 5;
 distanceBetweenLayers = 30;
 
-% layerResolution = [round(101 * aspectRatio), 101];
+% layerResolution = [100, 100 * aspectRatio];
+layerResolution = round(layerResolution);
 layerResolution = lightFieldResolution([3, 4]);
 
 layerWidth = 400 * aspectRatio;
 layerHeight = 400;
-
-
 
 % Maximum number of iterations in optimization process
 maxIterations = 20;
@@ -20,6 +19,35 @@ outFolder = 'output/';
 % layerHeight = layerWidth * (lightFieldResolution(3) / lightFieldResolution(4));
 layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
+
+% Indices of views for reconstruction and error evaluation
+center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
+custom = [9, 9];
+
+%% Parameters - Dice Scene
+% 
+% NumberOfLayers = 3;
+% distanceBetweenLayers = 1.5;
+% 
+% % layerResolution = [round(101 * aspectRatio), 101];
+% layerResolution = [200, 200 * aspectRatio];
+% layerResolution = round(layerResolution);
+% layerWidth = 6 * aspectRatio;
+% layerHeight = 6;
+% 
+% 
+% % Maximum number of iterations in optimization process
+% maxIterations = 20;
+% % Output folder to store the layers
+% outFolder = 'output/';
+% 
+% % layerHeight = layerWidth * (lightFieldResolution(3) / lightFieldResolution(4));
+% layerSize = [layerWidth, layerHeight];
+% totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
+% 
+% % Indices of views for reconstruction and error evaluation
+% center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
+% custom = [5, 5];
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
@@ -115,7 +143,7 @@ layers = cat(2, layersR, layersG, layersB);
 layers = reshape(layers, [ layerResolution, NumberOfLayers, 3]);
 
 %% Save and display each layer
-close all;
+% close all;
 
 if(exist(outFolder, 'dir'))
     rmdir(outFolder, 's');
@@ -137,8 +165,6 @@ lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
 
-center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
-custom = [5, 5];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
 otherLF = squeeze(lightField(custom(1), custom(2), :, :, :));
@@ -148,28 +174,28 @@ customRec = squeeze(lightFieldRec(custom(1), custom(2), :, :, :));
 figure('Name', 'Light field reconstruction')
 imshow(centerRec)
 title('Central view');
-imwrite(centerRec, [outFolder 'central_view_reconstruction.png']);
+imwrite(centerRec, [outFolder 'central_view_reconstruction' num2str(center(1)) '-' num2str(center(2)) '.png']);
 
 figure('Name', 'Light field reconstruction')
 imshow(customRec)
 title('Custom view');
-imwrite(customRec, [outFolder 'custom_view_reconstruction.png']);
+imwrite(customRec, [outFolder 'custom_view_reconstruction' num2str(custom(1)) '-' num2str(custom(2)) '.png']);
 
 % show the absolute error
 [error, mse] = meanSquaredErrorImage(centerRec, centerLF);
 figure('Name', 'Absolute Error of Central View')
-imshow(error)
+imshow(error, [])
 title('Central view');
 
-fprintf('MSE for central view: %f \n', mse);
+fprintf('RMSE for central view: %f \n', mse);
 
 imwrite(error, [outFolder 'central_view_error.png']);
 
 [error, mse] = meanSquaredErrorImage(customRec, otherLF);
 figure('Name', 'Absolute Error of custom view')
-imshow(error)
+imshow(error, [])
 title('Custom view');
 
-fprintf('MSE for custom view: %f \n', mse);
+fprintf('RMSE for custom view: %f \n', mse);
 
 imwrite(error, [outFolder 'custom_view_error.png']);
