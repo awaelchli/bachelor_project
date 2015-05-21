@@ -95,6 +95,7 @@ for camIndexX = 1 : lightFieldResolution(2)
             S = ones(NumberOfNonZeroElements, 1);       % values
             c = 1;
             
+            
             % insert the calculated indices into the sparse arrays
             for sy = -r:r
                 for sx = -r:r
@@ -129,7 +130,8 @@ for camIndexX = 1 : lightFieldResolution(2)
             
            
             P = P + sparse(I(1:c-1), J(1:c-1), S(1:c-1), prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), numel(I));
-
+            
+            fprintf('View: (%i, %i) \n', camIndexY, camIndexX);
         end
     end
 end
