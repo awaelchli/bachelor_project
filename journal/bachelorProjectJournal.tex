@@ -44,7 +44,7 @@ In addition, the images can be optained using either perspective or orthographic
 		\caption{Sheared Projections, cameras have a common image plane}
 		\label{fig:sheared_projections}
 	\end{subfigure}
-	\caption{Different methods to capture a lightfield}\label{fig:animals}
+	\caption{Different methods to capture a lightfield}
 \end{figure}
 
 \section{Notation}
@@ -171,9 +171,238 @@ As demonstrated in figure \ref{fig:problem_layers_to_camera}, it often happens t
 \section{Creating synthetic light fields}
 I used light fields from the Heidelberg and Stanford light field archives. In addition, I also rendered synthetic scenes with POV-Ray. The advantage of a synthetic light field is that the cameras can be precisely placed and all the required parameters are known and can be adjusted easily. 
 
+\newpage
 \section{Review of the two implementations}
 \subsection{Orthographic projections}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[c]{\textwidth}
+ 		\includegraphics[width=\textwidth]{results/dice_orthographic_rec_fov10_blurry_3Layers/P_full.eps}
+  		\caption{Full matrix.}
+   		\label{fig:P_orthographic_full}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[c]{\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_orthographic_rec_fov10_blurry_3Layers/P1-10000_1-1000.eps}
+		\caption{The upper left section of the matrix.}
+		\label{fig:P_orthographic_section}
+	\end{subfigure}
+	\caption{The structure of the propagation matrix $P$. The non-zero elements are marked as blue.}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[c]{0.3\textwidth}
+ 		\includegraphics[width=\textwidth]{results/dice_orthographic_rec_fov10_blurry_3Layers/1.png}
+  		\caption{Layer 1}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_orthographic_rec_fov10_blurry_3Layers/2.png}
+		\caption{Layer 2}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_orthographic_rec_fov10_blurry_3Layers/3.png}
+		\caption{Layer 3}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_orthographic_rec_fov10_blurry_3Layers/central_view_reconstruction.png}
+		\caption{The reconstructed central view $\left( 4, 4 \right)$.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_orthographic_rec_fov10_blurry_3Layers/central_view_error.png}
+		\caption{The error of the central view.}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_orthographic_rec_fov10_blurry_3Layers/custom_view_reconstruction.png}
+		\caption{Reconstruction of the view $\left( 7, 7 \right)$, the bottom-rightmost view.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_orthographic_rec_fov10_blurry_3Layers/custom_view_error.png}
+		\caption{The error of the view $\left( 7, 7 \right)$.}
+	\end{subfigure}
+
+	\caption{Optimization for three layers. The light field has an angular resolution of $7\times 7$ views. The blur in the reconstruction is also in the original light field.}
+\end{figure}
+
+\newpage
 \subsection{Perspective projections}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[c]{0.3\textwidth}
+ 		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=0/1.png}
+  		\caption{Layer 1}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=0/2.png}
+		\caption{Layer 2}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=0/3.png}
+		\caption{Layer 3}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=0/central_view_reconstruction3-3.png}
+		\caption{The reconstructed central view $\left( 3, 3 \right)$.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=0/central_view_error.png}
+		\caption{The error of the central view.}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=0/custom_view_reconstruction5-5.png}
+		\caption{Reconstruction of the view $\left( 5, 5 \right)$, the bottom-rightmost view.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=0/custom_view_error.png}
+		\caption{The error of the view $\left( 5, 5 \right)$.}
+	\end{subfigure}
+
+	\caption{Optimization for three layers. The light field has an angular resolution of $5\times 5$ views.}
+\end{figure}
+
+\newpage
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[c]{0.3\textwidth}
+ 		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=1/1.png}
+  		\caption{Layer 1}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=1/2.png}
+		\caption{Layer 2}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=1/3.png}
+		\caption{Layer 3}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=1/central_view_reconstruction.png}
+		\caption{The reconstructed central view $\left( 3, 3 \right)$.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=1/central_view_error.png}
+		\caption{The error of the central view.}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=1/custom_view_reconstruction.png}
+		\caption{Reconstruction of the view $\left( 5, 5 \right)$, the bottom-rightmost view.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=1/custom_view_error.png}
+		\caption{The error of the view $\left( 5, 5 \right)$.}
+	\end{subfigure}
+
+	\caption{Optimization for three layers. The light field has an angular resolution of $5\times 5$ views.}
+\end{figure}
+
+\newpage
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[c]{0.3\textwidth}
+ 		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=0/1.png}
+  		\caption{Layer 1}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=0/2.png}
+		\caption{Layer 2}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=0/3.png}
+		\caption{Layer 3}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=0/central_view_reconstruction5-5.png}
+		\caption{The reconstructed central view $\left( 5, 5 \right)$.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=0/central_view_error.png}
+		\caption{The error of the central view.}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=0/custom_view_reconstruction9-9.png}
+		\caption{Reconstruction of the view $\left( 9, 9 \right)$, the bottom-rightmost view.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=0/custom_view_error.png}
+		\caption{The error of the view $\left( 9, 9 \right)$.}
+	\end{subfigure}
+
+	\caption{Optimization for three layers. The light field has an angular resolution of $9\times 9$ views.}
+\end{figure}
+
+
+\newpage
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[c]{0.3\textwidth}
+ 		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=1/1.png}
+  		\caption{Layer 1}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=1/2.png}
+		\caption{Layer 2}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.3\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=1/3.png}
+		\caption{Layer 3}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=1/central_view_reconstruction5-5.png}
+		\caption{The reconstructed central view $\left( 5, 5 \right)$.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=1/central_view_error.png}
+		\caption{The error of the central view.}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=1/custom_view_reconstruction9-9.png}
+		\caption{Reconstruction of the view $\left( 9, 9 \right)$, the bottom-rightmost view.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{results/legotruck_perspective_rec_3Layers_r=1/custom_view_error.png}
+		\caption{The error of the view $\left( 9, 9 \right)$.}
+	\end{subfigure}
+
+	\caption{Optimization for three layers. The light field has an angular resolution of $9\times 9$ views.}
+\end{figure}
+
+
+
 \newpage
 \bibliographystyle{alpha}
 \bibliography{lit}

@@ -8,6 +8,6 @@
 \contentsline {subsection}{\numberline {5.2}Approach 2: Converting the light field}{4}{subsection.5.2}
 \contentsline {subsection}{\numberline {5.3}Approach 3: From layer pixels to camera pixels}{4}{subsection.5.3}
 \contentsline {section}{\numberline {6}Creating synthetic light fields}{5}{section.6}
-\contentsline {section}{\numberline {7}Review of the two implementations}{5}{section.7}
-\contentsline {subsection}{\numberline {7.1}Orthographic projections}{5}{subsection.7.1}
-\contentsline {subsection}{\numberline {7.2}Perspective projections}{5}{subsection.7.2}
+\contentsline {section}{\numberline {7}Review of the two implementations}{6}{section.7}
+\contentsline {subsection}{\numberline {7.1}Orthographic projections}{6}{subsection.7.1}
+\contentsline {subsection}{\numberline {7.2}Perspective projections}{8}{subsection.7.2}
