@@ -1,7 +1,7 @@
 % clear;
 %% Parameters
 NumberOfLayers = 3;
-distanceBetweenLayers = 4;
+distanceBetweenLayers = 35;
 % Width and height of the layers in mm
 layerWidth = 100;
 layerHeight = layerWidth * lightFieldResolution(3) / lightFieldResolution(4);
@@ -110,7 +110,7 @@ lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
 lightFieldRec = exp(lightFieldRec);
 
 center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
-custom = [7, 7];
+custom = [5, 5];
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
 otherLF = squeeze(lightField(custom(1), custom(2), :, :, :));

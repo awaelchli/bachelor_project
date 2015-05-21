@@ -1,7 +1,7 @@
 % clear;
 %% Parameters - Lego Truck Scene
 
-NumberOfLayers = 5;
+NumberOfLayers = 3;
 distanceBetweenLayers = 30;
 
 % layerResolution = [100, 100 * aspectRatio];

@@ -74,6 +74,20 @@ fov = deg2rad([60, 45]);
 distanceCameraPlaneToSensorPlane = 1;
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
+%% Orthographic Dice Scene
+
+% path = 'lightFields/dice_camera/dice_parallel/orthographic/5x5.5/';
+path = '../lightFields/dice_camera/dice_parallel/orthographic/';
+
+
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
+
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
+ 
+fov = deg2rad([10, 10]);
+aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
+
 %% Load the light field from a H5 file
 
 path = 'lightFields/rx_watch/';
