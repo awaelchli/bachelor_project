@@ -1,0 +1,201 @@
+% clear;
+%% Parameters - Lego Truck Scene
+
+NumberOfLayers = 3;
+distanceBetweenLayers = 30;
+
+% layerResolution = [100, 100 * aspectRatio];
+layerResolution = round(layerResolution);
+layerResolution = lightFieldResolution([3, 4]);
+
+layerWidth = 400 * aspectRatio;
+layerHeight = 400;
+
+% Maximum number of iterations in optimization process
+maxIterations = 20;
+% Output folder to store the layers
+outFolder = 'output/';
+
+% layerHeight = layerWidth * (lightFieldResolution(3) / lightFieldResolution(4));
+layerSize = [layerWidth, layerHeight];
+totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
+
+% Indices of views for reconstruction and error evaluation
+center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
+custom = [9, 9];
+
+%% Parameters - Dice Scene
+% 
+% NumberOfLayers = 3;
+% distanceBetweenLayers = 1.5;
+% 
+% % layerResolution = [round(101 * aspectRatio), 101];
+% layerResolution = [200, 200 * aspectRatio];
+% layerResolution = round(layerResolution);
+% layerWidth = 6 * aspectRatio;
+% layerHeight = 6;
+% 
+% 
+% % Maximum number of iterations in optimization process
+% maxIterations = 20;
+% % Output folder to store the layers
+% outFolder = 'output/';
+% 
+% % layerHeight = layerWidth * (lightFieldResolution(3) / lightFieldResolution(4));
+% layerSize = [layerWidth, layerHeight];
+% totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
+% 
+% % Indices of views for reconstruction and error evaluation
+% center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
+% custom = [5, 5];
+
+%% Vectorize the light field
+% Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
+% and each column of this matrix represents a color channel of the light
+% field
+
+% h = fspecial('gaussian', [5 5], 2);
+% for camIndexY = 1 : size(lightField,1)
+%     for camIndexX = 1 : size(lightField,2)
+%         img = squeeze(lightField(camIndexY, camIndexX, :,:,:));
+%         img = imfilter(img,h);
+%         lightField(camIndexY, camIndexX, :,:,:) = img;
+%     end
+% end
+
+% lightFieldVector = reshape(permute(lightField, [3, 4, 1, 2, 5]), [], channels);
+lightFieldVector = reshape(lightField, [], channels);
+
+
+%% Compute the propagation matrix P
+fprintf('\nComputing matrix P...\n');
+tic;
+
+P = computeMatrixP(NumberOfLayers, ...
+                   lightFieldResolution, ...
+                   layerResolution, ...
+                   layerSize, ...
+                   fov, ...
+                   distanceBetweenLayers, ...
+                   cameraPlaneDistance, ...
+                   distanceBetweenCameras, ...
+                   distanceCameraPlaneToSensorPlane);
+
+fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
+
+%% Trying to normalize the weights
+
+% rowSums = sum(P,2);
+% rowSums = max(1, rowSums);
+% P = spdiags(1./rowSums,0,size(P,1),size(P,1))*P;
+
+
+% colSums = sum(P, 1);
+% for i = 1 : size(P, 2)
+%     if(colSums(i) ~= 0)
+%         P(:, i) = P(:, i) ./ colSums(i);
+%     end
+% end
+
+%% Convert to log light field
+lightFieldVectorLogDomain = lightFieldVector;
+lightFieldVectorLogDomain(lightFieldVectorLogDomain < 0.01) = 0.01;
+lightFieldVectorLogDomain = log(lightFieldVectorLogDomain);
+
+%% Set the optimization constraints
+tic;
+ub = zeros(size(P, 2), 1); 
+lb = zeros(size(P, 2), 1) + log(0.01);
+x0 = zeros(size(P, 2), 1);
+%% Run least squares optimization for each color channel
+% 
+% % The Jacobian matrix of Px - d is just P. 
+% Id = speye(size(P));
+% W = @(Jinfo, Y, flag) projection(P, Y , flag);
+% 
+% options = optimset('MaxIter', iterations, 'Jacobian', 'on', 'JacobMult', W, 'UseParallel', true);
+% 
+% layers = zeros(size(P, 2), 3);
+% for c = 1 : channels
+%     fprintf('Running optimization for color channel %i ...\n', c);
+%     layers(:, c) = lsqlin(Id, lightFieldVector(:, c), [], [], [], [], lb, ub, x0, options);
+% end
+
+%% Solve using SART
+
+layers = zeros(size(P, 2), 3);
+for c = 1 : channels
+    fprintf('Running optimization for color channel %i ...\n', c);
+    layers(:, c) = sart(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
+end
+
+layers = exp(layers);
+fprintf('Optimization took %i minutes.\n', floor(toc / 60));
+
+%% Extract layers from optimization
+
+layersR = squeeze(layers(:, 1));
+layersG = squeeze(layers(:, 2));
+layersB = squeeze(layers(:, 3));
+
+% convert the layers from column vector to a matrix of dimension [Nlayers, height, width, channel]
+layers = cat(2, layersR, layersG, layersB);
+layers = reshape(layers, [ layerResolution, NumberOfLayers, 3]);
+
+%% Save and display each layer
+% close all;
+
+if(exist(outFolder, 'dir'))
+    rmdir(outFolder, 's');
+end
+mkdir(outFolder);
+
+printLayers(layers(:, :, 1:NumberOfLayers, :), layerSize, outFolder, 'print1', 1);
+% printLayers(layers(:, :, 3, :), layerSize, outFolder, 'print2', 3);
+
+%% Reconstruct light field from attenuation layers and evaluate error
+
+lightFieldRecVector = zeros(size(lightFieldVector));
+lightFieldRecVector(:, 1) = P * log(layersR);
+lightFieldRecVector(:, 2) = P * log(layersG);
+lightFieldRecVector(:, 3) = P * log(layersB);
+
+% convert the light field vector to the 4D light field
+lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
+
+lightFieldRec = exp(lightFieldRec);
+
+centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
+centerLF = squeeze(lightField(center(1), center(2), :, :, :));
+otherLF = squeeze(lightField(custom(1), custom(2), :, :, :));
+customRec = squeeze(lightFieldRec(custom(1), custom(2), :, :, :));
+
+% show the central and custom view from reconstruction
+figure('Name', 'Light field reconstruction')
+imshow(centerRec)
+title('Central view');
+imwrite(centerRec, [outFolder 'central_view_reconstruction' num2str(center(1)) '-' num2str(center(2)) '.png']);
+
+figure('Name', 'Light field reconstruction')
+imshow(customRec)
+title('Custom view');
+imwrite(customRec, [outFolder 'custom_view_reconstruction' num2str(custom(1)) '-' num2str(custom(2)) '.png']);
+
+% show the absolute error
+[error, mse] = meanSquaredErrorImage(centerRec, centerLF);
+figure('Name', 'Absolute Error of Central View')
+imshow(error, [])
+title('Central view');
+
+fprintf('RMSE for central view: %f \n', mse);
+
+imwrite(error, [outFolder 'central_view_error.png']);
+
+[error, mse] = meanSquaredErrorImage(customRec, otherLF);
+figure('Name', 'Absolute Error of custom view')
+imshow(error, [])
+title('Custom view');
+
+fprintf('RMSE for custom view: %f \n', mse);
+
+imwrite(error, [outFolder 'custom_view_error.png']);
