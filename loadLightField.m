@@ -63,7 +63,8 @@ fov = computeFOVForCamera(distanceCameraPlaneToSensorPlane, aspectRatio);
 %% Perspective Dice Scene
 
 path = 'lightFields/dice_camera/dice_parallel/5x5-.05/';
-[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
+path = 'lightFields/dice_camera/dice_parallel/3x3/';
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);

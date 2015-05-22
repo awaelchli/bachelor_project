@@ -1,7 +1,7 @@
 % clear;
 %% Parameters
 NumberOfLayers = 3;
-distanceBetweenLayers = 35;
+distanceBetweenLayers = 1;
 % Width and height of the layers in mm
 layerWidth = 100;
 layerHeight = layerWidth * lightFieldResolution(3) / lightFieldResolution(4);
