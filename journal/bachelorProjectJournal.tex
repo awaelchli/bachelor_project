@@ -272,26 +272,25 @@ I used light fields from the Heidelberg and Stanford light field archives. In ad
 	\begin{subfigure}[t]{0.4\textwidth}
 		\includegraphics[width=\textwidth]{results/dice_perspective_rec_3Layers_r=0/custom_view_error.png}
 		\caption{The error of the view $\left( 5, 5 \right)$.}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.4\textwidth}
+		\begin{tabular}{|l|l|l|}
+			\hline 
+			View & orthographic & perspective \\ 
+			\hline 
+			$\left(3, 3\right)$ & ? & 54.925458 \\ 
+			\hline 
+			$\left(5, 5\right)$ & ? & 127.421736 \\ 
+			\hline 
+		\end{tabular} 
+		\caption{Root-mean-square-error between the original and the reconstructed view.}
 	\end{subfigure}
-
 	\caption{Optimization for three layers. The light field has an angular resolution of $5\times 5$ views. Parameters: $z = 8, d_c = \left( 0.05, 0.05 \right), \text{fov} = \left( 60 \degree, 45\degree \right), d_L = 1.5$}
 \end{figure}
 
-\begin{figure}
-	\centering
-	\begin{tabular}{|l|l|l|}
-		\hline 
-		View & orthographic & perspective \\ 
-		\hline 
-		$\left(3, 3\right)$ & 0 & 54.925458 \\ 
-		\hline 
-		$\left(5, 5\right)$ & 0 & 127.421736 \\ 
-		\hline 
-	\end{tabular} 
-\end{figure}
 
 \newpage
-
 \begin{figure}[h]
 	\centering
 	\begin{subfigure}[c]{0.3\textwidth}
