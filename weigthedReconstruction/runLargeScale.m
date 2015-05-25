@@ -1,15 +1,15 @@
 % clear;
 %% Parameters - Lego Truck Scene
 
-NumberOfLayers = 3;
-distanceBetweenLayers = 30;
+NumberOfLayers = 4;
+distanceBetweenLayers = 1;
 
 % layerResolution = [100, 100 * aspectRatio];
-layerResolution = round(layerResolution);
-layerResolution = lightFieldResolution([3, 4]);
+% layerResolution = round(layerResolution);
+layerResolution = 2 * lightFieldResolution([3, 4]);
 
-layerWidth = 400 * aspectRatio;
-layerHeight = 400;
+layerWidth = 4 * aspectRatio;
+layerHeight = 4;
 
 % Maximum number of iterations in optimization process
 maxIterations = 20;
@@ -21,8 +21,8 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
-custom = [9, 9];
+center = [2, 2];
+custom = [3, 3];
 
 %% Parameters - Dice Scene
 % 
@@ -75,11 +75,9 @@ P = computeMatrixP(NumberOfLayers, ...
                    lightFieldResolution, ...
                    layerResolution, ...
                    layerSize, ...
-                   fov, ...
                    distanceBetweenLayers, ...
                    cameraPlaneDistance, ...
-                   distanceBetweenCameras, ...
-                   distanceCameraPlaneToSensorPlane);
+                   distanceBetweenCameras);
 
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
