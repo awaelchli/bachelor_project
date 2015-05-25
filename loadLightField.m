@@ -75,6 +75,20 @@ fov = deg2rad([60, 45]);
 distanceCameraPlaneToSensorPlane = 1;
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
+%% Perspective Dice Scene, Rectified Images
+
+% path = 'lightFields/dice_camera/dice_parallel/5x5-.05/';
+path = '../lightFields/dice_camera/dice_parallel/3x3_rect/';
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
+
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
+ 
+cameraPlaneDistance = 8;
+distanceBetweenCameras = [.3, .3]; 
+
+aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
+
 %% Orthographic Dice Scene
 
 % path = 'lightFields/dice_camera/dice_parallel/orthographic/5x5.5/';
