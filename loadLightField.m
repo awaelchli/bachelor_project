@@ -59,6 +59,19 @@ distanceCameraPlaneToSensorPlane = 1;
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 fov = computeFOVForCamera(distanceCameraPlaneToSensorPlane, aspectRatio);
 
+%% Perspective lego truck scene, Rectified Images
+
+path = '../lightFields/legotruck_downsampled/';
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [9, 9] );
+
+
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
+
+cameraPlaneDistance = 500;
+distanceBetweenCameras = [4 * 2, 4 * 2]; 
+aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
+
 
 %% Perspective Dice Scene
 
