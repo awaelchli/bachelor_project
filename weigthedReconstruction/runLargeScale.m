@@ -6,7 +6,7 @@ distanceBetweenLayers = 1;
 
 % layerResolution = [100, 100 * aspectRatio];
 % layerResolution = round(layerResolution);
-layerResolution = 2 * lightFieldResolution([3, 4]);
+layerResolution = lightFieldResolution([3, 4]);
 
 layerWidth = 4 * aspectRatio;
 layerHeight = 4;
@@ -21,51 +21,21 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-center = [2, 2];
+center = [1, 1];
 custom = [3, 3];
 
-%% Parameters - Dice Scene
-% 
-% NumberOfLayers = 3;
-% distanceBetweenLayers = 1.5;
-% 
-% % layerResolution = [round(101 * aspectRatio), 101];
-% layerResolution = [200, 200 * aspectRatio];
-% layerResolution = round(layerResolution);
-% layerWidth = 6 * aspectRatio;
-% layerHeight = 6;
-% 
-% 
-% % Maximum number of iterations in optimization process
-% maxIterations = 20;
-% % Output folder to store the layers
-% outFolder = 'output/';
-% 
-% % layerHeight = layerWidth * (lightFieldResolution(3) / lightFieldResolution(4));
-% layerSize = [layerWidth, layerHeight];
-% totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
-% 
-% % Indices of views for reconstruction and error evaluation
-% center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
-% custom = [5, 5];
+mu = [0, 0];
+sigma = [ 0.2 , 0;
+          0, 0.2 ];
+      
+weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
 % and each column of this matrix represents a color channel of the light
 % field
 
-% h = fspecial('gaussian', [5 5], 2);
-% for camIndexY = 1 : size(lightField,1)
-%     for camIndexX = 1 : size(lightField,2)
-%         img = squeeze(lightField(camIndexY, camIndexX, :,:,:));
-%         img = imfilter(img,h);
-%         lightField(camIndexY, camIndexX, :,:,:) = img;
-%     end
-% end
-
-% lightFieldVector = reshape(permute(lightField, [3, 4, 1, 2, 5]), [], channels);
 lightFieldVector = reshape(lightField, [], channels);
-
 
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
@@ -77,7 +47,8 @@ P = computeMatrixP(NumberOfLayers, ...
                    layerSize, ...
                    distanceBetweenLayers, ...
                    cameraPlaneDistance, ...
-                   distanceBetweenCameras);
+                   distanceBetweenCameras, ...
+                   weightFunctionHandle );
 
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 

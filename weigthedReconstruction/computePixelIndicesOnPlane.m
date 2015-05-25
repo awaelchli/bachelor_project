@@ -4,7 +4,8 @@ function [ pixelIndexMatrixY, ...
                                                           positionsMatrixX, ...
                                                           planeResolution, ...
                                                           planeSize, ...
-                                                          floorCeilOrRoundHandle )
+                                                          floorCeilOrRoundHandle, ...
+                                                          weightFunctionHandle )
 
                                                       
 maxPositionY = planeSize(1) / 2;
@@ -39,12 +40,7 @@ distanceFromFloorCeilOrRoundX = positionsMatrixX - pixelIndexMatrixX;
 data = cat(3, distanceFromFloorCeilOrRoundY, distanceFromFloorCeilOrRoundX);
 data = reshape(data, [], 2);
 
-mu = [0, 0];
-sigma = [ 0.4 , 0;
-          0, 0.4 ];
-      
-weights = mvnpdf(data, mu, sigma);
-
+weights = weightFunctionHandle(data);
 weightMatrix = reshape(weights, size(pixelIndexMatrixY));
 
 end
