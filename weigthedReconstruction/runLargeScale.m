@@ -29,6 +29,7 @@ sigma = [ 0.2 , 0;
           0, 0.2 ];
       
 weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
+% weightFunctionHandle = @(data) peakWeightFunction(data, 1, 4);
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
