@@ -3,44 +3,47 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: bachelorProjectJournal.aux
 The style file: alpha.bst
 Database file #1: lit.bib
+Warning--empty journal in LEVO_LFREN
+Warning--empty journal in CONV_SART
 You've used 4 entries,
             2543 wiz_defined-function locations,
-            589 strings with 5172 characters,
-and the built_in function-call counts, 1652 in all, are:
-= -- 162
+            588 strings with 5170 characters,
+and the built_in function-call counts, 1691 in all, are:
+= -- 163
 > -- 89
-< -- 2
+< -- 3
 + -- 32
 - -- 32
-* -- 126
-:= -- 290
+* -- 122
+:= -- 291
 add.period$ -- 12
 call.type$ -- 4
 change.case$ -- 27
 chr.to.int$ -- 4
-cite$ -- 4
-duplicate$ -- 61
-empty$ -- 106
+cite$ -- 6
+duplicate$ -- 66
+empty$ -- 109
 format.name$ -- 37
-if$ -- 328
+if$ -- 343
 int.to.chr$ -- 1
 int.to.str$ -- 0
 missing$ -- 4
 newline$ -- 23
 num.names$ -- 12
-pop$ -- 18
+pop$ -- 24
 preamble$ -- 1
 purify$ -- 31
 quote$ -- 0
-skip$ -- 55
+skip$ -- 61
 stack$ -- 0
-substring$ -- 71
-swap$ -- 9
-text.length$ -- 2
+substring$ -- 70
+swap$ -- 12
+text.length$ -- 3
 text.prefix$ -- 1
 top$ -- 0
 type$ -- 32
-warning$ -- 0
+warning$ -- 2
 while$ -- 16
 width$ -- 6
-write$ -- 54
+write$ -- 52
+(There were 2 warnings)

@@ -3,7 +3,7 @@
 \bibitem[LH96]{LEVO_LFREN}
 M.~Levoy and P.~Hanrahan.
 \newblock Light field rendering.
-\newblock {\em ?}, ?(?):1--12, 1996.
+\newblock pages 1--12, 1996.
 
 \bibitem[WLHR11]{WETZ_TOMO}
 G.~Wetzstein, D.~Lanman, W.~Heidrich, and R.~Raskar.
@@ -21,6 +21,6 @@ G.~Wetzstein, D.~Lanman, M.~Hirsch, and R.~Raskar.
 Ming Yan.
 \newblock Convergence analysis of sart by bregman iteration and dual gradient
   descent.
-\newblock {\em ?}, pages 1--15, 2010.
+\newblock pages 1--15, 2010.
 
 \end{thebibliography}
