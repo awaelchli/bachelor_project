@@ -92,6 +92,7 @@ aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
 % path = 'lightFields/dice_camera/dice_parallel/5x5-.05/';
 path = '../lightFields/dice_camera/dice_parallel/3x3_rect/';
+% path = '../lightFields/dice_camera/dice_parallel/5x5-.05_rect/';
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
 
 lightFieldResolution = size(lightField);
@@ -99,6 +100,7 @@ lightFieldResolution = lightFieldResolution(1 : 4);
  
 cameraPlaneDistance = 8;
 distanceBetweenCameras = [.3, .3]; 
+% distanceBetweenCameras = [.05, .05];
 
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
