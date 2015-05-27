@@ -5,7 +5,8 @@ function [ P ] = computeMatrixP( NumberOfLayers, ...
                                  distanceBetweenLayers, ...
                                  cameraPlaneDistance, ...
                                  distanceBetweenTwoCameras, ...
-                                 weightFunctionHandle )
+                                 weightFunctionHandle, ...
+                                 boxFilterRadius)
 % Inputs:
 %
 %   NumberOfLayers:                 Number of layers in the attenuator
@@ -20,6 +21,9 @@ function [ P ] = computeMatrixP( NumberOfLayers, ...
 %                                   camera plane in mm
 %   weightFunctionHandle:           A function handle to compute the weights 
 %                                   for the ray intersections with the pixels
+%   boxFilterRadius:                Radius (in pixels) of the square box 
+%                                   centered at each pixel 
+%                                   
 %
 % Output:
 %

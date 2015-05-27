@@ -11,6 +11,8 @@ layerResolution = lightFieldResolution([3, 4]);
 layerWidth = 4 * aspectRatio;
 layerHeight = 4;
 
+boxFilterRadius = 1;
+
 % Maximum number of iterations in optimization process
 maxIterations = 20;
 % Output folder to store the layers
@@ -49,7 +51,8 @@ P = computeMatrixP(NumberOfLayers, ...
                    distanceBetweenLayers, ...
                    cameraPlaneDistance, ...
                    distanceBetweenCameras, ...
-                   weightFunctionHandle );
+                   weightFunctionHandle, ...
+                   boxFilterRadius);
 
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
