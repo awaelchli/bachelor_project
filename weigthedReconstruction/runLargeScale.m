@@ -1,5 +1,5 @@
 % clear;
-%% Parameters - Lego Truck Scene
+%% Parameters
 
 NumberOfLayers = 4;
 distanceBetweenLayers = 1;
@@ -11,7 +11,7 @@ layerResolution = lightFieldResolution([3, 4]);
 layerWidth = 4 * aspectRatio;
 layerHeight = 4;
 
-boxFilterRadius = 0;
+boxFilterRadius = 1;
 
 % Maximum number of iterations in optimization process
 maxIterations = 20;
@@ -27,11 +27,12 @@ center = [1, 1];
 custom = [3, 3];
 
 mu = [0, 0];
-sigma = [ 0.3 , 0;
-          0, 0.3 ];
+sigma = [0.5 , 0;
+          0, 0.5 ];
       
 weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
 % weightFunctionHandle = @(data) peakWeightFunction(data, 1, 4);
+% weightFunctionHandle = @(data) ones(size(data, 1), 1);
 
 %% Vectorize the light field
 % Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
@@ -44,7 +45,7 @@ lightFieldVector = reshape(lightField, [], channels);
 fprintf('\nComputing matrix P...\n');
 tic;
 
-P = computeMatrixP(NumberOfLayers, ...
+P = computeMatrixP_allLayerWeights(NumberOfLayers, ...
                    lightFieldResolution, ...
                    layerResolution, ...
                    layerSize, ...
@@ -53,22 +54,20 @@ P = computeMatrixP(NumberOfLayers, ...
                    distanceBetweenCameras, ...
                    weightFunctionHandle, ...
                    boxFilterRadius);
+               
+               
+% P = computeMatrixP(NumberOfLayers, ...
+%                    lightFieldResolution, ...
+%                    layerResolution, ...
+%                    layerSize, ...
+%                    distanceBetweenLayers, ...
+%                    cameraPlaneDistance, ...
+%                    distanceBetweenCameras, ...
+%                    weightFunctionHandle, ...
+%                    boxFilterRadius);
 
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
-%% Trying to normalize the weights
-
-% rowSums = sum(P,2);
-% rowSums = max(1, rowSums);
-% P = spdiags(1./rowSums,0,size(P,1),size(P,1))*P;
-
-
-% colSums = sum(P, 1);
-% for i = 1 : size(P, 2)
-%     if(colSums(i) ~= 0)
-%         P(:, i) = P(:, i) ./ colSums(i);
-%     end
-% end
 
 %% Convert to log light field
 lightFieldVectorLogDomain = lightFieldVector;
