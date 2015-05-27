@@ -11,7 +11,7 @@ layerResolution = lightFieldResolution([3, 4]);
 layerWidth = 4 * aspectRatio;
 layerHeight = 4;
 
-boxFilterRadius = 1;
+boxFilterRadius = 0;
 
 % Maximum number of iterations in optimization process
 maxIterations = 20;
@@ -27,8 +27,8 @@ center = [1, 1];
 custom = [3, 3];
 
 mu = [0, 0];
-sigma = [ 0.2 , 0;
-          0, 0.2 ];
+sigma = [ 0.3 , 0;
+          0, 0.3 ];
       
 weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
 % weightFunctionHandle = @(data) peakWeightFunction(data, 1, 4);
