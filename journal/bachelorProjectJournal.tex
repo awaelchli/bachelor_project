@@ -9,7 +9,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
-\usepackage{gensymb}
+\usepackage{asymptote}
 
 \author{Adrian Wälchli}
 \title{Bachelor Project Journal}
@@ -286,7 +286,7 @@ I used light fields from the Heidelberg and Stanford light field archives. In ad
 		\end{tabular} 
 		\caption{Root-mean-square-error between the original and the reconstructed view.}
 	\end{subfigure}
-	\caption{Optimization for three layers. The light field has an angular resolution of $5\times 5$ views. Parameters: $z = 8, d_c = \left( 0.05, 0.05 \right), \text{fov} = \left( 60 \degree, 45\degree \right), d_L = 1.5$}
+	\caption{Optimization for three layers. The light field has an angular resolution of $5\times 5$ views. Parameters: $z = 8, d_c = \left( 0.05, 0.05 \right), \text{fov} = \left( 60^\circ, 45^\circ \right), d_L = 1.5$}
 \end{figure}
 
 
@@ -413,6 +413,23 @@ I used light fields from the Heidelberg and Stanford light field archives. In ad
 
 	\caption{Optimization for three layers. The light field has an angular resolution of $9\times 9$ views.}
 \end{figure}
+
+\clearpage
+\section{Fixing the aliasing problem}
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[c]{0.5\textwidth}
+ 		\includegraphics[scale=1]{sketches/sheared_projections_layers_overview.pdf} 
+  		\caption{Ray coming from a pixel on layer $s^2$ intersecting the sensor plane $x$ and the topmost  layer $s^1$. }
+	\end{subfigure}%
+	~
+	\begin{subfigure}[c]{0.5\textwidth}
+		\caption{?}
+	\end{subfigure}%
+	\caption{Calculation of the intersections and the weights.}
+\end{figure}
+
 
 
 
