@@ -1,7 +1,8 @@
 function [ weightMatrix ] = computeRayIntersectionWeights( pixelIndexMatrixY, ...
                                                            pixelIndexMatrixX, ...
                                                            intersectionMatrixY, ...
-                                                           intersectionMatrixX )
+                                                           intersectionMatrixX, ...
+                                                           weightFunctionHandle )
 
 % Weights are computed based on the deviation from the exact pixel
 % location
@@ -16,5 +17,4 @@ weightVector = weightFunctionHandle(queryData);
 weightMatrix = reshape(weightVector, size(pixelIndexMatrixY));
 
 end
-
 
