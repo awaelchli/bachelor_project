@@ -1,0 +1,33 @@
+9x9 downsampled rectified lego truck
+cameraPlaneDistance = 500;
+distanceBetweenCameras = [4 * 2, 4 * 2]; 
+NumberOfLayers = 5;
+distanceBetweenLayers = 10;
+
+% layerResolution = [100, 100 * aspectRatio];
+% layerResolution = round(layerResolution);
+layerResolution = lightFieldResolution([3, 4]);
+
+layerWidth = 70 * aspectRatio;
+layerHeight = 70;
+
+boxFilterRadius = 0;
+
+% Maximum number of iterations in optimization process
+maxIterations = 20;
+% Output folder to store the layers
+outFolder = 'output/';
+
+% layerHeight = layerWidth * (lightFieldResolution(3) / lightFieldResolution(4));
+layerSize = [layerWidth, layerHeight];
+totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
+
+% Indices of views for reconstruction and error evaluation
+center = [5, 5];
+custom = [9, 9];
+
+mu = [0, 0];
+sigma = [0.3 , 0;
+         0, 0.3 ];
+      
+weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
