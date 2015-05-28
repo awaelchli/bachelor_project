@@ -20,7 +20,8 @@ Label s2 = Label("$s^2$", position = EndPoint);
 // Camera plane
 draw((-w/2, z) -- (w/2, z), arrow = ArcArrow(SimpleHead), L = u);
 // Sensor plane
-draw((-w/2, 0) -- (w/2, 0), arrow = ArcArrow(SimpleHead), L = x);
+path sensorPlane = (-w/2, 0) -- (w/2, 0);
+draw(sensorPlane, arrow = ArcArrow(SimpleHead), L = x);
 // Layers
 draw((-w/2, dL) -- (w/2, dL), arrow = ArcArrow(SimpleHead), L = s1);
 draw((-w/2, -dL) -- (w/2, -dL), arrow = ArcArrow(SimpleHead), L = s2);
@@ -69,9 +70,13 @@ for (int i = 0; i < rS; ++i){
 // Ray
 int pixel = 10;
 pair rayStart = (-lW/2 + psL/2 + pixel * psL, -dL);
-draw(rayStart -- cam3, red);
+path ray = rayStart -- cam3;  
+draw(ray, red);
 
 // Camera dots
 dot(cam1);
 dot(cam2);
 dot(cam3);
+
+// Intersection on sensor
+real[] isection = intersect(ray, sensorPlane);
