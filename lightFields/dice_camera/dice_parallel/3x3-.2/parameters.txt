@@ -1,0 +1,7 @@
+#declare DistanceBetweenCamerasY = 0.2;
+#declare DistanceBetweenCamerasX = 0.2;
+#declare DistanceToCameraPlane = 8;
+#declare AngularResolutionY = 3;
+#declare AngularResolutionX = 3;
+#declare FOV_horizontal = 60;
+#declare aspectRatio = 4 / 3;
