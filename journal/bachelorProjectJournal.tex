@@ -419,18 +419,27 @@ I used light fields from the Heidelberg and Stanford light field archives. In ad
 
 \begin{figure}[h]
 	\centering
-	\begin{subfigure}[c]{0.5\textwidth}
- 		\includegraphics[scale=1]{sketches/sheared_projections_layers_overview.pdf} 
-  		\caption{Ray coming from a pixel on layer $s^2$ intersecting the sensor plane $x$ and the topmost  layer $s^1$. }
+	\begin{subfigure}[b]{0.4\textwidth}
+ 		\includegraphics[width=\textwidth]{sketches/sheared_projections_layers_overview-1.pdf} 
+  		\caption{Ray (red) coming from a pixel on layer $s^2$ intersecting the sensor plane $x$ and the topmost  layer $s^1$. }
 	\end{subfigure}%
-	~
-	\begin{subfigure}[c]{0.5\textwidth}
-		\caption{?}
+	\quad
+	\begin{subfigure}[b]{0.4\textwidth}
+		\includegraphics[width=\textwidth]{sketches/sheared_projections_layers_overview-2.pdf} 
+  		\caption{The ray intersects at $p'$. The nearest pixel with center $p$ is considered and a weight $w\left(d\right)$ is computed from the deviation $d = p - p'$.}
 	\end{subfigure}%
 	\caption{Calculation of the intersections and the weights.}
+	\label{fig:intersections_and_weights}
 \end{figure}
 
+The key idea is to use a kernel to weight the ray-pixel-correspondences. As depicted in \ref{fig:intersections_and_weights}, the weight is computed from the deviation of the pixel center. For any ray, we select the nearest pixel and then calculate the weight. We consider and test the following main configurations:
 
+\begin{itemize}
+	\item 	Weights only for the sensor plane $x$
+	\item 	Combination of weights on sensor plane and each layer
+	\item 	Box-Filter for the sensor plane only
+	\item	Combination of Box-Filter on sensor plane and each layer
+\end{itemize}
 
 
 \clearpage
