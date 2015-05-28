@@ -43,6 +43,13 @@ pair point2 = (point1.x, baseline);
 path line = point1 -- point2;
 draw(line, dashed); 
 
+// Pixel center dot
+pair pc = ((right + left) / 2, 0);
+dot(pc);
+
+// Dotted center marker line
+draw(pc -- x_zero, dashed);
+
 // Intersection dots
 real[] isection = intersect(line, weight);
 pair point3 = point(line, isection[0]);
@@ -50,9 +57,13 @@ dot(point1, red);
 dot(point3, blue);
 
 // Labels and marker for intersections
-label("$w\left(p\right)$", point3, NW);
-Label p = Label("$\phantom{1}p\phantom{1}$", EndPoint);
-draw((point2 + (0, mS)) -- (point2 - (0, mS)), L = p);
+label("$w\left(d\right)$", point3, NW);
+label("$p$", pc, NE);
+label("$p'$", point1, NW);
+Label d = Label("$d$", MidPoint);
+//draw((point2 + (0, mS)) -- (point2 - (0, mS)), L = p);
+real offs = 0.04;
+draw((point2.x, baseline - offs) -- (x_zero.x, baseline - offs), L = d, bar = Bars);
 
 // Move view to intersection point on the sensor
 clip(shift(center - (0, 0.2)) * scale(window_size) * unitsquare);
