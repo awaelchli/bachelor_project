@@ -1,20 +1,20 @@
-path = 'lightFields/legotruck_downsampled_non_rect/';
-out = 'lightFields/legotruck_downsampled_cropped_small/';
-filetype = 'png';
+inputPath = 'temp/1x11_thermal/';
+outputPath = 'temp/1x11_thermal_cropped/';
+filetype = 'jpg';
 
 
-if(exist(out, 'dir'))
-    rmdir(out, 's');
+if(exist(outputPath, 'dir'))
+    rmdir(outputPath, 's');
 end
-mkdir(out);
+mkdir(outputPath);
 
 
 % Load folder
-imgList = dir([path '*.' filetype]);
-numImages = size(imgList);
+imageList = dir([inputPath '*.' filetype]);
+numOfImages = size(imageList);
 
-for i = 1 : numImages
-    image = im2double(imread([path num2str(i) '.' filetype]));
-    image = imcrop(image, [70, 290, 100, 100]);
-    imwrite(image, [out sprintf('%04d', i) '.png']);
+for i = 1 : numOfImages
+    image = im2double(imread([inputPath imageList(i).name ]));
+    image = imcrop(image, [0, 0, size(image, 2), 320]);
+    imwrite(image, [outputPath sprintf('%04d', i) '.png']);
 end
