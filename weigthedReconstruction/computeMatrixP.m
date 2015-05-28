@@ -77,6 +77,8 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                                 
         invalidRayIndicesForSensorY = pixelIndexOnSensorMatrixY(:, 1) == 0;
         invalidRayIndicesForSensorX = pixelIndexOnSensorMatrixX(1, :) == 0;
+        
+%         nnz(invalidRayIndicesForSensorY)
                                                                 
         for sy = -boxFilterRadius : boxFilterRadius
             for sx = -boxFilterRadius : boxFilterRadius
@@ -110,6 +112,11 @@ for camIndexX = 1 : lightFieldResolution(2)
 %                 numel(invalidRayIndicesForSensorY)
 %                 numel(invalidRayIndicesForSensorX)
 
+
+%                 weightsForSensorMatrix = weightsForSensorMatrix(invalidRayIndicesForSensorY, invalidRayIndicesForSensorX);
+                  
+%  numel(weightsForSensorMatrix)
+%  numel(rows)
                 numInsertions = numel(rows);
                 I(c : c + numInsertions - 1) = rows;
                 J(c : c + numInsertions - 1) = columns;
@@ -211,7 +218,11 @@ P = sparse(I, J, S, prod(lightFieldResolution), prod([ NumberOfLayers layerResol
 
 rowSums = sum(P, 2);
 rowSums = max(1, rowSums);
-P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
+P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P, 1)) * P;
+
+% colSums = sum(P, 1)';
+% colSums = max(1, colSums);
+% P = P * spdiags(1 ./ colSums, 0, size(P, 2), size(P, 2));
 
 end
 
