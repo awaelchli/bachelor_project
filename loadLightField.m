@@ -64,6 +64,9 @@ fov = computeFOVForCamera(distanceCameraPlaneToSensorPlane, aspectRatio);
 path = '../lightFields/legotruck_downsampled/';
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [9, 9] );
 
+% lightField = shearLightField(lightField, 5, 5);
+
+% lightField = lightField(1:2:17, 1:2:17, :, :, :);
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
@@ -91,7 +94,8 @@ aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 %% Perspective Dice Scene, Rectified Images
 
 % path = 'lightFields/dice_camera/dice_parallel/5x5-.05/';
-path = '../lightFields/dice_camera/dice_parallel/3x3_rect/';
+% path = '../lightFields/dice_camera/dice_parallel/3x3_rect/';
+path = 'lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
 % path = '../lightFields/dice_camera/dice_parallel/5x5-.05_rect/';
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
 
@@ -99,15 +103,15 @@ lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
  
 cameraPlaneDistance = 8;
-distanceBetweenCameras = [.3, .3]; 
+distanceBetweenCameras = [.2, .2]; 
 % distanceBetweenCameras = [.05, .05];
 
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
 %% Orthographic Dice Scene
 
-% path = 'lightFields/dice_camera/dice_parallel/orthographic/5x5.5/';
-path = '../lightFields/dice_camera/dice_parallel/orthographic/';
+path = 'lightFields/dice_camera/dice_parallel/orthographic/5x5.5/';
+% path = '../lightFields/dice_camera/dice_parallel/orthographic/';
 
 
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
