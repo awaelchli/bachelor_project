@@ -31,15 +31,17 @@ function [ P ] = computeMatrixP_allLayerWeights( NumberOfLayers, ...
 %                   each layer
 
 % upper bound for number of non-zero values in the matrix P
-NumberOfNonZeroElements = prod(lightFieldResolution) * NumberOfLayers; 
-NumberOfNonZeroElements = 100000000;
+% NumberOfNonZeroElements = prod(lightFieldResolution) * NumberOfLayers; 
+% NumberOfNonZeroElements = 100000000;
 
-I = zeros(NumberOfNonZeroElements, 1);      % row indices
-J = zeros(NumberOfNonZeroElements, 1);      % column indices  
-S = zeros(NumberOfNonZeroElements, 1);      % weights
-
+% I = zeros(NumberOfNonZeroElements, 1);      % row indices
+% J = zeros(NumberOfNonZeroElements, 1);      % column indices  
+% S = zeros(NumberOfNonZeroElements, 1);      % weights
+% 
 % index of the current non-zero element used in the for loop below.
-c = 1;
+% c = 1;
+
+P = sparse(prod(lightFieldResolution), prod([layerResolution, NumberOfLayers]));
 
 [ cameraPositionMatrixY, cameraPositionMatrixX ] = computeCameraPositions(lightFieldResolution([1, 2]), ...
                                                                           distanceBetweenTwoCameras([2, 1]));
@@ -50,8 +52,11 @@ c = 1;
 layerPositionsZ = -(NumberOfLayers - 1) * distanceBetweenLayers / 2 : distanceBetweenLayers : (NumberOfLayers - 1) * distanceBetweenLayers / 2;
 sensorPlaneZ = 0;
 
+fprintf('Views done: \n');
+
 for camIndexX = 1 : lightFieldResolution(2)
     for camIndexY = 1 : lightFieldResolution(1)
+        
     
         % get the position of the current camera on the camera plane
         cameraPosition = [ cameraPositionMatrixY(camIndexY, camIndexX), ...
@@ -112,18 +117,12 @@ for camIndexX = 1 : lightFieldResolution(2)
 %                 numel(invalidRayIndicesForSensorY)
 %                 numel(invalidRayIndicesForSensorX)
     
-%                 tempWeightsForSensorMatrix = normr(weightsForSensorMatrix);
-
-% weightsForSensorMatrix = weightsForSensorMatrix';
-    
                 numInsertions = numel(rows);
-                I(c : c + numInsertions - 1) = rows;
-                J(c : c + numInsertions - 1) = columns;
-                S(c : c + numInsertions - 1) = weightsForSensorMatrix(:);
-                c = c + numInsertions;
-% weightsForSensorMatrix = weightsForSensorMatrix';
-%             end
-%         end
+%                 I(c : c + numInsertions - 1) = rows;
+%                 J(c : c + numInsertions - 1) = columns;
+%                 S(c : c + numInsertions - 1) = weightsForSensorMatrix(:);
+%                 c = c + numInsertions;
+                P = P + sparse(rows, columns, weightsForSensorMatrix(:), size(P, 1), size(P, 2), numInsertions); 
         
                 for layer = 2 : NumberOfLayers
 
@@ -193,8 +192,8 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                  tempPixelIndexOnSensorMatrixX, ...
                                                  lightFieldResolution);
                     % Debug
-        %             numel(columns)
-        %             numel(rows)
+%                     numel(columns)
+%                     numel(rows)
 
                     numInsertions = numel(rows);
 
@@ -203,24 +202,26 @@ for camIndexX = 1 : lightFieldResolution(2)
                     weights = weights(~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY), :);
                     weights = weights(: , ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX));
 
-%                     weights = normr(weights);
-        % weights = weights';
                     % insert the calculated indices and weights into the sparse arrays
-                    I(c : c + numInsertions - 1) = rows;
-                    J(c : c + numInsertions - 1) = columns;
-                    S(c : c + numInsertions - 1) = weights(:);
-                    c = c + numInsertions;
+%                     I(c : c + numInsertions - 1) = rows;
+%                     J(c : c + numInsertions - 1) = columns;
+%                     S(c : c + numInsertions - 1) = weights(:);
+%                     c = c + numInsertions;
+
+                    P = P + sparse(rows, columns, weights(:), size(P, 1), size(P, 2), numInsertions);
                 end
             end
         end
+        
+        fprintf('(%i, %i)\n', camIndexY, camIndexX);
     end
 end
 
-I = I(1 : c - 1);
-J = J(1 : c - 1);
-S = S(1 : c - 1);
+% I = I(1 : c - 1);
+% J = J(1 : c - 1);
+% S = S(1 : c - 1);
 
-P = sparse(I, J, S, prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
+% P = sparse(I, J, S, prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
 
 rowSums = sum(P, 2);
 rowSums = max(1, rowSums);
