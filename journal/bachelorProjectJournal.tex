@@ -419,12 +419,13 @@ I used light fields from the Heidelberg and Stanford light field archives. In ad
 
 \begin{figure}[h]
 	\centering
-	\begin{subfigure}[b]{0.4\textwidth}
+	\begin{subfigure}[t]{0.4\textwidth}
  		\includegraphics[width=\textwidth]{sketches/sheared_projections_layers_overview-1.pdf} 
   		\caption{Ray (red) coming from a pixel on layer $s^2$ intersecting the sensor plane $x$ and the topmost  layer $s^1$. }
+  		\label{fig:intersections_and_weights_overview}
 	\end{subfigure}%
 	\quad
-	\begin{subfigure}[b]{0.4\textwidth}
+	\begin{subfigure}[t]{0.4\textwidth}
 		\includegraphics[width=\textwidth]{sketches/sheared_projections_layers_overview-2.pdf} 
   		\caption{The ray intersects at $p'$. The nearest pixel with center $p$ is considered and a weight $w\left(d\right)$ is computed from the deviation $d = p - p'$.}
 	\end{subfigure}%
@@ -432,7 +433,7 @@ I used light fields from the Heidelberg and Stanford light field archives. In ad
 	\label{fig:intersections_and_weights}
 \end{figure}
 
-The key idea is to use a kernel to weight the ray-pixel-correspondences. As depicted in \ref{fig:intersections_and_weights}, the weight is computed from the deviation of the pixel center. For any ray, we select the nearest pixel and then calculate the weight. We consider and test the following main configurations:
+The key idea is to use a kernel to weight the ray-pixel-correspondences. As depicted in figure \ref{fig:intersections_and_weights}, the weight is computed from the deviation of the pixel center. For any ray, the nearest pixel gets selected and a weight is calculated. I consider and test the following configurations:
 
 \begin{itemize}
 	\item 	Weights only for the sensor plane $x$
@@ -441,6 +442,33 @@ The key idea is to use a kernel to weight the ray-pixel-correspondences. As depi
 	\item	Combination of Box-Filter on sensor plane and each layer
 \end{itemize}
 
+\subsection{Comparison of the three methods}
+
+\begin{enumerate}
+	\item	Rays from sensor to layers
+		\begin{itemize}
+			\item[$-$]	Layer pixels missed by rays	(figure \ref{fig:problem_camera_to_layers})
+			\item[$-$]	Artefacts/Aliasing
+			\item[$-$]	Sensitive to small parameter changes
+			\item[$+$]	No need to adjust/shear the camera images
+		\end{itemize}
+	\item	Rays from layers to sensor (figure \ref{fig:problem_layers_to_camera})
+		\begin{itemize}
+			\item[$-$]	Weights only for intersections on sensor 
+			\item[$-$]	Artefacts/Aliasing
+			\item[$-$]	Sensitive to small parameter changes
+			\item[$+$]	Adjustable sampling density of rays
+			\item[$+$]	No need to adjust/shear the camera images
+		\end{itemize}
+	\item	Rays from bottom-most layer, weights intersection on layers + sensor (figure \ref{fig:intersections_and_weights_overview})
+		\begin{itemize}
+			\item[$-$]	Need normalization of weights along ray, cancels out sensor weights
+			\item[$-$]	Require rectified images for a common focal plane
+			\item[$-$]	Applying box-filter is computationally expensive
+			\item[$+$]	Adjustable sampling density of rays
+			\item[$+$]	Fewer camera/scene parameters required, less sensitive
+		\end{itemize}
+\end{enumerate}
 
 \clearpage
 \bibliographystyle{alpha}

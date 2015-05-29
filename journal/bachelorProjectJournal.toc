@@ -12,3 +12,4 @@
 \contentsline {subsection}{\numberline {7.1}Orthographic projections}{6}{subsection.7.1}
 \contentsline {subsection}{\numberline {7.2}Perspective projections}{8}{subsection.7.2}
 \contentsline {section}{\numberline {8}Fixing the aliasing problem}{13}{section.8}
+\contentsline {subsection}{\numberline {8.1}Comparison of the three methods}{13}{subsection.8.1}
