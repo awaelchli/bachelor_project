@@ -39,7 +39,8 @@ weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
 % and each column of this matrix represents a color channel of the light
 % field
 
-lightFieldVector = reshape(lightField, [], channels);
+lightFieldVector = reshape(permute(lightField, [3, 4, 1, 2, 5]), [], channels);
+% lightFieldVector = reshape(lightField, [], channels);
 
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
@@ -133,7 +134,9 @@ lightFieldRecVector(:, 2) = P * log(layersG);
 lightFieldRecVector(:, 3) = P * log(layersB);
 
 % convert the light field vector to the 4D light field
-lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
+% lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
+lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution([3, 4, 1, 2]) 3]);
+lightFieldRec = permute(lightFieldRec, [3, 4, 1, 2, 5]);
 
 lightFieldRec = exp(lightFieldRec);
 
