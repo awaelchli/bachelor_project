@@ -429,11 +429,11 @@ I used light fields from the Heidelberg and Stanford light field archives. In ad
 		\includegraphics[width=\textwidth]{sketches/sheared_projections_layers_overview-2.pdf} 
   		\caption{The ray intersects at $p'$. The nearest pixel with center $p$ is considered and a weight $w\left(d\right)$ is computed from the deviation $d = p - p'$.}
 	\end{subfigure}%
-	\caption{Calculation of the intersections and the weights.}
+	\caption{Calculation of the intersections and weights.}
 	\label{fig:intersections_and_weights}
 \end{figure}
 
-The key idea is to use a kernel to weight the ray-pixel-correspondences. As depicted in figure \ref{fig:intersections_and_weights}, the weight is computed from the deviation of the pixel center. For any ray, the nearest pixel gets selected and a weight is calculated. I consider and test the following configurations:
+The main idea is to use a kernel to weight the ray-pixel-correspondences. As depicted in figure \ref{fig:intersections_and_weights}, the weight is computed from the deviation of the pixel center. For any ray, the nearest pixel gets selected and a weight is calculated. I considered and tested the following configurations:
 
 \begin{itemize}
 	\item 	Weights only for the sensor plane $x$
@@ -442,7 +442,38 @@ The key idea is to use a kernel to weight the ray-pixel-correspondences. As depi
 	\item	Combination of Box-Filter on sensor plane and each layer
 \end{itemize}
 
-\subsection{Comparison of the three methods}
+During the implementation of the box-filter it came to my attention that the propagation matrix $P$ should be normalized along the rows. This normalization alone seems to have a drastic impact on the artefacts we encountered. Figure \ref{fig:normalization_impact_comparison} compares the impact of normalization on the reconstruction quality. Notice that figure \ref{fig:normalization_no_weights} shows the best result, albeit no weights were calculated, and all other settings have no visible influence. The conclusion is: Adding weights to the system seems to have little to no impact on the optimization of the layers and the reconstruction quality. 
+\newline
+It is also worth noticing that the row-normalization cancels out the sensor weights. This is due to the fact that during the construction of $P$, each entry (layer weight) of a row gets multiplied by the corresponding sensor weight.
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+ 		\includegraphics[width=\textwidth]{results/aliasing_fixes/compare_normalization/no_normalization_r=0_weights=1/central_view_reconstruction2-2.png} 
+  		\caption{No normalization, box-filtering off, $w \equiv 1$.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{results/aliasing_fixes/compare_normalization/normalization_r=0_weights=1/central_view_reconstruction2-2.png} 
+		\caption{Row-normalization, box-filtering off, $w \equiv 1$.}
+		\label{fig:normalization_no_weights}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{results/aliasing_fixes/compare_normalization/no_normalization_r=0_weights=gauss/central_view_reconstruction2-2.png} 
+		\caption{No normalization, box-filtering off, weights from normal distribution $\mathcal{N}\left(0, 0.3\right)$.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{results/aliasing_fixes/compare_normalization/no_normalization_r=1_weights=gauss/central_view_reconstruction2-2.png} 
+		\caption{No normalization, box-filtering on, weights from normal distribution.}
+	\end{subfigure}%
+
+	\caption{Reconstructions of the central view $\left(2, 2\right)$ from the $3 \times 3$ dice scene with different parameters.}
+	\label{fig:normalization_impact_comparison}
+\end{figure}
+
+\subsection{Comparison of the three methods implemented so far}
 
 \begin{enumerate}
 	\item	Rays from sensor to layers
@@ -460,7 +491,7 @@ The key idea is to use a kernel to weight the ray-pixel-correspondences. As depi
 			\item[$+$]	Adjustable sampling density of rays
 			\item[$+$]	No need to adjust/shear the camera images
 		\end{itemize}
-	\item	Rays from bottom-most layer, weights intersection on layers + sensor (figure \ref{fig:intersections_and_weights_overview})
+	\item	Rays from bottom-most layer, weights for intersection on layers + sensor (figure \ref{fig:intersections_and_weights_overview})
 		\begin{itemize}
 			\item[$-$]	Need normalization of weights along ray, cancels out sensor weights
 			\item[$-$]	Require rectified images for a common focal plane

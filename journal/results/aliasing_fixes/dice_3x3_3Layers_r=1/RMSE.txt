@@ -1,0 +1,3 @@
+RMSE for central view: 14.985153 
+RMSE for custom view: 18.488418 
+>> 
