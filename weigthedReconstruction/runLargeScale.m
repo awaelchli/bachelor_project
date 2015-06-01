@@ -1,15 +1,15 @@
 % clear;
 %% Parameters
 
-NumberOfLayers = 5;
-distanceBetweenLayers = 10;
+NumberOfLayers = 3;
+distanceBetweenLayers = 1.5;
 
 % layerResolution = [100, 100 * aspectRatio];
 % layerResolution = round(layerResolution);
 layerResolution = lightFieldResolution([3, 4]);
 
-layerWidth = 70 * aspectRatio;
-layerHeight = 70;
+layerWidth = 4 * aspectRatio;
+layerHeight = 4;
 
 boxFilterRadius = 0;
 
@@ -23,8 +23,8 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-center = [5, 5];
-custom = [9, 9];
+center = [2, 2];
+custom = [3, 3];
 
 mu = [0, 0];
 sigma = [0.3 , 0;
@@ -44,7 +44,7 @@ lightFieldVector = reshape(lightField, [], channels);
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
 tic;
-
+% 
 P = computeMatrixP_allLayerWeights(NumberOfLayers, ...
                    lightFieldResolution, ...
                    layerResolution, ...
