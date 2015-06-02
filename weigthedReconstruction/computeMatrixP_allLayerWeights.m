@@ -1,12 +1,12 @@
-function [ P ] = computeMatrixP_allLayerWeights( NumberOfLayers, ...
-                                 lightFieldResolution, ...
+function [ P, resampledLightField ] = computeMatrixP_allLayerWeights( NumberOfLayers, ...
                                  layerResolution, ...
                                  layerSize, ...
                                  distanceBetweenLayers, ...
                                  cameraPlaneDistance, ...
                                  distanceBetweenTwoCameras, ...
                                  weightFunctionHandle, ...
-                                 boxFilterRadius)
+                                 boxFilterRadius, ...
+                                 lightField)
 % Inputs:
 %
 %   NumberOfLayers:                 Number of layers in the attenuator
@@ -41,6 +41,10 @@ function [ P ] = computeMatrixP_allLayerWeights( NumberOfLayers, ...
 % index of the current non-zero element used in the for loop below.
 % c = 1;
 
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
+channels = size(lightField, 5);
+
 P = sparse(prod(lightFieldResolution), prod([layerResolution, NumberOfLayers]));
 
 [ cameraPositionMatrixY, cameraPositionMatrixX ] = computeCameraPositions(lightFieldResolution([1, 2]), ...
@@ -53,6 +57,8 @@ layerPositionsZ = -(NumberOfLayers - 1) * distanceBetweenLayers / 2 : distanceBe
 sensorPlaneZ = 0;
 
 fprintf('Views done: \n');
+
+resampledLightField = zeros(size(lightField));
 
 for camIndexX = 1 : lightFieldResolution(2)
     for camIndexY = 1 : lightFieldResolution(1)
@@ -79,6 +85,19 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                                     lightFieldResolution([3, 4]), ...
                                                                     layerSize([2, 1]), ...
                                                                     @round );
+%         size(resampledLightField)
+%         size(sensorIntersectionMatrixY)
+%         size(sensorIntersectionMatrixX)
+%           [sensorIntersectionMatrixY(:), sensorIntersectionMatrixX(:)]
+                                                                
+        for c = 1 : channels
+            view = squeeze(lightField(camIndexY, camIndexX, :, :, c));
+            Yq = sensorIntersectionMatrixY';
+            Xq = sensorIntersectionMatrixX';
+%             [Yq(:), Xq(:)]
+            interpVector = interp2(view, Yq(:), Xq(:));
+            resampledLightField(camIndexY, camIndexX, :, :, c) = reshape(interpVector, lightFieldResolution([3, 4])); 
+        end
                                                                 
 %         invalidRayIndicesForSensorY = pixelIndexOnSensorMatrixY(:, 1) == 0;
 %         invalidRayIndicesForSensorX = pixelIndexOnSensorMatrixX(1, :) == 0;
@@ -86,29 +105,29 @@ for camIndexX = 1 : lightFieldResolution(2)
         for sy = -boxFilterRadius : boxFilterRadius
             for sx = -boxFilterRadius : boxFilterRadius
                 
-                tempPixelIndexOnSensorMatrixY = min(pixelIndexOnSensorMatrixY + sy, lightFieldResolution(3));
-                tempPixelIndexOnSensorMatrixY = max(tempPixelIndexOnSensorMatrixY, 0);
-                tempPixelIndexOnSensorMatrixX = min(pixelIndexOnSensorMatrixX + sx, lightFieldResolution(4));
-                tempPixelIndexOnSensorMatrixX = max(tempPixelIndexOnSensorMatrixX, 0);
+%                 tempPixelIndexOnSensorMatrixY = min(pixelIndexOnSensorMatrixY + sy, lightFieldResolution(3));
+%                 tempPixelIndexOnSensorMatrixY = max(tempPixelIndexOnSensorMatrixY, 0);
+%                 tempPixelIndexOnSensorMatrixX = min(pixelIndexOnSensorMatrixX + sx, lightFieldResolution(4));
+%                 tempPixelIndexOnSensorMatrixX = max(tempPixelIndexOnSensorMatrixX, 0);
                                                              
-                weightsForSensorMatrix = computeRayIntersectionWeights( tempPixelIndexOnSensorMatrixY, ...
-                                                                        tempPixelIndexOnSensorMatrixX, ...
-                                                                        sensorIntersectionMatrixY, ...
-                                                                        sensorIntersectionMatrixX, ...
-                                                                        weightFunctionHandle );
+%                 weightsForSensorMatrix = computeRayIntersectionWeights( tempPixelIndexOnSensorMatrixY, ...
+%                                                                         tempPixelIndexOnSensorMatrixX, ...
+%                                                                         sensorIntersectionMatrixY, ...
+%                                                                         sensorIntersectionMatrixX, ...
+%                                                                         weightFunctionHandle );
 
-                columns = computeColumnIndicesForP(tempPixelIndexOnSensorMatrixY, ...
-                                                   tempPixelIndexOnSensorMatrixX, ...
-                                                   1, ...
-                                                   NumberOfLayers, ...
-                                                   layerResolution);
-
-                rows = computeRowIndicesForP(camIndexY, ...
-                                             camIndexX, ...
-                                             tempPixelIndexOnSensorMatrixY, ... 
-                                             tempPixelIndexOnSensorMatrixX, ...
-                                             lightFieldResolution);
-
+%                 columns = computeColumnIndicesForP(tempPixelIndexOnSensorMatrixY, ...
+%                                                    tempPixelIndexOnSensorMatrixX, ...
+%                                                    1, ...
+%                                                    NumberOfLayers, ...
+%                                                    layerResolution);
+% 
+%                 rows = computeRowIndicesForP(camIndexY, ...
+%                                              camIndexX, ...
+%                                              tempPixelIndexOnSensorMatrixY, ... 
+%                                              tempPixelIndexOnSensorMatrixX, ...
+%                                              lightFieldResolution);
+% 
                 invalidRayIndicesForSensorY = pixelIndexOnSensorMatrixY(:, 1) == 0;
                 invalidRayIndicesForSensorX = pixelIndexOnSensorMatrixX(1, :) == 0;
                 
@@ -117,12 +136,12 @@ for camIndexX = 1 : lightFieldResolution(2)
 %                 numel(invalidRayIndicesForSensorY)
 %                 numel(invalidRayIndicesForSensorX)
     
-                numInsertions = numel(rows);
+%                 numInsertions = numel(rows);
 %                 I(c : c + numInsertions - 1) = rows;
 %                 J(c : c + numInsertions - 1) = columns;
 %                 S(c : c + numInsertions - 1) = weightsForSensorMatrix(:);
 %                 c = c + numInsertions;
-                P = P + sparse(rows, columns, weightsForSensorMatrix(:), size(P, 1), size(P, 2), numInsertions); 
+%                 P = P + sparse(rows, columns, weightsForSensorMatrix(:), size(P, 1), size(P, 2), numInsertions); 
         
                 for layer = 2 : NumberOfLayers
 
@@ -223,9 +242,9 @@ end
 
 % P = sparse(I, J, S, prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
 
-rowSums = sum(P, 2);
-rowSums = max(1, rowSums);
-P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
+% rowSums = sum(P, 2);
+% rowSums = max(1, rowSums);
+% P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
 
 end
 
