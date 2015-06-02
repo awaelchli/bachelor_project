@@ -450,23 +450,23 @@ It is also worth noticing that the row-normalization cancels out the sensor weig
 	\centering
 	\begin{subfigure}[t]{0.45\textwidth}
  		\includegraphics[width=\textwidth]{results/aliasing_fixes/compare_normalization/no_normalization_r=0_weights=1/central_view_reconstruction2-2.png} 
-  		\caption{No normalization, box-filtering off, $w \equiv 1$.}
+  		\caption{No normalization, box radius $0$, $w \equiv 1$.}
 	\end{subfigure}%
 	~
 	\begin{subfigure}[t]{0.45\textwidth}
 		\includegraphics[width=\textwidth]{results/aliasing_fixes/compare_normalization/normalization_r=0_weights=1/central_view_reconstruction2-2.png} 
-		\caption{Row-normalization, box-filtering off, $w \equiv 1$.}
+		\caption{Row-normalization, box radius $0$, $w \equiv 1$.}
 		\label{fig:normalization_no_weights}
 	\end{subfigure}%
 	\\
 	\begin{subfigure}[t]{0.45\textwidth}
 		\includegraphics[width=\textwidth]{results/aliasing_fixes/compare_normalization/no_normalization_r=0_weights=gauss/central_view_reconstruction2-2.png} 
-		\caption{No normalization, box-filtering off, weights from normal distribution $\mathcal{N}\left(0, 0.3\right)$.}
+		\caption{No normalization, box radius $0$, weights from normal distribution $\mathcal{N}\left(0, 0.3\right)$.}
 	\end{subfigure}%
 	~
 	\begin{subfigure}[t]{0.45\textwidth}
 		\includegraphics[width=\textwidth]{results/aliasing_fixes/compare_normalization/no_normalization_r=1_weights=gauss/central_view_reconstruction2-2.png} 
-		\caption{No normalization, box-filtering on, weights from normal distribution.}
+		\caption{No normalization, box radius $1$, weights from normal distribution.}
 	\end{subfigure}%
 
 	\caption{Reconstructions of the central view $\left(2, 2\right)$ from the $3 \times 3$ dice scene with different parameters.}
@@ -488,16 +488,17 @@ It is also worth noticing that the row-normalization cancels out the sensor weig
 			\item[$-$]	Weights only for intersections on sensor 
 			\item[$-$]	Artefacts/Aliasing
 			\item[$-$]	Sensitive to small parameter changes
+			\item[$-$]	Applying box-filter is computationally expensive
 			\item[$+$]	Adjustable sampling density of rays
 			\item[$+$]	No need to adjust/shear the camera images
 		\end{itemize}
 	\item	Rays from bottom-most layer, weights for intersection on layers + sensor (figure \ref{fig:intersections_and_weights_overview})
 		\begin{itemize}
-			\item[$-$]	Need normalization of weights along ray, cancels out sensor weights
+			\item[$-$]	Normalization of weights along ray cancels out sensor weights
 			\item[$-$]	Require rectified images for a common focal plane
 			\item[$-$]	Applying box-filter is computationally expensive
 			\item[$+$]	Adjustable sampling density of rays
-			\item[$+$]	Fewer camera/scene parameters required, less sensitive
+			\item[$+$]	Fewer camera/scene parameters required, less sensitive (if the light field consists of rectified images)
 		\end{itemize}
 \end{enumerate}
 

@@ -1,0 +1,30 @@
+%% Parameters
+NumberOfLayers = 10;
+distanceBetweenLayers = 0.2;
+% Width and height of the layers in mm
+layerWidth = 4;
+layerHeight = layerWidth * lightFieldResolution(3) / lightFieldResolution(4);
+originLF = [0, 0, 0];
+
+% Maximum number of iterations in optimization process
+maxIterations = 20;
+% Output folder to store the layers
+outFolder = 'output/';
+
+center = [2, 2];
+custom = [3, 3];
+
+layerSize = [layerWidth, layerHeight];
+totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
+originLayers = [0, 0, totalLayerThickness / 2];
+layerResolution = lightFieldResolution([3, 4]);
+
+
+% path = '../lightFields/dice_camera/dice_parallel/compare/3x3_ortho_.2/';
+% [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
+% 
+% fov = [0.1, 0.1];
+% lightFieldResolution = size(lightField);
+% lightFieldResolution = lightFieldResolution(1 : 4);
+% 
+% distanceBetweenCameras = [.2, .2]; 
