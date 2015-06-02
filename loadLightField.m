@@ -122,6 +122,28 @@ lightFieldResolution = lightFieldResolution(1 : 4);
 fov = deg2rad([10, 10]);
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
+%% Comparison between orthographic and perspective reconstructions
+path = '../lightFields/dice_camera/dice_parallel/compare/5x5_ortho_.2_dice_closer/';
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
+
+fov = [0.1, 0.1];
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
+
+distanceBetweenCameras = [.2, .2]; 
+
+% path = '../lightFields/dice_camera/dice_parallel/compare/5x5_persp_.2_dice_closer/';
+% [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
+% 
+% lightField = shearLightField(lightField, 16);
+% 
+% lightFieldResolution = size(lightField);
+% lightFieldResolution = lightFieldResolution(1 : 4);
+%  
+% cameraPlaneDistance = 8;
+% distanceBetweenCameras = [.2, .2]; 
+% aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
+
 %% Load the light field from a H5 file
 
 path = 'lightFields/rx_watch/';

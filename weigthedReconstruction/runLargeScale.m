@@ -1,8 +1,8 @@
 % clear;
 %% Parameters
 
-NumberOfLayers = 3;
-distanceBetweenLayers = 1.5;
+NumberOfLayers = 5;
+distanceBetweenLayers = 0.5;
 
 % layerResolution = [100, 100 * aspectRatio];
 % layerResolution = round(layerResolution);
@@ -23,8 +23,8 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-center = [2, 2];
-custom = [3, 3];
+center = [3, 3];
+custom = [5, 5];
 
 mu = [0, 0];
 sigma = [0.3 , 0;

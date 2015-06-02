@@ -3,8 +3,8 @@
 
 #include "colors.inc"  
 
-#declare DistanceBetweenCamerasY = 0.05;
-#declare DistanceBetweenCamerasX = 0.05;
+#declare DistanceBetweenCamerasY = 0.2;
+#declare DistanceBetweenCamerasX = 0.2;
 #declare DistanceToCameraPlane = 8;
 #declare AngularResolutionY = 5;
 #declare AngularResolutionX = 5;
@@ -18,12 +18,14 @@
 #declare CameraPositionY = ((AngularResolutionY - 1) / 2 - CameraIndexY) * DistanceBetweenCamerasY;             
 #declare CameraPositionX = (-(AngularResolutionX - 1) / 2 + CameraIndexX) * DistanceBetweenCamerasX;
  
-camera {
+camera {    
+//orthographic
   location <-DistanceToCameraPlane, CameraPositionY, CameraPositionX>
   direction <0, 0, -1>     
   angle FOV_horizontal 
   right <0, 0, aspectRatio>
-  look_at <0, CameraPositionY, CameraPositionX> 
+  //look_at <0, 0, 0>      
+  look_at <0, CameraPositionY, CameraPositionX>
 }
  
 light_source { <-9, 7, -6> color White }   
@@ -107,7 +109,7 @@ difference {
 }
 #end
  
-object { Dice(color rgb <.7, 0, 0>)  rotate <195, -30, 10> translate <-2.5, 0, 0>}
-object { Dice(color rgb <0, 0, .7>)  rotate <30,40,50> translate <-1.5,1,1>}
-object { Dice(color rgb <0, .5, 0>)  rotate <-40,20,-120> translate <0,1,-1>}
-object { Dice(color rgb <.5,.5, 0>)  rotate <-10,290,-30> translate <1,-1,.4>}
+object { Dice(color rgb <.7, 0, 0>)  rotate <195, -30, 10> translate <-1.0, 0, 0>}//Red
+object { Dice(color rgb <0, 0, .7>)  rotate <30,40,50> translate <-0.5,1,1>}//Blue
+object { Dice(color rgb <0, .5, 0>)  rotate <-40,20,-120> translate <0.3,1,-1>}//Green
+object { Dice(color rgb <.5,.5, 0>)  rotate <-10,290,-30> translate <1,-1,.4>}//Yellow
