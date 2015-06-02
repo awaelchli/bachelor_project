@@ -95,7 +95,7 @@ aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
 % path = 'lightFields/dice_camera/dice_parallel/5x5-.05/';
 % path = '../lightFields/dice_camera/dice_parallel/3x3_rect/';
-path = 'lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
+path = '../lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
 % path = '../lightFields/dice_camera/dice_parallel/5x5-.05_rect/';
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
 
@@ -126,11 +126,11 @@ aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 % path = '../lightFields/dice_camera/dice_parallel/compare/5x5_ortho_.2_dice_closer/';
 % [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );
 % 
-fov = [0.1, 0.1];
-lightFieldResolution = size(lightField);
-lightFieldResolution = lightFieldResolution(1 : 4);
-
-distanceBetweenCameras = [.2, .2]; 
+% fov = [0.1, 0.1];
+% lightFieldResolution = size(lightField);
+% lightFieldResolution = lightFieldResolution(1 : 4);
+% 
+% distanceBetweenCameras = [.2, .2]; 
 
 path = '../lightFields/dice_camera/dice_parallel/compare/5x5_persp_.2_dice_closer/';
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [5, 5] );

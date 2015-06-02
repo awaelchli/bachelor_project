@@ -2,7 +2,7 @@
 %% Parameters
 
 NumberOfLayers = 5;
-distanceBetweenLayers = 0.5;
+distanceBetweenLayers = 0.9;
 
 % layerResolution = [100, 100 * aspectRatio];
 % layerResolution = round(layerResolution);
@@ -11,7 +11,7 @@ layerResolution = lightFieldResolution([3, 4]);
 layerWidth = 4 * aspectRatio;
 layerHeight = 4;
 
-boxFilterRadius = 0;
+boxRadius = 0;
 
 % Maximum number of iterations in optimization process
 maxIterations = 20;
@@ -23,15 +23,15 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-center = [3, 3];
-custom = [5, 5];
+center = [2, 2];
+custom = [3, 3];
 
 mu = [0, 0];
 sigma = [0.3 , 0;
          0, 0.3 ];
       
-weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
-% weightFunctionHandle = @(data) tentWeightFunction(data, 1, 4);
+% weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
+weightFunctionHandle = @(data) tentWeightFunction(data, 100, 1);
 % weightFunctionHandle = @(data) ones(size(data, 1), 1);
 
 %% Vectorize the light field
@@ -52,7 +52,7 @@ tic;
                    cameraPlaneDistance, ...
                    distanceBetweenCameras, ...
                    weightFunctionHandle, ...
-                   boxFilterRadius, ...
+                   boxRadius, ...
                    lightField);
                
                
