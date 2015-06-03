@@ -32,23 +32,13 @@ function [ P, resampledLightField ] = computeMatrixPForResampledLF( NumberOfLaye
 
 
 
-
-% upper bound for number of non-zero values in the matrix P
-% NumberOfNonZeroElements = prod(lightFieldResolution) * NumberOfLayers; 
-% NumberOfNonZeroElements = 100000000;
-
-% I = zeros(NumberOfNonZeroElements, 1);      % row indices
-% J = zeros(NumberOfNonZeroElements, 1);      % column indices  
-% S = zeros(NumberOfNonZeroElements, 1);      % weights
-% 
-% index of the current non-zero element used in the for loop below.
-% c = 1;
-
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
 channels = size(lightField, 5);
 
-P = sparse(prod(lightFieldResolution), prod([layerResolution, NumberOfLayers]));
+Is = cell(lightFieldResolution(1), lightFieldResolution(2), NumberOfLayers);
+Js = cell(size(Is));
+Ss = cell(size(Is));
 
 [ cameraPositionMatrixY, cameraPositionMatrixX ] = computeCameraPositions(lightFieldResolution([1, 2]), ...
                                                                           distanceBetweenTwoCameras([2, 1]));
@@ -60,8 +50,6 @@ P = sparse(prod(lightFieldResolution), prod([layerResolution, NumberOfLayers]));
 
 layerPositionsZ = -(NumberOfLayers - 1) * distanceBetweenLayers / 2 : distanceBetweenLayers : (NumberOfLayers - 1) * distanceBetweenLayers / 2;
 sensorPlaneZ = 0;
-
-
 
 fprintf('Views done: \n');
 
@@ -125,9 +113,10 @@ for camIndexX = 1 : lightFieldResolution(2)
                                      lightFieldResolution);
 
 
-        % Insert values for the first layer
-        numInsertions = numel(rows);
-        P = P + sparse(rows, columns, ones(1, numInsertions), size(P, 1), size(P, 2), numInsertions); 
+        % Insert indices and values for the first layer
+        Is{camIndexY, camIndexX, 1} = rows;
+        Js{camIndexY, camIndexX, 1} = columns;
+        Ss{camIndexY, camIndexX, 1} = ones(size(rows));
         
         for sy = -boxRadius : boxRadius
             for sx = -boxRadius : boxRadius
@@ -203,14 +192,10 @@ for camIndexX = 1 : lightFieldResolution(2)
                     weights = weightsForLayerMatrix;
                     weights = weights(~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY), :);
                     weights = weights(: , ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX));
-
-                    % insert the calculated indices and weights into the sparse arrays
-%                     I(c : c + numInsertions - 1) = rows;
-%                     J(c : c + numInsertions - 1) = columns;
-%                     S(c : c + numInsertions - 1) = weights(:);
-%                     c = c + numInsertions;
-
-                    P = P + sparse(rows, columns, weights(:), size(P, 1), size(P, 2), numInsertions);
+                    
+                    Is{camIndexY, camIndexX, layer} = rows;
+                    Js{camIndexY, camIndexX, layer} = columns;
+                    Ss{camIndexY, camIndexX, layer} = weights(:);
                 end
             end
         end
@@ -219,15 +204,11 @@ for camIndexX = 1 : lightFieldResolution(2)
     end
 end
 
-% I = I(1 : c - 1);
-% J = J(1 : c - 1);
-% S = S(1 : c - 1);
+P = sparse([Is{:}], [Js{:}], [Ss{:}], prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]));
 
-% P = sparse(I, J, S, prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]), c - 1);
-
-% rowSums = sum(P, 2);
-% rowSums = max(1, rowSums);
-% P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
+rowSums = sum(P, 2);
+rowSums = max(1, rowSums);
+P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
 
 end
 
