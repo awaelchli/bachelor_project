@@ -2,14 +2,14 @@
 %% Parameters
 
 NumberOfLayers = 5;
-distanceBetweenLayers = 0.9;
+distanceBetweenLayers = 20;
 
 % layerResolution = [100, 100 * aspectRatio];
 % layerResolution = round(layerResolution);
 layerResolution = lightFieldResolution([3, 4]);
 
-layerWidth = 4 * aspectRatio;
-layerHeight = 4;
+layerWidth = 600 * aspectRatio;
+layerHeight = 600;
 
 boxRadius = 0;
 
@@ -23,28 +23,22 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-center = [2, 2];
-custom = [3, 3];
+center = [5, 5];
+custom = [9, 9];
 
+% Parameters for the weighting function on the layers
 mu = [0, 0];
 sigma = [0.3 , 0;
          0, 0.3 ];
       
-% weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
-weightFunctionHandle = @(data) tentWeightFunction(data, 100, 1);
+weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
+% weightFunctionHandle = @(data) tentWeightFunction(data, 1, 1);
 % weightFunctionHandle = @(data) ones(size(data, 1), 1);
-
-%% Vectorize the light field
-% Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
-% and each column of this matrix represents a color channel of the light
-% field
-
-% lightFieldVector = reshape(lightField, [], channels);
 
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
 tic;
-% 
+
 [P, resampledLightField] = computeMatrixP_allLayerWeights(NumberOfLayers, ...
                    layerResolution, ...
                    layerSize, ...
@@ -54,22 +48,15 @@ tic;
                    weightFunctionHandle, ...
                    boxRadius, ...
                    lightField);
-               
-               
-% P = computeMatrixP(NumberOfLayers, ...
-%                    lightFieldResolution, ...
-%                    layerResolution, ...
-%                    layerSize, ...
-%                    distanceBetweenLayers, ...
-%                    cameraPlaneDistance, ...
-%                    distanceBetweenCameras, ...
-%                    weightFunctionHandle, ...
-%                    boxFilterRadius);
-
-lightFieldVector = reshape(resampledLightField, [], channels);
 
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
+%% Vectorize the light field
+% Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
+% and each column of this matrix represents a color channel of the light
+% field
+lightFieldVector = reshape(resampledLightField, [], channels);
+% lightFieldVector = reshape(lightField, [], channels);
 
 %% Convert to log light field
 lightFieldVectorLogDomain = lightFieldVector;
@@ -140,8 +127,8 @@ lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
 lightFieldRec = exp(lightFieldRec);
 
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
-centerLF = squeeze(lightField(center(1), center(2), :, :, :));
-otherLF = squeeze(lightField(custom(1), custom(2), :, :, :));
+centerLF = squeeze(resampledLightField(center(1), center(2), :, :, :));
+otherLF = squeeze(resampledLightField(custom(1), custom(2), :, :, :));
 customRec = squeeze(lightFieldRec(custom(1), custom(2), :, :, :));
 
 % show the central and custom view from reconstruction
