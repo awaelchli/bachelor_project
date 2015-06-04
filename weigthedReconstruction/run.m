@@ -2,14 +2,14 @@
 %% Parameters
 
 NumberOfLayers = 5;
-distanceBetweenLayers = 10;
+distanceBetweenLayers = 1;
 
 % layerResolution = [100, 100 * aspectRatio];
 % layerResolution = round(layerResolution);
 layerResolution = lightFieldResolution([3, 4]);
 
-layerWidth = 150 * aspectRatio;
-layerHeight = 150;
+layerWidth = 4 * aspectRatio;
+layerHeight = 4;
 
 boxRadius = 0;
 
@@ -23,16 +23,16 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-reconstructionIndices = [9, 1; 2, 2; 9, 9];
+reconstructionIndices = [1, 1; 3, 1; 2, 2; 3, 3];
 
 % Parameters for the weighting function on the layers
 mu = [0, 0];
 sigma = [0.3 , 0;
          0, 0.3 ];
       
-weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
+% weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
 % weightFunctionHandle = @(data) tentWeightFunction(data, 1, 1);
-% weightFunctionHandle = @(data) ones(size(data, 1), 1);
+weightFunctionHandle = @(data) ones(size(data, 1), 1);
 
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
@@ -50,6 +50,14 @@ clear P resampledLightField lightFieldVector lightFieldVectorLogDomain layers ..
                                                         weightFunctionHandle, ...
                                                         boxRadius, ...
                                                         lightField);
+                                                    
+% rowSums = sum(P, 2);
+% rowSums = max(0.00001, rowSums);
+% P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
+
+% colSums = sum(P, 1);
+% colSums = max(0.00001, colSums);
+% P = P * spdiags(1 ./ colSums', 0, size(P, 2), size(P, 2));
 
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
@@ -70,6 +78,7 @@ tic;
 ub = zeros(size(P, 2), 1); 
 lb = zeros(size(P, 2), 1) + log(0.01);
 x0 = zeros(size(P, 2), 1);
+
 %% Run least squares optimization for each color channel
 % 
 % % The Jacobian matrix of Px - d is just P. 
