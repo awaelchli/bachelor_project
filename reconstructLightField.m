@@ -30,18 +30,8 @@ writeToFolder = ~isempty(outputFolder);
 NumberOfReconstructions = size(cameraIndices, 1);
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
-channels = size(lightField, 5);
 
-lightFieldVector = reshape(lightField, [], channels);
-
-layersR = squeeze(layers(:, :, :, 1));
-layersG = squeeze(layers(:, :, :, 2));
-layersB = squeeze(layers(:, :, :, 3));
-
-lightFieldRecVector = zeros(size(lightFieldVector));
-lightFieldRecVector(:, 1) = P * log(layersR(:));
-lightFieldRecVector(:, 2) = P * log(layersG(:));
-lightFieldRecVector(:, 3) = P * log(layersB(:));
+lightFieldRecVector = P * reshape(layers, size(P, 2), []);
 
 % convert the light field vector to the 4D light field
 lightFieldReconstruction = reshape(lightFieldRecVector, [lightFieldResolution 3]);

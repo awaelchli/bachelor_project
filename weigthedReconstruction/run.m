@@ -128,4 +128,4 @@ printLayers(layers(:, :, 1 : NumberOfLayers, :), layerSize, outFolder, 'print1',
 
 %% Reconstruct light field from attenuation layers and evaluate error
 
-reconstructLightField(P, resampledLightField, layers, reconstructionIndices, 1, 1, outFolder);
+reconstructLightField(P, resampledLightField, log(layers), reconstructionIndices, 1, 1, outFolder);
