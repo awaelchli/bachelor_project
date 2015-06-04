@@ -24,22 +24,18 @@ for layer = 1 : Nlayers
     
     % insert markers that help for alignment
     offset = floor(padding / 2);
-    pos = [offset offset;
-        w - offset offset;
-        offset h - offset];
+%     pos = [offset offset;
+%         w - offset offset;
+%         offset h - offset];
 %     im = insertMarker(im, pos, 'Color', 'Black', 'Size', offset);
     
-    % insert layer number
-%     im = insertText(im, [w - offset h - offset], count, ...
-%         'AnchorPoint', 'Center', 'BoxOpacity', 0, ...
-%         'FontSize', 16);
+    % Insert layer number into image
+    im = insertTextIntoImage(im, num2str(count), [w - offset, h - offset], 16);
     
-    
-    % save images and print to pdf
+    % Save image of layer
     imwrite(im, [outFolder num2str(count) '.png']);
     
     count = count + 1;
-    
     images(:, :, :, layer) = im;
 end
 
@@ -71,3 +67,17 @@ print('-dpdf', '-r0', [outFolder filename '.pdf']);
 
 end
 
+function [ imageWithText ] = insertTextIntoImage(image, textString, position, fontSize)
+
+f = figure('Visible', 'off');
+imshow(image);
+text('Position', position, 'String', textString, 'FontSize', fontSize);
+
+hFrame = getframe(gca);
+imageWithText = hFrame.cdata;
+
+close(f);
+
+imageWithText = imageWithText(1 : size(image, 1), 1 : size(image, 2), :);
+
+end
