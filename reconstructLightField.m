@@ -72,6 +72,10 @@ end
 % Compute and display the error if desired
 if( displayError )
     
+    if( writeToFolder )
+        rmseFileID = fopen([outputFolder 'RMSE.txt'], 'wt');
+    end
+    
     for i = 1 : NumberOfReconstructions
         
         currentCameraIndices = cameraIndices(i, :);
@@ -90,9 +94,16 @@ if( displayError )
         fprintf(['R' displayTitle ': %f \n'], rmse);
         
         if( writeToFolder )
-            imwrite(errorImage, [outFolder displayTitle '.png']);
+            imwrite(errorImage, [outputFolder displayTitle '.png']);
+            
+            % Write RMSE values to text file
+            fprintf(rmseFileID, ['R' displayTitle ': %f \n'], rmse);
         end
         
+    end
+    
+    if( writeToFolder )
+        fclose(rmseFileID);
     end
 end
 

@@ -23,8 +23,7 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-center = [1, 1];
-custom = [9, 9];
+reconstructionIndices = [9, 1; 2, 2; 9, 9];
 
 % Parameters for the weighting function on the layers
 mu = [0, 0];
@@ -90,8 +89,8 @@ x0 = zeros(size(P, 2), 1);
 layers = zeros(size(P, 2), 3);
 for c = 1 : channels
     fprintf('Running optimization for color channel %i ...\n', c);
-    layers(:, c) = sartGPU(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
-%     layers(:, c) = sart(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
+%     layers(:, c) = sartGPU(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
+    layers(:, c) = sart(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
 end
 
 layers = exp(layers);
@@ -115,52 +114,9 @@ if(exist(outFolder, 'dir'))
 end
 mkdir(outFolder);
 
-printLayers(layers(:, :, 1:NumberOfLayers, :), layerSize, outFolder, 'print1', 1);
+printLayers(layers(:, :, 1 : NumberOfLayers, :), layerSize, outFolder, 'print1', 1);
 % printLayers(layers(:, :, 3, :), layerSize, outFolder, 'print2', 3);
 
 %% Reconstruct light field from attenuation layers and evaluate error
 
-lightFieldRecVector = zeros(size(lightFieldVector));
-lightFieldRecVector(:, 1) = P * log(layersR);
-lightFieldRecVector(:, 2) = P * log(layersG);
-lightFieldRecVector(:, 3) = P * log(layersB);
-
-% convert the light field vector to the 4D light field
-lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
-
-lightFieldRec = exp(lightFieldRec);
-
-centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
-centerLF = squeeze(resampledLightField(center(1), center(2), :, :, :));
-otherLF = squeeze(resampledLightField(custom(1), custom(2), :, :, :));
-customRec = squeeze(lightFieldRec(custom(1), custom(2), :, :, :));
-
-% show the central and custom view from reconstruction
-figure('Name', 'Light field reconstruction')
-imshow(centerRec)
-title('Central view');
-imwrite(centerRec, [outFolder 'central_view_reconstruction' num2str(center(1)) '-' num2str(center(2)) '.png']);
-
-figure('Name', 'Light field reconstruction')
-imshow(customRec)
-title('Custom view');
-imwrite(customRec, [outFolder 'custom_view_reconstruction' num2str(custom(1)) '-' num2str(custom(2)) '.png']);
-
-% show the absolute error
-[error, mse] = meanSquaredErrorImage(centerRec, centerLF);
-figure('Name', 'Absolute Error of Central View')
-imshow(error, [])
-title('Central view');
-
-fprintf('RMSE for central view: %f \n', mse);
-
-imwrite(error, [outFolder 'central_view_error.png']);
-
-[error, mse] = meanSquaredErrorImage(customRec, otherLF);
-figure('Name', 'Absolute Error of custom view')
-imshow(error, [])
-title('Custom view');
-
-fprintf('RMSE for custom view: %f \n', mse);
-
-imwrite(error, [outFolder 'custom_view_error.png']);
+reconstructLightField(P, resampledLightField, layers, reconstructionIndices, 1, 1, outFolder);
