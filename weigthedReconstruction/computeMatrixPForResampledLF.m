@@ -31,12 +31,12 @@ function [ P, resampledLightField ] = computeMatrixPForResampledLF( NumberOfLaye
 %                                   intersections on the sensor plane
 
 
-
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
 channels = size(lightField, 5);
+boxSize = [2 * boxRadius + 1, 2 * boxRadius + 1];
 
-Is = cell(lightFieldResolution(1), lightFieldResolution(2), NumberOfLayers);
+Is = cell(lightFieldResolution(1), lightFieldResolution(2), NumberOfLayers, boxSize(1), boxSize(2));
 Js = cell(size(Is));
 Ss = cell(size(Is));
 
@@ -109,9 +109,9 @@ for camIndexX = 1 : lightFieldResolution(2)
                                      lightFieldResolution);
 
         % Insert indices and values for the first layer
-        Is{camIndexY, camIndexX, 1} = rowsForFirstLayer;
-        Js{camIndexY, camIndexX, 1} = columnsForFirstLayer;
-        Ss{camIndexY, camIndexX, 1} = ones(size(rowsForFirstLayer));
+        Is{camIndexY, camIndexX, 1, 1, 1} = rowsForFirstLayer;
+        Js{camIndexY, camIndexX, 1, 1, 1} = columnsForFirstLayer;
+        Ss{camIndexY, camIndexX, 1, 1, 1} = ones(size(rowsForFirstLayer));
         
         for sy = -boxRadius : boxRadius
             for sx = -boxRadius : boxRadius
@@ -187,9 +187,12 @@ for camIndexX = 1 : lightFieldResolution(2)
                     weights = weights(~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY), :);
                     weights = weights(: , ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX));
                     
-                    Is{camIndexY, camIndexX, layer} = rows;
-                    Js{camIndexY, camIndexX, layer} = columns;
-                    Ss{camIndexY, camIndexX, layer} = weights(:);
+                    boxIndexY = sy + boxRadius + 1;
+                    boxIndexX = sx + boxRadius + 1;
+                    
+                    Is{camIndexY, camIndexX, layer, boxIndexY, boxIndexX} = rows;
+                    Js{camIndexY, camIndexX, layer, boxIndexY, boxIndexX} = columns;
+                    Ss{camIndexY, camIndexX, layer, boxIndexY, boxIndexX} = weights(:);
                 end
             end
         end
@@ -200,9 +203,9 @@ end
 
 P = sparse([Is{:}], [Js{:}], [Ss{:}], prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]));
 
-% rowSums = sum(P, 2);
-% rowSums = max(1, rowSums);
-% P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
+rowSums = sum(P, 2);
+rowSums = max(1, rowSums);
+P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
 
 % colSums = sum(P, 1);
 % colSums = max(1, colSums);
@@ -224,7 +227,6 @@ cameraPixelIndicesY = repmat(cameraPixelIndicesY, 1, numel(cameraPixelIndicesX))
 cameraPixelIndicesX = repmat(cameraPixelIndicesX, size(cameraPixelIndicesY, 1), 1); 
 
 % make copies of the image indices
-% TODO: compare performance: use repmat instead of adding to zero vector
 imageIndicesY = camIndexY + zeros(size(cameraPixelIndicesY));
 imageIndicesX = camIndexX + zeros(size(cameraPixelIndicesX));
 
@@ -249,7 +251,6 @@ layerPixelIndicesX = find(pixelIndexMatrixX(1, :)); % row vector
 layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
 layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
 
-% TODO: compare performance: use repmat instead of adding to zero vector
 layerIndices = layer + zeros(size(layerPixelIndicesY));
 
 % convert the subscripts to column indices

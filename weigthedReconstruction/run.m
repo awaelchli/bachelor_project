@@ -2,14 +2,14 @@
 %% Parameters
 
 NumberOfLayers = 5;
-distanceBetweenLayers = 20;
+distanceBetweenLayers = 30;
 
 % layerResolution = [100, 100 * aspectRatio];
 % layerResolution = round(layerResolution);
 layerResolution = lightFieldResolution([3, 4]);
 
-layerWidth = 600 * aspectRatio;
-layerHeight = 600;
+layerWidth = 700 * aspectRatio;
+layerHeight = 700;
 
 boxRadius = 0;
 
@@ -23,7 +23,7 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-center = [5, 5];
+center = [1, 1];
 custom = [9, 9];
 
 % Parameters for the weighting function on the layers
@@ -38,6 +38,9 @@ weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
 tic;
+
+clear P resampledLightField lightFieldVector lightFieldVectorLogDomain layers ...
+      layersR layerG layerB lightFieldRecVector lightFieldRec;
 
 [P, resampledLightField] = computeMatrixPForResampledLF(NumberOfLayers, ...
                                                         layerResolution, ...
