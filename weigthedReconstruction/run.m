@@ -2,14 +2,14 @@
 %% Parameters
 
 NumberOfLayers = 5;
-distanceBetweenLayers = 30;
+distanceBetweenLayers = 10;
 
 % layerResolution = [100, 100 * aspectRatio];
 % layerResolution = round(layerResolution);
 layerResolution = lightFieldResolution([3, 4]);
 
-layerWidth = 700 * aspectRatio;
-layerHeight = 700;
+layerWidth = 150 * aspectRatio;
+layerHeight = 150;
 
 boxRadius = 0;
 
@@ -90,7 +90,8 @@ x0 = zeros(size(P, 2), 1);
 layers = zeros(size(P, 2), 3);
 for c = 1 : channels
     fprintf('Running optimization for color channel %i ...\n', c);
-    layers(:, c) = sart(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
+    layers(:, c) = sartGPU(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
+%     layers(:, c) = sart(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
 end
 
 layers = exp(layers);

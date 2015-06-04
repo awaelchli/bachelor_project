@@ -204,11 +204,11 @@ end
 P = sparse([Is{:}], [Js{:}], [Ss{:}], prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]));
 
 rowSums = sum(P, 2);
-rowSums = max(1, rowSums);
+rowSums = max(0.00001, rowSums);
 P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
 
 % colSums = sum(P, 1);
-% colSums = max(1, colSums);
+% colSums = max(0.00001, colSums);
 % P = P * spdiags(1 ./ colSums', 0, size(P, 2), size(P, 2));
 
 end
