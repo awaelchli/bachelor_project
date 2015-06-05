@@ -47,7 +47,7 @@ for layer = 1 : Nlayers
     
     relPosY = (layer - 1) / Nlayers;
     relSize = 1 / Nlayers;
-    subplot('Position', [0, relPosY, relSize, relSize]), image(img)
+    subplot('Position', [0, relPosY, relSize, relSize]), image(im2uint8(img))
     
     set(gca, 'XTickLabel', [], 'YTickLabel', [])
     set(gca, 'XTick', [], 'YTick', [])
