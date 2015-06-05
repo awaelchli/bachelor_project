@@ -31,7 +31,6 @@ for layer = 1 : Nlayers
     
     % Insert layer number into image
     im = insertTextIntoImage(im, num2str(count), [w - offset, h - offset], 16);
-    
     % Save image of layer
     imwrite(im, [outFolder num2str(count) '.png']);
     
@@ -40,7 +39,7 @@ for layer = 1 : Nlayers
 end
 
 
-fig = figure('Menubar', 'none');
+fig = figure('Menubar', 'none', 'Visible', 'off');
 
 for layer = 1 : Nlayers
     img = images(:, :, :, layer);
