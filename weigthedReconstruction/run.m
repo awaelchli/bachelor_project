@@ -8,8 +8,9 @@ distanceBetweenLayers = 1;
 % layerResolution = round(layerResolution);
 layerResolution = lightFieldResolution([3, 4]);
 
-layerWidth = 4 * aspectRatio;
-layerHeight = 4;
+% layerWidth = 4 * aspectRatio;
+layerWidth = 4;
+layerHeight = 0;
 
 boxRadius = 0;
 
@@ -23,7 +24,7 @@ layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
 % Indices of views for reconstruction and error evaluation
-reconstructionIndices = [1, 1; 3, 1; 2, 2; 3, 3];
+reconstructionIndices = [1, 1; 1, 3];
 
 % Parameters for the weighting function on the layers
 mu = [0, 0];

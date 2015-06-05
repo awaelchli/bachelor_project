@@ -39,6 +39,24 @@ fov = deg2rad([60, 45]);
 distanceCameraPlaneToSensorPlane = cameraPlaneDistance * 22 / 8;
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
+%% 2D "Dice" light field (rectified)
+
+path = '../lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
+% path = '../lightFields/dice_camera/dice_parallel/5x5-.05_rect/';
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
+
+% Select 2D slice of light field and 3 color channels
+lightField = lightField(1, :, 279, :, :);
+
+lightFieldResolution = size(lightField);
+lightFieldResolution = lightFieldResolution(1 : 4);
+ 
+cameraPlaneDistance = 8;
+distanceBetweenCameras = [.2, .2]; 
+% distanceBetweenCameras = [.05, .05];
+
+aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
+
 
 %% Perspective lego truck scene
 
