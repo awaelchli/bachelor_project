@@ -9,15 +9,25 @@ function [ gridPositionMatrixY, ...
 %                           points in Y- and X-direction
 
 
+% TODO: Find a way to eliminate if-statements
+
 gridSize = (gridResolution - 1) .* gridStepSize;
 
-positionsVectorY = gridSize(1) / 2 : -gridStepSize(1) : -gridSize(1) / 2;
-positionsVectorX = -gridSize(2) / 2 : gridStepSize(2) : gridSize(2) / 2;
+if(gridResolution(1) == 1)
+    % Grid is 1D
+    positionsVectorY = 0;
+else
+    positionsVectorY = gridSize(1) / 2 : -gridStepSize(1) : -gridSize(1) / 2;
+end
 
+if(gridResolution(2) == 1)
+    % Grid is 1D
+    positionsVectorX = 0;
+else
+    positionsVectorX = -gridSize(2) / 2 : gridStepSize(2) : gridSize(2) / 2;
+end
 
 [ gridPositionMatrixY, gridPositionMatrixX ] = ndgrid(positionsVectorY, positionsVectorX);
-% gridPositionMatrixY = repmat(positionsVectorY', 1, gridResolution(2));
-% gridPositionMatrixX = repmat(positionsVectorX, gridResolution(1), 1);
 
 end
 
