@@ -76,13 +76,11 @@ lightFieldVectorLogDomain = lightFieldVector;
 lightFieldVectorLogDomain(lightFieldVectorLogDomain < 0.01) = 0.01;
 lightFieldVectorLogDomain = log(lightFieldVectorLogDomain);
 
-%% Set the optimization constraints
-tic;
-ub = zeros(size(P, 2), 1); 
-lb = zeros(size(P, 2), 1) + log(0.01);
-x0 = zeros(size(P, 2), 1);
-
 %% Run least squares optimization for each color channel
+% tic;
+% ub = zeros(size(P, 2), 1); 
+% lb = zeros(size(P, 2), 1) + log(0.01);
+% x0 = zeros(size(P, 2), 1);
 % 
 % % The Jacobian matrix of Px - d is just P. 
 % Id = speye(size(P));
@@ -97,25 +95,27 @@ x0 = zeros(size(P, 2), 1);
 % end
 
 %% Solve using SART
+tic;
+fprintf('Running optimization ...\n');
 
-layers = zeros(size(P, 2), 3);
-for c = 1 : channels
-    fprintf('Running optimization for color channel %i ...\n', c);
-%     layers(:, c) = sartGPU(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
-    layers(:, c) = sart(P, lightFieldVectorLogDomain(:, c), x0, lb, ub, maxIterations);
-end
+% Optimization constraints
+ub = zeros(size(P, 2), channels); 
+lb = zeros(size(P, 2), channels) + log(0.01);
+x0 = zeros(size(P, 2), channels);
 
+layers = sart(P, lightFieldVectorLogDomain, x0, lb, ub, maxIterations);
+% layers = sartGPU(P, lightFieldVectorLogDomain, x0, lb, ub, maxIterations);
 layers = exp(layers);
-fprintf('Optimization took %i minutes.\n', floor(toc / 60));
+fprintf('Optimization took %i seconds.\n', floor(toc));
 
 %% Extract layers from optimization
 
 layers = permute(layers, [2, 1]);
 layers = reshape(layers, [channels, layerResolution, NumberOfLayers]);
-layers = permute(layers, [2, 3, 4, 5, 6, 1]);
+layers = permute(layers, [2, 3, 4, 1]);
 
 %% Save and display each layer
-% close all;
+close all;
 
 if(exist(outFolder, 'dir'))
     rmdir(outFolder, 's');
