@@ -76,24 +76,6 @@ lightFieldVectorLogDomain = lightFieldVector;
 lightFieldVectorLogDomain(lightFieldVectorLogDomain < 0.01) = 0.01;
 lightFieldVectorLogDomain = log(lightFieldVectorLogDomain);
 
-%% Run least squares optimization for each color channel
-% tic;
-% ub = zeros(size(P, 2), 1); 
-% lb = zeros(size(P, 2), 1) + log(0.01);
-% x0 = zeros(size(P, 2), 1);
-% 
-% % The Jacobian matrix of Px - d is just P. 
-% Id = speye(size(P));
-% W = @(Jinfo, Y, flag) projection(P, Y , flag);
-% 
-% options = optimset('MaxIter', iterations, 'Jacobian', 'on', 'JacobMult', W, 'UseParallel', true);
-% 
-% layers = zeros(size(P, 2), 3);
-% for c = 1 : channels
-%     fprintf('Running optimization for color channel %i ...\n', c);
-%     layers(:, c) = lsqlin(Id, lightFieldVector(:, c), [], [], [], [], lb, ub, x0, options);
-% end
-
 %% Solve using SART
 tic;
 fprintf('Running optimization ...\n');
