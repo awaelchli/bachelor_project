@@ -8,9 +8,11 @@ distanceBetweenLayers = 1;
 % layerResolution = round(layerResolution);
 layerResolution = lightFieldResolution([3, 4]);
 
-% layerWidth = 4 * aspectRatio;
-layerWidth = 4;
-layerHeight = 0;
+layerWidth = 4 * aspectRatio;
+layerHeight = 4;
+% layerWidth = 4;
+% layerHeight = 0;
+
 
 boxRadius = 0;
 
@@ -108,13 +110,9 @@ fprintf('Optimization took %i minutes.\n', floor(toc / 60));
 
 %% Extract layers from optimization
 
-layersR = squeeze(layers(:, 1));
-layersG = squeeze(layers(:, 2));
-layersB = squeeze(layers(:, 3));
-
-% convert the layers from column vector to a matrix of dimension [Nlayers, height, width, channel]
-layers = cat(2, layersR, layersG, layersB);
-layers = reshape(layers, [ layerResolution, NumberOfLayers, 3]);
+layers = permute(layers, [2, 1]);
+layers = reshape(layers, [channels, layerResolution, NumberOfLayers]);
+layers = permute(layers, [2, 3, 4, 5, 6, 1]);
 
 %% Save and display each layer
 % close all;
