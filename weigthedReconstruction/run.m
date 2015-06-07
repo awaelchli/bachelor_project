@@ -3,16 +3,12 @@
 
 NumberOfLayers = 5;
 distanceBetweenLayers = 1;
-
-% layerResolution = [100, 100 * aspectRatio];
-% layerResolution = round(layerResolution);
 layerResolution = lightFieldResolution([3, 4]);
 
 layerWidth = 4 * aspectRatio;
 layerHeight = 4;
 % layerWidth = 4;
 % layerHeight = 0;
-
 
 boxRadius = 0;
 
@@ -21,7 +17,6 @@ maxIterations = 20;
 % Output folder to store the layers
 outFolder = 'output/';
 
-% layerHeight = layerWidth * (lightFieldResolution(3) / lightFieldResolution(4));
 layerSize = [layerWidth, layerHeight];
 totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
 
@@ -69,7 +64,6 @@ fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 % and each column of this matrix represents a color channel of the light
 % field
 lightFieldVector = reshape(resampledLightField, [], channels);
-% lightFieldVector = reshape(lightField, [], channels);
 
 %% Convert to log light field
 lightFieldVectorLogDomain = lightFieldVector;
