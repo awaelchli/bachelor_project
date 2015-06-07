@@ -46,7 +46,7 @@ path = '../lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
 
 % Select 2D slice of light field and 3 color channels
-lightField = lightField(1, :, 279, :, :);
+lightField = lightField(1, :, 230, :, :);
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
