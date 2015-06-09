@@ -45,8 +45,11 @@ path = '../lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
 % path = '../lightFields/dice_camera/dice_parallel/5x5-.05_rect/';
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
 
+lightField = downsampleLighField(lightField, 0.05);
+
 % Select 2D slice of light field and 3 color channels
-lightField = lightField(1, :, 230, :, :);
+% lightField = lightField(1, :, 230, :, :);
+lightField = lightField(1, :, 11, :, :);
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
@@ -115,6 +118,7 @@ aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 % path = '../lightFields/dice_camera/dice_parallel/3x3_rect/';
 path = '../lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
 % path = '../lightFields/dice_camera/dice_parallel/5x5-.05_rect/';
+
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [3, 3] );
 
 lightFieldResolution = size(lightField);

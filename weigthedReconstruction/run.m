@@ -5,10 +5,10 @@ NumberOfLayers = 5;
 distanceBetweenLayers = 1;
 layerResolution = lightFieldResolution([3, 4]);
 
-% layerWidth = 4 * aspectRatio;
-% layerHeight = 4;
-layerWidth = 4;
-layerHeight = 0;
+layerWidth = 4 * aspectRatio;
+layerHeight = 4;
+% layerWidth = 4;
+% layerHeight = 0;
 
 boxRadius = 0;
 
@@ -48,7 +48,7 @@ clear P resampledLightField lightFieldVector lightFieldVectorLogDomain layers ..
                                                         weightFunctionHandle, ...
                                                         boxRadius, ...
                                                         lightField);
-                                                    
+         
 % rowSums = sum(P, 2);
 % rowSums = max(0.00001, rowSums);
 % P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
@@ -80,7 +80,7 @@ lb = zeros(size(P, 2), channels) + log(0.01);
 x0 = zeros(size(P, 2), channels);
 
 layers = sart(P, lightFieldVectorLogDomain, x0, lb, ub, maxIterations);
-% layers = sartGPU(P, lightFieldVectorLogDomain, x0, lb, ub, maxIterations);
+
 layers = exp(layers);
 fprintf('Optimization took %i seconds.\n', floor(toc));
 
@@ -98,9 +98,8 @@ if(exist(outFolder, 'dir'))
 end
 mkdir(outFolder);
 
-% printLayers(layers(:, :, 1 : NumberOfLayers, :), layerSize, outFolder, 'print1', 1);
-show1DLayers( layers, 10 );
-% printLayers(layers(:, :, 3, :), layerSize, outFolder, 'print2', 3);
+printLayers(layers(:, :, 1 : NumberOfLayers, :), layerSize, outFolder, 'print1', 1);
+% show1DLayers( layers, 1 );
 
 %% Reconstruct light field from attenuation layers and evaluate error
 
