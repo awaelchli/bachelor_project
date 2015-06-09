@@ -53,7 +53,8 @@ sensorPlaneZ = 0;
 
 fprintf('Views done: \n');
 
-resampledLightField = zeros(size(lightField));
+resampledLFResolution = [ lightFieldResolution([1, 2]), layerResolution ];
+resampledLightField = zeros([ resampledLFResolution, channels ]);
 
 % Pre-compute the column indices for the first layer
 columnsForFirstLayer = computeColumnIndicesForP(pixelIndexOnFirstLayerMatrixY, ...
@@ -113,7 +114,7 @@ for camIndexX = 1 : lightFieldResolution(2)
                                      camIndexX, ...
                                      pixelIndexOnSensorMatrixY, ... 
                                      pixelIndexOnSensorMatrixX, ...
-                                     lightFieldResolution);
+                                     resampledLFResolution);
 
         % Insert indices and values for the first layer
         Is{camIndexY, camIndexX, 1, 1, 1} = rowsForFirstLayer;
@@ -188,7 +189,7 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                  camIndexX, ...
                                                  tempPixelIndexOnSensorMatrixY, ... 
                                                  tempPixelIndexOnSensorMatrixX, ...
-                                                 lightFieldResolution);
+                                                 resampledLFResolution);
 
                     weights = weightsForLayerMatrix;
                     weights = weights(~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY), :);
@@ -208,7 +209,7 @@ for camIndexX = 1 : lightFieldResolution(2)
     end
 end
 
-P = sparse([Is{:}], [Js{:}], [Ss{:}], prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]));
+P = sparse([Is{:}], [Js{:}], [Ss{:}], prod(resampledLFResolution), prod([ NumberOfLayers layerResolution ]));
 
 end
 
