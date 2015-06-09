@@ -5,10 +5,10 @@ NumberOfLayers = 5;
 distanceBetweenLayers = 1;
 layerResolution = lightFieldResolution([3, 4]);
 
-layerWidth = 4 * aspectRatio;
-layerHeight = 4;
-% layerWidth = 4;
-% layerHeight = 0;
+% layerWidth = 4 * aspectRatio;
+% layerHeight = 4;
+layerWidth = 4;
+layerHeight = 0;
 
 boxRadius = 0;
 
@@ -98,7 +98,8 @@ if(exist(outFolder, 'dir'))
 end
 mkdir(outFolder);
 
-printLayers(layers(:, :, 1 : NumberOfLayers, :), layerSize, outFolder, 'print1', 1);
+% printLayers(layers(:, :, 1 : NumberOfLayers, :), layerSize, outFolder, 'print1', 1);
+show1DLayers( layers, 10 );
 % printLayers(layers(:, :, 3, :), layerSize, outFolder, 'print2', 3);
 
 %% Reconstruct light field from attenuation layers and evaluate error
