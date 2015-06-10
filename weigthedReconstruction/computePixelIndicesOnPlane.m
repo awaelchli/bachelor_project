@@ -33,5 +33,16 @@ positionsMatrixX(positionsMatrixX ~= 0) = positionsMatrixX(positionsMatrixX ~= 0
 pixelIndexMatrixY = floorCeilOrRoundHandle(positionsMatrixY);
 pixelIndexMatrixX = floorCeilOrRoundHandle(positionsMatrixX);
 
+% In case the plane is 1D, correct the indices and positions
+if(planeResolution(1) == 1)
+    pixelIndexMatrixY = ones(planeResolution);
+    positionsMatrixY = ones(planeResolution);
+end
+
+if(planeResolution(2) == 1)
+    pixelIndexMatrixX = ones(planeResolution);
+    positionsMatrixX = ones(planeResolution);
+end
+
 end
 

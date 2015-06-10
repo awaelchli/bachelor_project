@@ -46,14 +46,15 @@ Ss = cell(size(Is));
 [ pixelPositionsOnFirstLayerMatrixY, pixelPositionsOnFirstLayerMatrixX ] = computePixelPositionsOnLayer(layerResolution, ...
                                                                               layerSize([2, 1]));
 
-[ pixelIndexOnFirstLayerMatrixX, pixelIndexOnFirstLayerMatrixY ] = meshgrid(1 : layerResolution(2), 1 : layerResolution(1));
+[ pixelIndexOnFirstLayerMatrixY, pixelIndexOnFirstLayerMatrixX ] = ndgrid(1 : layerResolution(1), 1 : layerResolution(2));
 
 layerPositionsZ = -(NumberOfLayers - 1) * distanceBetweenLayers / 2 : distanceBetweenLayers : (NumberOfLayers - 1) * distanceBetweenLayers / 2;
 sensorPlaneZ = 0;
 
 fprintf('Views done: \n');
 
-resampledLightField = zeros(size(lightField));
+resampledLFResolution = [ lightFieldResolution([1, 2]), layerResolution ];
+resampledLightField = zeros([ resampledLFResolution, channels ]);
 
 % Pre-compute the column indices for the first layer
 columnsForFirstLayer = computeColumnIndicesForP(pixelIndexOnFirstLayerMatrixY, ...
@@ -79,6 +80,7 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                                             sensorPlaneZ, ...
                                                                             pixelPositionsOnFirstLayerMatrixY, ...
                                                                             pixelPositionsOnFirstLayerMatrixX );
+        
         [ ~, ~, ...
           sensorIntersectionMatrixY, ...
           sensorIntersectionMatrixX ] = computePixelIndicesOnPlane( positionsOnSensorPlaneMatrixY, ...
@@ -89,24 +91,30 @@ for camIndexX = 1 : lightFieldResolution(2)
         
         invalidRayIndicesForSensorY = sensorIntersectionMatrixY(:, 1) == 0;
         invalidRayIndicesForSensorX = sensorIntersectionMatrixX(1, :) == 0;
-        
+
         pixelIndexOnSensorMatrixY = pixelIndexOnFirstLayerMatrixY;
         pixelIndexOnSensorMatrixX = pixelIndexOnFirstLayerMatrixX;
         
-        % TODO: check if necessary
         pixelIndexOnSensorMatrixY(invalidRayIndicesForSensorY, :) = 0;
         pixelIndexOnSensorMatrixX(:, invalidRayIndicesForSensorX) = 0;
         
         % Interpolating the current view of the light field
         view = squeeze(lightField(camIndexY, camIndexX, :, :, :));
-        [Yq, Xq, Cq] = ndgrid(sensorIntersectionMatrixY(:, 1), sensorIntersectionMatrixX(1, :), 1 : channels);
-        resampledLightField(camIndexY, camIndexX, :, :, :) = interp3(view, Xq, Yq, Cq);
+        gridVectors = {sensorIntersectionMatrixY(:, 1), sensorIntersectionMatrixX(1, :), 1 : channels};
+        
+        % Remove arrays of singleton dimensions (2D light fields or single
+        % channel)
+        indicesOfScalars = cellfun(@isscalar, gridVectors);
+        grid = cell(1, nnz(~indicesOfScalars));
+        [ grid{:} ] = ndgrid(gridVectors{~indicesOfScalars});
+        
+        resampledLightField(camIndexY, camIndexX, :, :, :) = interpn(view, grid{:});
         
         rowsForFirstLayer = computeRowIndicesForP(camIndexY, ...
                                      camIndexX, ...
                                      pixelIndexOnSensorMatrixY, ... 
                                      pixelIndexOnSensorMatrixX, ...
-                                     lightFieldResolution);
+                                     resampledLFResolution);
 
         % Insert indices and values for the first layer
         Is{camIndexY, camIndexX, 1, 1, 1} = rowsForFirstLayer;
@@ -181,7 +189,7 @@ for camIndexX = 1 : lightFieldResolution(2)
                                                  camIndexX, ...
                                                  tempPixelIndexOnSensorMatrixY, ... 
                                                  tempPixelIndexOnSensorMatrixX, ...
-                                                 lightFieldResolution);
+                                                 resampledLFResolution);
 
                     weights = weightsForLayerMatrix;
                     weights = weights(~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY), :);
@@ -201,7 +209,7 @@ for camIndexX = 1 : lightFieldResolution(2)
     end
 end
 
-P = sparse([Is{:}], [Js{:}], [Ss{:}], prod(lightFieldResolution), prod([ NumberOfLayers layerResolution ]));
+P = sparse([Is{:}], [Js{:}], [Ss{:}], prod(resampledLFResolution), prod([ NumberOfLayers layerResolution ]));
 
 end
 
