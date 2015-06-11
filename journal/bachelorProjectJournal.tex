@@ -77,14 +77,16 @@ The two-plane representation is used to describe a 4D-light field $l\left( u, v,
 \end{center}
 
 \section{A first implementation for orthographic projections}	\label{sec:first_implementation}
-In a first step, I (re-)implemented the tomographic light field synthesis for layered 3D-displays in MATLAB, based on the theory in \cite{WETZ_TOMO} and their publicly available MATLAB code. The core problem to solve is:
+In a first step, I (re-)implemented the tomographic light field synthesis for layered 3D-displays in MATLAB, based on the theory in \cite{WETZ_TOMO} and their publicly available MATLAB code. The core problem to solve is
 
 \begin{equation} \label{eq:core_problem}
 	\begin{aligned}
 		& \underset{x}{\text{argmin}} & & \| Px - \bar{l} \| \\
-		& \text{subject to} & & 0 \leq x \leq 1
+		& \text{subject to} & & -\infty \leq x \leq 0,
 	\end{aligned}
 \end{equation}
+
+where $\bar{l}$ is the log of the original light field $l$. The solution $x$ is in log-space as well, therefore the constraints are chosen accordingly since the layers have finite contrast, i.e. $0 \leq e^x \leq 1$.
 
 \begin{figure}[h]
 	\centering
@@ -370,6 +372,7 @@ I used light fields from the Heidelberg and Stanford light field archives. In ad
 	\end{subfigure}
 
 	\caption{Optimization for three layers. The light field has an angular resolution of $9\times 9$ views.}
+	\label{fig:legotruck_artefacts_r=0}
 \end{figure}
 
 
@@ -415,7 +418,7 @@ I used light fields from the Heidelberg and Stanford light field archives. In ad
 \end{figure}
 
 \clearpage
-\section{Fixing the aliasing problem}
+\section{Fixing the artefacts that occur in the reconstruction}
 
 \begin{figure}[h]
 	\centering
@@ -501,6 +504,18 @@ It is also worth noticing that the row-normalization cancels out the sensor weig
 			\item[$+$]	Fewer camera/scene parameters required, less sensitive (if the light field consists of rectified images)
 		\end{itemize}
 \end{enumerate}
+
+\subsection{Interpolation on the sensor plane}
+
+Instead of rounding the ray intersection points on the sensor to the nearest pixel center and assigning weights to the intersections, we apply linear interpolation to resample the light field. Here are the observations we can make when using the new version of the pipeline:
+
+\begin{itemize}
+	\item	Increasing the box radius does not seem to improve the quality of the reconstruction (RMSE)
+	\item 	Row normalization is not needed anymore
+	\item	Applying weights on the layers according to a gaussian or a tent function introduces line artefacts similar to the ones seen in figure \ref{fig:normalization_impact_comparison} or figure \ref{fig:legotruck_artefacts_r=0}
+	\item	Using constant weights $w \equiv 1$ on the layers instead makes the artefacts disappear
+	\item 	Increasing the resolution of the layers does not have an impact on the reconstruction quality (RMSE)
+\end{itemize}
 
 \clearpage
 \bibliographystyle{alpha}
