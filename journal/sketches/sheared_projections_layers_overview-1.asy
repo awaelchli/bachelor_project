@@ -71,7 +71,7 @@ for (int i = 0; i < rS; ++i){
 int pixel = 10;
 pair rayStart = (-lW/2 + psL/2 + pixel * psL, -dL);
 path ray = rayStart -- cam3;  
-draw(ray, red);
+draw(ray, red, arrow = MidArcArrow(SimpleHead));
 
 // Camera dots
 dot(cam1);
