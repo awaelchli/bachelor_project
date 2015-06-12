@@ -10,6 +10,7 @@
 \usepackage{caption}
 \usepackage{subcaption}
 \usepackage{asymptote}
+\usepackage[space]{grffile}
 
 \author{Adrian Wälchli}
 \title{Bachelor Project Journal}
@@ -517,10 +518,36 @@ Instead of rounding the ray intersection points on the sensor to the nearest pix
 	\item 	Increasing the resolution of the layers does not have an impact on the reconstruction quality (RMSE)
 \end{itemize}
 
+\newpage
+
+\begin{figure}[h]
+	\centering
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{results/aliasing_fixes/interpolation_on_sensor/legotruck_w=gauss/Reconstruction of view (9, 9).png} 
+  		\caption{Reconstruction of view $\left(9, 9\right)$, weights from normal distribution, RMSE: 33.816189.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{results/aliasing_fixes/interpolation_on_sensor/legotruck_w=gauss/5.png} 
+		\caption{Layer 5 (topmost)}
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{results/aliasing_fixes/interpolation_on_sensor/legotruck_w=1/Reconstruction of view (9, 9).png} 
+		\caption{Reconstruction of view $\left(9, 9\right)$, $w \equiv 1$, RMSE: 32.503661.}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.45\textwidth}
+		\includegraphics[width=\textwidth]{results/aliasing_fixes/interpolation_on_sensor/legotruck_w=1/5.png} 
+		\caption{Layer 5 (topmost)}
+	\end{subfigure}%
+	\caption{Comparison of the reconstruction with weights on layers on and off for the legotruck-scene. $9 \times 9$ views, 5 Layers, box-radius 0.}
+	\label{fig:comparison_sensor_interpolation_w=1_vs_w=gauss}
+\end{figure}
+
 \clearpage
 \bibliographystyle{alpha}
 \bibliography{lit}
 
 \end{document}
-
 
