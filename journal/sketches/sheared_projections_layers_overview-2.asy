@@ -3,14 +3,14 @@ import stats;
 
 include "sheared_projections_layers_overview-1.asy";
 
-real window_size = 1;
+real window_size = 1.1;
 pair point1 = point(ray, isection[0]);
 pixel = 10;
 real left = -lW/2 + psS * (pixel - 1);
 real right = left + psS;
 pair center = ((right + left) / 2, 0) - (window_size/2, window_size/2);
 real baseline = -0.6;
-real offset = 0.25;
+real offset = 0.35;
 
 // Gaussian weight function
 real pS = right - left; 						// Pixel size
@@ -26,6 +26,8 @@ draw(weight, blue);
 // Neighbour functions
 draw(shift(-pS) * weight, blue + dotted);
 draw(shift(pS) * weight, blue + dotted);
+draw(shift(2*pS) * weight, blue + dotted);
+draw(shift(-2*pS) * weight, blue + dotted);
 
 // Baseline of weight function
 path base = (left - offset, baseline) -- (right + offset, baseline);

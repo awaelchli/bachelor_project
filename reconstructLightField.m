@@ -2,6 +2,7 @@ function [ lightFieldReconstruction ] = reconstructLightField( P, ...,
                                                                lightField, ...
                                                                layers, ...
                                                                cameraIndices, ...
+                                                               replicationSizes, ...
                                                                displayReconstruction, ...
                                                                displayError, ...
                                                                outputFolder )
@@ -13,11 +14,14 @@ function [ lightFieldReconstruction ] = reconstructLightField( P, ...,
 %                           light field from the layers
 %   lightField:             The original lightField
 %   layers:                 Optimized attenuation layers
-%   cameraIndices:          A matrix of the format [ Yview1, Xview1 ; 
-%                                                    Yview2, Xview2 ; 
+%   cameraIndices:          A matrix of the format [ Yview1, Xview1 ;
+%                                                    Yview2, Xview2 ;
 %                                                    ...             ]
 %                           containing the indices of the views chosen to be
 %                           reconstructed
+%   replicationSizes:       A vector containing the number of replications of the reconstructed views in each dimension.
+%                           It can be used to replicate the 1D views of 2D lightfields along the second dimension to
+%                           make them better visible.
 %   displayReconstruction:  If 1, the reconstructed views get displayed on
 %                           the screen and if 0, no output is shown
 %   displayError:           If 1, the error gets displayed on the screen
@@ -38,14 +42,17 @@ lightFieldRecVector = P * reshape(layers, size(P, 2), []);
 lightFieldReconstruction = reshape(lightFieldRecVector, [lightFieldResolution channels]);
 lightFieldReconstruction = exp(lightFieldReconstruction);
 
-if( displayReconstruction )
+
+for i = 1 : NumberOfReconstructions
     
-    for i = 1 : NumberOfReconstructions
-
-        currentCameraIndices = cameraIndices(i, :);
-        currentReconstruction = squeeze(lightFieldReconstruction(currentCameraIndices(1), currentCameraIndices(2), :, :, :));
-
-        % Show and store the chosen reconstructed views
+    currentCameraIndices = cameraIndices(i, :);
+    currentReconstruction = lightFieldReconstruction(currentCameraIndices(1), currentCameraIndices(2), :, :, :);
+    currentReconstruction = repmat(currentReconstruction, replicationSizes);
+    currentReconstruction = squeeze(currentReconstruction);
+        
+    % Show and store the chosen reconstructed views
+    if( displayReconstruction )
+        
         displayTitle = ['Reconstruction of view (' num2str(currentCameraIndices(1)) ', ' num2str(currentCameraIndices(2)) ')' ];
 
         figure('Name', 'Light field reconstruction from layers')
@@ -55,23 +62,14 @@ if( displayReconstruction )
         if( writeToFolder )
             imwrite(currentReconstruction, [outputFolder displayTitle '.png']);
         end
-
-    end
-end
-
-
-% Compute and display the error if desired
-if( displayError )
-    
-    if( writeToFolder )
-        rmseFileID = fopen([outputFolder 'RMSE.txt'], 'wt');
     end
     
-    for i = 1 : NumberOfReconstructions
+    % Compute and display the error if desired
+    if( displayError )
         
-        currentCameraIndices = cameraIndices(i, :);
-        currentReconstruction = squeeze(lightFieldReconstruction(currentCameraIndices(1), currentCameraIndices(2), :, :, :));
-        currentView = squeeze(lightField(currentCameraIndices(1), currentCameraIndices(2), :, :, :));
+        currentView = lightField(currentCameraIndices(1), currentCameraIndices(2), :, :, :);
+        currentView = repmat(currentView, replicationSizes);
+        currentView = squeeze(currentView);
         
         [errorImage, rmse] = meanSquaredErrorImage(currentReconstruction, currentView);
         
@@ -88,16 +86,17 @@ if( displayError )
             imwrite(errorImage, [outputFolder displayTitle '.png']);
             
             % Write RMSE values to text file
-            fprintf(rmseFileID, ['R' displayTitle ': %f \n'], rmse);
+            writeRMSEToTextFile(['R' displayTitle ': %f \n'], rmse, outputFolder);
         end
-        
     end
     
-    if( writeToFolder )
-        fclose(rmseFileID);
-    end
 end
 
+end
 
+function writeRMSEToTextFile(text, rmse, outputFolder)
+    rmseFileID = fopen([outputFolder 'RMSE.txt'], 'wt');
+    fprintf(rmseFileID, text, rmse);
+    fclose(rmseFileID);
 end
 

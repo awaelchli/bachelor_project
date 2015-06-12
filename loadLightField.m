@@ -84,10 +84,10 @@ fov = computeFOVForCamera(distanceCameraPlaneToSensorPlane, aspectRatio);
 
 path = '../lightFields/legotruck_downsampled/';
 [ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [9, 9] );
-
+% lightField = downsampleLighField(lightField, 0.5);
 % lightField = shearLightField(lightField, 5, 5);
 
-% lightField = lightField(1:2:17, 1:2:17, :, :, :);
+% lightField = lightField(1:2:9, 1:2:9, :, :, :);
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);

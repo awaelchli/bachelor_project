@@ -58,21 +58,21 @@ The two-plane representation is used to describe a 4D-light field $l\left( u, v,
 	
 		\hline
 		Symbol 	& Meaning \\
-		\hline 
+		\hline
 		$d_c$ 	& Distance between two cameras \\ 
-		\hline 
+		
 		$d_s$ 	& Distance between image plane and center of projection \\ 
-		\hline 
+		
 		$z$ 	& Distance between the camera plane and the scene origin \\ 
-		\hline
+		
 		$u_j$	& Position of camera $j$ \\
-		\hline
+		
 		$x_j^i$ & Position of pixel $j$ on the image plane of camera $i$ \\
-		\hline
+		
 		$s_j^i$ & Position of pixel $j$ on layer $i$ \\ 
-		\hline 
+		
 		$d_L$ 	& Distance between two layers \\ 
-		\hline 
+		\hline
 
 	\end{tabular} 
 \end{center}
@@ -82,7 +82,7 @@ In a first step, I (re-)implemented the tomographic light field synthesis for la
 
 \begin{equation} \label{eq:core_problem}
 	\begin{aligned}
-		& \underset{x}{\text{argmin}} & & \| Px - \bar{l} \| \\
+		& \underset{x}{\text{argmin}} & & \lVert Px - \bar{l} \rVert \\
 		& \text{subject to} & & -\infty \leq x \leq 0,
 	\end{aligned}
 \end{equation}
