@@ -36,8 +36,7 @@ weightFunctionHandle = @(data) ones(size(data, 1), 1);
 fprintf('\nComputing matrix P...\n');
 tic;
 
-clear P resampledLightField lightFieldVector lightFieldVectorLogDomain layers ...
-      layersR layerG layerB lightFieldRecVector lightFieldRec;
+clear P resampledLightField lightFieldVector lightFieldVectorLogDomain layers;
 
 [P, resampledLightField] = computeMatrixPForResampledLF(NumberOfLayers, ...
                                                         layerResolution, ...
