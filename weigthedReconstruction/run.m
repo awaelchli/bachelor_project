@@ -1,33 +1,26 @@
 % clear;
 %% Parameters
 
-NumberOfLayers = 5;
-distanceBetweenLayers = 1;
-layerResolution = lightFieldResolution([3, 4]);
-layerResolution(2) = 5 * layerResolution(2);
-
-% layerWidth = 200 * aspectRatio;
-% layerHeight = 200;
-layerWidth = 4;
-layerHeight = 0;
+inputFolder = 'lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
+load([inputFolder, 'lightField.mat']);
 
 boxRadius = 0;
 
-% Maximum number of iterations in optimization process
-maxIterations = 20;
-% Output folder to store the layers
-outFolder = 'output/';
-
-layerSize = [layerWidth, layerHeight];
-totalLayerThickness = (NumberOfLayers - 1) * distanceBetweenLayers;
-
+% Output folder to store the layers and evaluation data
+outputFolder = 'output/';
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 1, 3];
-
+% Display reconstructions and error (true/false)
+displayReconstruction = 1;
+displayError = 1;
+% Replication of the light field along given dimension (for visualization of 2D light fields)
+replicationSizes = [1, 1, 1, 1, 1];
+% Maximum number of iterations in optimization process
+maxIterations = 20;
 % Parameters for the weighting function on the layers
 mu = [0, 0];
-sigma = [0.3 , 0;
-         0, 0.3 ];
+sigma = [ 0.3, 0;
+          0, 0.3 ];
       
 weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
 % weightFunctionHandle = @(data) tentWeightFunction(data, 1, 1);
@@ -41,7 +34,7 @@ clear P resampledLightField lightFieldVector lightFieldVectorLogDomain layers la
 
 [P, resampledLightField] = computeMatrixPForResampledLF(NumberOfLayers, ...
                                                         layerResolution, ...
-                                                        layerSize, ...
+                                                        layerSize([2, 1]), ...
                                                         distanceBetweenLayers, ...
                                                         cameraPlaneDistance, ...
                                                         distanceBetweenCameras, ...
@@ -53,14 +46,10 @@ clear P resampledLightField lightFieldVector lightFieldVectorLogDomain layers la
 % rowSums = max(0.00001, rowSums);
 % P = spdiags(1 ./ rowSums, 0, size(P, 1), size(P,1)) * P;
 
-% colSums = sum(P, 1);
-% colSums = max(0.00001, colSums);
-% P = P * spdiags(1 ./ colSums', 0, size(P, 2), size(P, 2));
-
 fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
 
 %% Vectorize the light field
-% Convert the 4D light field to a matrix of size [ prod(resolution), 3 ],
+% Convert the 4D light field to a matrix of size [ prod(resolution), channels ],
 % and each column of this matrix represents a color channel of the light
 % field
 lightFieldVector = reshape(resampledLightField, [], channels);
@@ -91,16 +80,16 @@ layers = reshape(layers, [channels, layerResolution, NumberOfLayers]);
 layers = permute(layers, [2, 3, 4, 1]);
 
 %% Save and display each layer
-% close all;
+close all;
 
-if(exist(outFolder, 'dir'))
-    rmdir(outFolder, 's');
+if(exist(outputFolder, 'dir'))
+    rmdir(outputFolder, 's');
 end
-mkdir(outFolder);
+mkdir(outputFolder);
 
-% printLayers(layers(:, :, 1 : NumberOfLayers, :), layerSize, outFolder, 'print1', 1);
-show1DLayers(layers, 1);
+printLayers(layers(:, :, 1 : NumberOfLayers, :), layerSize, outputFolder, 'print1', 1);
+% show1DLayers(layers, 1);
 
 %% Reconstruct light field from attenuation layers and evaluate error
 
-reconstructLightField(P, resampledLightField, log(layers), reconstructionIndices, [1, 1, 20, 1, 1], 1, 1, outFolder);
+reconstructLightField(P, resampledLightField, log(layers), reconstructionIndices, replicationSizes, displayReconstruction, displayError, outputFolder);
