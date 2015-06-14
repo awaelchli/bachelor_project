@@ -4,24 +4,24 @@
 
 %% Light field from a folder of rectified images
 
-inputPath = 'lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
+inputPath = '../lightFields/legotruck/legotruck_downsampled/';
 outputPath = inputPath;
 
-[ lightField, channels ] = loadLightFieldFromFolder(inputPath, 'png', [3, 3]);
+[ lightField, channels ] = loadLightFieldFromFolder(inputPath, 'png', [9, 9]);
 
 % Light field parameters
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
-cameraPlaneDistance = 8;
-distanceBetweenCameras = [.2, .2]; 
+cameraPlaneDistance = 500;
+distanceBetweenCameras = [8, 8]; 
 aspectRatio = lightFieldResolution(4) / lightFieldResolution(3);
 
 % Default reconstruction parameters
 NumberOfLayers = 5;
-distanceBetweenLayers = 1;
+distanceBetweenLayers = 10;
 layerResolution = lightFieldResolution([3, 4]);
-layerHeight = 4;
-layerWidth = layerHeight * aspectRatio;
+layerHeight = 200 / aspectRatio;
+layerWidth = 200;
 layerSize = [layerHeight, layerWidth];
 
 save([outputPath, 'lightField.mat'], 'lightField', ...

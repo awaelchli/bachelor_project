@@ -1,7 +1,7 @@
 % clear;
 %% Parameters
 
-inputFolder = 'lightFields/dice_camera/dice_parallel/3x3-.2_rect/';
+inputFolder = 'lightFields/legotruck/legotruck_downsampled/';
 load([inputFolder, 'lightField.mat']);
 
 boxRadius = 0;
@@ -22,9 +22,9 @@ mu = [0, 0];
 sigma = [ 0.3, 0;
           0, 0.3 ];
       
-weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
+% weightFunctionHandle = @(data) mvnpdf(data, mu, sigma);
 % weightFunctionHandle = @(data) tentWeightFunction(data, 1, 1);
-% weightFunctionHandle = @(data) ones(size(data, 1), 1);
+weightFunctionHandle = @(data) ones(size(data, 1), 1);
 
 %% Compute the propagation matrix P
 fprintf('\nComputing matrix P...\n');
