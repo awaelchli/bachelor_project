@@ -1,15 +1,20 @@
 % clear;
 %% Loading the parameters
 
-inputFolder = 'lightFields/dice/perspective/wetzstein/dice_5x5_ap50/';
+inputFolder = '../lightFields/tarot/large_angular_extent/downsampled-.5/';
 load([inputFolder, 'lightField.mat']);
+
+layerSize = [100, 100];
+NumberOfLayers = 10;
+distanceBetweenLayers = 10;
+distanceBetweenCameras = [1, 1];
 
 boxRadius = 0;
 
 % Output folder to store the layers and evaluation data
 outputFolder = 'output/';
 % Indices of views for reconstruction and error evaluation
-reconstructionIndices = [1, 1; 3, 3; 5, 5];
+reconstructionIndices = [1, 1; 3, 3; 5, 5; 9, 9];
 % Display reconstructions and error (true/false)
 displayReconstruction = 1;
 displayError = 0;
