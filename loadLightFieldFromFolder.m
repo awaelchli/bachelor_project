@@ -1,11 +1,13 @@
-function [ lightField, channels ] = loadLightFieldFromFolder( path, filetype, angularRes )
-%   path:           Path to the image files. Assume images are sorted to
-%                   represent the light field row by row.
+function [ lightField, channels ] = loadLightFieldFromFolder( path, filetype, angularRes, resizeScale )
+%   path:               Path to the image files. Assume images are sorted to
+%                       represent the light field row by row.
 %
-%   filetype:       Type of the image files
+%   filetype:           Type of the image files
 %
-%   angularRes:     [angularResY, angularResX] The resolution of the camera
-%                   grid
+%   angularRes:         [angularResY, angularResX] The resolution of the camera
+%                       grid
+%   resizeScale:        Load a downsampled version of the light field,
+%                       scaled by the given value
 
 % Load images of desired filetype
 imgList = dir([path '*.' filetype]);
@@ -19,8 +21,8 @@ end
 
 % Load the first image to get the spatial resolution
 first = im2double(imread([path imgList(1).name]));
-height = size(first, 1);
-width = size(first, 2);
+height = ceil(resizeScale * size(first, 1));
+width = ceil(resizeScale * size(first, 2));
 channels = size(first, 3);
 
 lightField = zeros([angularRes height width channels]);
@@ -32,6 +34,7 @@ for y = 1 : angularRes(1)
     for x = 1 : angularRes(2)
         
         image = im2double(imread([path imgList(i).name]));
+        image = imresize(image, resizeScale, 'nearest');
         if(channels == 1)
             if (~isequal(size(image), [height, width]))
                 error('Files have wrong resolution / number of channels.');
