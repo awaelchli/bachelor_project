@@ -1,7 +1,7 @@
 % clear;
 %% Parameters
 
-inputFolder = 'lightFields/legotruck/legotruck_downsampled/';
+inputFolder = 'lightFields/dice/perspective/wetzstein/dice_5x5_ap50/';
 load([inputFolder, 'lightField.mat']);
 
 boxRadius = 0;
@@ -9,10 +9,10 @@ boxRadius = 0;
 % Output folder to store the layers and evaluation data
 outputFolder = 'output/';
 % Indices of views for reconstruction and error evaluation
-reconstructionIndices = [1, 1; 1, 3];
+reconstructionIndices = [1, 1; 3, 3; 5, 5];
 % Display reconstructions and error (true/false)
 displayReconstruction = 1;
-displayError = 1;
+displayError = 0;
 % Replication of the light field along given dimension (for visualization of 2D light fields)
 replicationSizes = [1, 1, 1, 1, 1];
 % Maximum number of iterations in optimization process
@@ -41,6 +41,8 @@ clear P resampledLightField lightFieldVector lightFieldVectorLogDomain layers la
                                                         weightFunctionHandle, ...
                                                         boxRadius, ...
                                                         lightField);
+                                                    
+clear lightField;
          
 % rowSums = sum(P, 2);
 % rowSums = max(0.00001, rowSums);
