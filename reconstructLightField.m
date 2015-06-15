@@ -46,6 +46,16 @@ lightFieldReconstruction = exp(lightFieldReconstruction);
 for i = 1 : NumberOfReconstructions
     
     currentCameraIndices = cameraIndices(i, :);
+    
+    if(any(currentCameraIndices > lightFieldResolution([1, 2])) || ...
+       any(currentCameraIndices < [1, 1]) || ...
+       any(mod(currentCameraIndices, 1)))
+   
+        % Skip invalid indices
+        fprintf('Skipping reconstruction for invalid camera indices: (%i, %i)\n', currentCameraIndices);
+        continue;
+    end
+    
     currentReconstruction = lightFieldReconstruction(currentCameraIndices(1), currentCameraIndices(2), :, :, :);
     currentReconstruction = repmat(currentReconstruction, replicationSizes);
     currentReconstruction = squeeze(currentReconstruction);
