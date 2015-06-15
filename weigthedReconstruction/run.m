@@ -1,5 +1,5 @@
 % clear;
-%% Parameters
+%% Loading the parameters
 
 inputFolder = 'lightFields/dice/perspective/wetzstein/dice_5x5_ap50/';
 load([inputFolder, 'lightField.mat']);
