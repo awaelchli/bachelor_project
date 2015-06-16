@@ -42,6 +42,7 @@ lightFieldRecVector = P * reshape(layers, size(P, 2), []);
 lightFieldReconstruction = reshape(lightFieldRecVector, [lightFieldResolution channels]);
 lightFieldReconstruction = exp(lightFieldReconstruction);
 
+RMSEoutput = [];
 
 for i = 1 : NumberOfReconstructions
     
@@ -60,53 +61,60 @@ for i = 1 : NumberOfReconstructions
     currentReconstruction = repmat(currentReconstruction, replicationSizes);
     currentReconstruction = squeeze(currentReconstruction);
         
-    % Show and store the chosen reconstructed views
+    % Show the chosen reconstructed views
     if( displayReconstruction )
-        
-        displayTitle = ['Reconstruction of view (' num2str(currentCameraIndices(1)) ', ' num2str(currentCameraIndices(2)) ')' ];
+        displayTitle = sprintf('Reconstruction of view (%i, %i)', currentCameraIndices);
 
         figure('Name', 'Light field reconstruction from layers')
         imshow(currentReconstruction)
         title(displayTitle);
-
-        if( writeToFolder )
-            imwrite(currentReconstruction, [outputFolder displayTitle '.png']);
-        end
+    end
+    
+    % Store the chosen reconstructed views
+    if( writeToFolder )
+        filename = sprintf('Reconstruction_of_view_(%i,%i)', currentCameraIndices);
+    	imwrite(currentReconstruction, [outputFolder filename '.png']);
     end
     
     % Compute and display the error if desired
-    if( displayError )
-        
-        currentView = lightField(currentCameraIndices(1), currentCameraIndices(2), :, :, :);
-        currentView = repmat(currentView, replicationSizes);
-        currentView = squeeze(currentView);
-        
-        [errorImage, rmse] = meanSquaredErrorImage(currentReconstruction, currentView);
-        
-        % Show and store the error image of the reconstruction
-        displayTitle = ['MSE for view (' num2str(currentCameraIndices(1)) ', ' num2str(currentCameraIndices(2)) ')' ];
+    currentView = lightField(currentCameraIndices(1), currentCameraIndices(2), :, :, :);
+    currentView = repmat(currentView, replicationSizes);
+    currentView = squeeze(currentView);
+    [errorImage, rmse] = meanSquaredErrorImage(currentReconstruction, currentView);
+    
+    % Show the error image of the reconstruction
+    if( displayError )    
+        displayTitle = sprintf('MSE for view (%i, %i)', currentCameraIndices);
         
         figure('Name', 'Mean-Square-Error for reconstructed view')
         imshow(errorImage, [])
         title(displayTitle);
-        
-        fprintf(['R' displayTitle ': %f \n'], rmse);
-        
-        if( writeToFolder )
-            imwrite(errorImage, [outputFolder displayTitle '.png']);
-            
-            % Write RMSE values to text file
-            writeRMSEToTextFile(['R' displayTitle ': %f \n'], rmse, outputFolder);
-        end
     end
+    
+    % Store the error image of the reconstruction
+    if( writeToFolder )
+        filename = sprintf('MSE_for_view_(%i,%i)', currentCameraIndices);
+        imwrite(errorImage, [outputFolder filename '.png']);
+
+   	end
+    
+    RMSEoutput = sprintf('%sRMSE for view (%i, %i): %f \n', RMSEoutput, currentCameraIndices(1), currentCameraIndices(2), rmse);
     
 end
 
+% Write RMSE values to console
+fprintf(RMSEoutput);
+
+if( writeToFolder )
+    % Write RMSE values to text file
+    writeRMSEToTextFile(RMSEoutput, outputFolder);
 end
 
-function writeRMSEToTextFile(text, rmse, outputFolder)
+end
+
+function writeRMSEToTextFile(text, outputFolder)
     rmseFileID = fopen([outputFolder 'RMSE.txt'], 'wt');
-    fprintf(rmseFileID, text, rmse);
+    fprintf(rmseFileID, text);
     fclose(rmseFileID);
 end
 
