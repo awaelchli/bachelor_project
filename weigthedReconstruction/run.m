@@ -1,20 +1,21 @@
 % clear;
 %% Loading the parameters
 
-inputFolder = '../lightFields/tarot/large_angular_extent/downsampled-.5/';
+inputFolder = '../lightFields/tarot/small_angular_extent/downsampled-5x5-.3/';
 load([inputFolder, 'lightField.mat']);
 
 layerSize = [100, 100];
-NumberOfLayers = 10;
-distanceBetweenLayers = 10;
-distanceBetweenCameras = [1, 1];
+NumberOfLayers = 35;
+distanceBetweenLayers = 1;
+distanceBetweenCameras = [4, 4];
+cameraPlaneDistance = 200;
 
 boxRadius = 0;
 
 % Output folder to store the layers and evaluation data
 outputFolder = 'output/';
 % Indices of views for reconstruction and error evaluation
-reconstructionIndices = [1, 1; 3, 3; 5, 5; 9, 9];
+reconstructionIndices = [1, 1; 1, 2; 1, 3; 1, 4; 1, 5];
 % Display reconstructions and error (true/false)
 displayReconstruction = 1;
 displayError = 0;
