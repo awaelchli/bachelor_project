@@ -63,8 +63,8 @@ columnsForFirstLayer = computeColumnIndicesForP(pixelIndexOnFirstLayerMatrixY, .
                                            NumberOfLayers, ...
                                            layerResolution);
 
-for camIndexX = 1 : lightFieldResolution(2)
-    for camIndexY = 1 : lightFieldResolution(1)
+for camIndexY = 1 : lightFieldResolution(2)
+    for camIndexX = 1 : lightFieldResolution(1)
         
     
         % get the position of the current camera on the camera plane
@@ -205,8 +205,9 @@ for camIndexX = 1 : lightFieldResolution(2)
             end
         end
         
-        fprintf('(%i, %i)\n', camIndexY, camIndexX);
+        fprintf('(%i, %i) ', camIndexY, camIndexX);
     end
+    fprintf('\n');
 end
 
 P = sparse([Is{:}], [Js{:}], [Ss{:}], prod(resampledLFResolution), prod([ NumberOfLayers layerResolution ]));
