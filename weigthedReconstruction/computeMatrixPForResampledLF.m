@@ -63,8 +63,8 @@ columnsForFirstLayer = computeColumnIndicesForP(pixelIndexOnFirstLayerMatrixY, .
                                            NumberOfLayers, ...
                                            layerResolution);
 
-for camIndexY = 1 : lightFieldResolution(2)
-    for camIndexX = 1 : lightFieldResolution(1)
+for camIndexY = 1 : lightFieldResolution(1)
+    for camIndexX = 1 : lightFieldResolution(2)
         
     
         % get the position of the current camera on the camera plane
