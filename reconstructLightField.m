@@ -33,7 +33,7 @@ function [ lightFieldReconstruction ] = reconstructLightField( P, ...,
 writeToFolder = ~isempty(outputFolder);
 NumberOfReconstructions = size(cameraIndices, 1);
 lightFieldResolution = size(lightField);
-channels = lightFieldResolution(5);
+channels = size(lightField, 5);
 lightFieldResolution = lightFieldResolution(1 : 4);
 
 lightFieldRecVector = P * reshape(layers, size(P, 2), []);
