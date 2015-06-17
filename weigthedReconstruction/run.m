@@ -1,14 +1,17 @@
 % clear;
 %% Loading the parameters
 
-inputFolder = '../lightFields/tarot/small_angular_extent/downsampled-5x5-.3/';
+inputFolder = '../lightFields/dice/perspective/3x3-.2_rect/downsampled-.05-2D/';
 load([inputFolder, 'lightField.mat']);
 
-layerSize = [100, 100];
-NumberOfLayers = 35;
-distanceBetweenLayers = 1;
-distanceBetweenCameras = [4, 4];
-cameraPlaneDistance = 200;
+% lightField = lightField(:, :, :, :, 1);
+% channels = 1;
+
+% layerSize = [100, 100];
+% NumberOfLayers = 5;
+% distanceBetweenLayers = 1;
+% distanceBetweenCameras = [4, 4];
+% cameraPlaneDistance = 200;
 
 boxRadius = 0;
 
@@ -20,7 +23,7 @@ reconstructionIndices = [1, 1; 1, 2; 1, 3; 1, 4; 1, 5];
 displayReconstruction = 1;
 displayError = 0;
 % Replication of the light field along given dimension (for visualization of 2D light fields)
-replicationSizes = [1, 1, 1, 1, 1];
+replicationSizes = [1, 1, 10, 1, 1];
 % Maximum number of iterations in optimization process
 maxIterations = 20;
 % Parameters for the weighting function on the layers
@@ -96,7 +99,7 @@ end
 mkdir(outputFolder);
 
 printLayers(layers(:, :, 1 : NumberOfLayers, :), layerSize, outputFolder, 'print1', 1);
-% show1DLayers(layers, 1);
+% show1DLayers(layers, 0);
 
 %% Reconstruct light field from attenuation layers and evaluate error
 

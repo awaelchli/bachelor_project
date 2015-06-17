@@ -37,7 +37,7 @@ for layer = 1 : NumberOfLayers
 end
 
 
-fig = figure('Menubar', 'none', 'Visible', 'off');
+fig = figure('Menubar', 'none', 'Visible', 'on');
 
 for layer = 1 : NumberOfLayers
     img = layers(:, :, :, layer);
