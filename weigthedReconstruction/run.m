@@ -1,7 +1,8 @@
 % clear;
 %% Loading the parameters
 
-inputFolder = '../lightFields/dice/perspective/3x3-.2_rect/downsampled-.05-2D/';
+% inputFolder = '../lightFields/dice/perspective/3x3-.2_rect/downsampled-.05-2D/';
+inputFolder = '../lightFields/tarot/small_angular_extent/downsampled-5x5-.3/';
 load([inputFolder, 'lightField.mat']);
 
 % lightField = lightField(:, :, :, :, 1);
@@ -9,21 +10,23 @@ load([inputFolder, 'lightField.mat']);
 
 % layerSize = [100, 100];
 % NumberOfLayers = 5;
-% distanceBetweenLayers = 1;
-% distanceBetweenCameras = [4, 4];
-% cameraPlaneDistance = 200;
+distanceBetweenLayers = 1;
+distanceBetweenCameras = [10, 10];
+cameraPlaneDistance = 200;
+layerResolution = 3 * lightFieldResolution([3, 4]);
 
 boxRadius = 0;
+sensorPlaneZ = 0;
 
 % Output folder to store the layers and evaluation data
 outputFolder = 'output/';
 % Indices of views for reconstruction and error evaluation
-reconstructionIndices = [1, 1; 1, 2; 1, 3; 1, 4; 1, 5];
+reconstructionIndices = [3, 1; 3, 2; 3, 3; 3, 4; 3, 5];
 % Display reconstructions and error (true/false)
 displayReconstruction = 1;
 displayError = 0;
 % Replication of the light field along given dimension (for visualization of 2D light fields)
-replicationSizes = [1, 1, 10, 1, 1];
+replicationSizes = [1, 1, 1, 1, 1];
 % Maximum number of iterations in optimization process
 maxIterations = 20;
 % Parameters for the weighting function on the layers
@@ -49,6 +52,7 @@ clear P resampledLightField lightFieldVector lightFieldVectorLogDomain layers la
                                                         distanceBetweenCameras, ...
                                                         weightFunctionHandle, ...
                                                         boxRadius, ...
+                                                        sensorPlaneZ, ...
                                                         lightField);
                                                     
 clear lightField;
