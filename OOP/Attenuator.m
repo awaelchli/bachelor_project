@@ -1,0 +1,73 @@
+classdef Attenuator
+    %ATTENUATOR Summary of this class goes here
+    %   Detailed explanation goes here
+    
+    properties
+        attenuationValues;
+    end
+    
+    properties (SetAccess = private)
+        layerSize;
+        distanceBetweenLayers;
+    end
+    
+    properties (Dependent, SetAccess = private)
+        numberOfLayers;
+        layerResolution;
+        channels;
+        thickness;
+        pixelSize;
+        layerPositionZ;
+        pixelPositionMatrixY;
+        pixelPositionMatrixX;
+    end
+    
+    methods
+        
+        function self = Attenuator(numberOfLayers, layerResolution, layerSize, distanceBetweenLayers, channels)
+            if(numberOfLayers < 2)
+                error('Attenuator must have a minimum of 2 layers.');
+            end
+            self.layerSize = layerSize;
+            self.distanceBetweenLayers = distanceBetweenLayers;
+            self.attenuationValues = zeros([numberOfLayers, layerResolution, channels]);
+        end
+        
+        function numberOfLayers = get.numberOfLayers(self)
+            numberOfLayers = size(self.attenuationValues, 1);
+        end
+        
+        function channels = get.channels(self)
+            channels = size(self.attenuationValues, 4);
+        end
+        
+        function resolution = get.layerResolution(self)
+            resolution = size(self.attenuationValues);
+            resolution = resolution([2, 3]);
+        end
+        
+        function thickness = get.thickness(self)
+            thickness = (self.numberOfLayers - 1) * self.distanceBetweenLayers;
+        end
+        
+        function pixelSize = get.pixelSize(self)
+            pixelSize = self.layerSize ./ self.layerResolution;
+        end
+        
+        function layerPositionZ = get.layerPositionZ(self)
+            d = self.distanceBetweenLayers;
+            layerPositionZ = -self.thickness / 2 : d : self.thickness / 2;
+        end
+        
+        function positionsY = get.pixelPositionMatrixY(self)
+            [ positionsY, ~ ] = computeCenteredGridPositions(self.layerResolution, self.pixelSize);
+        end
+        
+        function positionsX = get.pixelPositionMatrixX(self)
+            [ ~, positionsX ] = computeCenteredGridPositions(self.layerResolution, self.pixelSize);
+        end
+        
+    end
+    
+end
+

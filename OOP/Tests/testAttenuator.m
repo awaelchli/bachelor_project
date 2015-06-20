@@ -1,0 +1,38 @@
+function tests = testAttenuator
+
+tests = functiontests(localfunctions);
+
+end
+
+function testDependentProperties(testCase)
+
+    a = Attenuator(2, [10, 20], [2, 4], 2, 3);
+    
+    verifyEqual(testCase, a.numberOfLayers, 2);
+    verifyEqual(testCase, a.layerResolution, [10, 20]);
+    verifyEqual(testCase, a.thickness, 2);
+    verifyEqual(testCase, a.channels, 3);
+    
+    a.attenuationValues = zeros(3, 5, 10, 1);
+    
+    verifyEqual(testCase, a.numberOfLayers, 3);
+    verifyEqual(testCase, a.layerResolution, [5, 10]);
+    verifyEqual(testCase, a.thickness, 4);
+    verifyEqual(testCase, a.channels, 1);
+    
+end
+
+function testLayerPositions(testCase)
+    
+    a = Attenuator(5, [4, 6], [10, 15], 1, 3);
+    
+    verifyEqual(testCase, a.pixelSize, [10 / 4, 15 / 6]);
+    expectedPositionsY = 5 - a.pixelSize(1) / 2 : -a.pixelSize(1) : -5 + a.pixelSize(1) / 2;
+    expectedPositionsY = repmat(expectedPositionsY', 1, 6);
+    expectedPositionsX = -7.5 + a.pixelSize(2) / 2 : a.pixelSize(2) : 7.5 - a.pixelSize(2) / 2;
+    expectedPositionsX = repmat(expectedPositionsX, 4, 1);
+    verifyEqual(testCase, a.layerPositionZ, [-2, -1, 0, 1, 2]);
+    verifyEqual(testCase, a.pixelPositionMatrixY, expectedPositionsY);
+    verifyEqual(testCase, a.pixelPositionMatrixX, expectedPositionsX);
+    
+end
