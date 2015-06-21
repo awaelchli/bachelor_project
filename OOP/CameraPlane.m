@@ -1,4 +1,4 @@
-classdef CameraPlane
+classdef CameraPlane < handle
     %CAMERAPLANE Summary of this class goes here
     %   Detailed explanation goes here
     
