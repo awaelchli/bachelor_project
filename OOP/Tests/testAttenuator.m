@@ -1,6 +1,6 @@
 function tests = testAttenuator
 
-tests = functiontests(localfunctions);
+    tests = functiontests(localfunctions);
 
 end
 

@@ -1,6 +1,6 @@
 function tests = testLightField
 
-tests = functiontests(localfunctions);
+    tests = functiontests(localfunctions);
 
 end
 
