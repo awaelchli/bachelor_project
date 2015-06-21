@@ -6,21 +6,19 @@ classdef Attenuator < PixelPlane
         attenuationValues;
     end
     
-    properties (Dependent, Access = protected)
+    properties (Dependent, SetAccess = protected)
         planeResolution;
     end
     
-    properties (Access = protected)
+    properties (SetAccess = protected)
         planeSize;
     end
     
     properties (SetAccess = private)
-        layerSize; % Alias of planeSize from superclass
         distanceBetweenLayers;
     end
     
     properties (Dependent, SetAccess = private)
-        layerResolution; % Alias of planeResolution from superclass
         numberOfLayers;
         channels;
         thickness;
@@ -52,12 +50,8 @@ classdef Attenuator < PixelPlane
             planeResolution = planeResolution([2, 3]);
         end
         
-        function layerResolution = get.layerResolution(self)
-            layerResolution = self.planeResolution;
-        end
-        
-        function layerSize = get.layerSize(self)
-            layerSize = self.planeSize;
+        function planeSize = get.planeSize(self)
+            planeSize = self.planeSize;
         end
         
         function thickness = get.thickness(self)

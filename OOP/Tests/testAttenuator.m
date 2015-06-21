@@ -9,14 +9,14 @@ function testDependentProperties(testCase)
     a = Attenuator(2, [10, 20], [2, 4], 2, 3);
     
     verifyEqual(testCase, a.numberOfLayers, 2);
-    verifyEqual(testCase, a.layerResolution, [10, 20]);
+    verifyEqual(testCase, a.planeResolution, [10, 20]);
     verifyEqual(testCase, a.thickness, 2);
     verifyEqual(testCase, a.channels, 3);
     
     a.attenuationValues = zeros(3, 5, 10, 1);
     
     verifyEqual(testCase, a.numberOfLayers, 3);
-    verifyEqual(testCase, a.layerResolution, [5, 10]);
+    verifyEqual(testCase, a.planeResolution, [5, 10]);
     verifyEqual(testCase, a.thickness, 4);
     verifyEqual(testCase, a.channels, 1);
     

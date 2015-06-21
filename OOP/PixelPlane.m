@@ -2,7 +2,7 @@ classdef PixelPlane < handle
     %SENSORPLANE Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties (Abstract, Access = protected)
+    properties (Abstract, SetAccess = protected)
         planeResolution;
         planeSize;
     end
