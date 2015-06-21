@@ -3,7 +3,7 @@ classdef PixelPlane < handle
     %   Detailed explanation goes here
     
     properties (Abstract, Access = protected)
-        resolution;
+        planeResolution;
         planeSize;
     end
     
@@ -16,11 +16,11 @@ classdef PixelPlane < handle
     methods
         
         function pixelSize = get.pixelSize(self)
-            pixelSize = self.planeSize ./ self.resolution;
+            pixelSize = self.planeSize ./ self.planeResolution;
         end
         
         function [ positionsY, positionsX ] = pixelPositionMatrices(self)
-            [ positionsY, positionsX ] = computeCenteredGridPositions(self.resolution, self.pixelSize);
+            [ positionsY, positionsX ] = computeCenteredGridPositions(self.planeResolution, self.pixelSize);
         end
         
         function positionsY = get.pixelPositionMatrixY(self)
