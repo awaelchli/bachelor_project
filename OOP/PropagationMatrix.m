@@ -21,7 +21,7 @@ classdef PropagationMatrix < handle
         
         function self = PropagationMatrix(lightField, attenuator)
             self.lightFieldSubscriptRange = lightField.resolution;
-            self.attenuatorSubscriptRange = [attenuator.layerResolution, attenuator.numberOfLayers];
+            self.attenuatorSubscriptRange = [attenuator.planeResolution, attenuator.numberOfLayers];
             self.Is = cell([lightField.angularResolution, attenuator.numberOfLayers]);
             self.Js = cell(size(self.Is));
             self.Ss = cell(size(self.Is));
