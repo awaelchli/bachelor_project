@@ -36,3 +36,19 @@ function testLayerPositions(testCase)
     verifyEqual(testCase, a.pixelPositionMatrixX, expectedPositionsX);
     
 end
+
+function test1DLayers(testCase)
+
+    a = Attenuator(2, [1, 4], [2, 8], 1, 3);
+    
+    verifyEqual(testCase, a.pixelSize, [2, 2]);
+    verifyEqual(testCase, a.pixelPositionMatrixY, [0, 0, 0, 0]);
+    verifyEqual(testCase, a.pixelPositionMatrixX, [-3, -1, 1, 3]);
+    
+    a = Attenuator(2, [4, 1], [8, 2], 1, 3);
+    
+    verifyEqual(testCase, a.pixelSize, [2, 2]);
+    verifyEqual(testCase, a.pixelPositionMatrixY, [3, 1, -1, -3]');
+    verifyEqual(testCase, a.pixelPositionMatrixX, [0, 0, 0, 0]');
+    
+end
