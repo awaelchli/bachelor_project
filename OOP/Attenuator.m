@@ -1,4 +1,4 @@
-classdef Attenuator < handle
+classdef Attenuator < PixelPlane
     %ATTENUATOR Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -6,21 +6,27 @@ classdef Attenuator < handle
         attenuationValues;
     end
     
+    properties (Dependent, Access = protected)
+        resolution;
+    end
+    
+    properties (Access = protected)
+        planeSize;
+    end
+    
     properties (SetAccess = private)
-        layerSize;
+        layerSize; % Alias of planeSize from superclass
         distanceBetweenLayers;
     end
     
     properties (Dependent, SetAccess = private)
+        layerResolution; % Alias of resolution from superclass
         numberOfLayers;
-        layerResolution;
         channels;
         thickness;
-        pixelSize;
         layerPositionZ;
-        pixelPositionMatrixY;
-        pixelPositionMatrixX;
     end
+    
     
     methods
         
@@ -28,7 +34,7 @@ classdef Attenuator < handle
             if(numberOfLayers < 2)
                 error('Attenuator must have a minimum of 2 layers.');
             end
-            self.layerSize = layerSize;
+            self.planeSize = layerSize;
             self.distanceBetweenLayers = distanceBetweenLayers;
             self.attenuationValues = zeros([numberOfLayers, layerResolution, channels]);
         end
@@ -41,30 +47,26 @@ classdef Attenuator < handle
             channels = size(self.attenuationValues, 4);
         end
         
-        function resolution = get.layerResolution(self)
+        function resolution = get.resolution(self)
             resolution = size(self.attenuationValues);
             resolution = resolution([2, 3]);
+        end
+        
+        function layerResolution = get.layerResolution(self)
+            layerResolution = self.resolution;
+        end
+        
+        function layerSize = get.layerSize(self)
+            layerSize = self.planeSize;
         end
         
         function thickness = get.thickness(self)
             thickness = (self.numberOfLayers - 1) * self.distanceBetweenLayers;
         end
         
-        function pixelSize = get.pixelSize(self)
-            pixelSize = self.layerSize ./ self.layerResolution;
-        end
-        
         function layerPositionZ = get.layerPositionZ(self)
             d = self.distanceBetweenLayers;
             layerPositionZ = -self.thickness / 2 : d : self.thickness / 2;
-        end
-        
-        function positionsY = get.pixelPositionMatrixY(self)
-            [ positionsY, ~ ] = computeCenteredGridPositions(self.layerResolution, self.pixelSize);
-        end
-        
-        function positionsX = get.pixelPositionMatrixX(self)
-            [ ~, positionsX ] = computeCenteredGridPositions(self.layerResolution, self.pixelSize);
         end
         
     end
