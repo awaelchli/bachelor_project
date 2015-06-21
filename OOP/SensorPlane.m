@@ -9,7 +9,7 @@ classdef SensorPlane < PixelPlane
     end
     
     properties (SetAccess = private)
-        sensorPlaneZ;
+        z;
     end
     
     methods
@@ -17,7 +17,7 @@ classdef SensorPlane < PixelPlane
         function self = SensorPlane(sensorResolution, sensorSize, z)
             self.planeResolution = sensorResolution;
             self.planeSize = sensorSize;
-            self.sensorPlaneZ = z;
+            self.z = z;
         end
         
     end
