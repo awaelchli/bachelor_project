@@ -4,9 +4,9 @@ classdef LightField < handle
     
     properties (Constant)
         lightFieldDimension = 4;
-        angularIndices = [1, 2];
-        spatialIndices = [3, 4];
-        channelIndex = 5;
+        angularDimensions = [1, 2];
+        spatialDimensions = [3, 4];
+        channelDimension = 5;
     end
     
     properties (SetAccess = private)
@@ -40,15 +40,15 @@ classdef LightField < handle
         end
         
         function angularResolution = get.angularResolution(self)
-            angularResolution = self.resolution(self.angularIndices);
+            angularResolution = self.resolution(self.angularDimensions);
         end
         
         function spatialResolution = get.spatialResolution(self)
-            spatialResolution = self.resolution(self.spatialIndices);
+            spatialResolution = self.resolution(self.spatialDimensions);
         end
         
         function channels = get.channels(self)
-            channels = size(self.lightFieldData, self.channelIndex);
+            channels = size(self.lightFieldData, self.channelDimension);
         end
         
         function distance = get.distanceCameraToSensorPlane(self)
