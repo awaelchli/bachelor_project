@@ -36,19 +36,19 @@ classdef LightField < handle
         
         function resolution = get.resolution(self)
             resolution = size(self.lightFieldData);
-            resolution = resolution(1 : self.lightFieldDimension);
+            resolution = resolution(1 : LightField.lightFieldDimension);
         end
         
         function angularResolution = get.angularResolution(self)
-            angularResolution = self.resolution(self.angularDimensions);
+            angularResolution = self.resolution(LightField.angularDimensions);
         end
         
         function spatialResolution = get.spatialResolution(self)
-            spatialResolution = self.resolution(self.spatialDimensions);
+            spatialResolution = self.resolution(LightField.spatialDimensions);
         end
         
         function channels = get.channels(self)
-            channels = size(self.lightFieldData, self.channelDimension);
+            channels = size(self.lightFieldData, LightField.channelDimension);
         end
         
         function distance = get.distanceCameraToSensorPlane(self)
