@@ -2,7 +2,7 @@ classdef LightField < handle
     %LIGHTFIELD Summary of this class goes here
     %   Detailed explanation goes here
     
-    properties (Constant, Access = protected)
+    properties (Constant)
         lightFieldDimension = 4;
         angularIndices = [1, 2];
         spatialIndices = [3, 4];
