@@ -36,7 +36,7 @@ classdef LightField < handle
         
         function resolution = get.resolution(self)
             resolution = size(self.lightFieldData);
-            resolution = resolution(1 : LightField.lightFieldDimension);
+            resolution = resolution([LightField.angularDimensions, LightField.spatialDimensions]);
         end
         
         function angularResolution = get.angularResolution(self)
