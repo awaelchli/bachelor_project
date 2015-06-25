@@ -4,7 +4,7 @@ classdef LightFieldEditor < handle
     
     properties (Access = private)
         lightFieldData;
-        sliceIndices = cell(1, LightField.lighFieldDimension + 1);
+        sliceIndices = cell(1, LightField.lightFieldDimension + 1);
     end
     
     properties
@@ -31,7 +31,7 @@ classdef LightFieldEditor < handle
                 error('No light field loaded yet!')
             end
             cameraPlane = CameraPlane(self.angularResolution, self.distanceBetweenTwoCameras, self.cameraPlaneZ);
-            sensorPlane = SensorPlane(self.spatialResolution, self.sensorSize);
+            sensorPlane = SensorPlane(self.spatialResolution, self.sensorSize, self.sensorPlaneZ);
             lightField = LightField(self.lightFieldData(self.sliceIndices{:}), cameraPlane, sensorPlane);
         end
         
@@ -42,7 +42,7 @@ classdef LightFieldEditor < handle
             self.sliceIndices{LightField.angularDimensions(2)} = 1 : fullResolution(2);
             self.sliceIndices{LightField.spatialDimensions(1)} = 1 : fullResolution(3);
             self.sliceIndices{LightField.spatialDimensions(2)} = 1 : fullResolution(4);
-            self.sliceIndices{LightField.channelIndex} = 1 : fullResolution(5);
+            self.sliceIndices{LightField.channelDimension} = 1 : fullResolution(5);
         end
         
         function resolution = get.resolution(self)
@@ -88,7 +88,7 @@ classdef LightFieldEditor < handle
     methods (Access = private)
         
         function slice(self, indices, dimensionIndex)
-            if(~isValidSlice(indices, dimensionIndex, self.resolution))
+            if(~LightFieldEditor.isValidSlice(indices, dimensionIndex, self.resolution))
                 error('Invalid slice for current light field.');
             end
             self.sliceIndices{dimensionIndex} = unique(indices);
