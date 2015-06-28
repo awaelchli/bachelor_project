@@ -10,3 +10,5 @@ attenuator = Attenuator(5, lightField.spatialResolution, lightField.sensorPlane.
 
 rec = Reconstruction(lightField, attenuator);
 rec.computeLayers();
+
+printLayers(permute(attenuator.attenuationValues(1 : 3, :, :, :), [2, 3, 1, 4]), [10, 10], 'temp/', 'print1', 1);
