@@ -32,29 +32,29 @@ function testEntrySubmission(testCase)
     
     cameraIndexY = 1;
     cameraIndexX = 1;
-    pixelIndexOnSensorY = [0, 0, 0;
-                           1, 1, 1;
-                           0, 0, 0];
-    pixelIndexOnSensorX = [0, 3, 0;
-                           0, 3, 0;
-                           0, 3, 0];
+%     pixelIndexOnSensorY = [0, 0, 0;
+%                            1, 1, 1;
+%                            0, 0, 0];
+%     pixelIndexOnSensorX = [0, 3, 0;
+%                            0, 3, 0;
+%                            0, 3, 0];
     layerIndex = 1;
-    pixelIndexOnLayerY = [1, 1, 1;
-                          2, 2, 2;
-                          3, 3, 3];
-    pixelIndexOnLayerX = [1, 2, 3;
-                          1, 2, 3;
-                          1, 2, 3];
+%     pixelIndexOnLayerY = [1, 1, 1;
+%                           2, 2, 2;
+%                           3, 3, 3];
+%     pixelIndexOnLayerX = [1, 2, 3;
+%                           1, 2, 3;
+%                           1, 2, 3];
     weightMatrix = [1, 2, 3;
                     4, 5, 6;
                     7, 8, 9];
     
     p.submitEntries(cameraIndexY, cameraIndexX, ...
-                    pixelIndexOnSensorY, pixelIndexOnSensorX, ...
+                    1, 3, ...
                     layerIndex, ...
-                    pixelIndexOnLayerY, pixelIndexOnLayerX, ...
+                    [1; 2; 3], [1, 2, 3], ...
                     weightMatrix);
-    
+     
     P = p.formSparseMatrix;
     assertEqual(testCase, nnz(P), 9);
     expectedWeights = [1, 4, 7, 2, 5, 8, 3, 6, 9];
