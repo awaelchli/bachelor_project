@@ -27,7 +27,10 @@ classdef Reconstruction < handle
         end
         
         function computeLayers(self)
-            self.constructPropagationMatrix();
+            
+            weightFunctionHandle = @(data) ones(size(data, 1), 1);
+            
+            self.constructPropagationMatrix(weightFunctionHandle);
             P = self.propagationMatrix.formSparseMatrix();
             
             lightFieldVector = reshape(self.resampledLightField.lightFieldData, [], self.resampledLightField.channels);
@@ -53,7 +56,7 @@ classdef Reconstruction < handle
     
     methods (Access = private)
         
-        function constructPropagationMatrix(self)
+        function constructPropagationMatrix(self, weightFunctionHandle)
             
             layerResolution = self.attenuator.planeResolution;
             angularResolution = self.lightField.angularResolution;
@@ -104,8 +107,8 @@ classdef Reconstruction < handle
                     pixelIndexOnSensorMatrixX(:, invalidRayIndicesForSensorX) = 0;
                     
                     % TODO: use invalidRayIndicesForSensor directly!
-                    pixelIndicesOnSensorY = pixelIndexMatrixY(pixelIndexOnSensorMatrixY(:, 1) ~= 0, 1); % column vector
-                    pixelIndicesOnSensorX = pixelIndexMatrixX(1, pixelIndexOnSensorMatrixX(1, :) ~= 0); % row vector
+                    pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(pixelIndexOnSensorMatrixY(:, 1) ~= 0, 1); % column vector
+                    pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, pixelIndexOnSensorMatrixX(1, :) ~= 0); % row vector
 
                     % Interpolating the current view of the light field
                     view = squeeze(self.lightField.lightFieldData(camIndexY, camIndexX, :, :, :));
