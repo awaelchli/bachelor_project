@@ -15,58 +15,65 @@ classdef Reconstruction < handle
     
     methods
         
-        function self = Reconstruction(lightField, attenuator)
-            self.lightField = lightField;
-            self.attenuator = attenuator;
+        function this = Reconstruction(lightField, attenuator)
+            this.lightField = lightField;
+            this.attenuator = attenuator;
             
             resampledLFResolution = [lightField.angularResolution, attenuator.planeResolution];
             resampledLFData = zeros([resampledLFResolution, lightField.channels]);
             
-            self.resampledLightField = LightField(resampledLFData, lightField.cameraPlane, lightField.sensorPlane);
-            self.propagationMatrix = PropagationMatrix(self.resampledLightField, attenuator);
+            this.resampledLightField = LightField(resampledLFData, lightField.cameraPlane, lightField.sensorPlane);
+            this.propagationMatrix = PropagationMatrix(this.resampledLightField, attenuator);
         end
         
-        function computeLayers(self)
+        function computeLayers(this)
             
             weightFunctionHandle = @(data) ones(size(data, 1), 1);
             
-            self.constructPropagationMatrix(weightFunctionHandle);
-            P = self.propagationMatrix.formSparseMatrix();
+            this.constructPropagationMatrix(weightFunctionHandle);
+            P = this.propagationMatrix.formSparseMatrix();
             
-            lightFieldVector = reshape(self.resampledLightField.lightFieldData, [], self.resampledLightField.channels);
+            lightFieldVector = reshape(this.resampledLightField.lightFieldData, [], this.resampledLightField.channels);
 
             % Convert to log light field
-            lightFieldVectorLogDomain = lightFieldVector;
-            lightFieldVectorLogDomain(lightFieldVectorLogDomain < 0.01) = 0.01;
-            lightFieldVectorLogDomain = log(lightFieldVectorLogDomain);
+            lightFieldVector(lightFieldVector < 0.01) = 0.01;
+            lightFieldVectorLogDomain = log(lightFieldVector);
 
             % Solve using SART
             tic;
             fprintf('Running optimization ...\n');
 
             % Optimization constraints
-            ub = zeros(self.propagationMatrix.size(2), self.resampledLightField.channels); 
+            ub = zeros(this.propagationMatrix.size(2), this.resampledLightField.channels); 
             lb = zeros(size(ub)) + log(0.01);
             x0 = zeros(size(ub));
             
-            self.attenuator.attenuationValues = sart(P, lightFieldVectorLogDomain, x0, lb, ub, self.iterations);
+            attenuationValuesLogDomain = sart(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
+            attenuationValues = exp(attenuationValuesLogDomain);
+            
+            
+            attenuationValues = permute(attenuationValues, [2, 1]);
+            attenuationValues = reshape(attenuationValues, [this.attenuator.channels, this.attenuator.planeResolution, this.attenuator.numberOfLayers]);
+            attenuationValues = permute(attenuationValues, [4, 2, 3, 1]);
+
+            this.attenuator.attenuationValues = attenuationValues;
         end
         
     end
     
     methods (Access = private)
         
-        function constructPropagationMatrix(self, weightFunctionHandle)
+        function constructPropagationMatrix(this, weightFunctionHandle)
             
-            layerResolution = self.attenuator.planeResolution;
-            angularResolution = self.lightField.angularResolution;
-            spatialResolution = self.lightField.spatialResolution;
+            layerResolution = this.attenuator.planeResolution;
+            angularResolution = this.lightField.angularResolution;
+            spatialResolution = this.lightField.spatialResolution;
 
-            cameraPositionMatrixY = self.lightField.cameraPlane.cameraPositionMatrixY;
-            cameraPositionMatrixX = self.lightField.cameraPlane.cameraPositionMatrixX;
+            cameraPositionMatrixY = this.lightField.cameraPlane.cameraPositionMatrixY;
+            cameraPositionMatrixX = this.lightField.cameraPlane.cameraPositionMatrixX;
         
-            pixelPositionsOnFirstLayerMatrixY = self.attenuator.pixelPositionMatrixY;
-            pixelPositionsOnFirstLayerMatrixX = self.attenuator.pixelPositionMatrixX;
+            pixelPositionsOnFirstLayerMatrixY = this.attenuator.pixelPositionMatrixY;
+            pixelPositionsOnFirstLayerMatrixX = this.attenuator.pixelPositionMatrixX;
 
             [ pixelIndexOnFirstLayerMatrixY, pixelIndexOnFirstLayerMatrixX ] = ndgrid(1 : layerResolution(1), 1 : layerResolution(2));
 
@@ -79,13 +86,13 @@ classdef Reconstruction < handle
                     cameraPosition = [ cameraPositionMatrixY(camIndexY, camIndexX), ...
                                        cameraPositionMatrixX(camIndexY, camIndexX) ];
         
-                    firstLayerZ = self.attenuator.layerPositionZ(1);
+                    firstLayerZ = this.attenuator.layerPositionZ(1);
         
                     [ positionsOnSensorPlaneMatrixY, ...
                       positionsOnSensorPlaneMatrixX ] = computeRayIntersectionsOnPlane( cameraPosition, ...
-                                                                                        self.lightField.cameraPlane.z, ...
+                                                                                        this.lightField.cameraPlane.z, ...
                                                                                         firstLayerZ, ...
-                                                                                        self.lightField.sensorPlane.z, ...
+                                                                                        this.lightField.sensorPlane.z, ...
                                                                                         pixelPositionsOnFirstLayerMatrixY, ...
                                                                                         pixelPositionsOnFirstLayerMatrixX );
         
@@ -94,7 +101,7 @@ classdef Reconstruction < handle
                       sensorIntersectionMatrixX ] = computePixelIndicesOnPlane( positionsOnSensorPlaneMatrixY, ...
                                                                                 positionsOnSensorPlaneMatrixX, ...
                                                                                 spatialResolution, ...
-                                                                                self.attenuator.planeSize, ...
+                                                                                this.attenuator.planeSize, ...
                                                                                 @round );
         
                     invalidRayIndicesForSensorY = sensorIntersectionMatrixY(:, 1) == 0;
@@ -111,8 +118,8 @@ classdef Reconstruction < handle
                     pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, pixelIndexOnSensorMatrixX(1, :) ~= 0); % row vector
 
                     % Interpolating the current view of the light field
-                    view = squeeze(self.lightField.lightFieldData(camIndexY, camIndexX, :, :, :));
-                    gridVectors = {sensorIntersectionMatrixY(:, 1), sensorIntersectionMatrixX(1, :), 1 : self.lightField.channels};
+                    view = squeeze(this.lightField.lightFieldData(camIndexY, camIndexX, :, :, :));
+                    gridVectors = {sensorIntersectionMatrixY(:, 1), sensorIntersectionMatrixX(1, :), 1 : this.lightField.channels};
 
                     % Remove arrays of singleton dimensions (2D light fields or single
                     % channel)
@@ -121,23 +128,23 @@ classdef Reconstruction < handle
                     [ grid{:} ] = ndgrid(gridVectors{~indicesOfScalars});
 
                     % TODO: write the method "replaceView"
-                    self.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}));
+                    this.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}));
                     
-                    self.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
+                    this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
                                          pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
                                          1, ...
                                          pixelIndexOnFirstLayerMatrixY(:, 1), pixelIndexOnFirstLayerMatrixX(1, :), ...
                                          ones(layerResolution)); % TODO: check if layerResolution correct
 
-                    for layer = 2 : self.attenuator.numberOfLayers
+                    for layer = 2 : this.attenuator.numberOfLayers
 
                         % adjust distance for current layer; the coordinate origin is
                         % at the center of the layer stack
-                        currentLayerZ = self.attenuator.layerPositionZ(layer);
+                        currentLayerZ = this.attenuator.layerPositionZ(layer);
 
                         [ positionsOnLayerMatrixY, ...
                           positionsOnLayerMatrixX ] = computeRayIntersectionsOnPlane( cameraPosition, ...
-                                                                                      self.lightField.cameraPlane.z, ...
+                                                                                      this.lightField.cameraPlane.z, ...
                                                                                       firstLayerZ, ...
                                                                                       currentLayerZ, ...
                                                                                       pixelPositionsOnFirstLayerMatrixY, ...
@@ -151,7 +158,7 @@ classdef Reconstruction < handle
                           layerIntersectionMatrixX ] = computePixelIndicesOnPlane( positionsOnLayerMatrixY, ...
                                                                                    positionsOnLayerMatrixX, ...
                                                                                    layerResolution, ...
-                                                                                   self.attenuator.planeSize, ...
+                                                                                   this.attenuator.planeSize, ...
                                                                                    @round );
                     
                         weightsForLayerMatrix = computeRayIntersectionWeights( pixelIndexOnLayerMatrixY, ...
@@ -179,7 +186,7 @@ classdef Reconstruction < handle
                         weights = weights(~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY), :);
                         weights = weights(: , ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX));
                     
-                        self.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
+                        this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
                                              pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
                                              layer, ...
                                              layerPixelIndicesY, layerPixelIndicesX, ...
