@@ -57,20 +57,15 @@ classdef PropagationMatrix < handle
         
         function rows = computeRowIndices(self, camIndexY, ...
                                                 camIndexX, ...
-                                                cameraPixelIndicesY, ... 
+                                                cameraPixelIndicesY, ...
                                                 cameraPixelIndicesX)
-
-%             cameraPixelIndicesY = pixelIndexMatrixY(pixelIndexMatrixY(:, 1) ~= 0, 1); % column vector
-%             cameraPixelIndicesX = pixelIndexMatrixX(1, pixelIndexMatrixX(1, :) ~= 0); % row vector
 
             cameraPixelIndicesY = repmat(cameraPixelIndicesY, 1, numel(cameraPixelIndicesX)); 
             cameraPixelIndicesX = repmat(cameraPixelIndicesX, size(cameraPixelIndicesY, 1), 1); 
 
-            % make copies of the image indices
             imageIndicesY = camIndexY + zeros(size(cameraPixelIndicesY));
             imageIndicesX = camIndexX + zeros(size(cameraPixelIndicesX));
 
-            % convert the 4D subscipts to row indices all at once
             rows = sub2ind(self.lightFieldSubscriptRange, imageIndicesY(:), ...
                                                           imageIndicesX(:), ...
                                                           cameraPixelIndicesY(:), ...
@@ -81,15 +76,11 @@ classdef PropagationMatrix < handle
                                                       layerPixelIndicesX, ...
                                                       layer)
                                             
-%             layerPixelIndicesY = find(pixelIndexMatrixY(:, 1)); % column vector
-%             layerPixelIndicesX = find(pixelIndexMatrixX(1, :)); % row vector
-
             layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
             layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
 
             layerIndices = layer + zeros(size(layerPixelIndicesY));
 
-            % convert the subscripts to column indices
             columns = sub2ind(self.attenuatorSubscriptRange, layerPixelIndicesY(:), ...
                                                              layerPixelIndicesX(:), ...
                                                              layerIndices(:));
