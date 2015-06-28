@@ -54,6 +54,11 @@ classdef LightField < handle
         function distance = get.distanceCameraToSensorPlane(self)
             distance = abs(self.cameraPlane.z - self.sensorPlane.z);
         end
+        
+        function replaceView(self, cameraIndexY, cameraIndexX, image)
+           self.lightFieldData(cameraIndexY, cameraIndexX, : , : , :) = image; 
+        end
+        
     end
     
 end
