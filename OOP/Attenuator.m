@@ -2,6 +2,13 @@ classdef Attenuator < PixelPlane
     %ATTENUATOR Summary of this class goes here
     %   Detailed explanation goes here
     
+    properties (Constant)
+        layerDimension = 1;
+        spatialDimensions = [2, 3];
+        channelDimension = 4;
+        minimumNumberOfLayers = 2;
+    end
+    
     properties
         attenuationValues;
     end
@@ -29,8 +36,8 @@ classdef Attenuator < PixelPlane
     methods
         
         function self = Attenuator(numberOfLayers, layerResolution, layerSize, distanceBetweenLayers, channels)
-            if(numberOfLayers < 2)
-                error('Attenuator must have a minimum of 2 layers.');
+            if(numberOfLayers < Attenuator.minimumNumberOfLayers)
+                error('Attenuator must have a minimum of %i layers.', Attenuator.minimumNumberOfLayers);
             end
             self.planeSize = layerSize;
             self.distanceBetweenLayers = distanceBetweenLayers;
@@ -38,16 +45,16 @@ classdef Attenuator < PixelPlane
         end
         
         function numberOfLayers = get.numberOfLayers(self)
-            numberOfLayers = size(self.attenuationValues, 1);
+            numberOfLayers = size(self.attenuationValues, Attenuator.layerDimension);
         end
         
         function channels = get.channels(self)
-            channels = size(self.attenuationValues, 4);
+            channels = size(self.attenuationValues, Attenuator.channelDimension);
         end
         
         function planeResolution = get.planeResolution(self)
             planeResolution = size(self.attenuationValues);
-            planeResolution = planeResolution([2, 3]);
+            planeResolution = planeResolution(Attenuator.spatialDimensions);
         end
         
         function planeSize = get.planeSize(self)
