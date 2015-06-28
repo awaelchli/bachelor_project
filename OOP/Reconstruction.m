@@ -1,4 +1,4 @@
-classdef Reconstruction
+classdef Reconstruction < handle
     %RECONSTRUCTION Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -6,7 +6,11 @@ classdef Reconstruction
         lightField;
         attenuator;
         resampledLightField;
-        P;
+        propagationMatrix;
+    end
+    
+    properties
+        iterations = 20;
     end
     
     methods
@@ -19,8 +23,35 @@ classdef Reconstruction
             resampledLFData = zeros([resampledLFResolution, lightField.channels]);
             
             self.resampledLightField = LightField(resampledLFData, lightField.cameraPlane, lightField.sensorPlane);
-            self.P = PropagationMatrix(self.resampledLightField, attenuator);
+            self.propagationMatrix = PropagationMatrix(self.resampledLightField, attenuator);
         end
+        
+        function computeLayers(self)
+            self.constructPropagationMatrix();
+            P = self.propagationMatrix.formSparseMatrix();
+            
+            lightFieldVector = reshape(self.resampledLightField.lightFieldData, [], self.resampledLightField.channels);
+
+            % Convert to log light field
+            lightFieldVectorLogDomain = lightFieldVector;
+            lightFieldVectorLogDomain(lightFieldVectorLogDomain < 0.01) = 0.01;
+            lightFieldVectorLogDomain = log(lightFieldVectorLogDomain);
+
+            % Solve using SART
+            tic;
+            fprintf('Running optimization ...\n');
+
+            % Optimization constraints
+            ub = zeros(self.propagationMatrix.size(2), self.resampledLightField.channels); 
+            lb = zeros(size(ub)) + log(0.01);
+            x0 = zeros(size(ub));
+            
+            self.attenuator.attenuationValues = sart(P, lightFieldVectorLogDomain, x0, lb, ub, self.iterations);
+        end
+        
+    end
+    
+    methods (Access = private)
         
         function constructPropagationMatrix(self)
             
@@ -71,6 +102,10 @@ classdef Reconstruction
 
                     pixelIndexOnSensorMatrixY(invalidRayIndicesForSensorY, :) = 0;
                     pixelIndexOnSensorMatrixX(:, invalidRayIndicesForSensorX) = 0;
+                    
+                    % TODO: use invalidRayIndicesForSensor directly!
+                    pixelIndicesOnSensorY = pixelIndexMatrixY(pixelIndexOnSensorMatrixY(:, 1) ~= 0, 1); % column vector
+                    pixelIndicesOnSensorX = pixelIndexMatrixX(1, pixelIndexOnSensorMatrixX(1, :) ~= 0); % row vector
 
                     % Interpolating the current view of the light field
                     view = squeeze(self.lightField.lightFieldData(camIndexY, camIndexX, :, :, :));
@@ -85,136 +120,78 @@ classdef Reconstruction
                     % TODO: write the method "replaceView"
                     self.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}));
                     
-                    self.P.submitEntries(camIndexY, camIndexX, ...
-                                         pixelIndexOnSensorMatrixY, pixelIndexOnSensorMatrixX, ...
+                    self.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
+                                         pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
                                          1, ...
-                                         pixelIndexOnFirstLayerMatrixY, pixelIndexOnFirstLayerMatrixX, ...
+                                         pixelIndexOnFirstLayerMatrixY(:, 1), pixelIndexOnFirstLayerMatrixX(1, :), ...
                                          ones(layerResolution)); % TODO: check if layerResolution correct
 
                     for layer = 2 : self.attenuator.numberOfLayers
 
-                    % adjust distance for current layer; the coordinate origin is
-                    % at the center of the layer stack
-                    currentLayerZ = layerPositionsZ(layer);
+                        % adjust distance for current layer; the coordinate origin is
+                        % at the center of the layer stack
+                        currentLayerZ = self.attenuator.layerPositionZ(layer);
 
-                    [ positionsOnLayerMatrixY, ...
-                      positionsOnLayerMatrixX ] = computeRayIntersectionsOnPlane( cameraPosition, ...
-                                                                                  cameraPlaneDistance, ...
-                                                                                  firstLayerZ, ...
-                                                                                  currentLayerZ, ...
-                                                                                  pixelPositionsOnFirstLayerMatrixY, ...
-                                                                                  pixelPositionsOnFirstLayerMatrixX );
+                        [ positionsOnLayerMatrixY, ...
+                          positionsOnLayerMatrixX ] = computeRayIntersectionsOnPlane( cameraPosition, ...
+                                                                                      self.lightField.cameraPlane.z, ...
+                                                                                      firstLayerZ, ...
+                                                                                      currentLayerZ, ...
+                                                                                      pixelPositionsOnFirstLayerMatrixY, ...
+                                                                                      pixelPositionsOnFirstLayerMatrixX );
 
 
 
-                    [ pixelIndexOnLayerMatrixY, ...
-                      pixelIndexOnLayerMatrixX, ...
-                      layerIntersectionMatrixY, ...
-                      layerIntersectionMatrixX ] = computePixelIndicesOnPlane( positionsOnLayerMatrixY, ...
-                                                                               positionsOnLayerMatrixX, ...
-                                                                               layerResolution, ...
-                                                                               layerSize, ...
-                                                                               @round );
-                                                                           
-%                     tempPixelIndexOnLayerMatrixY = min(pixelIndexOnLayerMatrixY + sy, layerResolution(1));
-%                     tempPixelIndexOnLayerMatrixY = max(tempPixelIndexOnLayerMatrixY, 0);
-%                     tempPixelIndexOnLayerMatrixX = min(pixelIndexOnLayerMatrixX + sx, layerResolution(2));
-%                     tempPixelIndexOnLayerMatrixX = max(tempPixelIndexOnLayerMatrixX, 0);
-
-%                     weightsForLayerMatrix = computeRayIntersectionWeights( tempPixelIndexOnLayerMatrixY, ...
-%                                                                            tempPixelIndexOnLayerMatrixX, ...
-%                                                                            layerIntersectionMatrixY, ...
-%                                                                            layerIntersectionMatrixX, ...
-%                                                                            weightFunctionHandle );
-% 
-%                     tempPixelIndexOnLayerMatrixY(invalidRayIndicesForSensorY, :) = 0;
-%                     tempPixelIndexOnLayerMatrixX(:, invalidRayIndicesForSensorX) = 0;
+                        [ pixelIndexOnLayerMatrixY, ...
+                          pixelIndexOnLayerMatrixX, ...
+                          layerIntersectionMatrixY, ...
+                          layerIntersectionMatrixX ] = computePixelIndicesOnPlane( positionsOnLayerMatrixY, ...
+                                                                                   positionsOnLayerMatrixX, ...
+                                                                                   layerResolution, ...
+                                                                                   self.attenuator.planeSize, ...
+                                                                                   @round );
                     
-                    weightsForLayerMatrix = computeRayIntersectionWeights( pixelIndexOnLayerMatrixY, ...
-                                                                           pixelIndexOnLayerMatrixX, ...
-                                                                           layerIntersectionMatrixY, ...
-                                                                           layerIntersectionMatrixX, ...
-                                                                           weightFunctionHandle );
+                        weightsForLayerMatrix = computeRayIntersectionWeights( pixelIndexOnLayerMatrixY, ...
+                                                                               pixelIndexOnLayerMatrixX, ...
+                                                                               layerIntersectionMatrixY, ...
+                                                                               layerIntersectionMatrixX, ...
+                                                                               weightFunctionHandle );
 
-                    pixelIndexOnLayerMatrixY(invalidRayIndicesForSensorY, :) = 0;
-                    pixelIndexOnLayerMatrixX(:, invalidRayIndicesForSensorX) = 0;
+                        pixelIndexOnLayerMatrixY(invalidRayIndicesForSensorY, :) = 0;
+                        pixelIndexOnLayerMatrixX(:, invalidRayIndicesForSensorX) = 0;
 
-%                     layerPixelIndicesY = tempPixelIndexOnLayerMatrixY(tempPixelIndexOnLayerMatrixY(:, 1) ~= 0, 1); % column vector
-%                     layerPixelIndicesX = tempPixelIndexOnLayerMatrixX(1, tempPixelIndexOnLayerMatrixX(1, :) ~= 0); % row vector
+                        layerPixelIndicesY = pixelIndexOnLayerMatrixY(pixelIndexOnLayerMatrixY(:, 1) ~= 0, 1); % column vector
+                        layerPixelIndicesX = pixelIndexOnLayerMatrixX(1, pixelIndexOnLayerMatrixX(1, :) ~= 0); % row vector
 
-                    layerPixelIndicesY = pixelIndexOnLayerMatrixY(pixelIndexOnLayerMatrixY(:, 1) ~= 0, 1); % column vector
-                    layerPixelIndicesX = pixelIndexOnLayerMatrixX(1, pixelIndexOnLayerMatrixX(1, :) ~= 0); % row vector
+                        invalidRayIndicesForLayerY = pixelIndexOnLayerMatrixY(:, 1) == 0;
+                        invalidRayIndicesForLayerX = pixelIndexOnLayerMatrixX(1, :) == 0;
 
-                    layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
-                    layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
+                        pixelIndexOnSensorMatrixY(invalidRayIndicesForLayerY, :) = 0;
+                        pixelIndexOnSensorMatrixX(:, invalidRayIndicesForLayerX) = 0;
 
-                    layerIndices = layer + zeros(size(layerPixelIndicesY));
+                        pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(pixelIndexOnSensorMatrixY(:, 1) ~= 0, 1); % column vector
+                        pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, pixelIndexOnSensorMatrixX(1, :) ~= 0); % row vector
 
-                    % convert the subscripts to column indices
-                    columns = sub2ind([layerResolution NumberOfLayers], layerPixelIndicesY(:), ...
-                                                                        layerPixelIndicesX(:), ...
-                                                                        layerIndices(:));
-
-%                     invalidRayIndicesForLayerY = tempPixelIndexOnLayerMatrixY(:, 1) == 0;
-%                     invalidRayIndicesForLayerX = tempPixelIndexOnLayerMatrixX(1, :) == 0;
-
-                    invalidRayIndicesForLayerY = pixelIndexOnLayerMatrixY(:, 1) == 0;
-                    invalidRayIndicesForLayerX = pixelIndexOnLayerMatrixX(1, :) == 0;
-
-%                     tempPixelIndexOnSensorMatrixY = pixelIndexOnSensorMatrixY;
-%                     tempPixelIndexOnSensorMatrixX = pixelIndexOnSensorMatrixX;
-% 
-%                     tempPixelIndexOnSensorMatrixY(invalidRayIndicesForLayerY, :) = 0;
-%                     tempPixelIndexOnSensorMatrixX(:, invalidRayIndicesForLayerX) = 0;
-% 
-%                     rows = computeRowIndicesForP(camIndexY, ...
-%                                                  camIndexX, ...
-%                                                  tempPixelIndexOnSensorMatrixY, ... 
-%                                                  tempPixelIndexOnSensorMatrixX, ...
-%                                                  resampledLFResolution);
-
-                    pixelIndexOnSensorMatrixY(invalidRayIndicesForLayerY, :) = 0;
-                    pixelIndexOnSensorMatrixX(:, invalidRayIndicesForLayerX) = 0;
-
-                    rows = computeRowIndicesForP(camIndexY, ...
-                                                 camIndexX, ...
-                                                 pixelIndexOnSensorMatrixY, ... 
-                                                 pixelIndexOnSensorMatrixX, ...
-                                                 resampledLFResolution);
-
-                    weights = weightsForLayerMatrix;
-                    weights = weights(~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY), :);
-                    weights = weights(: , ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX));
+                        weights = weightsForLayerMatrix;
+                        weights = weights(~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY), :);
+                        weights = weights(: , ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX));
                     
-%                     boxIndexY = sy + boxRadius + 1;
-%                     boxIndexX = sx + boxRadius + 1;
+                        self.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
+                                             pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
+                                             layer, ...
+                                             layerPixelIndicesY, layerPixelIndicesX, ...
+                                             weights);
+                    end
                     
-%                     Is{camIndexY, camIndexX, layer, boxIndexY, boxIndexX} = rows;
-%                     Js{camIndexY, camIndexX, layer, boxIndexY, boxIndexX} = columns;
-%                     Ss{camIndexY, camIndexX, layer, boxIndexY, boxIndexX} = weights(:);
-%                     numel(rows) == numel(weights)
-                    Is{camIndexY, camIndexX, layer} = rows';
-                    Js{camIndexY, camIndexX, layer} = columns';
-                    Ss{camIndexY, camIndexX, layer} = permute(weights(:), [2, 1]);
-%                     Ss{camIndexY, camIndexX, layer} = rand(size(rows));
+                    fprintf('(%i, %i) ', camIndexY, camIndexX);
                 end
-%             end
-%         end
-        
-        fprintf('(%i, %i) ', camIndexY, camIndexX);
-    end
-    fprintf('\n');
-end
-% 
-% Is
-% Js
-% Ss
-
-P = sparse([Is{:}], [Js{:}], [Ss{:}], prod(resampledLFResolution), prod([ NumberOfLayers layerResolution ]));
-
-end
+                
+                fprintf('\n');
+            end
         end
+        
     end
-    
+
+
 end
 

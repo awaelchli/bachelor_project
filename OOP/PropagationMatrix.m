@@ -57,11 +57,11 @@ classdef PropagationMatrix < handle
         
         function rows = computeRowIndices(self, camIndexY, ...
                                                 camIndexX, ...
-                                                pixelIndexMatrixY, ... 
-                                                pixelIndexMatrixX)
+                                                cameraPixelIndicesY, ... 
+                                                cameraPixelIndicesX)
 
-            cameraPixelIndicesY = pixelIndexMatrixY(pixelIndexMatrixY(:, 1) ~= 0, 1); % column vector
-            cameraPixelIndicesX = pixelIndexMatrixX(1, pixelIndexMatrixX(1, :) ~= 0); % row vector
+%             cameraPixelIndicesY = pixelIndexMatrixY(pixelIndexMatrixY(:, 1) ~= 0, 1); % column vector
+%             cameraPixelIndicesX = pixelIndexMatrixX(1, pixelIndexMatrixX(1, :) ~= 0); % row vector
 
             cameraPixelIndicesY = repmat(cameraPixelIndicesY, 1, numel(cameraPixelIndicesX)); 
             cameraPixelIndicesX = repmat(cameraPixelIndicesX, size(cameraPixelIndicesY, 1), 1); 
@@ -77,13 +77,12 @@ classdef PropagationMatrix < handle
                                                           cameraPixelIndicesX(:));
         end
         
-        function columns = computeColumnIndices(self, pixelIndexMatrixY, ...
-                                                      pixelIndexMatrixX, ...
+        function columns = computeColumnIndices(self, layerPixelIndicesY, ...
+                                                      layerPixelIndicesX, ...
                                                       layer)
-
                                             
-            layerPixelIndicesY = find(pixelIndexMatrixY(:, 1)); % column vector
-            layerPixelIndicesX = find(pixelIndexMatrixX(1, :)); % row vector
+%             layerPixelIndicesY = find(pixelIndexMatrixY(:, 1)); % column vector
+%             layerPixelIndicesX = find(pixelIndexMatrixX(1, :)); % row vector
 
             layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
             layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
