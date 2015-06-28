@@ -25,38 +25,38 @@ classdef LightField < handle
     
     methods
         
-        function self = LightField(lightFieldData, cameraPlane, sensorPlane)
+        function this = LightField(lightFieldData, cameraPlane, sensorPlane)
             % TODO: write invariant to check if resolution of
             % lightFieldData corrensponds to resolution of cameraPlane and
             % sensorPlane
-            self.lightFieldData = lightFieldData;
-            self.cameraPlane = cameraPlane;
-            self.sensorPlane = sensorPlane;
+            this.lightFieldData = lightFieldData;
+            this.cameraPlane = cameraPlane;
+            this.sensorPlane = sensorPlane;
         end
         
-        function resolution = get.resolution(self)
-            resolution = size(self.lightFieldData);
+        function resolution = get.resolution(this)
+            resolution = size(this.lightFieldData);
             resolution = resolution([LightField.angularDimensions, LightField.spatialDimensions]);
         end
         
-        function angularResolution = get.angularResolution(self)
-            angularResolution = self.resolution(LightField.angularDimensions);
+        function angularResolution = get.angularResolution(this)
+            angularResolution = this.resolution(LightField.angularDimensions);
         end
         
-        function spatialResolution = get.spatialResolution(self)
-            spatialResolution = self.resolution(LightField.spatialDimensions);
+        function spatialResolution = get.spatialResolution(this)
+            spatialResolution = this.resolution(LightField.spatialDimensions);
         end
         
-        function channels = get.channels(self)
-            channels = size(self.lightFieldData, LightField.channelDimension);
+        function channels = get.channels(this)
+            channels = size(this.lightFieldData, LightField.channelDimension);
         end
         
-        function distance = get.distanceCameraToSensorPlane(self)
-            distance = abs(self.cameraPlane.z - self.sensorPlane.z);
+        function distance = get.distanceCameraToSensorPlane(this)
+            distance = abs(this.cameraPlane.z - this.sensorPlane.z);
         end
         
-        function replaceView(self, cameraIndexY, cameraIndexX, image)
-           self.lightFieldData(cameraIndexY, cameraIndexX, : , : , :) = image; 
+        function replaceView(this, cameraIndexY, cameraIndexX, image)
+           this.lightFieldData(cameraIndexY, cameraIndexX, : , : , :) = image; 
         end
         
     end

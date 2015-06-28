@@ -14,10 +14,10 @@ classdef SensorPlane < PixelPlane
     
     methods
         
-        function self = SensorPlane(sensorResolution, sensorSize, z)
-            self.planeResolution = sensorResolution;
-            self.planeSize = sensorSize;
-            self.z = z;
+        function this = SensorPlane(sensorResolution, sensorSize, z)
+            this.planeResolution = sensorResolution;
+            this.planeSize = sensorSize;
+            this.z = z;
         end
         
     end

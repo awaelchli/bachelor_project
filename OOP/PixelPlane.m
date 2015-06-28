@@ -15,20 +15,20 @@ classdef PixelPlane < handle
     
     methods
         
-        function pixelSize = get.pixelSize(self)
-            pixelSize = self.planeSize ./ self.planeResolution;
+        function pixelSize = get.pixelSize(this)
+            pixelSize = this.planeSize ./ this.planeResolution;
         end
         
-        function [ positionsY, positionsX ] = pixelPositionMatrices(self)
-            [ positionsY, positionsX ] = computeCenteredGridPositions(self.planeResolution, self.pixelSize);
+        function [ positionsY, positionsX ] = pixelPositionMatrices(this)
+            [ positionsY, positionsX ] = computeCenteredGridPositions(this.planeResolution, this.pixelSize);
         end
         
-        function positionsY = get.pixelPositionMatrixY(self)
-            [ positionsY, ~ ] = pixelPositionMatrices(self);
+        function positionsY = get.pixelPositionMatrixY(this)
+            [ positionsY, ~ ] = pixelPositionMatrices(this);
         end
         
-        function positionsX = get.pixelPositionMatrixX(self)
-            [ ~, positionsX ] = pixelPositionMatrices(self);
+        function positionsX = get.pixelPositionMatrixX(this)
+            [ ~, positionsX ] = pixelPositionMatrices(this);
         end
         
     end

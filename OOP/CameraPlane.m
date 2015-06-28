@@ -16,33 +16,33 @@ classdef CameraPlane < handle
     
     methods
         
-        function self = CameraPlane(gridResolution, distanceBetweenTwoCameras, z)
-            self.z = z;
-            [ self.cameraPositionMatrixY, ...
-              self.cameraPositionMatrixX ] = computeCenteredGridPositions(gridResolution, distanceBetweenTwoCameras);
+        function this = CameraPlane(gridResolution, distanceBetweenTwoCameras, z)
+            this.z = z;
+            [ this.cameraPositionMatrixY, ...
+              this.cameraPositionMatrixX ] = computeCenteredGridPositions(gridResolution, distanceBetweenTwoCameras);
         end
         
-        function size = get.size(self)
-            resolution = self.resolution;
-            height = 2 * self.cameraPositionMatrixY(1, 1);
-            width = 2 * self.cameraPositionMatrixX(1, resolution(2));
+        function size = get.size(this)
+            resolution = this.resolution;
+            height = 2 * this.cameraPositionMatrixY(1, 1);
+            width = 2 * this.cameraPositionMatrixX(1, resolution(2));
             size = [height, width];
         end
         
-        function resolution = get.resolution(self)
-            resolution = size(self.cameraPositionMatrixY);
+        function resolution = get.resolution(this)
+            resolution = size(this.cameraPositionMatrixY);
         end
         
-        function distance = get.distanceBetweenTwoCameras(self)
+        function distance = get.distanceBetweenTwoCameras(this)
             distance = [0, 0];
             
-            if(self.resolution(1) > 1)
-                distance(1) = self.cameraPositionMatrixY(1, 1) - ...
-                              self.cameraPositionMatrixY(2, 1);
+            if(this.resolution(1) > 1)
+                distance(1) = this.cameraPositionMatrixY(1, 1) - ...
+                              this.cameraPositionMatrixY(2, 1);
             end
-            if(self.resolution(2) > 1)
-                distance(2) = self.cameraPositionMatrixX(1, 2) - ...
-                              self.cameraPositionMatrixX(1, 1);
+            if(this.resolution(2) > 1)
+                distance(2) = this.cameraPositionMatrixX(1, 2) - ...
+                              this.cameraPositionMatrixX(1, 1);
             end
         end
         

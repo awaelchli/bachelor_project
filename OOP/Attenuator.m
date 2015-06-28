@@ -35,39 +35,39 @@ classdef Attenuator < PixelPlane
     
     methods
         
-        function self = Attenuator(numberOfLayers, layerResolution, layerSize, distanceBetweenLayers, channels)
+        function this = Attenuator(numberOfLayers, layerResolution, layerSize, distanceBetweenLayers, channels)
             if(numberOfLayers < Attenuator.minimumNumberOfLayers)
                 error('Attenuator must have a minimum of %i layers.', Attenuator.minimumNumberOfLayers);
             end
-            self.planeSize = layerSize;
-            self.distanceBetweenLayers = distanceBetweenLayers;
-            self.attenuationValues = zeros([numberOfLayers, layerResolution, channels]);
+            this.planeSize = layerSize;
+            this.distanceBetweenLayers = distanceBetweenLayers;
+            this.attenuationValues = zeros([numberOfLayers, layerResolution, channels]);
         end
         
-        function numberOfLayers = get.numberOfLayers(self)
-            numberOfLayers = size(self.attenuationValues, Attenuator.layerDimension);
+        function numberOfLayers = get.numberOfLayers(this)
+            numberOfLayers = size(this.attenuationValues, Attenuator.layerDimension);
         end
         
-        function channels = get.channels(self)
-            channels = size(self.attenuationValues, Attenuator.channelDimension);
+        function channels = get.channels(this)
+            channels = size(this.attenuationValues, Attenuator.channelDimension);
         end
         
-        function planeResolution = get.planeResolution(self)
-            planeResolution = size(self.attenuationValues);
+        function planeResolution = get.planeResolution(this)
+            planeResolution = size(this.attenuationValues);
             planeResolution = planeResolution(Attenuator.spatialDimensions);
         end
         
-        function planeSize = get.planeSize(self)
-            planeSize = self.planeSize;
+        function planeSize = get.planeSize(this)
+            planeSize = this.planeSize;
         end
         
-        function thickness = get.thickness(self)
-            thickness = (self.numberOfLayers - 1) * self.distanceBetweenLayers;
+        function thickness = get.thickness(this)
+            thickness = (this.numberOfLayers - 1) * this.distanceBetweenLayers;
         end
         
-        function layerPositionZ = get.layerPositionZ(self)
-            d = self.distanceBetweenLayers;
-            layerPositionZ = -self.thickness / 2 : d : self.thickness / 2;
+        function layerPositionZ = get.layerPositionZ(this)
+            d = this.distanceBetweenLayers;
+            layerPositionZ = -this.thickness / 2 : d : this.thickness / 2;
         end
         
     end

@@ -23,75 +23,75 @@ classdef LightFieldEditor < handle
     
     methods
         
-        function self = LightFieldEditor()
+        function this = LightFieldEditor()
         end
         
-        function lightField = getLightField(self)
-            if(isempty(self.lightFieldData))
+        function lightField = getLightField(this)
+            if(isempty(this.lightFieldData))
                 error('No light field loaded yet!')
             end
-            cameraPlane = CameraPlane(self.angularResolution, self.distanceBetweenTwoCameras, self.cameraPlaneZ);
-            sensorPlane = SensorPlane(self.spatialResolution, self.sensorSize, self.sensorPlaneZ);
-            lightField = LightField(self.lightFieldData(self.sliceIndices{:}), cameraPlane, sensorPlane);
+            cameraPlane = CameraPlane(this.angularResolution, this.distanceBetweenTwoCameras, this.cameraPlaneZ);
+            sensorPlane = SensorPlane(this.spatialResolution, this.sensorSize, this.sensorPlaneZ);
+            lightField = LightField(this.lightFieldData(this.sliceIndices{:}), cameraPlane, sensorPlane);
         end
         
-        function loadData(self, pathToFolder, filetype, angularResolution, resizeScale)
-            self.lightFieldData = loadLightFieldFromFolder(pathToFolder, filetype, angularResolution, resizeScale);
-            fullResolution = size(self.lightFieldData);
-            self.sliceIndices{LightField.angularDimensions(1)} = 1 : fullResolution(1);
-            self.sliceIndices{LightField.angularDimensions(2)} = 1 : fullResolution(2);
-            self.sliceIndices{LightField.spatialDimensions(1)} = 1 : fullResolution(3);
-            self.sliceIndices{LightField.spatialDimensions(2)} = 1 : fullResolution(4);
-            self.sliceIndices{LightField.channelDimension} = 1 : fullResolution(5);
+        function loadData(this, pathToFolder, filetype, angularResolution, resizeScale)
+            this.lightFieldData = loadLightFieldFromFolder(pathToFolder, filetype, angularResolution, resizeScale);
+            fullResolution = size(this.lightFieldData);
+            this.sliceIndices{LightField.angularDimensions(1)} = 1 : fullResolution(1);
+            this.sliceIndices{LightField.angularDimensions(2)} = 1 : fullResolution(2);
+            this.sliceIndices{LightField.spatialDimensions(1)} = 1 : fullResolution(3);
+            this.sliceIndices{LightField.spatialDimensions(2)} = 1 : fullResolution(4);
+            this.sliceIndices{LightField.channelDimension} = 1 : fullResolution(5);
         end
         
-        function resolution = get.resolution(self)
-            resolution = cellfun(@numel, self.sliceIndices);
+        function resolution = get.resolution(this)
+            resolution = cellfun(@numel, this.sliceIndices);
             resolution = resolution([LightField.angularDimensions, LightField.spatialDimensions]);
         end
         
-        function angularResolution = get.angularResolution(self)
-            angularResolution = self.resolution(LightField.angularDimensions);
+        function angularResolution = get.angularResolution(this)
+            angularResolution = this.resolution(LightField.angularDimensions);
         end
         
-        function spatialResolution = get.spatialResolution(self)
-            spatialResolution = self.resolution(LightField.spatialDimensions);
+        function spatialResolution = get.spatialResolution(this)
+            spatialResolution = this.resolution(LightField.spatialDimensions);
         end
         
-        function channels = get.channels(self)
-            resolution = cellfun(@numel, self.sliceIndices);
+        function channels = get.channels(this)
+            resolution = cellfun(@numel, this.sliceIndices);
             channels = resolution(LightField.channelDimension);
         end
         
-        function angularSliceY(self, indices)
-            self.slice(indices, LightField.angularDimensions(1));
+        function angularSliceY(this, indices)
+            this.slice(indices, LightField.angularDimensions(1));
         end
         
-        function angularSliceX(self, indices)
-            self.slice(indices, LightField.angularDimensions(2));
+        function angularSliceX(this, indices)
+            this.slice(indices, LightField.angularDimensions(2));
         end
         
-        function spatialSliceY(self, indices)
-            self.slice(indices, LightField.spatialDimensions(1));
+        function spatialSliceY(this, indices)
+            this.slice(indices, LightField.spatialDimensions(1));
         end
         
-        function spatialSliceX(self, indices)
-            self.slice(indices, LightField.spatialDimensions(2));
+        function spatialSliceX(this, indices)
+            this.slice(indices, LightField.spatialDimensions(2));
         end
         
-        function channelSlice(self, indices)
-            self.slice(indices, LightField.channelDimension);
+        function channelSlice(this, indices)
+            this.slice(indices, LightField.channelDimension);
         end
         
     end
     
     methods (Access = private)
         
-        function slice(self, indices, dimensionIndex)
-            if(~LightFieldEditor.isValidSlice(indices, dimensionIndex, self.resolution))
+        function slice(this, indices, dimensionIndex)
+            if(~LightFieldEditor.isValidSlice(indices, dimensionIndex, this.resolution))
                 error('Invalid slice for current light field.');
             end
-            self.sliceIndices{dimensionIndex} = unique(indices);
+            this.sliceIndices{dimensionIndex} = unique(indices);
         end
     
     end

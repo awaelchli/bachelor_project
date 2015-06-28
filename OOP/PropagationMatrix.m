@@ -19,43 +19,43 @@ classdef PropagationMatrix < handle
     
     methods
         
-        function self = PropagationMatrix(lightField, attenuator)
-            self.lightFieldSubscriptRange = lightField.resolution;
-            self.attenuatorSubscriptRange = [attenuator.planeResolution, attenuator.numberOfLayers];
-            self.Is = cell([lightField.angularResolution, attenuator.numberOfLayers]);
-            self.Js = cell(size(self.Is));
-            self.Ss = cell(size(self.Is));
+        function this = PropagationMatrix(lightField, attenuator)
+            this.lightFieldSubscriptRange = lightField.resolution;
+            this.attenuatorSubscriptRange = [attenuator.planeResolution, attenuator.numberOfLayers];
+            this.Is = cell([lightField.angularResolution, attenuator.numberOfLayers]);
+            this.Js = cell(size(this.Is));
+            this.Ss = cell(size(this.Is));
         end
         
-        function size = get.size(self)
-            size = [prod(self.lightFieldSubscriptRange), prod(self.attenuatorSubscriptRange)];
+        function size = get.size(this)
+            size = [prod(this.lightFieldSubscriptRange), prod(this.attenuatorSubscriptRange)];
         end
         
-        function P = formSparseMatrix(self)
-            P = sparse([self.Is{:}], [self.Js{:}], [self.Ss{:}], self.size(1), self.size(2));
+        function P = formSparseMatrix(this)
+            P = sparse([this.Is{:}], [this.Js{:}], [this.Ss{:}], this.size(1), this.size(2));
         end
         
-        function submitEntries(self, cameraIndexY, cameraIndexX, ...
+        function submitEntries(this, cameraIndexY, cameraIndexX, ...
                                      pixelIndexOnSensorY, pixelIndexOnSensorX, ...
                                      layerIndex, ...
                                      pixelIndexOnLayerY, pixelIndexOnLayerX, ...
                                      weightMatrix)
             
-            rows = self.computeRowIndices(cameraIndexY, cameraIndexX, ...
+            rows = this.computeRowIndices(cameraIndexY, cameraIndexX, ...
                                           pixelIndexOnSensorY, pixelIndexOnSensorX);
-            columns = self.computeColumnIndices(pixelIndexOnLayerY, pixelIndexOnLayerX, ...
+            columns = this.computeColumnIndices(pixelIndexOnLayerY, pixelIndexOnLayerX, ...
                                                 layerIndex);
             
-            self.Is{cameraIndexY, cameraIndexX, layerIndex} = rows';
-            self.Js{cameraIndexY, cameraIndexX, layerIndex} = columns';
-            self.Ss{cameraIndexY, cameraIndexX, layerIndex} = permute(weightMatrix(:), [2, 1]);
+            this.Is{cameraIndexY, cameraIndexX, layerIndex} = rows';
+            this.Js{cameraIndexY, cameraIndexX, layerIndex} = columns';
+            this.Ss{cameraIndexY, cameraIndexX, layerIndex} = permute(weightMatrix(:), [2, 1]);
         end
         
     end
     
     methods (Access = private)
         
-        function rows = computeRowIndices(self, camIndexY, ...
+        function rows = computeRowIndices(this, camIndexY, ...
                                                 camIndexX, ...
                                                 cameraPixelIndicesY, ...
                                                 cameraPixelIndicesX)
@@ -66,13 +66,13 @@ classdef PropagationMatrix < handle
             imageIndicesY = camIndexY + zeros(size(cameraPixelIndicesY));
             imageIndicesX = camIndexX + zeros(size(cameraPixelIndicesX));
 
-            rows = sub2ind(self.lightFieldSubscriptRange, imageIndicesY(:), ...
+            rows = sub2ind(this.lightFieldSubscriptRange, imageIndicesY(:), ...
                                                           imageIndicesX(:), ...
                                                           cameraPixelIndicesY(:), ...
                                                           cameraPixelIndicesX(:));
         end
         
-        function columns = computeColumnIndices(self, layerPixelIndicesY, ...
+        function columns = computeColumnIndices(this, layerPixelIndicesY, ...
                                                       layerPixelIndicesX, ...
                                                       layer)
                                             
@@ -81,7 +81,7 @@ classdef PropagationMatrix < handle
 
             layerIndices = layer + zeros(size(layerPixelIndicesY));
 
-            columns = sub2ind(self.attenuatorSubscriptRange, layerPixelIndicesY(:), ...
+            columns = sub2ind(this.attenuatorSubscriptRange, layerPixelIndicesY(:), ...
                                                              layerPixelIndicesX(:), ...
                                                              layerIndices(:));
         end
