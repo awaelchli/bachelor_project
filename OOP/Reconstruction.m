@@ -11,6 +11,7 @@ classdef Reconstruction < handle
     
     properties
         iterations = 20;
+        weightFunctionHandle = @(data) ones(size(data, 1), 1);
     end
     
     methods
@@ -28,9 +29,8 @@ classdef Reconstruction < handle
         
         function computeLayers(this)
             
-            weightFunctionHandle = @(data) ones(size(data, 1), 1);
+            this.constructPropagationMatrix();
             
-            this.constructPropagationMatrix(weightFunctionHandle);
             P = this.propagationMatrix.formSparseMatrix();
             
             lightFieldVector = reshape(this.resampledLightField.lightFieldData, [], this.resampledLightField.channels);
@@ -63,7 +63,7 @@ classdef Reconstruction < handle
     
     methods (Access = private)
         
-        function constructPropagationMatrix(this, weightFunctionHandle)
+        function constructPropagationMatrix(this)
             
             layerResolution = this.attenuator.planeResolution;
             angularResolution = this.lightField.angularResolution;
@@ -109,13 +109,9 @@ classdef Reconstruction < handle
 
                     pixelIndexOnSensorMatrixY = pixelIndexOnFirstLayerMatrixY;
                     pixelIndexOnSensorMatrixX = pixelIndexOnFirstLayerMatrixX;
-
-                    pixelIndexOnSensorMatrixY(invalidRayIndicesForSensorY, :) = 0;
-                    pixelIndexOnSensorMatrixX(:, invalidRayIndicesForSensorX) = 0;
                     
-                    % TODO: use invalidRayIndicesForSensor directly!
-                    pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(pixelIndexOnSensorMatrixY(:, 1) ~= 0, 1); % column vector
-                    pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, pixelIndexOnSensorMatrixX(1, :) ~= 0); % row vector
+                    pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(~invalidRayIndicesForSensorY, 1); % column vector
+                    pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, ~invalidRayIndicesForSensorX); % row vector
 
                     % Interpolating the current view of the light field
                     view = squeeze(this.lightField.lightFieldData(camIndexY, camIndexX, :, :, :));
@@ -127,14 +123,13 @@ classdef Reconstruction < handle
                     grid = cell(1, nnz(~indicesOfScalars));
                     [ grid{:} ] = ndgrid(gridVectors{~indicesOfScalars});
 
-                    % TODO: write the method "replaceView"
                     this.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}));
                     
                     this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
                                          pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
                                          1, ...
                                          pixelIndexOnFirstLayerMatrixY(:, 1), pixelIndexOnFirstLayerMatrixX(1, :), ...
-                                         ones(layerResolution)); % TODO: check if layerResolution correct
+                                         ones(layerResolution));
 
                     for layer = 2 : this.attenuator.numberOfLayers
 
@@ -165,7 +160,7 @@ classdef Reconstruction < handle
                                                                                pixelIndexOnLayerMatrixX, ...
                                                                                layerIntersectionMatrixY, ...
                                                                                layerIntersectionMatrixX, ...
-                                                                               weightFunctionHandle );
+                                                                               this.weightFunctionHandle );
 
                         pixelIndexOnLayerMatrixY(invalidRayIndicesForSensorY, :) = 0;
                         pixelIndexOnLayerMatrixX(:, invalidRayIndicesForSensorX) = 0;
