@@ -110,9 +110,6 @@ classdef Reconstruction < handle
                     pixelIndexOnSensorMatrixY = pixelIndexOnFirstLayerMatrixY;
                     pixelIndexOnSensorMatrixX = pixelIndexOnFirstLayerMatrixX;
                     
-%                     pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(~invalidRayIndicesForSensorY, 1); % column vector
-%                     pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, ~invalidRayIndicesForSensorX); % row vector
-                    
                     pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(~invalidRayIndicesForSensorY, ~invalidRayIndicesForSensorX); % column vector
                     pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(~invalidRayIndicesForSensorY, ~invalidRayIndicesForSensorX); % row vector
 
