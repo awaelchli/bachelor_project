@@ -110,8 +110,11 @@ classdef Reconstruction < handle
                     pixelIndexOnSensorMatrixY = pixelIndexOnFirstLayerMatrixY;
                     pixelIndexOnSensorMatrixX = pixelIndexOnFirstLayerMatrixX;
                     
-                    pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(~invalidRayIndicesForSensorY, 1); % column vector
-                    pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, ~invalidRayIndicesForSensorX); % row vector
+%                     pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(~invalidRayIndicesForSensorY, 1); % column vector
+%                     pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, ~invalidRayIndicesForSensorX); % row vector
+                    
+                    pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(~invalidRayIndicesForSensorY, ~invalidRayIndicesForSensorX); % column vector
+                    pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(~invalidRayIndicesForSensorY, ~invalidRayIndicesForSensorX); % row vector
 
                     % Interpolating the current view of the light field
                     view = squeeze(this.lightField.lightFieldData(camIndexY, camIndexX, :, :, :));
@@ -126,10 +129,10 @@ classdef Reconstruction < handle
                     this.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}));
                     
                     this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
-                                         pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
-                                         1, ...
-                                         pixelIndexOnFirstLayerMatrixY(:, 1), pixelIndexOnFirstLayerMatrixX(1, :), ...
-                                         ones(layerResolution));
+                                                         pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
+                                                         1, ...
+                                                         pixelIndexOnFirstLayerMatrixY, pixelIndexOnFirstLayerMatrixX, ...
+                                                         ones(layerResolution));
 
                     for layer = 2 : this.attenuator.numberOfLayers
 
@@ -167,21 +170,19 @@ classdef Reconstruction < handle
                         validRayIndicesY = ~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY);
                         validRayIndicesX = ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX);
                         
-                        layerPixelIndicesY = pixelIndexOnLayerMatrixY(validRayIndicesY, 1); % column vector
-                        layerPixelIndicesX = pixelIndexOnLayerMatrixX(1, validRayIndicesX); % row vector
+                        layerPixelIndicesY = pixelIndexOnLayerMatrixY(validRayIndicesY, validRayIndicesX); % column vector
+                        layerPixelIndicesX = pixelIndexOnLayerMatrixX(validRayIndicesY, validRayIndicesX); % row vector
 
-                        pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(validRayIndicesY, 1); % column vector
-                        pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, validRayIndicesX); % row vector
+                        pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(validRayIndicesY, validRayIndicesX); % column vector
+                        pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(validRayIndicesY, validRayIndicesX); % row vector
 
-                        weights = weightsForLayerMatrix;
-                        weights = weights(validRayIndicesY, :);
-                        weights = weights(: , validRayIndicesX);
+                        weightsForLayerMatrix = weightsForLayerMatrix(validRayIndicesY, validRayIndicesX);
                     
                         this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
                                                              pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
                                                              layer, ...
                                                              layerPixelIndicesY, layerPixelIndicesX, ...
-                                                             weights);
+                                                             weightsForLayerMatrix);
                     end
                     
                     fprintf('(%i, %i) ', camIndexY, camIndexX);

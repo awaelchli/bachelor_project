@@ -60,8 +60,8 @@ classdef PropagationMatrix < handle
                                                 cameraPixelIndicesY, ...
                                                 cameraPixelIndicesX)
 
-            cameraPixelIndicesY = repmat(cameraPixelIndicesY, 1, numel(cameraPixelIndicesX)); 
-            cameraPixelIndicesX = repmat(cameraPixelIndicesX, size(cameraPixelIndicesY, 1), 1); 
+%             cameraPixelIndicesY = repmat(cameraPixelIndicesY, 1, numel(cameraPixelIndicesX)); 
+%             cameraPixelIndicesX = repmat(cameraPixelIndicesX, size(cameraPixelIndicesY, 1), 1); 
 
             imageIndicesY = camIndexY + zeros(size(cameraPixelIndicesY));
             imageIndicesX = camIndexX + zeros(size(cameraPixelIndicesX));
@@ -76,8 +76,8 @@ classdef PropagationMatrix < handle
                                                       layerPixelIndicesX, ...
                                                       layer)
                                             
-            layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
-            layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
+%             layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
+%             layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
 
             layerIndices = layer + zeros(size(layerPixelIndicesY));
 
