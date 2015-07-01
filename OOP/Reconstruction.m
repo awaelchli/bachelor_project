@@ -160,31 +160,28 @@ classdef Reconstruction < handle
                                                                                layerIntersectionMatrixY, ...
                                                                                layerIntersectionMatrixX, ...
                                                                                this.weightFunctionHandle );
-
-                        pixelIndexOnLayerMatrixY(invalidRayIndicesForSensorY, :) = 0;
-                        pixelIndexOnLayerMatrixX(:, invalidRayIndicesForSensorX) = 0;
-
-                        layerPixelIndicesY = pixelIndexOnLayerMatrixY(pixelIndexOnLayerMatrixY(:, 1) ~= 0, 1); % column vector
-                        layerPixelIndicesX = pixelIndexOnLayerMatrixX(1, pixelIndexOnLayerMatrixX(1, :) ~= 0); % row vector
-
+                                                                           
                         invalidRayIndicesForLayerY = pixelIndexOnLayerMatrixY(:, 1) == 0;
                         invalidRayIndicesForLayerX = pixelIndexOnLayerMatrixX(1, :) == 0;
+                        
+                        validRayIndicesY = ~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY);
+                        validRayIndicesX = ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX);
+                        
+                        layerPixelIndicesY = pixelIndexOnLayerMatrixY(validRayIndicesY, 1); % column vector
+                        layerPixelIndicesX = pixelIndexOnLayerMatrixX(1, validRayIndicesX); % row vector
 
-                        pixelIndexOnSensorMatrixY(invalidRayIndicesForLayerY, :) = 0;
-                        pixelIndexOnSensorMatrixX(:, invalidRayIndicesForLayerX) = 0;
-
-                        pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(pixelIndexOnSensorMatrixY(:, 1) ~= 0, 1); % column vector
-                        pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, pixelIndexOnSensorMatrixX(1, :) ~= 0); % row vector
+                        pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(validRayIndicesY, 1); % column vector
+                        pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(1, validRayIndicesX); % row vector
 
                         weights = weightsForLayerMatrix;
-                        weights = weights(~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY), :);
-                        weights = weights(: , ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX));
+                        weights = weights(validRayIndicesY, :);
+                        weights = weights(: , validRayIndicesX);
                     
                         this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
-                                             pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
-                                             layer, ...
-                                             layerPixelIndicesY, layerPixelIndicesX, ...
-                                             weights);
+                                                             pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
+                                                             layer, ...
+                                                             layerPixelIndicesY, layerPixelIndicesX, ...
+                                                             weights);
                     end
                     
                     fprintf('(%i, %i) ', camIndexY, camIndexX);
