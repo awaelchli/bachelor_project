@@ -5,14 +5,15 @@
 %% Load the light field from a folder of images
 
 % path = 'lightFields/messerschmitt/7x7x384x512/';
-path = '../lightFields/dice/';
+% path = '../lightFields/dice/';
+path = '../lightFields/siaMask2/';
 % path = 'lightFields/dice/7x7x384x512_fov20/';
 % path = 'lightFields/dragon/';
 % path = 'lightFields/butterfly/7x7x384x512/';
 
-[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [7, 7] );
+[ lightField, channels ] = loadLightFieldFromFolder( path, 'png', [9, 9], 1);
 
 lightFieldResolution = size(lightField);
 lightFieldResolution = lightFieldResolution(1 : 4);
 
-fov = deg2rad([10, 10]);
+fov = deg2rad([60, 60]);

@@ -1,11 +1,11 @@
 % clear;
 %% Parameters
-NumberOfLayers = 3;
+NumberOfLayers = 5;
 distanceBetweenLayers = 1;
 % Width and height of the layers in mm
-layerWidth = 100;
+layerWidth = 50;
 layerHeight = layerWidth * lightFieldResolution(3) / lightFieldResolution(4);
-originLF = [0, 0, 0];
+originLF = [0, 0, -10];
 
 % Maximum number of iterations in optimization process
 maxIterations = 20;
@@ -109,8 +109,9 @@ lightFieldRec = reshape(lightFieldRecVector, [lightFieldResolution 3]);
 
 lightFieldRec = exp(lightFieldRec);
 
-center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
-custom = [5, 5];
+% center = floor([median(1:lightFieldResolution(2)), median(1:lightFieldResolution(1))]);
+center = round(lightFieldResolution(1:2)/2);
+custom = lightFieldResolution(1:2);
 centerRec = squeeze(lightFieldRec(center(1), center(2), :, :, :));
 centerLF = squeeze(lightField(center(1), center(2), :, :, :));
 otherLF = squeeze(lightField(custom(1), custom(2), :, :, :));
