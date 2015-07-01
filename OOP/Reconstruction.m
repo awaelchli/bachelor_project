@@ -11,7 +11,7 @@ classdef Reconstruction < handle
     
     properties
         iterations = 20;
-        weightFunctionHandle = @(data) ones(size(data, 1), 1);
+        weightFunctionHandle;
     end
     
     methods
@@ -25,6 +25,8 @@ classdef Reconstruction < handle
             
             this.resampledLightField = LightField(resampledLFData, lightField.cameraPlane, lightField.sensorPlane);
             this.propagationMatrix = PropagationMatrix(this.resampledLightField, attenuator);
+            
+            this.weightFunctionHandle = @(data) ones(size(data, 1), 1);
         end
         
         function computeLayers(this)
@@ -145,11 +147,10 @@ classdef Reconstruction < handle
                         pixelIndexOnLayerMatrixY = round(layerIntersectionMatrixY);
                         pixelIndexOnLayerMatrixX = round(layerIntersectionMatrixX);
                     
-                        weightsForLayerMatrix = computeRayIntersectionWeights( pixelIndexOnLayerMatrixY, ...
-                                                                               pixelIndexOnLayerMatrixX, ...
-                                                                               layerIntersectionMatrixY, ...
-                                                                               layerIntersectionMatrixX, ...
-                                                                               this.weightFunctionHandle );
+                        weightsForLayerMatrix = this.computeRayIntersectionWeights(pixelIndexOnLayerMatrixY, ...
+                                                                                   pixelIndexOnLayerMatrixX, ...
+                                                                                   layerIntersectionMatrixY, ...
+                                                                                   layerIntersectionMatrixX);
                                                                            
                         invalidRayIndicesForLayerY = pixelIndexOnLayerMatrixY(:, 1) == 0;
                         invalidRayIndicesForLayerX = pixelIndexOnLayerMatrixX(1, :) == 0;
@@ -196,6 +197,24 @@ classdef Reconstruction < handle
             X = X + centerOfProjection(1);
             Y = Y + centerOfProjection(2);
             
+        end
+        
+        function [ weightMatrix ] = computeRayIntersectionWeights(this, ...
+                                                                  pixelIndexMatrixY, ...
+                                                                  pixelIndexMatrixX, ...
+                                                                  intersectionMatrixY, ...
+                                                                  intersectionMatrixX)
+
+            % Weights are computed based on the deviation from the exact pixel location
+            deviationY = intersectionMatrixY - pixelIndexMatrixY;
+            deviationX = intersectionMatrixX - pixelIndexMatrixX;
+
+            queryData = cat(3, deviationY, deviationX);
+            queryData = reshape(queryData, [], 2);
+
+            weightVector = this.weightFunctionHandle(queryData);
+            weightMatrix = reshape(weightVector, size(pixelIndexMatrixY));
+
         end
         
     end
