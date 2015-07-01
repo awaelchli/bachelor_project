@@ -31,9 +31,13 @@ classdef Reconstruction < handle
         
         function computeLayers(this)
             
-            this.constructPropagationMatrix();
+            tic;
+            fprintf('\nComputing matrix P...\n');
             
+            this.constructPropagationMatrix();
             P = this.propagationMatrix.formSparseMatrix();
+            
+            fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
             
             lightFieldVector = reshape(this.resampledLightField.lightFieldData, [], this.resampledLightField.channels);
 
@@ -51,8 +55,10 @@ classdef Reconstruction < handle
             x0 = zeros(size(ub));
             
             attenuationValuesLogDomain = sart(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
-            attenuationValues = exp(attenuationValuesLogDomain);
             
+            fprintf('Optimization took %i seconds.\n', floor(toc));
+            
+            attenuationValues = exp(attenuationValuesLogDomain);
             
             attenuationValues = permute(attenuationValues, [2, 1]);
             attenuationValues = reshape(attenuationValues, [this.attenuator.channels, this.attenuator.planeResolution, this.attenuator.numberOfLayers]);
