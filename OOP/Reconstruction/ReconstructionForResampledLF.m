@@ -1,4 +1,4 @@
-classdef Reconstruction < AbstractReconstruction
+classdef ReconstructionForResampledLF < AbstractReconstruction
     %RECONSTRUCTION Summary of this class goes here
     %   Detailed explanation goes here
     
@@ -12,7 +12,7 @@ classdef Reconstruction < AbstractReconstruction
     
     methods
         
-        function this = Reconstruction(lightField, attenuator)
+        function this = ReconstructionForResampledLF(lightField, attenuator)
             
             this = this@AbstractReconstruction(lightField, attenuator);
             
