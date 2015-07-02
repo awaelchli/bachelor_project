@@ -38,6 +38,10 @@ classdef LightFieldEditor < handle
         function loadData(this, pathToFolder, filetype, angularResolution, resizeScale)
             this.lightFieldData = loadLightFieldFromFolder(pathToFolder, filetype, angularResolution, resizeScale);
             fullResolution = size(this.lightFieldData);
+            if(numel(fullResolution) == 4)
+                % Greyscale
+                fullResolution(5) = 1;
+            end
             this.sliceIndices{LightField.angularDimensions(1)} = 1 : fullResolution(1);
             this.sliceIndices{LightField.angularDimensions(2)} = 1 : fullResolution(2);
             this.sliceIndices{LightField.spatialDimensions(1)} = 1 : fullResolution(3);
