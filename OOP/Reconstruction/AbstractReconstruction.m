@@ -46,6 +46,37 @@ classdef AbstractReconstruction < handle
             
         end
         
+        function displayReconstructedViews(this, cameraIndices)
+            
+            NumberOfViews = size(cameraIndices, 1);
+            for i = 1 : NumberOfViews
+                this.displaySingleReconstructedView(cameraIndices(i, :));
+            end
+            
+        end
+        
+        function displaySingleReconstructedView(this, cameraIndex)
+            
+            % TODO: Make replicationSizes accessible from outside
+            replicationSizes = [1, 1, 1, 1, 1];
+            
+            if(any(cameraIndex > this.reconstructedLightField.angularResolution) || ...
+               any(cameraIndex < [1, 1]) || ...
+               any(mod(cameraIndex, 1)))
+   
+                error('Invalid camera indices: (%i, %i)\n', cameraIndex);
+            end
+    
+            reconstructedView = this.reconstructedLightField.lightFieldData(cameraIndex(1), cameraIndex(2), :, :, :);
+            reconstructedView = repmat(reconstructedView, replicationSizes);
+            reconstructedView = squeeze(reconstructedView);
+            
+            displayTitle = sprintf('Reconstruction of view (%i, %i)', cameraIndex);
+            figure('Name', 'Light field reconstruction from layers')
+            imshow(reconstructedView)
+            title(displayTitle);
+        end
+        
     end
     
     methods (Abstract, Access = protected)
