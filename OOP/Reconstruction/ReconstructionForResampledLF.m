@@ -18,8 +18,10 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
             
             resampledLFResolution = [lightField.angularResolution, attenuator.planeResolution];
             resampledLFData = zeros([resampledLFResolution, lightField.channels]);
+            newSensorPlane = SensorPlane(attenuator.planeResolution, lightField.sensorPlane.planeSize, lightField.sensorPlane.z);
             
-            this.resampledLightField = LightField(resampledLFData, lightField.cameraPlane, lightField.sensorPlane);
+            this.resampledLightField = LightField(resampledLFData, lightField.cameraPlane, newSensorPlane);
+            this.reconstructedLightField = LightField(resampledLFData, this.lightField.cameraPlane, newSensorPlane);
             this.propagationMatrix = PropagationMatrix(this.resampledLightField, attenuator);
         end
         

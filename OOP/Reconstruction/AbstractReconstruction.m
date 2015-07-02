@@ -2,6 +2,7 @@ classdef AbstractReconstruction < handle
     
     properties (SetAccess = protected)
         lightField;
+        reconstructedLightField;
         attenuator;
         propagationMatrix;
     end
@@ -15,7 +16,6 @@ classdef AbstractReconstruction < handle
         function this = AbstractReconstruction(lightField, attenuator)
             this.lightField = lightField;
             this.attenuator = attenuator;
-            this.propagationMatrix = PropagationMatrix(lightField, attenuator);
             this.weightFunctionHandle = @(data) ones(size(data, 1), 1);
         end
         
@@ -30,6 +30,19 @@ classdef AbstractReconstruction < handle
             fprintf('Running optimization ...\n');
             this.runOptimization();
             fprintf('Optimization took %i seconds.\n', floor(toc));
+            
+        end
+        
+        function reconstructLightField(this)
+            
+            attenuationValues = permute(this.attenuator.attenuationValues, [2, 3, 1, 4]);
+            attenuationValues = reshape(attenuationValues, this.propagationMatrix.size(2), []);
+            reconstructionVector = this.propagationMatrix.formSparseMatrix * log(attenuationValues);
+
+            % convert the light field vector to the 4D light field
+            reconstructionData = reshape(reconstructionVector, [this.reconstructedLightField.resolution, this.reconstructedLightField.channels]);
+            reconstructionData = exp(reconstructionData);
+            this.reconstructedLightField = LightField(reconstructionData, this.reconstructedLightField.cameraPlane, this.reconstructedLightField.sensorPlane);
             
         end
         
