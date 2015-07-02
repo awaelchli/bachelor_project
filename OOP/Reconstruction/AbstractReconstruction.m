@@ -11,6 +11,18 @@ classdef AbstractReconstruction < handle
         weightFunctionHandle;
     end
     
+    methods (Abstract, Access = protected)
+        
+        constructPropagationMatrix(this)
+        
+        runOptimization(this)
+        
+        [X, Y] = projection(this, centerOfProjection, targetPlaneZ, X, Y, Z)
+        
+        weightMatrix = computeRayIntersectionWeights(this, pixelIndexMatrixY, pixelIndexMatrixX, intersectionMatrixY, intersectionMatrixX)
+        
+    end
+    
     methods
         
         function this = AbstractReconstruction(lightField, attenuator)
@@ -60,11 +72,9 @@ classdef AbstractReconstruction < handle
             % TODO: Make replicationSizes accessible from outside
             replicationSizes = [1, 1, 1, 1, 1];
             
-            if(any(cameraIndex > this.reconstructedLightField.angularResolution) || ...
-               any(cameraIndex < [1, 1]) || ...
-               any(mod(cameraIndex, 1)))
-   
-                error('Invalid camera indices: (%i, %i)\n', cameraIndex);
+            if(~this.reconstructedLightField.cameraPlane.isValidCameraIndex(cameraIndex))
+                AbstractReconstruction.warningForInvalidCameraIndex(cameraIndex);
+                return;
             end
     
             reconstructedView = this.reconstructedLightField.lightFieldData(cameraIndex(1), cameraIndex(2), :, :, :);
@@ -77,21 +87,20 @@ classdef AbstractReconstruction < handle
             title(displayTitle);
         end
         
+        function storeReconstructedViews(this, cameraIndices)
+            
+        end
+        
+        function storeSingleReconstructedView(this, cameraIndex)
+        end
+        
     end
     
-    methods (Abstract, Access = protected)
+    methods (Static, Access = private)
         
-        constructPropagationMatrix(this)
-        
-        runOptimization(this)
-        
-        [X, Y] = projection(this, centerOfProjection, targetPlaneZ, X, Y, Z)
-        
-        weightMatrix = computeRayIntersectionWeights(this, ...
-                                                     pixelIndexMatrixY, ...
-                                                     pixelIndexMatrixX, ...
-                                                     intersectionMatrixY, ...
-                                                     intersectionMatrixX)
+        function warningForInvalidCameraIndex(cameraIndex)
+            warning('Invalid camera indices: (%i, %i)\n', cameraIndex);
+        end
         
     end
 
