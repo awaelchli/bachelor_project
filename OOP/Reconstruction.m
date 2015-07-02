@@ -1,43 +1,35 @@
-classdef Reconstruction < handle
+classdef Reconstruction < AbstractReconstruction
     %RECONSTRUCTION Summary of this class goes here
     %   Detailed explanation goes here
     
     properties (SetAccess = private)
-        lightField;
-        attenuator;
         resampledLightField;
-        propagationMatrix;
     end
     
     properties
         iterations = 20;
-        weightFunctionHandle;
     end
     
     methods
         
         function this = Reconstruction(lightField, attenuator)
-            this.lightField = lightField;
-            this.attenuator = attenuator;
+            
+            this = this@AbstractReconstruction(lightField, attenuator);
             
             resampledLFResolution = [lightField.angularResolution, attenuator.planeResolution];
             resampledLFData = zeros([resampledLFResolution, lightField.channels]);
             
             this.resampledLightField = LightField(resampledLFData, lightField.cameraPlane, lightField.sensorPlane);
             this.propagationMatrix = PropagationMatrix(this.resampledLightField, attenuator);
-            
-            this.weightFunctionHandle = @(data) ones(size(data, 1), 1);
         end
         
-        function computeLayers(this)
+    end
+    
+    methods (Access = protected)
+        
+        function runOptimization(this)
             
-            tic;
-            fprintf('\nComputing matrix P...\n');
-            
-            this.constructPropagationMatrix();
             P = this.propagationMatrix.formSparseMatrix();
-            
-            fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
             
             lightFieldVector = reshape(this.resampledLightField.lightFieldData, [], this.resampledLightField.channels);
 
@@ -45,18 +37,13 @@ classdef Reconstruction < handle
             lightFieldVector(lightFieldVector < 0.01) = 0.01;
             lightFieldVectorLogDomain = log(lightFieldVector);
 
-            % Solve using SART
-            tic;
-            fprintf('Running optimization ...\n');
-
             % Optimization constraints
             ub = zeros(this.propagationMatrix.size(2), this.resampledLightField.channels); 
             lb = zeros(size(ub)) + log(0.01);
             x0 = zeros(size(ub));
             
+            % Solve using SART
             attenuationValuesLogDomain = sart(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
-            
-            fprintf('Optimization took %i seconds.\n', floor(toc));
             
             attenuationValues = exp(attenuationValuesLogDomain);
             
@@ -66,10 +53,6 @@ classdef Reconstruction < handle
 
             this.attenuator.attenuationValues = attenuationValues;
         end
-        
-    end
-    
-    methods (Access = private)
         
         function constructPropagationMatrix(this)
             
@@ -146,13 +129,13 @@ classdef Reconstruction < handle
                                                                       pixelPositionsOnFirstLayerMatrixY, ...
                                                                       pixelPositionsOnFirstLayerMatrixX, ...
                                                                       firstLayerZ);
-
+                        
                         [ layerIntersectionMatrixY, ...
                           layerIntersectionMatrixX ] = this.attenuator.positionToPixelCoordinates(positionsOnLayerMatrixY, positionsOnLayerMatrixX);
-                      
+                        
                         pixelIndexOnLayerMatrixY = round(layerIntersectionMatrixY);
                         pixelIndexOnLayerMatrixX = round(layerIntersectionMatrixX);
-                    
+                        
                         weightsForLayerMatrix = this.computeRayIntersectionWeights(pixelIndexOnLayerMatrixY, ...
                                                                                    pixelIndexOnLayerMatrixX, ...
                                                                                    layerIntersectionMatrixY, ...
@@ -166,12 +149,12 @@ classdef Reconstruction < handle
                         
                         layerPixelIndicesY = pixelIndexOnLayerMatrixY(validRayIndicesY, validRayIndicesX); % column vector
                         layerPixelIndicesX = pixelIndexOnLayerMatrixX(validRayIndicesY, validRayIndicesX); % row vector
-
+                        
                         pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(validRayIndicesY, validRayIndicesX); % column vector
                         pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(validRayIndicesY, validRayIndicesX); % row vector
-
+                        
                         weightsForLayerMatrix = weightsForLayerMatrix(validRayIndicesY, validRayIndicesX);
-                    
+                        
                         this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
                                                              pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
                                                              layer, ...
@@ -205,11 +188,11 @@ classdef Reconstruction < handle
             
         end
         
-        function [ weightMatrix ] = computeRayIntersectionWeights(this, ...
-                                                                  pixelIndexMatrixY, ...
-                                                                  pixelIndexMatrixX, ...
-                                                                  intersectionMatrixY, ...
-                                                                  intersectionMatrixX)
+        function weightMatrix = computeRayIntersectionWeights(this, ...
+                                                              pixelIndexMatrixY, ...
+                                                              pixelIndexMatrixX, ...
+                                                              intersectionMatrixY, ...
+                                                              intersectionMatrixX)
 
             % Weights are computed based on the deviation from the exact pixel location
             deviationY = intersectionMatrixY - pixelIndexMatrixY;
