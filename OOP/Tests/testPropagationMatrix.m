@@ -38,13 +38,14 @@ function testEntrySubmission(testCase)
 %     pixelIndexOnSensorX = [0, 3, 0;
 %                            0, 3, 0;
 %                            0, 3, 0];
+
     layerIndex = 1;
-%     pixelIndexOnLayerY = [1, 1, 1;
-%                           2, 2, 2;
-%                           3, 3, 3];
-%     pixelIndexOnLayerX = [1, 2, 3;
-%                           1, 2, 3;
-%                           1, 2, 3];
+    pixelIndexOnLayerY = [1, 1, 1;
+                          2, 2, 2;
+                          3, 3, 3];
+    pixelIndexOnLayerX = [1, 2, 3;
+                          1, 2, 3;
+                          1, 2, 3];
     weightMatrix = [1, 2, 3;
                     4, 5, 6;
                     7, 8, 9];
@@ -52,7 +53,7 @@ function testEntrySubmission(testCase)
     p.submitEntries(cameraIndexY, cameraIndexX, ...
                     1, 3, ...
                     layerIndex, ...
-                    [1; 2; 3], [1, 2, 3], ...
+                    pixelIndexOnLayerY, pixelIndexOnLayerX, ...
                     weightMatrix);
      
     P = p.formSparseMatrix;
