@@ -24,6 +24,9 @@ classdef ReconstructionEvaluation < handle
         function evaluateViews(this, cameraIndices)
             % TODO: check dimensions
             % TODO: ignore/remove invalid indices and print warning
+            
+            validIndices = arrayfun(@(i) this.lightField.cameraPlane.isValidCameraIndex(cameraIndices(i, :)), 1 : size(cameraIndices, 1));
+            
             this.reconstructionIndices = cameraIndices;
         end
         
