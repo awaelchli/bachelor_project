@@ -23,6 +23,7 @@ classdef ReconstructionEvaluation < handle
         
         function evaluateViews(this, cameraIndices)
             % TODO: check dimensions
+            % TODO: ignore/remove invalid indices and print warning
             this.reconstructionIndices = cameraIndices;
         end
         
@@ -52,7 +53,31 @@ classdef ReconstructionEvaluation < handle
             end
         end
         
-        function displayErrorImage(this)
+        function displayErrorImages(this)
+            RMSEoutput = '';
+            for i = 1 : this.numberOfReconstructions
+                currentCameraIndex = this.reconstructionIndices(i, :);
+                [~, rmse] = this.displaySingleErrorImage(currentCameraIndex);
+                RMSEoutput = this.appendRMSEOutput(RMSEoutput, currentCameraIndex, rmse);
+            end
+            % Print RMSE to console
+            fprintf(RMSEoutput);
+        end
+        
+        function storeErrorImages(this, outputFolder)
+            
+            if(~exist(outputFolder, 'dir'))
+                ReconstructionEvaluation.warningForInvalidFolderPath(outputFolder);
+                return;
+            end
+            RMSEoutput = '';
+            for i = 1 : this.numberOfReconstructions
+                currentCameraIndex = this.reconstructionIndices(i, :);
+                [~, rmse] = this.storeSingleErrorImage(currentCameraIndex, outputFolder);
+                RMSEoutput = this.appendRMSEOutput(RMSEoutput, currentCameraIndex, rmse);
+            end
+            
+            ReconstructionEvaluation.writeRMSEToTextFile(RMSEoutput, outputFolder);
         end
         
     end
@@ -86,10 +111,43 @@ classdef ReconstructionEvaluation < handle
             imwrite(reconstructedView, [outputFolder filename '.png']);
         end
         
+        function [errorImage, rmse] = displaySingleErrorImage(this, cameraIndex)
+            
+            if(~this.reconstructedLightField.cameraPlane.isValidCameraIndex(cameraIndex))
+                ReconstructionEvaluation.warningForInvalidCameraIndex(cameraIndex);
+                return;
+            end
+            
+            [errorImage, rmse] = this.getErrorForView(cameraIndex);
+
+            displayTitle = sprintf('MSE for view (%i, %i)', cameraIndex);
+            figure('Name', 'Mean-Square-Error for reconstructed view')
+            imshow(errorImage, [])
+            title(displayTitle);
+        end
+        
+        function [errorImage, rmse] = storeSingleErrorImage(this, cameraIndex, outputFolder)
+            [errorImage, rmse] = this.getErrorForView(cameraIndex);
+            filename = sprintf('MSE_for_view_(%i,%i)', cameraIndex);
+            imwrite(errorImage, [outputFolder filename '.png']);
+        end
+        
         function reconstructedView = getReplicatedReconstructedView(this, cameraIndex)
             reconstructedView = this.reconstructedLightField.lightFieldData(cameraIndex(1), cameraIndex(2), :, :, :);
             reconstructedView = repmat(reconstructedView, this.replicationSizes);
             reconstructedView = squeeze(reconstructedView);
+        end
+        
+        function viewFromOriginal = getReplicatedOriginalView(this, cameraIndex)
+            viewFromOriginal = this.lightField.lightFieldData(cameraIndex(1), cameraIndex(2), :, :, :);
+            viewFromOriginal = repmat(viewFromOriginal, this.replicationSizes);
+            viewFromOriginal = squeeze(viewFromOriginal);
+        end
+        
+        function [errorImage, rmse] = getErrorForView(this, cameraIndex)
+            viewFromOriginal = this.getReplicatedOriginalView(cameraIndex);
+            viewFromReconstruction = this.getReplicatedReconstructedView(cameraIndex);
+            [errorImage, rmse] = meanSquaredErrorImage(viewFromReconstruction, viewFromOriginal);
         end
         
     end
@@ -102,6 +160,16 @@ classdef ReconstructionEvaluation < handle
         
         function warningForInvalidFolderPath(path)
             warning('Invalid path: The folder "%s" does not exist. No files were written.', path);
+        end
+        
+        function writeRMSEToTextFile(text, outputFolder)
+            rmseFileID = fopen([outputFolder 'RMSE.txt'], 'wt');
+            fprintf(rmseFileID, text);
+            fclose(rmseFileID);
+        end
+        
+        function RMSEoutput = appendRMSEOutput(RMSEoutput, cameraIndex, rmse)
+            RMSEoutput = sprintf('%sRMSE for view (%i, %i): %f \n', RMSEoutput, cameraIndex(1), cameraIndex(2), rmse);
         end
         
     end
