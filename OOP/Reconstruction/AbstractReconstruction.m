@@ -67,31 +67,58 @@ classdef AbstractReconstruction < handle
             
         end
         
-        function displaySingleReconstructedView(this, cameraIndex)
+        function storeReconstructedViews(this, cameraIndices, outputFolder)
             
-            % TODO: Make replicationSizes accessible from outside
-            replicationSizes = [1, 1, 1, 1, 1];
+            if(~exist(outputFolder, 'dir'))
+                AbstractReconstruction.warningForInvalidFolderPath(outputFolder);
+                return;
+            end
+            
+            NumberOfViews = size(cameraIndices, 1);
+            for i = 1 : NumberOfViews
+                this.storeSingleReconstructedView(cameraIndices(i, :), outputFolder);
+            end
+            
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function displaySingleReconstructedView(this, cameraIndex)
             
             if(~this.reconstructedLightField.cameraPlane.isValidCameraIndex(cameraIndex))
                 AbstractReconstruction.warningForInvalidCameraIndex(cameraIndex);
                 return;
             end
     
-            reconstructedView = this.reconstructedLightField.lightFieldData(cameraIndex(1), cameraIndex(2), :, :, :);
-            reconstructedView = repmat(reconstructedView, replicationSizes);
-            reconstructedView = squeeze(reconstructedView);
+            reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
             
             displayTitle = sprintf('Reconstruction of view (%i, %i)', cameraIndex);
-            figure('Name', 'Light field reconstruction from layers')
+            figure('Name', 'Light field reconstruction from attenuation layers')
             imshow(reconstructedView)
             title(displayTitle);
         end
         
-        function storeReconstructedViews(this, cameraIndices)
+        function storeSingleReconstructedView(this, cameraIndex, outputFolder)
             
+            if(~this.reconstructedLightField.cameraPlane.isValidCameraIndex(cameraIndex))
+                AbstractReconstruction.warningForInvalidCameraIndex(cameraIndex);
+                return;
+            end
+            
+            filename = sprintf('Reconstruction_of_view_(%i,%i)', cameraIndex);
+            reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
+            imwrite(reconstructedView, [outputFolder filename '.png']);
         end
         
-        function storeSingleReconstructedView(this, cameraIndex)
+        function reconstructedView = getReplicatedReconstructedView(this, cameraIndex)
+            % TODO: Make replicationSizes accessible from outside
+            replicationSizes = [1, 1, 1, 1, 1];
+            
+            reconstructedView = this.reconstructedLightField.lightFieldData(cameraIndex(1), cameraIndex(2), :, :, :);
+            reconstructedView = repmat(reconstructedView, replicationSizes);
+            reconstructedView = squeeze(reconstructedView);
         end
         
     end
@@ -100,6 +127,10 @@ classdef AbstractReconstruction < handle
         
         function warningForInvalidCameraIndex(cameraIndex)
             warning('Invalid camera indices: (%i, %i)\n', cameraIndex);
+        end
+        
+        function warningForInvalidFolderPath(path)
+            warning('Invalid path: The folder "%s" does not exist. No files were written.', path);
         end
         
     end
