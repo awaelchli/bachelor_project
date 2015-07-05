@@ -23,11 +23,13 @@ classdef ReconstructionEvaluation < handle
         
         function evaluateViews(this, cameraIndices)
             % TODO: check dimensions
-            % TODO: ignore/remove invalid indices and print warning
             
             validIndices = arrayfun(@(i) this.lightField.cameraPlane.isValidCameraIndex(cameraIndices(i, :)), 1 : size(cameraIndices, 1));
+            this.reconstructionIndices = cameraIndices(validIndices, :);
             
-            this.reconstructionIndices = cameraIndices;
+            if(any(~validIndices))
+                ReconstructionEvaluation.warningForInvalidCameraIndices(cameraIndices(~validIndices, :));
+            end
         end
         
         function replicate(this, replicationSizes)
@@ -45,7 +47,6 @@ classdef ReconstructionEvaluation < handle
         end
         
         function storeReconstructedViews(this, outputFolder)
-            
             if(~exist(outputFolder, 'dir'))
                 ReconstructionEvaluation.warningForInvalidFolderPath(outputFolder);
                 return;
@@ -68,7 +69,6 @@ classdef ReconstructionEvaluation < handle
         end
         
         function storeErrorImages(this, outputFolder)
-            
             if(~exist(outputFolder, 'dir'))
                 ReconstructionEvaluation.warningForInvalidFolderPath(outputFolder);
                 return;
@@ -88,14 +88,7 @@ classdef ReconstructionEvaluation < handle
     methods (Access = private)
         
         function displaySingleReconstructedView(this, cameraIndex)
-            
-            if(~this.reconstructedLightField.cameraPlane.isValidCameraIndex(cameraIndex))
-                ReconstructionEvaluation.warningForInvalidCameraIndex(cameraIndex);
-                return;
-            end
-    
             reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
-            
             displayTitle = sprintf('Reconstruction of view (%i, %i)', cameraIndex);
             figure('Name', 'Light field reconstruction from attenuation layers')
             imshow(reconstructedView)
@@ -103,26 +96,13 @@ classdef ReconstructionEvaluation < handle
         end
         
         function storeSingleReconstructedView(this, cameraIndex, outputFolder)
-            
-            if(~this.reconstructedLightField.cameraPlane.isValidCameraIndex(cameraIndex))
-                ReconstructionEvaluation.warningForInvalidCameraIndex(cameraIndex);
-                return;
-            end
-            
             filename = sprintf('Reconstruction_of_view_(%i,%i)', cameraIndex);
             reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
             imwrite(reconstructedView, [outputFolder filename '.png']);
         end
         
         function [errorImage, rmse] = displaySingleErrorImage(this, cameraIndex)
-            
-            if(~this.reconstructedLightField.cameraPlane.isValidCameraIndex(cameraIndex))
-                ReconstructionEvaluation.warningForInvalidCameraIndex(cameraIndex);
-                return;
-            end
-            
             [errorImage, rmse] = this.getErrorForView(cameraIndex);
-
             displayTitle = sprintf('MSE for view (%i, %i)', cameraIndex);
             figure('Name', 'Mean-Square-Error for reconstructed view')
             imshow(errorImage, [])
@@ -156,6 +136,12 @@ classdef ReconstructionEvaluation < handle
     end
     
     methods (Static, Access = private)
+        
+        function warningForInvalidCameraIndices(cameraIndices)
+            for i = 1 : size(cameraIndices, 1)
+                ReconstructionEvaluation.warningForInvalidCameraIndex(cameraIndices(i, :));
+            end
+        end
         
         function warningForInvalidCameraIndex(cameraIndex)
             warning('Skipping invalid camera index: (%i, %i)\n', cameraIndex);
