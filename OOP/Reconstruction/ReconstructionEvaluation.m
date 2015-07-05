@@ -32,8 +32,20 @@ classdef ReconstructionEvaluation < handle
             end
         end
         
-        function replicate(this, replicationSizes)
-            % TODO: implement
+        function replicateAngularDimensionY(this, replication)
+            this.replicationSizes(LightField.angularDimensions(1)) = replication;
+        end
+        
+        function replicateAngularDimensionX(this, replication)
+            this.replicationSizes(LightField.angularDimensions(2)) = replication;
+        end
+        
+        function replicateSpatialDimensionY(this, replication)
+            this.replicationSizes(LightField.spatialDimensions(1)) = replication;
+        end
+        
+        function replicateSpatialDimensionX(this, replication)
+            this.replicationSizes(LightField.spatialDimensions(2)) = replication;
         end
         
         function numberOfReconstructions = get.numberOfReconstructions(this)
