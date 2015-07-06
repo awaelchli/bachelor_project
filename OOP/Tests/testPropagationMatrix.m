@@ -8,7 +8,7 @@ function testInitialization(testCase)
     
     c = CameraPlane([2, 3], [1, 2], 1);
     s = SensorPlane([3, 3], [1, 1], 0);
-    l = LightField(zeros(2, 3, 3, 3, 3), c, s);
+    l = LightFieldP(zeros(2, 3, 3, 3, 3), c, s);
     a = Attenuator(2, [3, 3], [1, 1], 1, 3);
     p = PropagationMatrix(l, a);
     
@@ -26,7 +26,7 @@ function testEntrySubmission(testCase)
 
     c = CameraPlane([2, 3], [1, 2], 1);
     s = SensorPlane([3, 3], [1, 1], 0);
-    l = LightField(zeros(2, 3, 3, 3, 3), c, s);
+    l = LightFieldP(zeros(2, 3, 3, 3, 3), c, s);
     a = Attenuator(2, [3, 3], [1, 1], 1, 3);
     p = PropagationMatrix(l, a);
     

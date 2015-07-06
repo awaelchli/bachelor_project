@@ -58,7 +58,7 @@ classdef AbstractReconstruction < handle
             % convert the light field vector to the 4D light field
             reconstructionData = reshape(reconstructionVector, [this.evaluation.reconstructedLightField.resolution, this.evaluation.reconstructedLightField.channels]);
             reconstructionData = exp(reconstructionData);
-            reconstructedLF = LightField(reconstructionData, this.reconstructedLightField.cameraPlane, this.reconstructedLightField.sensorPlane);
+            reconstructedLF = LightField(reconstructionData);
             this.evaluation = ReconstructionEvaluation(this.evaluation.lightField, reconstructedLF);
             
         end

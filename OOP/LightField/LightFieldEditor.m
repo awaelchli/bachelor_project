@@ -32,7 +32,7 @@ classdef LightFieldEditor < handle
             end
             cameraPlane = CameraPlane(this.angularResolution, this.distanceBetweenTwoCameras, this.cameraPlaneZ);
             sensorPlane = SensorPlane(this.spatialResolution, this.sensorSize, this.sensorPlaneZ);
-            lightField = LightField(this.lightFieldData(this.sliceIndices{:}), cameraPlane, sensorPlane);
+            lightField = LightFieldP(this.lightFieldData(this.sliceIndices{:}), cameraPlane, sensorPlane);
         end
         
         function loadData(this, pathToFolder, filetype, angularResolution, resizeScale)
