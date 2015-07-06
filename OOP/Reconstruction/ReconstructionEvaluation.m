@@ -21,14 +21,14 @@ classdef ReconstructionEvaluation < handle
             this.reconstructedLightField = reconstructedLightField;
         end
         
-        function evaluateViews(this, cameraIndices)
+        function evaluateViews(this, angularIndices)
             % TODO: check dimensions
             
-            validIndices = arrayfun(@(i) this.lightField.cameraPlane.isValidCameraIndex(cameraIndices(i, :)), 1 : size(cameraIndices, 1));
-            this.reconstructionIndices = cameraIndices(validIndices, :);
+            validIndices = arrayfun(@(i) this.lightField.isValidAngularIndex(angularIndices(i, :)), 1 : size(angularIndices, 1));
+            this.reconstructionIndices = angularIndices(validIndices, :);
             
             if(any(~validIndices))
-                ReconstructionEvaluation.warningForInvalidCameraIndices(cameraIndices(~validIndices, :));
+                ReconstructionEvaluation.warningForInvalidCameraIndices(angularIndices(~validIndices, :));
             end
         end
         
@@ -149,9 +149,9 @@ classdef ReconstructionEvaluation < handle
     
     methods (Static, Access = private)
         
-        function warningForInvalidCameraIndices(cameraIndices)
-            for i = 1 : size(cameraIndices, 1)
-                ReconstructionEvaluation.warningForInvalidCameraIndex(cameraIndices(i, :));
+        function warningForInvalidCameraIndices(angularIndices)
+            for i = 1 : size(angularIndices, 1)
+                ReconstructionEvaluation.warningForInvalidCameraIndex(angularIndices(i, :));
             end
         end
         
