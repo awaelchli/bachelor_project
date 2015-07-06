@@ -46,14 +46,6 @@ classdef CameraPlane < handle
             end
         end
         
-        function valid = isValidCameraIndex(this, index)
-            
-            valid = numel(index) == 2 && ...
-                    all(index <= this.resolution) && ...
-                    all(index >= [1, 1]) && ...
-                    all(~mod(index, 1));
-        end
-        
     end
     
 end
