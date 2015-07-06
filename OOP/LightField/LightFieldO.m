@@ -7,7 +7,7 @@ classdef LightFieldO < LightField
     
     properties (SetAccess = private)
         sensorPlane;
-        % Field of view of the light field in radians
+        % Vertical and horizontal field of view of the light field in radians
         fov;
     end
     
@@ -23,7 +23,7 @@ classdef LightFieldO < LightField
             % TODO: check dimensions of fieldOfView
             this = this@LightField(lightFieldData);
             this.sensorPlane = sensorPlane;
-            this.fov = fieldOfView;
+            this.fov = deg2rad(fieldOfView);
         end
         
         function rayAngle = rayAngle(this, angularIndex)
