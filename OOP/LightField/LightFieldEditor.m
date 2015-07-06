@@ -50,18 +50,21 @@ classdef LightFieldEditor < handle
         function inputFromImageCollection(this, inputFolder, filetype, angularResolution, resizeScale)
             if(exist(inputFolder, 'dir') ~= 7)
                 errorStruct.message = sprintf('The path "%s" is not a folder.', inputFolder);
+                errorStruct.identifier = 'inputFromImageCollection:invalidFolder';
                 error(errorStruct);
             end
             
             imageList = dir([inputFolder '*.' filetype]);
-            numberOfImages = size(imageList);
+            numberOfImages = numel(imageList);
             if(numberOfImages ~= prod(angularResolution))
                 errorStruct.message = 'Number of images do not correspond to angular resolution.';
+                errorStruct.identifier = 'inputFromImageCollection:wrongAngularResolution';
                 error(errorStruct);
             end
             
             if(0 >= resizeScale)
                 errorStruct.message = 'The parameter "resizeScale" must be positive.';
+                errorStruct.identifier = 'inputFromImageCollection:resizeScaleNotPositive';
                 error(errorStruct);
             end
             
@@ -136,8 +139,10 @@ classdef LightFieldEditor < handle
         end
         
         function slice(this, indices, dimensionIndex)
-            if(~LightFieldEditor.isValidSlice(indices, dimensionIndex, this.resolution))
-                error('Invalid slice for current light field.');
+            if(~LightFieldEditor.isValidSlice(indices, dimensionIndex, [this.resolution, this.channels]))
+                errorStruct.message = 'Invalid slice for current light field.';
+                errorStruct.identifier = 'slice:invalidSlice';
+                error(errorStruct);
             end
             this.sliceIndices{dimensionIndex} = unique(indices);
         end
@@ -148,6 +153,7 @@ classdef LightFieldEditor < handle
                     this.loadDataFromImageCollection();
                 otherwise
                     errorStruct.message = 'No input data specified.';
+                    errorStruct.identifier = 'loadLightFieldData:noInputData';
                     error(errorStruct);
             end
         end
@@ -181,7 +187,8 @@ classdef LightFieldEditor < handle
         
         function valid = isValidSlice(indices, dimensionIndex, resolution)
             valid = all(0 < indices) & ...
-                    all(resolution(dimensionIndex) >= indices);
+                    all(resolution(dimensionIndex) >= indices) & ...
+                    all(~mod(indices, 1));
         end
         
     end
