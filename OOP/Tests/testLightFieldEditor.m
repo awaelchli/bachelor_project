@@ -22,12 +22,12 @@ end
 function testLoadingFromImageFolder(testCase)
 
     editor = LightFieldEditor();
-    editor.loadData(testCase.TestData.imageFolder, 'png', [9, 9], 1);
+    editor.inputFromImageCollection(testCase.TestData.imageFolder, 'png', [9, 9], 1);
     editor.cameraPlaneZ = 100;
     editor.distanceBetweenTwoCameras = [2, 3];
     editor.sensorSize = [40, 60];
     editor.sensorPlaneZ = -1;
-    result = editor.getLightField();
+    result = editor.getPerspectiveLightField();
     assertEqual(testCase, result.cameraPlane.z, 100);
     assertEqual(testCase, result.cameraPlane.distanceBetweenTwoCameras, [2, 3]);
     assertEqual(testCase, result.sensorPlane.planeSize, [40, 60]);
@@ -40,19 +40,19 @@ end
 function testSlicing(testCase)
 
     editor = LightFieldEditor();
-    editor.loadData(testCase.TestData.imageFolder, 'png', [9, 9], 1);
+    editor.inputFromImageCollection(testCase.TestData.imageFolder, 'png', [9, 9], 1);
     editor.angularSliceY(1 : 2 : 9);
     editor.angularSliceX([1, 2, 3]);
-    result = editor.getLightField();
+    result = editor.getPerspectiveLightField();
     assertEqual(testCase, result.angularResolution, [5, 3]);
     
     editor.angularSliceX([1, 2]);
-    result = editor.getLightField();
+    result = editor.getPerspectiveLightField();
     assertEqual(testCase, result.angularResolution, [5, 2]);
     
     editor.spatialSliceY(1);
     editor.spatialSliceX([1 : 48, 50]);
-    result = editor.getLightField();
+    result = editor.getPerspectiveLightField();
     assertEqual(testCase, result.angularResolution, [5, 2]);
     assertEqual(testCase, result.spatialResolution, [1, 49]);
     

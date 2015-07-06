@@ -1,9 +1,12 @@
 classdef LightFieldEditor < handle
-    %LIGHTFIELDEDITOR Summary of this class goes here
-    %   Detailed explanation goes here
+    
+    properties (Constant, Access = private)
+        inputTypeImageCollection = 'collection';
+    end
     
     properties (Access = private)
         lightFieldData;
+        input;
         sliceIndices = cell(1, LightField.lightFieldDimension + 1);
     end
     
@@ -12,6 +15,7 @@ classdef LightFieldEditor < handle
         cameraPlaneZ = 1;
         sensorSize = [1, 1];
         sensorPlaneZ = 0;
+        lightFieldFOV = [1, 1];
     end
     
     properties (Dependent, SetAccess = private)
@@ -19,34 +23,62 @@ classdef LightFieldEditor < handle
         angularResolution;
         spatialResolution;
         channels;
+        inputFolder;
     end
     
     methods
         
         function this = LightFieldEditor()
+            this.input.type = '';
+            this.input.folder = '/';
+            this.input.resizeScale = 1;
         end
         
-        function lightField = getLightField(this)
-            if(isempty(this.lightFieldData))
-                error('No light field loaded yet!')
-            end
+        function lightField = getPerspectiveLightField(this)
+            this.loadLightFieldData();
             cameraPlane = CameraPlane(this.angularResolution, this.distanceBetweenTwoCameras, this.cameraPlaneZ);
             sensorPlane = SensorPlane(this.spatialResolution, this.sensorSize, this.sensorPlaneZ);
-            lightField = LightFieldP(this.lightFieldData(this.sliceIndices{:}), cameraPlane, sensorPlane);
+            lightField = LightFieldP(this.lightFieldData, cameraPlane, sensorPlane);
         end
         
-        function loadData(this, pathToFolder, filetype, angularResolution, resizeScale)
-            this.lightFieldData = loadLightFieldFromFolder(pathToFolder, filetype, angularResolution, resizeScale);
-            fullResolution = size(this.lightFieldData);
-            if(numel(fullResolution) == 4)
-                % Greyscale
-                fullResolution(5) = 1;
+        function lightField = getOrthographicLightField(this)
+            this.loadLightFieldData();
+            sensorPlane = SensorPlane(this.spatialResolution, this.sensorSize, this.sensorPlaneZ);
+            lightField = LightFieldO(this.lightFieldData, sensorPlane, this.lightFieldFOV);
+        end
+        
+        function inputFromImageCollection(this, inputFolder, filetype, angularResolution, resizeScale)
+            if(exist(inputFolder, 'dir') ~= 7)
+                errorStruct.message = sprintf('The path "%s" is not a folder.', inputFolder);
+                error(errorStruct);
             end
-            this.sliceIndices{LightField.angularDimensions(1)} = 1 : fullResolution(1);
-            this.sliceIndices{LightField.angularDimensions(2)} = 1 : fullResolution(2);
-            this.sliceIndices{LightField.spatialDimensions(1)} = 1 : fullResolution(3);
-            this.sliceIndices{LightField.spatialDimensions(2)} = 1 : fullResolution(4);
-            this.sliceIndices{LightField.channelDimension} = 1 : fullResolution(5);
+            
+            imageList = dir([inputFolder '*.' filetype]);
+            numberOfImages = size(imageList);
+            if(numberOfImages ~= prod(angularResolution))
+                errorStruct.message = 'Number of images do not correspond to angular resolution.';
+                error(errorStruct);
+            end
+            
+            if(0 >= resizeScale)
+                errorStruct.message = 'The parameter "resizeScale" must be positive.';
+                error(errorStruct);
+            end
+            
+            fprintf('Images found: %i \n', numberOfImages);
+            
+            this.input.type = LightFieldEditor.inputTypeImageCollection;
+            this.input.folder = inputFolder;
+            this.input.filetype = filetype;
+            this.input.angularResolution = angularResolution;
+            this.input.resizeScale = resizeScale;
+            
+            % Load the first image to get the spatial resolution and color channels
+            firstImage = im2double(imread([inputFolder imageList(1).name]));
+            this.input.spatialResolution = [size(firstImage, 1), size(firstImage, 2)];
+            this.input.channels = size(firstImage, 3);
+            
+            this.initSliceIndices([angularResolution, ceil(resizeScale * this.input.spatialResolution), this.input.channels]);
         end
         
         function resolution = get.resolution(this)
@@ -65,6 +97,10 @@ classdef LightFieldEditor < handle
         function channels = get.channels(this)
             resolution = cellfun(@numel, this.sliceIndices);
             channels = resolution(LightField.channelDimension);
+        end
+        
+        function folder = get.inputFolder(this)
+            folder = this.input.folder;
         end
         
         function angularSliceY(this, indices)
@@ -91,11 +127,52 @@ classdef LightFieldEditor < handle
     
     methods (Access = private)
         
+        function initSliceIndices(this, fullResolution)
+            this.sliceIndices{LightField.angularDimensions(1)} = 1 : fullResolution(1);
+            this.sliceIndices{LightField.angularDimensions(2)} = 1 : fullResolution(2);
+            this.sliceIndices{LightField.spatialDimensions(1)} = 1 : fullResolution(3);
+            this.sliceIndices{LightField.spatialDimensions(2)} = 1 : fullResolution(4);
+            this.sliceIndices{LightField.channelDimension} = 1 : fullResolution(5);
+        end
+        
         function slice(this, indices, dimensionIndex)
             if(~LightFieldEditor.isValidSlice(indices, dimensionIndex, this.resolution))
                 error('Invalid slice for current light field.');
             end
             this.sliceIndices{dimensionIndex} = unique(indices);
+        end
+
+        function loadLightFieldData(this)
+            switch(this.input.type)
+                case LightFieldEditor.inputTypeImageCollection
+                    this.loadDataFromImageCollection();
+                otherwise
+                    errorStruct.message = 'No input data specified.';
+                    error(errorStruct);
+            end
+        end
+        
+        function loadDataFromImageCollection(this)
+            this.lightFieldData = zeros([this.resolution, this.channels]);
+            angularSlicesY = this.sliceIndices{LightField.angularDimensions(1)};
+            angularSlicesX = this.sliceIndices{LightField.angularDimensions(2)};
+            spatialSlicesY = this.sliceIndices{LightField.spatialDimensions(1)};
+            spatialSlicesX = this.sliceIndices{LightField.spatialDimensions(2)};
+            channelSlices = this.sliceIndices{LightField.channelDimension};
+            
+            imageList = dir([this.input.folder '*.' this.input.filetype]);
+            
+            for y = 1 : this.angularResolution(1)
+                for x = 1 : this.angularResolution(2)
+                    
+                    imageIndex = (angularSlicesY(y) - 1) * this.angularResolution(2) + angularSlicesX(x);
+
+                    image = im2double(imread([this.input.folder imageList(imageIndex).name]));
+                    image = imresize(image, this.input.resizeScale, 'bilinear');
+                    image = image(spatialSlicesY, spatialSlicesX, channelSlices);
+                    this.lightFieldData(y, x, :, :, :) = image;
+                end
+            end
         end
     
     end
