@@ -78,5 +78,16 @@ classdef PixelPlane < handle
         
     end
     
+    methods (Static)
+        
+        function valid = isValidIndex(index, resolution)
+            valid = numel(index) == 2 && ...
+                    all(index <= resolution) && ...
+                    all(index >= [1, 1]) && ...
+                    all(~mod(index, 1));
+        end
+
+    end
+    
 end
 
