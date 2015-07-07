@@ -41,15 +41,16 @@ rec.evaluation.displayReconstructedViews();
 editor = LightFieldEditor();
 % editor.inputFromImageCollection('../lightFields/dice/perspective/3x3-.2_rect/', 'png', [3, 3], 1);
 % editor.inputFromImageCollection('../lightFields/legotruck/', 'png', [17, 17], 0.3);
-editor.inputFromImageCollection('../lightFields/CSF/', 'png', [9, 9], .8);
+editor.inputFromImageCollection('../lightFields/CSF/', 'png', [9, 9], 0.7);
 
 editor.distanceBetweenTwoCameras = [0.1, 0.1];
 editor.cameraPlaneZ = 10;
 editor.sensorSize = [1, 1];
 editor.sensorPlaneZ = 0;
 
-%%
 lightField = editor.getPerspectiveLightField();
+
+%%
 numberOfLayers = 3;
 attenuatorThickness = numberOfLayers-1; % spacing is one
 layerResolution = round( 1 * lightField.spatialResolution );
