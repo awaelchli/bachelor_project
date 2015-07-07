@@ -95,12 +95,19 @@ classdef ReconstructionEvaluation < handle
             ReconstructionEvaluation.writeRMSEToTextFile(RMSEoutput, outputFolder);
         end
         
+        function reconstructedView = getReplicatedReconstructedView(this, cameraIndex)
+            reconstructedView = this.reconstructedLightField.lightFieldData(cameraIndex(1), cameraIndex(2), :, :, :);
+            reconstructedView = repmat(reconstructedView, this.replicationSizes);
+            reconstructedView = squeeze(reconstructedView);
+        end
+        
     end
     
     methods (Access = private)
         
         function displaySingleReconstructedView(this, cameraIndex)
             reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
+%             fftReconstructedView = log(abs(real(fftshift(fftshift(fft2(reconstructedView(end-end/4, :)), 1), 2))));
             displayTitle = sprintf('Reconstruction of view (%i, %i)', cameraIndex);
             figure('Name', 'Light field reconstruction from attenuation layers')
             imshow(reconstructedView)
@@ -125,12 +132,6 @@ classdef ReconstructionEvaluation < handle
             [errorImage, rmse] = this.getErrorForView(cameraIndex);
             filename = sprintf('MSE_for_view_(%i,%i)', cameraIndex);
             imwrite(errorImage, [outputFolder filename '.png']);
-        end
-        
-        function reconstructedView = getReplicatedReconstructedView(this, cameraIndex)
-            reconstructedView = this.reconstructedLightField.lightFieldData(cameraIndex(1), cameraIndex(2), :, :, :);
-            reconstructedView = repmat(reconstructedView, this.replicationSizes);
-            reconstructedView = squeeze(reconstructedView);
         end
         
         function viewFromOriginal = getReplicatedOriginalView(this, cameraIndex)
