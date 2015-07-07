@@ -144,6 +144,7 @@ classdef ReconstructionEvaluation < handle
             viewFromOriginal = this.getReplicatedOriginalView(cameraIndex);
             viewFromReconstruction = this.getReplicatedReconstructedView(cameraIndex);
             [errorImage, rmse] = meanSquaredErrorImage(viewFromReconstruction, viewFromOriginal);
+            errorImage = errorImage / max(errorImage(:));
         end
         
     end
