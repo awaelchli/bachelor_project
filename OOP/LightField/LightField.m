@@ -43,7 +43,7 @@ classdef LightField < handle
         end
         
         function replaceView(this, angularIndexY, angularIndexX, image)
-           this.lightFieldData(angularIndexY, angularIndexX, : , : , :) = image; 
+            this.lightFieldData(angularIndexY, angularIndexX, : , : , :) = image; 
         end
         
         function valid = isValidAngularIndex(this, index)
