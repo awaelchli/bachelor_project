@@ -1,6 +1,4 @@
 classdef ReconstructionForResampledLF < AbstractReconstruction
-    %RECONSTRUCTION Summary of this class goes here
-    %   Detailed explanation goes here
     
     properties (SetAccess = private)
         resampledLightField;
@@ -63,7 +61,6 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
             
             layerResolution = this.attenuator.planeResolution;
             angularResolution = this.lightField.angularResolution;
-            spatialResolution = this.lightField.spatialResolution;
 
             cameraPositionMatrixY = this.lightField.cameraPlane.cameraPositionMatrixY;
             cameraPositionMatrixX = this.lightField.cameraPlane.cameraPositionMatrixX;
