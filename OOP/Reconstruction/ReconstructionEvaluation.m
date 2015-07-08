@@ -108,8 +108,8 @@ classdef ReconstructionEvaluation < handle
         end
         
         function displayLayers(this, layerNumbers)
-            % TODO: Replication for layers
             layers = this.attenuator.getAttenuationLayers(layerNumbers);
+            layers = repmat(layers, [1, this.replicationSizes([LightField.spatialDimensions, LightField.channelDimension])]);
             for i = 1 : numel(layerNumbers)
                 figure('Name', sprintf('Layer %i', layerNumbers(i)));
                 imshow(squeeze(layers(i, :, :, :)));
