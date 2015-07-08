@@ -22,7 +22,11 @@ classdef ReconstructionEvaluation < handle
         end
         
         function evaluateViews(this, angularIndices)
-            % TODO: check dimensions
+            if (numel(size(angularIndices)) ~= 2 || size(angularIndices, 2) ~= 2)
+               errorStruct.message = 'The input must be a N x 2 matrix containing N angular indices.';
+               errorStruct.identifier = 'evaluateViews:wrongInputDimensions';
+               error(errorStruct);
+            end
             
             validIndices = arrayfun(@(i) this.lightField.isValidAngularIndex(angularIndices(i, :)), 1 : size(angularIndices, 1));
             this.reconstructionIndices = angularIndices(validIndices, :);
