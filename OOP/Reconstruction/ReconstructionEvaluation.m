@@ -108,11 +108,21 @@ classdef ReconstructionEvaluation < handle
         end
         
         function displayLayers(this, layerNumbers)
-            layers = this.attenuator.getAttenuationLayers(layerNumbers);
-            layers = repmat(layers, [1, this.replicationSizes([LightField.spatialDimensions, LightField.channelDimension])]);
+            layers = this.getReplicatedAttenuationLayers(layerNumbers);
             for i = 1 : numel(layerNumbers)
                 figure('Name', sprintf('Layer %i', layerNumbers(i)));
                 imshow(squeeze(layers(i, :, :, :)));
+            end
+        end
+        
+        function storeLayers(this, layerNumbers, outputFolder)
+            if(~exist(outputFolder, 'dir'))
+                ReconstructionEvaluation.warningForInvalidFolderPath(outputFolder);
+                return;
+            end
+            layers = this.getReplicatedAttenuationLayers(layerNumbers);
+            for number = 1 : numel(layerNumbers)
+                imwrite(squeeze(layers(number, :, :, :)), sprintf('%s/%i.png', outputFolder, number));
             end
         end
         
@@ -159,6 +169,11 @@ classdef ReconstructionEvaluation < handle
             viewFromReconstruction = this.getReplicatedReconstructedView(cameraIndex);
             [errorImage, rmse] = meanSquaredErrorImage(viewFromReconstruction, viewFromOriginal);
             errorImage = errorImage / max(errorImage(:));
+        end
+        
+        function layers = getReplicatedAttenuationLayers(this, layerNumbers)
+            layers = this.attenuator.getAttenuationLayers(layerNumbers);
+            layers = repmat(layers, [1, this.replicationSizes([LightField.spatialDimensions, LightField.channelDimension])]);
         end
         
     end
