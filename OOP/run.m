@@ -92,8 +92,8 @@ editor.sensorSize = [1, 1];
 editor.sensorPlaneZ = 0;
 
 % 2D 
-editor.angularSliceY(1);
-editor.spatialSliceY(1);
+% editor.angularSliceY(1);
+% editor.spatialSliceY(1);
 
 lightField = editor.getPerspectiveLightField();
 
@@ -101,7 +101,7 @@ lightField = editor.getPerspectiveLightField();
 numberOfLayers = 3;
 attenuatorThickness = numberOfLayers-1; % spacing is one
 layerResolution = round( 1 * lightField.spatialResolution );
-layerResolution(1) = 1;
+% layerResolution(1) = 1;
 attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness / (numberOfLayers - 1), lightField.channels);
 
 resamplingPlane = SensorPlane(layerResolution, [1, 1], -1);
@@ -159,7 +159,6 @@ rec.computeAttenuationLayers();
 
 
 close all;
-printLayers(permute(attenuator.attenuationValues, [2, 3, 1, 4]), [10, 10], 'output/', 'print1', 1);
 
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
