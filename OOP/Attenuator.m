@@ -68,6 +68,30 @@ classdef Attenuator < PixelPlane
             layerPositionZ = -this.thickness / 2 : d : this.thickness / 2;
         end
         
+        function layers = getAttenuationLayers(this, layerNumbers)
+            arrayfun(@(n) this.errorIfInvalidLayerNumber(n), layerNumbers); 
+            layers = this.attenuationValues(layerNumbers, :, :, :);
+        end
+        
+        function valid = isValidLayerNumber(this, layerNumber)
+            valid = isscalar(layerNumber) & ...
+                    1 <= layerNumber & ...
+                    this.numberOfLayers >= layerNumber & ...
+                    mod(layerNumber, 1) == 0;
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function errorIfInvalidLayerNumber(this, layerNumber)
+            if(~this.isValidLayerNumber(layerNumber))
+                errorStruct.message = sprintf('Invalid layer number: %i', layerNumber);
+                errorStruct.identifier = 'errorIfInvalidLayerNumber:invalidLayerNumber';
+                error(errorStruct);
+            end
+        end
+        
     end
     
 end

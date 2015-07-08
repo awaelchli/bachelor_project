@@ -2,6 +2,7 @@ classdef ReconstructionEvaluation < handle
     
     properties (SetAccess = protected)
         lightField;
+        attenuator;
         reconstructedLightField;
     end
     
@@ -16,8 +17,9 @@ classdef ReconstructionEvaluation < handle
     
     methods
         
-        function this = ReconstructionEvaluation(lightField, reconstructedLightField)
+        function this = ReconstructionEvaluation(lightField, attenuator, reconstructedLightField)
             this.lightField = lightField;
+            this.attenuator = attenuator;
             this.reconstructedLightField = reconstructedLightField;
         end
         
@@ -105,13 +107,21 @@ classdef ReconstructionEvaluation < handle
             reconstructedView = squeeze(reconstructedView);
         end
         
+        function displayLayers(this, layerNumbers)
+            % TODO: Replication for layers
+            layers = this.attenuator.getAttenuationLayers(layerNumbers);
+            for i = 1 : numel(layerNumbers)
+                figure('Name', sprintf('Layer %i', layerNumbers(i)));
+                imshow(squeeze(layers(i, :, :, :)));
+            end
+        end
+        
     end
     
     methods (Access = private)
         
         function displaySingleReconstructedView(this, cameraIndex)
             reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
-%             fftReconstructedView = log(abs(real(fftshift(fftshift(fft2(reconstructedView(end-end/4, :)), 1), 2))));
             displayTitle = sprintf('Reconstruction of view (%i, %i)', cameraIndex);
             figure('Name', 'Light field reconstruction from attenuation layers')
             imshow(reconstructedView)

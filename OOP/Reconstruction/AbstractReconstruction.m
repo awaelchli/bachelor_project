@@ -59,7 +59,7 @@ classdef AbstractReconstruction < handle
             reconstructionData = reshape(reconstructionVector, [this.evaluation.reconstructedLightField.resolution, this.evaluation.reconstructedLightField.channels]);
             reconstructionData = exp(reconstructionData);
             reconstructedLF = LightField(reconstructionData);
-            this.evaluation = ReconstructionEvaluation(this.evaluation.lightField, reconstructedLF);
+            this.evaluation = ReconstructionEvaluation(this.evaluation.lightField, this.attenuator, reconstructedLF);
             
         end
         
