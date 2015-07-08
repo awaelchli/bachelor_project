@@ -1,6 +1,4 @@
 classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
-    %RECONSTRUCTION Summary of this class goes here
-    %   Detailed explanation goes here
     
     properties (SetAccess = private)
         resampledLightField;
@@ -63,9 +61,7 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
         
         function constructPropagationMatrix(this)
             
-            layerResolution = this.attenuator.planeResolution;
             angularResolution = this.lightField.angularResolution;
-
             cameraPositionMatrixY = this.lightField.cameraPlane.cameraPositionMatrixY;
             cameraPositionMatrixX = this.lightField.cameraPlane.cameraPositionMatrixX;
         
@@ -76,11 +72,9 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
 
             fprintf('Views done: \n');
 
-%             for camIndexY = 1 : angularResolution(1)
-%                 for camIndexX = 1 : angularResolution(2)
-            for camIndexY = 1 : 1
-                for camIndexX = 1 : 1
-        
+            for camIndexY = 1 : angularResolution(1)
+                for camIndexX = 1 : angularResolution(2)
+                    
                     % get the position of the current camera on the camera plane
                     cameraPosition = [ cameraPositionMatrixY(camIndexY, camIndexX), ...
                                        cameraPositionMatrixX(camIndexY, camIndexX), ...
@@ -94,53 +88,18 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
                                                                         pixelPositionsOnResamplingPlaneMatrixY, ...
                                                                         pixelPositionsOnResamplingPlaneMatrixX, ...
                                                                         resamplingPlaneZ);
-                                                                    
-%                     positionsOnSensorPlaneMatrixY   
-%                     positionsOnSensorPlaneMatrixX
                     
                     [ sensorIntersectionMatrixY, ...
-                      sensorIntersectionMatrixX, validIndicesForSensor ] = this.lightField.sensorPlane.positionToPixelCoordinates(positionsOnSensorPlaneMatrixY, positionsOnSensorPlaneMatrixX);
-                  
-                  csum = sum(validIndicesForSensor, 1);
-                  rsum = sum(validIndicesForSensor, 2);
-%                   return;
-                  
-                  sensorIntersectionMatrixY(~rsum, :) = [];
-                  sensorIntersectionMatrixY(:, ~csum) = [];
-                  sensorIntersectionMatrixX(~rsum, :) = [];
-                  sensorIntersectionMatrixX(:, ~csum) = [];
-%                   validSensorIntersectionMatrixX = sensorIntersectionMatrixX(validIndicesForSensor);
-                  sensorIntersectionMatrixY
-%                  validSensorIntersectionMatrixY
-        
-%                     invalidRayIndicesForSensorY = sensorIntersectionMatrixY(:, 1) == 0;
-%                     invalidRayIndicesForSensorX = sensorIntersectionMatrixX(1, :) == 0;
-
-%                     pixelIndexOnSensorMatrixY = pixelIndexOnResamplingPlaneMatrixY;
-%                     pixelIndexOnSensorMatrixX = pixelIndexOnResamplingPlaneMatrixX;
-%                     
-%                     pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(validIndicesForSensor); % column vector
-%                     pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(validIndicesForSensor); % row vector
-
-                    % Interpolating the current view of the light field
-                    view = squeeze(this.lightField.lightFieldData(camIndexY, camIndexX, :, :, :));
-                    gridVectors = {sensorIntersectionMatrixY(:, 1), sensorIntersectionMatrixX(1, :), 1 : this.lightField.channels};
-
-                    % Remove arrays of singleton dimensions (2D light fields or single
-                    % channel)
-                    indicesOfScalars = cellfun(@isscalar, gridVectors);
-                    grid = cell(1, nnz(~indicesOfScalars));
-                    [ grid{:} ] = ndgrid(gridVectors{~indicesOfScalars});
+                      sensorIntersectionMatrixX, ...
+                      validIntersections ] = this.lightField.sensorPlane.positionToPixelCoordinates(positionsOnSensorPlaneMatrixY, positionsOnSensorPlaneMatrixX);
                     
-                   
-
-                    this.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}));
+                    invalidRayIndicesForSensorY = ~sum(validIntersections, 2);
+                    invalidRayIndicesForSensorX = ~sum(validIntersections, 1);
+                  
+                    this.resampleView(camIndexY, camIndexX, sensorIntersectionMatrixY, sensorIntersectionMatrixX);
                     
-%                     this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
-%                                                          pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
-%                                                          1, ...
-%                                                          pixelIndexOnResamplingPlaneMatrixY, pixelIndexOnResamplingPlaneMatrixX, ...
-%                                                          ones(layerResolution));
+                    pixelIndexOnSensorMatrixY = pixelIndexOnResamplingPlaneMatrixY; % contains also the invalid indices
+                    pixelIndexOnSensorMatrixX = pixelIndexOnResamplingPlaneMatrixX; % contains also the invalid indices
 
                     for layer = 1 : this.attenuator.numberOfLayers
 
@@ -156,7 +115,8 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
                                                                       resamplingPlaneZ);
                         
                         [ layerIntersectionMatrixY, ...
-                          layerIntersectionMatrixX ] = this.attenuator.positionToPixelCoordinates(positionsOnLayerMatrixY, positionsOnLayerMatrixX);
+                          layerIntersectionMatrixX, ...
+                          validIntersections ] = this.attenuator.positionToPixelCoordinates(positionsOnLayerMatrixY, positionsOnLayerMatrixX);
                         
                         pixelIndexOnLayerMatrixY = round(layerIntersectionMatrixY);
                         pixelIndexOnLayerMatrixX = round(layerIntersectionMatrixX);
@@ -165,9 +125,11 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
                                                                                    pixelIndexOnLayerMatrixX, ...
                                                                                    layerIntersectionMatrixY, ...
                                                                                    layerIntersectionMatrixX);
-                                                                           
-                        invalidRayIndicesForLayerY = pixelIndexOnLayerMatrixY(:, 1) == 0;
-                        invalidRayIndicesForLayerX = pixelIndexOnLayerMatrixX(1, :) == 0;
+                        
+                                                                               
+                                                                               
+                        invalidRayIndicesForLayerY = ~sum(validIntersections, 2);
+                        invalidRayIndicesForLayerX = ~sum(validIntersections, 1);
                         
                         validRayIndicesY = ~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY);
                         validRayIndicesX = ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX);
@@ -229,6 +191,20 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
             weightVector = this.weightFunctionHandle(queryData);
             weightMatrix = reshape(weightVector, size(pixelIndexMatrixY));
 
+        end
+        
+        function resampleView(this, camIndexY, camIndexX, sensorIntersectionMatrixY, sensorIntersectionMatrixX)
+            % Interpolating the current view of the light field
+            % Interpolation in invalid query points will set the corresponding values in the light field to zero
+            view = squeeze(this.lightField.lightFieldData(camIndexY, camIndexX, :, :, :));
+            gridVectors = {sensorIntersectionMatrixY(:, 1), sensorIntersectionMatrixX(1, :), 1 : this.lightField.channels};
+            
+            % Remove arrays of singleton dimensions (2D light fields or single channel)
+            indicesOfScalars = cellfun(@isscalar, gridVectors);
+            grid = cell(1, nnz(~indicesOfScalars));
+            [ grid{:} ] = ndgrid(gridVectors{~indicesOfScalars});
+            
+            this.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}, 'linear', 0));
         end
         
     end
