@@ -1,5 +1,9 @@
 classdef ReconstructionEvaluation < handle
     
+    properties (Constant)
+        imageOutputType = 'png';
+    end
+    
     properties (SetAccess = protected)
         lightField;
         attenuator;
@@ -122,7 +126,7 @@ classdef ReconstructionEvaluation < handle
             end
             layers = this.getReplicatedAttenuationLayers(layerNumbers);
             for number = 1 : numel(layerNumbers)
-                imwrite(squeeze(layers(number, :, :, :)), sprintf('%s/%i.png', outputFolder, number));
+                imwrite(squeeze(layers(number, :, :, :)), sprintf('%s/%i.%s', outputFolder, number, ReconstructionEvaluation.imageOutputType));
             end
         end
         
@@ -141,7 +145,7 @@ classdef ReconstructionEvaluation < handle
         function storeSingleReconstructedView(this, cameraIndex, outputFolder)
             filename = sprintf('Reconstruction_of_view_(%i,%i)', cameraIndex);
             reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
-            imwrite(reconstructedView, [outputFolder filename '.png']);
+            imwrite(reconstructedView, [outputFolder filename '.' ReconstructionEvaluation.imageOutputType]);
         end
         
         function [errorImage, rmse] = displaySingleErrorImage(this, cameraIndex)
@@ -155,7 +159,7 @@ classdef ReconstructionEvaluation < handle
         function [errorImage, rmse] = storeSingleErrorImage(this, cameraIndex, outputFolder)
             [errorImage, rmse] = this.getErrorForView(cameraIndex);
             filename = sprintf('MSE_for_view_(%i,%i)', cameraIndex);
-            imwrite(errorImage, [outputFolder filename '.png']);
+            imwrite(errorImage, [outputFolder filename '.' ReconstructionEvaluation.imageOutputType]);
         end
         
         function viewFromOriginal = getReplicatedOriginalView(this, cameraIndex)
