@@ -19,17 +19,17 @@ classdef LightFieldO < LightField
     methods
         
         function this = LightFieldO(lightFieldData, sensorPlane, fieldOfView)
-            % TODO: check that dimensions of lightFieldData corresponds to dimensions of sensorPlane
-            % TODO: check dimensions of fieldOfView
             this = this@LightField(lightFieldData);
             this.sensorPlane = sensorPlane;
             this.fov = deg2rad(fieldOfView);
+            this.assertInvariant();
         end
         
         function rayAngle = rayAngle(this, angularIndex)
             halfFOV = this.fov / 2;
             angularStep = this.fov ./ (this.angularResolution - 1);
             rayAngle = -halfFOV + (angularIndex - 1) .* angularStep;
+            this.assertInvariant();
         end
         
         function fovY = get.fovY(this)
@@ -38,6 +38,20 @@ classdef LightFieldO < LightField
         
         function fovX = get.fovX(this)
             fovX = this.fov(LightFieldO.horizontalFOVIndex);
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function assertInvariant(this)
+            this.assertInvariant@LightField();
+            assert(all(this.sensorPlane.planeResolution == this.spatialResolution), ...
+                   'assertInvariant:wrongSpatialResolution', ...
+                   'The resolution of the sensor plane must match the dimensions of the data.');
+            assert(numel(this.fov) == 2, ...
+                   'assertInvariant:wrongFOVSize', ...
+                   'The FOV must be a tupel of vertical and horizontal field of view.');
         end
         
     end

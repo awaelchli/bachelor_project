@@ -21,12 +21,8 @@ classdef LightField < handle
     methods
         
         function this = LightField(lightFieldData)
-            if(numel(size(lightFieldData)) < LightField.lightFieldDimension)
-                errorStruct.message = 'The light field data must be a 4D or 5D array.';
-                errorStruct.identifier = 'LightField:dataHasWrongNumberOfDimensions';
-                error(errorStruct);
-            end
             this.lightFieldData = lightFieldData;
+            this.assertLightFieldDataSize();
         end
         
         function resolution = get.resolution(this)
@@ -47,7 +43,8 @@ classdef LightField < handle
         end
         
         function replaceView(this, angularIndexY, angularIndexX, image)
-            this.lightFieldData(angularIndexY, angularIndexX, : , : , :) = image; 
+            this.lightFieldData(angularIndexY, angularIndexX, : , : , :) = image;
+            this.assertInvariant();
         end
         
         function valid = isValidAngularIndex(this, index)
@@ -56,6 +53,24 @@ classdef LightField < handle
         
         function valid = isValidSpatialIndex(this, index)
             valid = PixelPlane.isValidIndex(index, this.spatialResolution);
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function assertInvariant(this)
+            this.assertLightFieldDataSize();
+        end
+        
+    end
+    
+    methods (Access = private)
+        
+        function assertLightFieldDataSize(this)
+            assert(numel(size(this.lightFieldData)) >= LightField.lightFieldDimension, ...
+                   'assertLightFieldDataSize:dataHasWrongNumberOfDimensions', ...
+                   'The light field data must be a 4D or 5D array.');
         end
         
     end
