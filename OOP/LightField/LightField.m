@@ -21,7 +21,11 @@ classdef LightField < handle
     methods
         
         function this = LightField(lightFieldData)
-            % TODO: check dimensions of lightFieldData
+            if(numel(size(lightFieldData)) < LightField.lightFieldDimension)
+                errorStruct.message = 'The light field data must be a 4D or 5D array.';
+                errorStruct.identifier = 'LightField:dataHasWrongNumberOfDimensions';
+                error(errorStruct);
+            end
             this.lightFieldData = lightFieldData;
         end
         
