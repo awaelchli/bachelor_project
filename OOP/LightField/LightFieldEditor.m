@@ -8,6 +8,7 @@ classdef LightFieldEditor < handle
         lightFieldData;
         input;
         sliceIndices = cell(1, LightField.lightFieldDimension + 1);
+        replicationSizes = [1, 1, 1, 1, 1];
     end
     
     properties
@@ -126,6 +127,26 @@ classdef LightFieldEditor < handle
             this.slice(indices, LightField.channelDimension);
         end
         
+        function replicateAngularDimensionY(this, replication)
+            this.replicationSizes(LightField.angularDimensions(1)) = replication;
+        end
+        
+        function replicateAngularDimensionX(this, replication)
+            this.replicationSizes(LightField.angularDimensions(2)) = replication;
+        end
+        
+        function replicateSpatialDimensionY(this, replication)
+            this.replicationSizes(LightField.spatialDimensions(1)) = replication;
+        end
+        
+        function replicateSpatialDimensionX(this, replication)
+            this.replicationSizes(LightField.spatialDimensions(2)) = replication;
+        end
+        
+        function replicateChannelDimension(this, replication)
+            this.replicationSizes(LightField.channelDimension) = replication;
+        end
+        
     end
     
     methods (Access = private)
@@ -156,6 +177,7 @@ classdef LightFieldEditor < handle
                     errorStruct.identifier = 'loadLightFieldData:noInputData';
                     error(errorStruct);
             end
+            this.lightFieldData = repmat(this.lightFieldData, this.replicationSizes);
         end
         
         function loadDataFromImageCollection(this)
