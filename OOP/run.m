@@ -7,6 +7,9 @@ editor.angularSliceY(1 : 2 : 17);
 editor.angularSliceX(1 : 2 : 17);
 % editor.angularSliceY(1 : 9);
 % editor.angularSliceX(1 : 9);
+% editor.spatialSliceY(100);
+% editor.angularSliceY(5);
+% editor.channelSlice(1);
 
 editor.distanceBetweenTwoCameras = [0.03, 0.03];
 editor.cameraPlaneZ = 10;
@@ -29,11 +32,14 @@ rec.computeAttenuationLayers();
 
 
 close all;
-printLayers(permute(attenuator.attenuationValues, [2, 3, 1, 4]), [10, 10], 'output/', 'print1', 1);
+
+% rec.evaluation.replicateSpatialDimensionY(10);
+rec.evaluation.displayLayers(1 : numberOfLayers);
 
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
+% rec.evaluation.replicateSpatialDimensionY(10);
 rec.evaluation.evaluateViews(reconstructionIndices);
 rec.evaluation.displayReconstructedViews();
 rec.evaluation.displayErrorImages();
@@ -63,7 +69,7 @@ rec.computeAttenuationLayers();
 
 
 close all;
-printLayers(permute(attenuator.attenuationValues, [2, 3, 1, 4]), [10, 10], 'output/', 'print1', 1);
+rec.evaluation.displayLayers(1 : numberOfLayers);
 
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
@@ -90,10 +96,11 @@ editor.distanceBetweenTwoCameras = [0.1, 0.1];
 editor.cameraPlaneZ = 10;
 editor.sensorSize = [1, 1];
 editor.sensorPlaneZ = 0;
+editor.replicateChannelDimension(1);
 
 % 2D 
-% editor.angularSliceY(1);
-% editor.spatialSliceY(1);
+% editor.angularSliceY(5);
+% editor.spatialSliceY(100);
 
 lightField = editor.getPerspectiveLightField();
 
@@ -101,26 +108,25 @@ lightField = editor.getPerspectiveLightField();
 numberOfLayers = 3;
 attenuatorThickness = numberOfLayers-1; % spacing is one
 layerResolution = round( 1 * lightField.spatialResolution );
-% layerResolution(1) = 1;
 attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness / (numberOfLayers - 1), lightField.channels);
 
-resamplingPlane = SensorPlane(layerResolution, [1, 1], -1);
+resamplingPlane = SensorPlane(layerResolution, [1, 1], editor.sensorPlaneZ);
 
 rec = ReconstructionForResampledLF_V2(lightField, attenuator, resamplingPlane);
 rec.computeAttenuationLayers();
 
 
-% close all;
-printLayers(permute(attenuator.attenuationValues, [2, 3, 1, 4]), [10, 10], 'output/', 'print1', 1);
+close all;
+rec.evaluation.displayLayers(1 : numberOfLayers);
 
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
 rec.evaluation.evaluateViews(reconstructionIndices);
 rec.evaluation.displayReconstructedViews();
-rec.evaluation.storeReconstructedViews('output/');
-rec.evaluation.displayErrorImages();
-rec.evaluation.storeErrorImages('output/');
+% rec.evaluation.storeReconstructedViews('output/');
+% rec.evaluation.displayErrorImages();
+% rec.evaluation.storeErrorImages('output/');
 
 
 
@@ -134,6 +140,7 @@ editor.angularSliceY(1 : 2 : 17);
 editor.angularSliceX(1 : 2 : 17);
 % editor.angularSliceY(1 : 9);
 % editor.angularSliceX(1 : 9);
+% editor.channelSlice(1);
 editor.distanceBetweenTwoCameras = [0.03, 0.03];
 editor.cameraPlaneZ = 10;
 editor.sensorSize = [1, 1];
@@ -147,8 +154,8 @@ lightField = editor.getPerspectiveLightField();
 %%
 
 numberOfLayers = 5;
-attenuatorThickness = numberOfLayers-1;
-layerResolution = round( 1.2 * lightField.spatialResolution );
+attenuatorThickness = 3;
+layerResolution = round( 1 * lightField.spatialResolution );
 attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness / (numberOfLayers - 1), lightField.channels);
 
 
@@ -157,14 +164,38 @@ resamplingPlane = SensorPlane(layerResolution, [1, 1], 0);
 rec = ReconstructionForResampledLF_V2(lightField, attenuator, resamplingPlane);
 rec.computeAttenuationLayers();
 
-
 close all;
+
+rec.evaluation.displayLayers(1 : numberOfLayers);
+rec.evaluation.storeLayers(1: numberOfLayers, 'output/');
 
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
 rec.evaluation.evaluateViews(reconstructionIndices);
-rec.evaluation.displayReconstructedViews();
-% rec.evaluation.storeReconstructedViews('output/');
+% rec.evaluation.displayReconstructedViews();
+rec.evaluation.storeReconstructedViews('output/');
 % rec.evaluation.displayErrorImages();
-% rec.evaluation.storeErrorImages('output/');
+rec.evaluation.storeErrorImages('output/');
+
+
+%% Back projection P^T * LF
+P = rec.propagationMatrix.formSparseMatrix();
+l = reshape(rec.reconstructedLightField.lightFieldData, [], lightField.channels);
+backProjection = P' * l;
+b = backProjection ./ max(backProjection(:));
+b = permute(b, [2, 1]);
+b = reshape(b, [attenuator.channels, attenuator.planeResolution, attenuator.numberOfLayers]);
+b = permute(b, [4, 2, 3, 1]);
+% b = exp(b);
+figure; imshow(squeeze(b(1, :, :, :)));
+figure; imshow(squeeze(b(2, :, :, :)));
+figure; imshow(squeeze(b(3, :, :, :)));
+figure; imshow(squeeze(b(4, :, :, :)));
+figure; imshow(squeeze(b(5, :, :, :)));
+
+for i = 1 : attenuator.numberOfLayers
+    imwrite(squeeze(b(i, :, :, :)), sprintf('output/back_projection_L%i.png', i));
+end
+
+
