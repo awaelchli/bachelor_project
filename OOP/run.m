@@ -76,9 +76,9 @@ reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
 rec.evaluation.evaluateViews(reconstructionIndices);
 rec.evaluation.displayReconstructedViews();
-rec.evaluation.storeReconstructedViews('output/');
+rec.evaluation.storeReconstructedViews();
 rec.evaluation.displayErrorImages();
-rec.evaluation.storeErrorImages('output/');
+rec.evaluation.storeErrorImages();
 
 
 
@@ -124,9 +124,9 @@ reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
 rec.evaluation.evaluateViews(reconstructionIndices);
 rec.evaluation.displayReconstructedViews();
-% rec.evaluation.storeReconstructedViews('output/');
+% rec.evaluation.storeReconstructedViews();
 % rec.evaluation.displayErrorImages();
-% rec.evaluation.storeErrorImages('output/');
+% rec.evaluation.storeErrorImages();
 
 
 
@@ -167,16 +167,16 @@ rec.computeAttenuationLayers();
 close all;
 
 rec.evaluation.displayLayers(1 : numberOfLayers);
-rec.evaluation.storeLayers(1: numberOfLayers, 'output/');
+rec.evaluation.storeLayers(1: numberOfLayers);
 
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
 rec.evaluation.evaluateViews(reconstructionIndices);
 % rec.evaluation.displayReconstructedViews();
-rec.evaluation.storeReconstructedViews('output/');
+rec.evaluation.storeReconstructedViews();
 % rec.evaluation.displayErrorImages();
-rec.evaluation.storeErrorImages('output/');
+rec.evaluation.storeErrorImages();
 
 
 %% Back projection P^T * LF
