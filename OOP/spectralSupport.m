@@ -23,8 +23,6 @@ for n = 1 : numberOfLightFields
     
     for iz = 1 : numel(sensorPlaneZValues)
         
-       
-        
         z = sensorPlaneZValues(iz);
         resamplingPlane = SensorPlane(spatialResolution, attenuator.planeSize, z);
         sensorPlane = SensorPlane(spatialResolution, attenuator.planeSize, z);
@@ -42,7 +40,7 @@ for n = 1 : numberOfLightFields
     end
 end
 
-recFourierImageStack = cat(3, recFourierImages{10, :});
+recFourierImageStack = cat(3, recFourierImages{5, :});
 recAverageFourierImage = fftshift(recFourierImageStack); 
 recAverageFourierImage = abs(recAverageFourierImage);
 recAverageFourierImage = log(recAverageFourierImage+1);
@@ -50,12 +48,12 @@ recAverageFourierImage = mat2gray(recAverageFourierImage);
 recAverageFourierImage = mean(recAverageFourierImage, 3);       
 
 
-fourierImageStack = cat(3, fourierImages{10, :});
-averageFourierImage = fftshift(averageFourierImage);        
+fourierImageStack = cat(3, fourierImages{5, :});
+averageFourierImage = fftshift(fourierImageStack);        
 averageFourierImage = abs(averageFourierImage);
 averageFourierImage = log(averageFourierImage+1);
 averageFourierImage = mat2gray(averageFourierImage);
-averageFourierImage = sum(fourierImageStack, 3);
+averageFourierImage = mean(averageFourierImage, 3);
 
 figure;
 subplot(211);
