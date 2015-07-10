@@ -134,10 +134,10 @@ rec.evaluation.displayReconstructedViews();
 
 editor = LightFieldEditor();
 % editor.inputFromImageCollection('../lightFields/dice/perspective/3x3-.2_rect/', 'png', [3, 3], 1);
-editor.inputFromImageCollection('../lightFields/legotruck/', 'png', [17, 17], 0.3);
+editor.inputFromImageCollection('../lightFields/legotruck/', 'png', [17, 17], 0.2);
 % editor.inputFromImageCollection('../lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
-editor.angularSliceY(1 : 2 : 17);
-editor.angularSliceX(1 : 2 : 17);
+editor.angularSliceY(1 : 3 : 17);
+editor.angularSliceX(1 : 3 : 17);
 % editor.angularSliceY(1 : 9);
 % editor.angularSliceX(1 : 9);
 % editor.channelSlice(1);
@@ -154,12 +154,12 @@ lightField = editor.getPerspectiveLightField();
 %%
 
 numberOfLayers = 5;
-attenuatorThickness = 3;
+attenuatorThickness = 1;
 layerResolution = round( 1 * lightField.spatialResolution );
 attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness / (numberOfLayers - 1), lightField.channels);
 
 
-resamplingPlane = SensorPlane(layerResolution, [1, 1], 0);
+resamplingPlane = SensorPlane(3 * layerResolution, [1, 1], -.5);
 
 rec = ReconstructionForResampledLF_V2(lightField, attenuator, resamplingPlane);
 rec.computeAttenuationLayers();
@@ -173,9 +173,9 @@ rec.evaluation.storeLayers(1: numberOfLayers);
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
 rec.evaluation.evaluateViews(reconstructionIndices);
-% rec.evaluation.displayReconstructedViews();
+rec.evaluation.displayReconstructedViews();
 rec.evaluation.storeReconstructedViews();
-% rec.evaluation.displayErrorImages();
+rec.evaluation.displayErrorImages();
 rec.evaluation.storeErrorImages();
 
 
