@@ -1,6 +1,7 @@
 classdef ReconstructionEvaluation < handle
     
     properties (Constant)
+        defaultOutputFolder = 'output/';
         imageOutputType = 'png';
     end
     
@@ -17,6 +18,10 @@ classdef ReconstructionEvaluation < handle
     
     properties (Dependent, SetAccess = private)
         numberOfReconstructions;
+    end
+    
+    properties 
+        outputFolder = ReconstructionEvaluation.defaultOutputFolder;
     end
     
     methods
@@ -60,20 +65,24 @@ classdef ReconstructionEvaluation < handle
             numberOfReconstructions = size(this.reconstructionIndices, 1);
         end
         
+        function set.outputFolder(this, outputFolder)
+            assert(ReconstructionEvaluation.folderExists(outputFolder), ...
+                   'outputFolder:folderDoesNotExist', ...
+                   'Invalid path: The folder "%s" does not exist.', outputFolder);
+            this.outputFolder = outputFolder;
+        end
+        
         function displayReconstructedViews(this)
             for i = 1 : this.numberOfReconstructions
                 this.displaySingleReconstructedView(this.reconstructionIndices(i, :));
             end
         end
         
-        function storeReconstructedViews(this, outputFolder)
-            if(~exist(outputFolder, 'dir'))
-                ReconstructionEvaluation.warningForInvalidFolderPath(outputFolder);
-                return;
-            end
+        function storeReconstructedViews(this)
+            this.createOutputFolderIfNotExists();
             
             for i = 1 : this.numberOfReconstructions
-                this.storeSingleReconstructedView(this.reconstructionIndices(i, :), outputFolder);
+                this.storeSingleReconstructedView(this.reconstructionIndices(i, :));
             end
         end
         
@@ -88,19 +97,17 @@ classdef ReconstructionEvaluation < handle
             fprintf(RMSEoutput);
         end
         
-        function storeErrorImages(this, outputFolder)
-            if(~exist(outputFolder, 'dir'))
-                ReconstructionEvaluation.warningForInvalidFolderPath(outputFolder);
-                return;
-            end
+        function storeErrorImages(this)
+            this.createOutputFolderIfNotExists();
+            
             RMSEoutput = '';
             for i = 1 : this.numberOfReconstructions
                 currentCameraIndex = this.reconstructionIndices(i, :);
-                [~, rmse] = this.storeSingleErrorImage(currentCameraIndex, outputFolder);
+                [~, rmse] = this.storeSingleErrorImage(currentCameraIndex);
                 RMSEoutput = this.appendRMSEOutput(RMSEoutput, currentCameraIndex, rmse);
             end
             
-            ReconstructionEvaluation.writeRMSEToTextFile(RMSEoutput, outputFolder);
+            ReconstructionEvaluation.writeRMSEToTextFile(RMSEoutput, this.outputFolder);
         end
         
         function reconstructedView = getReplicatedReconstructedView(this, cameraIndex)
@@ -117,14 +124,11 @@ classdef ReconstructionEvaluation < handle
             end
         end
         
-        function storeLayers(this, layerNumbers, outputFolder)
-            if(~exist(outputFolder, 'dir'))
-                ReconstructionEvaluation.warningForInvalidFolderPath(outputFolder);
-                return;
-            end
+        function storeLayers(this, layerNumbers)
+            this.createOutputFolderIfNotExists();
             layers = this.getReplicatedAttenuationLayers(layerNumbers);
             for number = 1 : numel(layerNumbers)
-                imwrite(squeeze(layers(number, :, :, :)), sprintf('%s/%i.%s', outputFolder, number, ReconstructionEvaluation.imageOutputType));
+                imwrite(squeeze(layers(number, :, :, :)), sprintf('%s/%i.%s', this.outputFolder, number, ReconstructionEvaluation.imageOutputType));
             end
         end
         
@@ -140,10 +144,10 @@ classdef ReconstructionEvaluation < handle
             title(displayTitle);
         end
         
-        function storeSingleReconstructedView(this, cameraIndex, outputFolder)
+        function storeSingleReconstructedView(this, cameraIndex)
             filename = sprintf('Reconstruction_of_view_(%i,%i)', cameraIndex);
             reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
-            imwrite(reconstructedView, [outputFolder filename '.' ReconstructionEvaluation.imageOutputType]);
+            imwrite(reconstructedView, [this.outputFolder '/' filename '.' ReconstructionEvaluation.imageOutputType]);
         end
         
         function [errorImage, rmse] = displaySingleErrorImage(this, cameraIndex)
@@ -154,10 +158,10 @@ classdef ReconstructionEvaluation < handle
             title(displayTitle);
         end
         
-        function [errorImage, rmse] = storeSingleErrorImage(this, cameraIndex, outputFolder)
+        function [errorImage, rmse] = storeSingleErrorImage(this, cameraIndex)
             [errorImage, rmse] = this.getErrorForView(cameraIndex);
             filename = sprintf('MSE_for_view_(%i,%i)', cameraIndex);
-            imwrite(errorImage, [outputFolder filename '.' ReconstructionEvaluation.imageOutputType]);
+            imwrite(errorImage, [this.outputFolder '/' filename '.' ReconstructionEvaluation.imageOutputType]);
         end
         
         function viewFromOriginal = getReplicatedOriginalView(this, cameraIndex)
@@ -178,6 +182,16 @@ classdef ReconstructionEvaluation < handle
             layers = repmat(layers, [1, this.replicationSizes([LightField.spatialDimensions, LightField.channelDimension])]);
         end
         
+        function valid = outputFolderExists(this)
+            valid = ReconstructionEvaluation.folderExists(this.outputFolder);
+        end
+        
+        function createOutputFolderIfNotExists(this)
+            if(~this.outputFolderExists())
+                mkdir(this.outputFolder);
+            end
+        end
+        
     end
     
     methods (Static, Access = private)
@@ -192,18 +206,18 @@ classdef ReconstructionEvaluation < handle
             warning('Skipping invalid camera index: (%i, %i)\n', cameraIndex);
         end
         
-        function warningForInvalidFolderPath(path)
-            warning('Invalid path: The folder "%s" does not exist. No files were written.', path);
-        end
-        
         function writeRMSEToTextFile(text, outputFolder)
-            rmseFileID = fopen([outputFolder 'RMSE.txt'], 'wt');
+            rmseFileID = fopen([outputFolder '/' 'RMSE.txt'], 'wt');
             fprintf(rmseFileID, text);
             fclose(rmseFileID);
         end
         
         function RMSEoutput = appendRMSEOutput(RMSEoutput, cameraIndex, rmse)
             RMSEoutput = sprintf('%sRMSE for view (%i, %i): %f \n', RMSEoutput, cameraIndex(1), cameraIndex(2), rmse);
+        end
+        
+        function valid = folderExists(folder)
+            valid = exist(folder, 'dir') == 7;
         end
         
     end
