@@ -72,6 +72,10 @@ classdef ReconstructionEvaluation < handle
             this.outputFolder = outputFolder;
         end
         
+        function clearOutputFolder(this)
+        	delete([this.outputFolder '/*']);
+        end
+        
         function displayReconstructedViews(this)
             for i = 1 : this.numberOfReconstructions
                 this.displaySingleReconstructedView(this.reconstructionIndices(i, :));

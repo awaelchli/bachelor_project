@@ -39,6 +39,7 @@ rec.evaluation.displayLayers(1 : numberOfLayers);
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
+rec.evaluation.clearOutputFolder();
 % rec.evaluation.replicateSpatialDimensionY(10);
 rec.evaluation.evaluateViews(reconstructionIndices);
 rec.evaluation.displayReconstructedViews();
@@ -74,6 +75,7 @@ rec.evaluation.displayLayers(1 : numberOfLayers);
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
+rec.evaluation.clearOutputFolder();
 rec.evaluation.evaluateViews(reconstructionIndices);
 rec.evaluation.displayReconstructedViews();
 rec.evaluation.storeReconstructedViews();
@@ -122,6 +124,7 @@ rec.evaluation.displayLayers(1 : numberOfLayers);
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
+rec.evaluation.clearOutputFolder();
 rec.evaluation.evaluateViews(reconstructionIndices);
 rec.evaluation.displayReconstructedViews();
 % rec.evaluation.storeReconstructedViews();
@@ -172,6 +175,7 @@ rec.evaluation.storeLayers(1: numberOfLayers);
 % Indices of views for reconstruction and error evaluation
 reconstructionIndices = [1, 1; 2, 2; 3, 3; 4, 4; 5, 5; 6, 6; 7, 7; 8, 8; 9, 9];
 rec.reconstructLightField();
+rec.evaluation.clearOutputFolder();
 rec.evaluation.evaluateViews(reconstructionIndices);
 rec.evaluation.displayReconstructedViews();
 rec.evaluation.storeReconstructedViews();
