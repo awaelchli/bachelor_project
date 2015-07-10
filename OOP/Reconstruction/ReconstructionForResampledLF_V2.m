@@ -15,9 +15,9 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
             
             this = this@AbstractReconstruction(lightField, attenuator);
             
-            resampledLFResolution = [lightField.angularResolution, attenuator.planeResolution];
+            resampledLFResolution = [lightField.angularResolution, resamplingPlane.planeResolution];
             resampledLFData = zeros([resampledLFResolution, lightField.channels]);
-            newSensorPlane = SensorPlane(attenuator.planeResolution, lightField.sensorPlane.planeSize, lightField.sensorPlane.z);
+            newSensorPlane = SensorPlane(resamplingPlane.planeResolution, lightField.sensorPlane.planeSize, lightField.sensorPlane.z);
             this.resamplingPlane = resamplingPlane;
             
             % Initialize empty light fields
