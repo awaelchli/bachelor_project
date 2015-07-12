@@ -8,7 +8,6 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
     methods
         
         function this = ReconstructionForResampledLF_V2(lightField, attenuator, resamplingPlane)
-            
             this = this@AbstractReconstruction(lightField, attenuator);
             
             resampledLFResolution = [lightField.angularResolution, resamplingPlane.planeResolution];
