@@ -36,15 +36,15 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
             
             P = this.propagationMatrix.formSparseMatrix();
             
-            lightFieldVector = reshape(this.resampledLightField.lightFieldData, [], this.resampledLightField.channels);
+            lightFieldVector = this.resampledLightField.vectorizeData();
 
             % Convert to log light field
-            lightFieldVector(lightFieldVector < 0.01) = 0.01;
+            lightFieldVector(lightFieldVector < Attenuator.minimumTransmission) = Attenuator.minimumTransmission;
             lightFieldVectorLogDomain = log(lightFieldVector);
 
             % Optimization constraints
             ub = zeros(this.propagationMatrix.size(2), this.resampledLightField.channels); 
-            lb = zeros(size(ub)) + log(0.01);
+            lb = zeros(size(ub)) + log(Attenuator.minimumTransmission);
             x0 = zeros(size(ub));
             
             % Solve using SART
