@@ -5,6 +5,7 @@ classdef Attenuator < PixelPlane
         spatialDimensions = [2, 3];
         channelDimension = 4;
         minimumNumberOfLayers = 2;
+        minimumTransmission = 0.01;
     end
     
     properties
