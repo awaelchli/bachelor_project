@@ -5,10 +5,6 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
         resamplingPlane;
     end
     
-    properties
-        iterations = 20;
-    end
-    
     methods
         
         function this = ReconstructionForResampledLF_V2(lightField, attenuator, resamplingPlane)
@@ -32,31 +28,8 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
     
     methods (Access = protected)
         
-        function runOptimization(this)
-            
-            P = this.propagationMatrix.formSparseMatrix();
-            
-            lightFieldVector = this.resampledLightField.vectorizeData();
-
-            % Convert to log light field
-            lightFieldVector(lightFieldVector < Attenuator.minimumTransmission) = Attenuator.minimumTransmission;
-            lightFieldVectorLogDomain = log(lightFieldVector);
-
-            % Optimization constraints
-            ub = zeros(this.propagationMatrix.size(2), this.resampledLightField.channels); 
-            lb = zeros(size(ub)) + log(Attenuator.minimumTransmission);
-            x0 = zeros(size(ub));
-            
-            % Solve using SART
-            attenuationValuesLogDomain = sart(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
-            
-            attenuationValues = exp(attenuationValuesLogDomain);
-            
-            attenuationValues = permute(attenuationValues, [2, 1]);
-            attenuationValues = reshape(attenuationValues, [this.attenuator.channels, this.attenuator.planeResolution, this.attenuator.numberOfLayers]);
-            attenuationValues = permute(attenuationValues, [4, 2, 3, 1]);
-
-            this.attenuator.attenuationValues = attenuationValues;
+        function lightField = getLightFieldForOptimization(this)
+            lightField = this.resampledLightField;
         end
         
         function constructPropagationMatrix(this)

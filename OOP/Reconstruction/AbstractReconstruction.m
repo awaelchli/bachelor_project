@@ -8,6 +8,7 @@ classdef AbstractReconstruction < handle
     end
     
     properties
+        iterations = 20;
         weightFunctionHandle;
     end
     
@@ -19,7 +20,7 @@ classdef AbstractReconstruction < handle
         
         constructPropagationMatrix(this)
         
-        runOptimization(this)
+        lightField = getLightFieldForOptimization(this);
         
         [X, Y] = projection(this, cameraIndex, targetPlaneZ, X, Y, Z)
         
@@ -65,6 +66,36 @@ classdef AbstractReconstruction < handle
         
         function reconstructedLightField = get.reconstructedLightField(this)
             reconstructedLightField = this.evaluation.reconstructedLightField;
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function runOptimization(this)
+            
+            P = this.propagationMatrix.formSparseMatrix();
+            lightFieldVector = this.getLightFieldForOptimization().vectorizeData();
+            
+            % Convert to log light field
+            lightFieldVector(lightFieldVector < Attenuator.minimumTransmission) = Attenuator.minimumTransmission;
+            lightFieldVectorLogDomain = log(lightFieldVector);
+
+            % Optimization constraints
+            ub = zeros(this.propagationMatrix.size(2), this.getLightFieldForOptimization().channels); 
+            lb = zeros(size(ub)) + log(Attenuator.minimumTransmission);
+            x0 = zeros(size(ub));
+            
+            % Solve using SART
+            attenuationValuesLogDomain = sart(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
+            
+            attenuationValues = exp(attenuationValuesLogDomain);
+            
+            attenuationValues = permute(attenuationValues, [2, 1]);
+            attenuationValues = reshape(attenuationValues, [this.attenuator.channels, this.attenuator.planeResolution, this.attenuator.numberOfLayers]);
+            attenuationValues = permute(attenuationValues, [4, 2, 3, 1]);
+
+            this.attenuator.attenuationValues = attenuationValues;
         end
         
     end
