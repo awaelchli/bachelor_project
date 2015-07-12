@@ -21,7 +21,7 @@ classdef AbstractReconstruction < handle
         
         runOptimization(this)
         
-        [X, Y] = projection(this, centerOfProjection, targetPlaneZ, X, Y, Z)
+        [X, Y] = projection(this, cameraIndex, targetPlaneZ, X, Y, Z)
         
         weightMatrix = computeRayIntersectionWeights(this, pixelIndexMatrixY, pixelIndexMatrixX, intersectionMatrixY, intersectionMatrixX)
         

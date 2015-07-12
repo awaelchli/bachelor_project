@@ -62,11 +62,10 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
         function constructPropagationMatrix(this)
             
             angularResolution = this.lightField.angularResolution;
-            cameraPositionMatrixY = this.lightField.cameraPlane.cameraPositionMatrixY;
-            cameraPositionMatrixX = this.lightField.cameraPlane.cameraPositionMatrixX;
-        
+            
             pixelPositionsOnResamplingPlaneMatrixY = this.resamplingPlane.pixelPositionMatrixY;
             pixelPositionsOnResamplingPlaneMatrixX = this.resamplingPlane.pixelPositionMatrixX;
+            resamplingPlaneZ = this.resamplingPlane.z;
 
             [ pixelIndexOnResamplingPlaneMatrixY, pixelIndexOnResamplingPlaneMatrixX ] = ndgrid(1 : this.resamplingPlane.planeResolution(1), 1 : this.resamplingPlane.planeResolution(2));
 
@@ -75,15 +74,8 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
             for camIndexY = 1 : angularResolution(1)
                 for camIndexX = 1 : angularResolution(2)
                     
-                    % get the position of the current camera on the camera plane
-                    cameraPosition = [ cameraPositionMatrixY(camIndexY, camIndexX), ...
-                                       cameraPositionMatrixX(camIndexY, camIndexX), ...
-                                       this.lightField.cameraPlane.z ];
-        
-                    resamplingPlaneZ = this.resamplingPlane.z;
-
                     [ positionsOnSensorPlaneMatrixY, ...
-                      positionsOnSensorPlaneMatrixX ] = this.projection(cameraPosition, ...
+                      positionsOnSensorPlaneMatrixX ] = this.projection([camIndexY, camIndexX], ...
                                                                         this.lightField.sensorPlane.z, ...
                                                                         pixelPositionsOnResamplingPlaneMatrixY, ...
                                                                         pixelPositionsOnResamplingPlaneMatrixX, ...
@@ -108,7 +100,7 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
                         currentLayerZ = this.attenuator.layerPositionZ(layer);
                         
                         [ positionsOnLayerMatrixY, ...
-                          positionsOnLayerMatrixX ] = this.projection(cameraPosition, ...
+                          positionsOnLayerMatrixX ] = this.projection([camIndexY, camIndexX], ...
                                                                       currentLayerZ, ...
                                                                       pixelPositionsOnResamplingPlaneMatrixY, ...
                                                                       pixelPositionsOnResamplingPlaneMatrixX, ...
@@ -156,7 +148,12 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
             end
         end
         
-        function [X, Y] = projection(~, centerOfProjection, targetPlaneZ, X, Y, Z)
+        function [X, Y] = projection(this, cameraIndex, targetPlaneZ, X, Y, Z)
+            
+            % get the position of the current camera on the camera plane
+            centerOfProjection = [this.lightField.cameraPlane.cameraPositionMatrixY(cameraIndex(1), cameraIndex(2)), ...
+                                  this.lightField.cameraPlane.cameraPositionMatrixX(cameraIndex(1), cameraIndex(2)), ...
+                                  this.lightField.cameraPlane.z];
             
             distanceBetweenCameraPlaneAndFirstPlane = centerOfProjection(3) - Z;
             distanceBetweenCameraPlaneAndSecondPlane = centerOfProjection(3) - targetPlaneZ;
