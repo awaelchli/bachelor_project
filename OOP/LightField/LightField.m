@@ -55,6 +55,10 @@ classdef LightField < handle
             valid = PixelPlane.isValidIndex(index, this.spatialResolution);
         end
         
+        function lightFieldVector = vectorizeData(this)
+            lightFieldVector = reshape(this.lightFieldData, [], this.channels);
+        end
+        
     end
     
     methods (Access = protected)
