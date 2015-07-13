@@ -16,8 +16,6 @@ classdef LightField < handle
         angularResolution;
         spatialResolution;
         channels;
-        spatialAspectRatio;
-        angularAspectRatio;
     end
     
     methods
@@ -42,14 +40,6 @@ classdef LightField < handle
         
         function channels = get.channels(this)
             channels = size(this.lightFieldData, LightField.channelDimension);
-        end
-        
-        function aspect = get.spatialAspectRatio(this)
-            aspect = this.spatialResolution(2) / this.spatialResolution(1);
-        end
-        
-        function aspect = get.angularAspectRatio(this)
-            aspect = this.angularResolution(2) / this.angularResolution(1);
         end
         
         function replaceView(this, angularIndexY, angularIndexX, image)
