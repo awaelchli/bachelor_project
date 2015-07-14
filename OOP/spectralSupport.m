@@ -3,7 +3,7 @@ numberOfLightFields = 100;
 spatialResolution = [1, 100];
 angularResolution = [1, 15];
 thickness = 3;
-N = 3;
+N = 5;
 attenuator = Attenuator(N, spatialResolution, [1, 1], thickness / (N-1), 3);
 resamplingPlaneZ = -thickness / 2;
 cameraPlane = CameraPlane(angularResolution, [0.1, 0.1], 10);
@@ -29,7 +29,7 @@ for n = 1 : numberOfLightFields
     data = permute(data, [3, 4, 1, 2, 5]);
     data = data(1, :, 1, :, :);
     
-    resamplingPlane = SensorPlane(spatialResolution, attenuator.planeSize, resamplingPlaneZ);
+    resamplingPlane = SensorPlane(2 * spatialResolution, attenuator.planeSize, resamplingPlaneZ);
     lightField = LightFieldP(data, cameraPlane, sensorPlane);
 
     rec = ReconstructionForResampledLF_V2(lightField, attenuator, resamplingPlane);
