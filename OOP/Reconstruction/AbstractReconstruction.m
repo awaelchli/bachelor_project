@@ -3,7 +3,10 @@ classdef AbstractReconstruction < handle
     properties (SetAccess = protected)
         lightField;
         attenuator;
+        % The propagation matrix used to solve for the attenuation values
         propagationMatrix;
+        % A different propagation matrix P that can be used for reconstructing views from attenuation layers
+        P;
         evaluation;
     end
     
@@ -52,9 +55,13 @@ classdef AbstractReconstruction < handle
         
         function reconstructLightField(this)
             
+            if(isempty(this.P))
+                this.P = this.propagationMatrix.formSparseMatrix();
+            end
+            
             attenuationValues = permute(this.attenuator.attenuationValues, [2, 3, 1, 4]);
             attenuationValues = reshape(attenuationValues, this.propagationMatrix.size(2), []);
-            reconstructionVector = this.propagationMatrix.formSparseMatrix * log(attenuationValues);
+            reconstructionVector = this.P * log(attenuationValues);
 
             % convert the light field vector to the 4D light field
             reconstructionData = reshape(reconstructionVector, [this.evaluation.reconstructedLightField.resolution, this.evaluation.reconstructedLightField.channels]);
@@ -68,13 +75,20 @@ classdef AbstractReconstruction < handle
             reconstructedLightField = this.evaluation.reconstructedLightField;
         end
         
+        function usePropagationMatrix(this, P)
+            assert(size(P, 2) == this.propagationMatrix.size(2), ...
+                   'set.P:newPmatrixHasWrongDimensions', ...
+                   'The second dimension of the matrix does not match the resolution of the attenuator.');
+            this.P = P;
+        end
+        
     end
     
     methods (Access = protected)
         
         function runOptimization(this)
             
-            P = this.propagationMatrix.formSparseMatrix();
+            this.P = this.propagationMatrix.formSparseMatrix();
             lightFieldVector = this.getLightFieldForOptimization().vectorizeData();
             
             % Convert to log light field
@@ -87,7 +101,7 @@ classdef AbstractReconstruction < handle
             x0 = zeros(size(ub));
             
             % Solve using SART
-            attenuationValuesLogDomain = sart(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
+            attenuationValuesLogDomain = sart(this.P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
             
             attenuationValues = exp(attenuationValuesLogDomain);
             
