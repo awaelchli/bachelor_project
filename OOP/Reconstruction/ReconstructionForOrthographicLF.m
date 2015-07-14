@@ -8,8 +8,6 @@ classdef ReconstructionForOrthographicLF < AbstractReconstruction
             lightFieldData = zeros([this.lightField.resolution, this.lightField.channels]);
             reconstructedLightField = LightFieldO(lightFieldData, lightField.sensorPlane, lightField.fov);
             this.evaluation = ReconstructionEvaluation(this.lightField, attenuator, reconstructedLightField);
-            
-            this.propagationMatrix = PropagationMatrix(this.lightField, attenuator);
         end
         
     end
