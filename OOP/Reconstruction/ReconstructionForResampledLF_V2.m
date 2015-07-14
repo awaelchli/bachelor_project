@@ -1,5 +1,9 @@
 classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
     
+    properties (Constant)
+        interpolationMethod = 'linear';
+    end
+    
     properties (SetAccess = private)
         resampledLightField;
         resamplingPlane;
@@ -173,7 +177,7 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
             grid = cell(1, nnz(~indicesOfScalars));
             [ grid{:} ] = ndgrid(gridVectors{~indicesOfScalars});
             
-            this.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}, 'linear', 0));
+            this.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}, ReconstructionForResampledLF_V2.interpolationMethod, 0));
         end
         
     end
