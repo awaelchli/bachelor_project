@@ -13,6 +13,7 @@ classdef AbstractReconstruction < handle
     properties
         iterations = 20;
         weightFunctionHandle;
+        verbose = 1;
     end
     
     properties (Dependent, SetAccess = private)
@@ -44,15 +45,27 @@ classdef AbstractReconstruction < handle
         function computeAttenuationLayers(this)
             
             tic;
-            fprintf('\nComputing matrix P...\n');
+            if(this.verbose)
+                fprintf('\nComputing propagation matrix P ...\n');
+            end
+            
             this.constructPropagationMatrix();
             this.propagationMatrixForReconstruction = this.propagationMatrix;
-            fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
+            
+            if(this.verbose)
+                fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
+            end
            
             tic;
-            fprintf('Running optimization ...\n');
+            if(this.verbose)
+                fprintf('Running optimization ...\n');
+            end
+            
             this.runOptimization();
-            fprintf('Optimization took %i seconds.\n', floor(toc));
+            
+            if(this.verbose)
+                fprintf('Optimization took %i seconds.\n', floor(toc));
+            end
             
         end
         
@@ -109,6 +122,16 @@ classdef AbstractReconstruction < handle
             attenuationValues = permute(attenuationValues, [4, 2, 3, 1]);
 
             this.attenuator.attenuationValues = attenuationValues;
+        end
+        
+        function progressUpdateForMatrixConstruction(this, angularIndexY, angularIndexX)
+            if(~this.verbose)
+                return;
+            end
+            fprintf('(%i, %i) ', angularIndexY, angularIndexX);
+            if(angularIndexX == this.lightField.angularResolution(2))
+                fprintf('\n');
+            end
         end
         
     end
