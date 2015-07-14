@@ -44,8 +44,6 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
 
             [ pixelIndexOnResamplingPlaneMatrixY, pixelIndexOnResamplingPlaneMatrixX ] = ndgrid(1 : this.resamplingPlane.planeResolution(1), 1 : this.resamplingPlane.planeResolution(2));
 
-            fprintf('Views done: \n');
-
             for camIndexY = 1 : this.lightField.angularResolution(1)
                 for camIndexX = 1 : this.lightField.angularResolution(2)
                     
@@ -116,10 +114,8 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
                                                              weightsForLayerMatrix);
                     end
                     
-                    fprintf('(%i, %i) ', camIndexY, camIndexX);
+                    this.progressUpdateForMatrixConstruction(camIndexY, camIndexX);
                 end
-                
-                fprintf('\n');
             end
         end
         
