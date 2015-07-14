@@ -32,12 +32,11 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
     methods (Access = protected)
         
         function lightField = getLightFieldForOptimization(this)
+            % Use the resampled light field for optimization instead of the input light field
             lightField = this.resampledLightField;
         end
         
         function constructPropagationMatrix(this)
-            
-            angularResolution = this.lightField.angularResolution;
             
             pixelPositionsOnResamplingPlaneMatrixY = this.resamplingPlane.pixelPositionMatrixY;
             pixelPositionsOnResamplingPlaneMatrixX = this.resamplingPlane.pixelPositionMatrixX;
@@ -47,8 +46,8 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
 
             fprintf('Views done: \n');
 
-            for camIndexY = 1 : angularResolution(1)
-                for camIndexX = 1 : angularResolution(2)
+            for camIndexY = 1 : this.lightField.angularResolution(1)
+                for camIndexX = 1 : this.lightField.angularResolution(2)
                     
                     [ positionsOnSensorPlaneMatrixY, ...
                       positionsOnSensorPlaneMatrixX ] = this.projection([camIndexY, camIndexX], ...
