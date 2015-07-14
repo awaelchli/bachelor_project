@@ -183,6 +183,11 @@ resamplingPlane = SensorPlane(2 * layerResolution, [1, 1], 0);
 rec = ReconstructionForResampledLF_V2(lightFieldBlurred, attenuator, resamplingPlane);
 rec.computeAttenuationLayers();
 
+resamplingPlane = SensorPlane(1 * layerResolution, [1, 1], 0);
+rec2 = ReconstructionForResampledLF_V2(lightFieldBlurred, attenuator, resamplingPlane);
+rec2.computeAttenuationLayers();
+
+rec.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
 close all;
 
 rec.evaluation.displayLayers(1 : numberOfLayers);

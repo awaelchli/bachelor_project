@@ -5,8 +5,8 @@ classdef AbstractReconstruction < handle
         attenuator;
         % The propagation matrix used to solve for the attenuation values
         propagationMatrix;
-        % A different propagation matrix P that can be used for reconstructing views from attenuation layers
-        P;
+        % A different propagation matrix that can be used for reconstructing views from attenuation layers
+        propagationMatrixForReconstruction;
         evaluation;
     end
     
@@ -36,6 +36,8 @@ classdef AbstractReconstruction < handle
         function this = AbstractReconstruction(lightField, attenuator)
             this.lightField = lightField;
             this.attenuator = attenuator;
+            this.propagationMatrix = PropagationMatrix(lightField, attenuator);
+            this.propagationMatrixForReconstruction = this.propagationMatrix;
             this.weightFunctionHandle = @(data) ones(size(data, 1), 1);
         end
         
@@ -44,6 +46,7 @@ classdef AbstractReconstruction < handle
             tic;
             fprintf('\nComputing matrix P...\n');
             this.constructPropagationMatrix();
+            this.propagationMatrixForReconstruction = this.propagationMatrix;
             fprintf('Done calculating P. Calculation took %i seconds.\n', floor(toc));
            
             tic;
@@ -55,16 +58,12 @@ classdef AbstractReconstruction < handle
         
         function reconstructLightField(this)
             
-            if(isempty(this.P))
-                this.P = this.propagationMatrix.formSparseMatrix();
-            end
-            
             attenuationValues = permute(this.attenuator.attenuationValues, [2, 3, 1, 4]);
             attenuationValues = reshape(attenuationValues, this.propagationMatrix.size(2), []);
-            reconstructionVector = this.P * log(attenuationValues);
+            reconstructionVector = this.propagationMatrixForReconstruction.formSparseMatrix() * log(attenuationValues);
 
             % convert the light field vector to the 4D light field
-            reconstructionData = reshape(reconstructionVector, [this.evaluation.reconstructedLightField.resolution, this.evaluation.reconstructedLightField.channels]);
+            reconstructionData = reshape(reconstructionVector, [this.propagationMatrixForReconstruction.lightFieldSubscriptRange, this.evaluation.reconstructedLightField.channels]);
             reconstructionData = exp(reconstructionData);
             reconstructedLF = LightField(reconstructionData);
             this.evaluation = ReconstructionEvaluation(this.evaluation.lightField, this.attenuator, reconstructedLF);
@@ -75,11 +74,11 @@ classdef AbstractReconstruction < handle
             reconstructedLightField = this.evaluation.reconstructedLightField;
         end
         
-        function usePropagationMatrix(this, P)
-            assert(size(P, 2) == this.propagationMatrix.size(2), ...
+        function usePropagationMatrixForReconstruction(this, P)
+            assert(P.size(2) == this.propagationMatrix.size(2), ...
                    'set.P:newPmatrixHasWrongDimensions', ...
                    'The second dimension of the matrix does not match the resolution of the attenuator.');
-            this.P = P;
+            this.propagationMatrixForReconstruction = P;
         end
         
     end
@@ -88,7 +87,7 @@ classdef AbstractReconstruction < handle
         
         function runOptimization(this)
             
-            this.P = this.propagationMatrix.formSparseMatrix();
+            P = this.propagationMatrix.formSparseMatrix();
             lightFieldVector = this.getLightFieldForOptimization().vectorizeData();
             
             % Convert to log light field
@@ -101,7 +100,7 @@ classdef AbstractReconstruction < handle
             x0 = zeros(size(ub));
             
             % Solve using SART
-            attenuationValuesLogDomain = sart(this.P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
+            attenuationValuesLogDomain = sart(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
             
             attenuationValues = exp(attenuationValuesLogDomain);
             
