@@ -11,6 +11,7 @@ classdef PixelPlane < handle
         pixelPositionMatrixX;
         height;
         width;
+        aspectRatio;
     end
     
     methods
@@ -37,6 +38,10 @@ classdef PixelPlane < handle
         
         function width = get.width(self)
             width = self.planeSize(2);
+        end
+        
+        function aspect = get.aspectRatio(this)
+            aspect = this.width / this.height;
         end
         
         function [Y, X, validIndices] = positionToPixelCoordinates(this, Y, X)
