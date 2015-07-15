@@ -2,6 +2,8 @@ classdef LightFieldEditor < handle
     
     properties (Constant, Access = private)
         inputTypeImageCollection = 'collection';
+        inputTypeH5File = 'H5';
+        inputTypeLytroFile = 'LytroLFR';
     end
     
     properties (Access = private)
