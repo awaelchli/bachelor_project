@@ -148,7 +148,7 @@ classdef LightFieldEditor < handle
         function replicateChannelDimension(this, replication)
             this.replicationSizes(LightField.channelDimension) = replication;
         end
-        
+
     end
     
     methods (Access = private)
@@ -213,6 +213,46 @@ classdef LightFieldEditor < handle
             valid = all(0 < indices) & ...
                     all(resolution(dimensionIndex) >= indices) & ...
                     all(~mod(indices, 1));
+        end
+        
+        function rectifiedData = shear(lightFieldData, disparityShift)
+            
+            if(~isscalar(disparityShift) || disparityShift < 0)
+                errorStruct.message = 'The disparity shift must be a positive scalar.';
+                errorStruct.identifier = 'shear:disparityNotPositiveScalar';
+                error(errorStruct);
+            end
+            
+            if(numel(size(lightFieldData)) ~= LightField.lightFieldDimension + 1)
+                errorStruct.message = 'The light field data must be a 5-dimensional array.';
+                errorStruct.identifier = 'shear:wrongDimensionOfData';
+                error(errorStruct);
+            end
+            
+            if(disparityShift == 0)
+                rectifiedData = lightFieldData;
+                return;
+            end
+            
+            resolution = size(lightFieldData);
+            
+            cutSizesTop = (resolution(LightField.angularDimensions(1)) - 1) * disparityShift : -disparityShift : 0;
+            cutSizesLeft = (resolution(LightField.angularDimensions(2)) - 1) * disparityShift : -disparityShift : 0;
+            newHeight = resolution(LightField.spatialDimensions(1)) - cutSizesTop(1);
+            newWidth = resolution(LightField.spatialDimensions(2)) - cutSizesLeft(1);
+
+            rectifiedData = zeros([resolution(LightField.angularDimensions), newHeight, newWidth, resolution(LightField.channelDimension)]);
+
+            for cy = 1 : resolution(LightField.angularDimensions(1))
+                for cx = 1 : resolution(LightField.angularDimensions(2))
+
+                    image = squeeze(lightFieldData(cy, cx, :, :, :));
+                    top = cutSizesTop(cy);
+                    left = cutSizesLeft(cx);
+                    rectifiedImage = image(top + 1 : top + newHeight, left + 1 : left + newWidth, :);
+                    rectifiedData(cy, cx, :, :, :) = rectifiedImage;
+                end
+            end
         end
         
     end
