@@ -14,6 +14,7 @@ classdef AbstractReconstruction < handle
         iterations = 20;
         weightFunctionHandle;
         verbose = 1;
+        solver = @sart;
     end
     
     properties (Dependent, SetAccess = private)
@@ -112,8 +113,8 @@ classdef AbstractReconstruction < handle
             lb = zeros(size(ub)) + log(Attenuator.minimumTransmission);
             x0 = zeros(size(ub));
             
-            % Solve using SART
-            attenuationValuesLogDomain = sart(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
+            % Solve the optimization problem using the provided solver
+            attenuationValuesLogDomain = this.solver(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
             
             attenuationValues = exp(attenuationValuesLogDomain);
             
