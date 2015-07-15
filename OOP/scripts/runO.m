@@ -6,6 +6,7 @@ lightField = editor.getOrthographicLightField();
 attenuator = Attenuator(5, lightField.spatialResolution, [1, 1], 0.1, lightField.channels);
 
 rec = ReconstructionForOrthographicLF(lightField, attenuator);
+% rec.solver = @linearLeastSquares;
 rec.computeAttenuationLayers();
 
 close all;

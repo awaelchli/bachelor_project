@@ -27,7 +27,7 @@ attenuatorThickness = 1;
 layerResolution = round( 1 * lightFieldBlurred.spatialResolution );
 attenuator = Attenuator(numberOfLayers, layerResolution, lightFieldBlurred.sensorPlane.planeSize, attenuatorThickness / (numberOfLayers - 1), lightFieldBlurred.channels);
 
-rec = ReconstructionForResampledLF(lightFieldBlurred, attenuator);
+rec = ReconstructionForResampledLF_V2(lightFieldBlurred, attenuator);
 rec.computeAttenuationLayers();
 
 
@@ -118,7 +118,7 @@ attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThick
 
 resamplingPlane = SensorPlane(4 * layerResolution, [1, 1], editor.sensorPlaneZ);
 
-rec = ReconstructionForResampledLF_V2(lightFieldBlurred, attenuator, resamplingPlane);
+rec = ReconstructionForResampledLF(lightFieldBlurred, attenuator, resamplingPlane);
 rec.computeAttenuationLayers();
 
 
@@ -141,8 +141,8 @@ rec.evaluation.displayErrorImages();
 
 editor = LightFieldEditor();
 % editor.inputFromImageCollection('../lightFields/dice/perspective/3x3-.2_rect/', 'png', [3, 3], 1);
-% editor.inputFromImageCollection('../lightFields/legotruck/', 'png', [17, 17], 0.2);
-editor.inputFromImageCollection('../lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
+editor.inputFromImageCollection('../lightFields/legotruck/', 'png', [17, 17], 0.2);
+% editor.inputFromImageCollection('../lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
 editor.angularSliceY(1 : 3 : 17);
 editor.angularSliceX(1 : 3 : 17);
 % editor.angularSliceY(1 : 9);
@@ -180,11 +180,13 @@ attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThick
 
 resamplingPlane = SensorPlane(1 * layerResolution, [1, 1], - attenuatorThickness / 2);
 
-rec = ReconstructionForResampledLF_V2(lightField, attenuator, resamplingPlane);
+rec = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
+rec.solver = @linearLeastSquares;
 rec.computeAttenuationLayers();
 
+
 resamplingPlane2 = SensorPlane(1 * layerResolution, [1, 1], 0);
-rec2 = ReconstructionForResampledLF_V2(lightField, attenuator, resamplingPlane2);
+rec2 = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec2.computeAttenuationLayers();
 
 rec.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
