@@ -1,4 +1,4 @@
-classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
+classdef ReconstructionForResampledLF < AbstractReconstruction
     
     properties (Constant)
         interpolationMethod = 'linear';
@@ -11,7 +11,7 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
     
     methods
         
-        function this = ReconstructionForResampledLF_V2(lightField, attenuator, resamplingPlane)
+        function this = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane)
             this = this@AbstractReconstruction(lightField, attenuator);
             
             resampledLFResolution = [lightField.angularResolution, resamplingPlane.planeResolution];
@@ -172,7 +172,7 @@ classdef ReconstructionForResampledLF_V2 < AbstractReconstruction
             grid = cell(1, nnz(~indicesOfScalars));
             [ grid{:} ] = ndgrid(gridVectors{~indicesOfScalars});
             
-            this.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}, ReconstructionForResampledLF_V2.interpolationMethod, 0));
+            this.resampledLightField.replaceView(camIndexY, camIndexX, interpn(view, grid{:}, ReconstructionForResampledLF.interpolationMethod, 0));
         end
         
     end
