@@ -10,14 +10,6 @@ classdef ReconstructionForOrthographicLF < AbstractReconstruction
             this.evaluation = ReconstructionEvaluation(this.lightField, attenuator, reconstructedLightField);
         end
         
-    end
-    
-    methods (Access = protected)
-        
-        function lightField = getLightFieldForOptimization(this)
-            lightField = this.lightField;
-        end
-        
         function constructPropagationMatrix(this)
             
             posY = this.lightField.sensorPlane.pixelPositionMatrixY;
@@ -62,7 +54,14 @@ classdef ReconstructionForOrthographicLF < AbstractReconstruction
                     end
                 end
             end
-            
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function lightField = getLightFieldForOptimization(this)
+            lightField = this.lightField;
         end
         
         function [X, Y] = projection(this, cameraIndex, targetPlaneZ, X, Y, Z)

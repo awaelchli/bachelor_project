@@ -27,15 +27,6 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
             this.propagationMatrix = PropagationMatrix(this.resampledLightField, attenuator);
         end
         
-    end
-    
-    methods (Access = protected)
-        
-        function lightField = getLightFieldForOptimization(this)
-            % Use the resampled light field for optimization instead of the input light field
-            lightField = this.resampledLightField;
-        end
-        
         function constructPropagationMatrix(this)
             
             pixelPositionsOnResamplingPlaneMatrixY = this.resamplingPlane.pixelPositionMatrixY;
@@ -117,6 +108,15 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
                     this.progressUpdateForMatrixConstruction(camIndexY, camIndexX);
                 end
             end
+        end
+        
+    end
+    
+    methods (Access = protected)
+        
+        function lightField = getLightFieldForOptimization(this)
+            % Use the resampled light field for optimization instead of the input light field
+            lightField = this.resampledLightField;
         end
         
         function [X, Y] = projection(this, cameraIndex, targetPlaneZ, X, Y, Z)

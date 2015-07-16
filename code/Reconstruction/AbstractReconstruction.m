@@ -21,9 +21,13 @@ classdef AbstractReconstruction < handle
         reconstructedLightField;
     end
     
-    methods (Abstract, Access = protected)
+    methods (Abstract)
         
         constructPropagationMatrix(this)
+        
+    end
+    
+    methods (Abstract, Access = protected)
         
         lightField = getLightFieldForOptimization(this);
         
