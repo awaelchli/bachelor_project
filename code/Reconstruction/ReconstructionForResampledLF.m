@@ -6,18 +6,18 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
     
     properties (SetAccess = private)
         resampledLightField;
-        resamplingPlane;
+        samplingPlane;
     end
     
     methods
         
-        function this = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane)
+        function this = ReconstructionForResampledLF(lightField, attenuator, samplingPlane)
             this = this@AbstractReconstruction(lightField, attenuator);
             
-            resampledLFResolution = [lightField.angularResolution, resamplingPlane.planeResolution];
+            resampledLFResolution = [lightField.angularResolution, samplingPlane.planeResolution];
             resampledLFData = zeros([resampledLFResolution, lightField.channels]);
-            newSensorPlane = SensorPlane(resamplingPlane.planeResolution, lightField.sensorPlane.planeSize, lightField.sensorPlane.z);
-            this.resamplingPlane = resamplingPlane;
+            newSensorPlane = SensorPlane(samplingPlane.planeResolution, lightField.sensorPlane.planeSize, lightField.sensorPlane.z);
+            this.samplingPlane = samplingPlane;
             
             % Initialize empty light fields
             this.resampledLightField = LightFieldP(resampledLFData, lightField.cameraPlane, newSensorPlane);
@@ -29,11 +29,11 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
         
         function constructPropagationMatrix(this)
             
-            pixelPositionsOnResamplingPlaneMatrixY = this.resamplingPlane.pixelPositionMatrixY;
-            pixelPositionsOnResamplingPlaneMatrixX = this.resamplingPlane.pixelPositionMatrixX;
-            resamplingPlaneZ = this.resamplingPlane.z;
+            pixelPositionsOnSamplingPlaneMatrixY = this.samplingPlane.pixelPositionMatrixY;
+            pixelPositionsOnSamplingPlaneMatrixX = this.samplingPlane.pixelPositionMatrixX;
+            samplingPlaneZ = this.samplingPlane.z;
 
-            [ pixelIndexOnResamplingPlaneMatrixY, pixelIndexOnResamplingPlaneMatrixX ] = ndgrid(1 : this.resamplingPlane.planeResolution(1), 1 : this.resamplingPlane.planeResolution(2));
+            [ pixelIndexOnSamplingPlaneMatrixY, pixelIndexOnSamplingPlaneMatrixX ] = ndgrid(1 : this.samplingPlane.planeResolution(1), 1 : this.samplingPlane.planeResolution(2));
 
             for camIndexY = 1 : this.lightField.angularResolution(1)
                 for camIndexX = 1 : this.lightField.angularResolution(2)
@@ -41,9 +41,9 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
                     [ positionsOnSensorPlaneMatrixY, ...
                       positionsOnSensorPlaneMatrixX ] = this.projection([camIndexY, camIndexX], ...
                                                                         this.lightField.sensorPlane.z, ...
-                                                                        pixelPositionsOnResamplingPlaneMatrixY, ...
-                                                                        pixelPositionsOnResamplingPlaneMatrixX, ...
-                                                                        resamplingPlaneZ);
+                                                                        pixelPositionsOnSamplingPlaneMatrixY, ...
+                                                                        pixelPositionsOnSamplingPlaneMatrixX, ...
+                                                                        samplingPlaneZ);
                     
                     [ sensorIntersectionMatrixY, ...
                       sensorIntersectionMatrixX, ...
@@ -54,8 +54,8 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
                   
                     this.resampleView(camIndexY, camIndexX, sensorIntersectionMatrixY, sensorIntersectionMatrixX);
                     
-                    pixelIndexOnSensorMatrixY = pixelIndexOnResamplingPlaneMatrixY; % contains also the invalid indices
-                    pixelIndexOnSensorMatrixX = pixelIndexOnResamplingPlaneMatrixX; % contains also the invalid indices
+                    pixelIndexOnSensorMatrixY = pixelIndexOnSamplingPlaneMatrixY; % contains also the invalid indices
+                    pixelIndexOnSensorMatrixX = pixelIndexOnSamplingPlaneMatrixX; % contains also the invalid indices
 
                     for layer = 1 : this.attenuator.numberOfLayers
 
@@ -66,9 +66,9 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
                         [ positionsOnLayerMatrixY, ...
                           positionsOnLayerMatrixX ] = this.projection([camIndexY, camIndexX], ...
                                                                       currentLayerZ, ...
-                                                                      pixelPositionsOnResamplingPlaneMatrixY, ...
-                                                                      pixelPositionsOnResamplingPlaneMatrixX, ...
-                                                                      resamplingPlaneZ);
+                                                                      pixelPositionsOnSamplingPlaneMatrixY, ...
+                                                                      pixelPositionsOnSamplingPlaneMatrixX, ...
+                                                                      samplingPlaneZ);
                         
                         [ layerIntersectionMatrixY, ...
                           layerIntersectionMatrixX, ...
