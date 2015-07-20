@@ -195,8 +195,8 @@ classdef LightFieldEditor < handle
             for y = 1 : this.angularResolution(1)
                 for x = 1 : this.angularResolution(2)
                     
-                    imageIndex = (angularSlicesY(y) - 1) * this.angularResolution(2) + angularSlicesX(x);
-
+                    imageIndex = (angularSlicesY(y) - 1) * this.input.angularResolution(2) + angularSlicesX(x);
+                    
                     image = im2double(imread([this.input.folder imageList(imageIndex).name]));
                     image = imresize(image, this.input.resizeScale, 'bilinear');
                     image = image(spatialSlicesY, spatialSlicesX, channelSlices);
