@@ -123,8 +123,9 @@ classdef ReconstructionEvaluation < handle
         function displayLayers(this, layerNumbers)
             layers = this.getReplicatedAttenuationLayers(layerNumbers);
             for i = 1 : numel(layerNumbers)
-                figure('Name', sprintf('Layer %i', layerNumbers(i)));
+                f = figure('Name', sprintf('Layer %i', layerNumbers(i)));
                 imshow(squeeze(layers(i, :, :, :)));
+                set(f, 'Position', get(0, 'Screensize'));
             end
         end
         
@@ -143,8 +144,9 @@ classdef ReconstructionEvaluation < handle
         function displaySingleReconstructedView(this, cameraIndex)
             reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
             displayTitle = sprintf('Reconstruction of view (%i, %i)', cameraIndex);
-            figure('Name', 'Light field reconstruction from attenuation layers')
-            imshow(reconstructedView)
+            f = figure('Name', 'Light field reconstruction from attenuation layers');
+            imshow(reconstructedView);
+            set(f, 'Position', get(0, 'Screensize'));
             title(displayTitle);
         end
         
@@ -157,8 +159,9 @@ classdef ReconstructionEvaluation < handle
         function [errorImage, rmse] = displaySingleErrorImage(this, cameraIndex)
             [errorImage, rmse] = this.getErrorForView(cameraIndex);
             displayTitle = sprintf('MSE for view (%i, %i)', cameraIndex);
-            figure('Name', 'Mean-Square-Error for reconstructed view')
-            imshow(errorImage, [])
+            f = figure('Name', 'Mean-Square-Error for reconstructed view');
+            imshow(errorImage, []);
+            set(f, 'Position', get(0, 'Screensize'));
             title(displayTitle);
         end
         
