@@ -4,6 +4,7 @@ classdef LightFieldEditor < handle
         inputTypeImageCollection = 'collection';
         inputTypeH5File = 'H5';
         inputTypeLytroFile = 'LytroLFR';
+        resizeInterpolationMethod = 'bilinear';
     end
     
     properties (Access = private)
@@ -198,7 +199,7 @@ classdef LightFieldEditor < handle
                     imageIndex = (angularSlicesY(y) - 1) * this.input.angularResolution(2) + angularSlicesX(x);
                     
                     image = im2double(imread([this.input.folder imageList(imageIndex).name]));
-                    image = imresize(image, this.input.resizeScale, 'bilinear');
+                    image = imresize(image, this.input.resizeScale, LightFieldEditor.resizeInterpolationMethod);
                     image = image(spatialSlicesY, spatialSlicesX, channelSlices);
                     this.lightFieldData(y, x, :, :, :) = image;
                 end
