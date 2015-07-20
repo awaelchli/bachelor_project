@@ -1,5 +1,5 @@
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.4);
 editor.angularSliceY(1 : 3 : 17);
 editor.angularSliceX(1 : 3 : 17);
 editor.distanceBetweenTwoCameras = [0.03, 0.03];
@@ -9,13 +9,13 @@ editor.sensorPlaneZ = 0;
 
 lightField = editor.getPerspectiveLightField();
 
-numberOfLayers = 5;
-attenuatorThickness = 3;
+numberOfLayers = 10;
+attenuatorThickness = 5;
 layerResolution = round( 1 * lightField.spatialResolution );
 attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness / (numberOfLayers - 1), lightField.channels);
 
 % Compute the propagation matrix for reconstruction: Here, the resampling plane is at the center of the attenuator
-resamplingPlane = SensorPlane(2 * layerResolution, [1, 1], -attenuatorThickness / 2);
+resamplingPlane = SensorPlane(1 * layerResolution, [1, 1], -attenuatorThickness / 2);
 rec = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
 
 
@@ -47,7 +47,7 @@ rec.computeAttenuationLayers();
 rec.evaluation.displayLayers(1 : attenuator.numberOfLayers);
 
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
-resamplingPlane2 = SensorPlane(2 * layerResolution, [1, 1], 0);
+resamplingPlane2 = SensorPlane(1 * layerResolution, [1, 1], 0);
 rec2 = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec2.constructPropagationMatrix();
 
