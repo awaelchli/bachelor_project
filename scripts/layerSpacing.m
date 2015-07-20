@@ -9,13 +9,12 @@ editor.sensorPlaneZ = 0;
 
 lightField = editor.getPerspectiveLightField();
 
-numberOfLayers = 10;
+numberOfLayers = 7;
 attenuatorThickness = 5;
-layerResolution = round( 1 * lightField.spatialResolution );
-attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness / (numberOfLayers - 1), lightField.channels);
+layerResolution = round( 1.3 * lightField.spatialResolution );
+attenuator = Attenuator(numberOfLayers, layerResolution, [2, 2], attenuatorThickness / (numberOfLayers - 1), lightField.channels);
 
-% Compute the propagation matrix for reconstruction: Here, the resampling plane is at the center of the attenuator
-resamplingPlane = SensorPlane(1 * layerResolution, [1, 1], -attenuatorThickness / 2);
+resamplingPlane = SensorPlane(round(1.3 * layerResolution), [1, 1], -attenuatorThickness / 2);
 rec = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
 
 
@@ -34,9 +33,8 @@ b = reshape(b, [attenuator.channels, attenuator.planeResolution, attenuator.numb
 b = permute(b, [4, 2, 3, 1]);
 
 for i = 1 : attenuator.numberOfLayers
-    h = figure('Name', sprintf('Layer %i', i));
+    figure('Name', sprintf('Layer %i', i));
     imshow(squeeze(b(i, :, :, :)), []);
-    set(h, 'Position', get(0,'Screensize'))
     imwrite(squeeze(b(i, :, :, :)), sprintf('output/Back_Projection_Layer_%i.png', i));
 end
 
@@ -56,4 +54,5 @@ rec.reconstructLightField();
 
 rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
 rec.evaluation.displayReconstructedViews();
+% rec.evaluation.displayErrorImages();
 rec.evaluation.storeReconstructedViews();
