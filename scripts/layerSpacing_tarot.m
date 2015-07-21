@@ -1,7 +1,7 @@
 editor = LightFieldEditor();
 editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.4);
-editor.angularSliceY(1 : 3 : 17);
-editor.angularSliceX(1 : 3 : 17);
+editor.angularSliceY(1 : 2 : 17);
+editor.angularSliceX(1 : 2 : 17);
 editor.distanceBetweenTwoCameras = [0.03, 0.03];
 editor.cameraPlaneZ = 10;
 editor.sensorSize = [1, 1];
