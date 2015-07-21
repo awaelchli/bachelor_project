@@ -25,7 +25,7 @@ lightFieldBlurred = editor.getPerspectiveLightField();
 numberOfLayers = 3;
 attenuatorThickness = 1;
 layerResolution = round( 1 * lightFieldBlurred.spatialResolution );
-attenuator = Attenuator(numberOfLayers, layerResolution, lightFieldBlurred.sensorPlane.planeSize, attenuatorThickness / (numberOfLayers - 1), lightFieldBlurred.channels);
+attenuator = Attenuator(numberOfLayers, layerResolution, lightFieldBlurred.sensorPlane.planeSize, attenuatorThickness, lightFieldBlurred.channels);
 
 rec = ReconstructionForResampledLF_V2(lightFieldBlurred, attenuator);
 rec.computeAttenuationLayers();
@@ -63,7 +63,7 @@ lightFieldBlurred = editor.getPerspectiveLightField();
 numberOfLayers = 3;
 attenuatorThickness = numberOfLayers-1; % spacing is one
 layerResolution = round( 1 * lightFieldBlurred.spatialResolution );
-attenuator = Attenuator(numberOfLayers, layerResolution, lightFieldBlurred.sensorPlane.planeSize, attenuatorThickness / (numberOfLayers - 1), lightFieldBlurred.channels);
+attenuator = Attenuator(numberOfLayers, layerResolution, lightFieldBlurred.sensorPlane.planeSize, attenuatorThickness, lightFieldBlurred.channels);
 
 rec = ReconstructionForResampledLF(lightFieldBlurred, attenuator);
 rec.computeAttenuationLayers();
@@ -114,7 +114,7 @@ lightFieldBlurred = editor.getPerspectiveLightField();
 numberOfLayers = 3;
 attenuatorThickness = numberOfLayers-1; % spacing is one
 layerResolution = round( 1 * lightFieldBlurred.spatialResolution );
-attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness / (numberOfLayers - 1), lightFieldBlurred.channels);
+attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness, lightFieldBlurred.channels);
 
 resamplingPlane = SensorPlane(4 * layerResolution, [1, 1], editor.sensorPlaneZ);
 

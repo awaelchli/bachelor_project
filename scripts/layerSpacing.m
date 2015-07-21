@@ -12,7 +12,7 @@ lightField = editor.getPerspectiveLightField();
 numberOfLayers = 7;
 attenuatorThickness = 5;
 layerResolution = round( 1.3 * lightField.spatialResolution );
-attenuator = Attenuator(numberOfLayers, layerResolution, [2, 2], attenuatorThickness / (numberOfLayers - 1), lightField.channels);
+attenuator = Attenuator(numberOfLayers, layerResolution, [2, 2], attenuatorThickness, lightField.channels);
 
 resamplingPlane = SensorPlane(round(1.3 * layerResolution), [1, 1], -attenuatorThickness / 2);
 rec = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane);

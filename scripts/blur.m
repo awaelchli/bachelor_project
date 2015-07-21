@@ -28,7 +28,7 @@ lightFieldBlurred = LightFieldP(blurred, lightField.cameraPlane, lightField.sens
 numberOfLayers = 5;
 attenuatorThickness = 4;
 layerResolution = round( 1 * lightField.spatialResolution );
-attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness / (numberOfLayers - 1), lightFieldBlurred.channels);
+attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness, lightFieldBlurred.channels);
 
 
 resamplingPlane = SensorPlane(1 * layerResolution, [1, 1], - attenuatorThickness / 2);

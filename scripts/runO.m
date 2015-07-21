@@ -3,7 +3,7 @@ editor.inputFromImageCollection('lightFields/dice/orthographic/7x7x384x512_fov10
 editor.lightFieldFOV = [10, 10];
 lightField = editor.getOrthographicLightField();
 
-attenuator = Attenuator(5, lightField.spatialResolution, [1, 1], 0.1, lightField.channels);
+attenuator = Attenuator(5, lightField.spatialResolution, [1, 1], 0.4, lightField.channels);
 
 rec = ReconstructionForOrthographicLF(lightField, attenuator);
 % rec.solver = @linearLeastSquares;

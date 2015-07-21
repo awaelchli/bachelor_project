@@ -12,7 +12,7 @@ lightField = editor.getPerspectiveLightField();
 numberOfLayers = 5;
 attenuatorThickness = 4;
 layerResolution = round( 1 * lightField.spatialResolution );
-attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness / (numberOfLayers - 1), lightField.channels);
+attenuator = Attenuator(numberOfLayers, layerResolution, [1, 1], attenuatorThickness, lightField.channels);
 
 % Compute the attenuation layers by sampling the rays at the first layer (bottom) 
 resamplingPlane = SensorPlane(1 * layerResolution, [1, 1], - attenuatorThickness / 2);

@@ -21,30 +21,30 @@ classdef Attenuator < PixelPlane
     end
     
     properties (SetAccess = private)
-        distanceBetweenLayers;
+        layerPositionZ;
     end
     
     properties (Dependent, SetAccess = private)
         numberOfLayers;
         channels;
         thickness;
-        layerPositionZ;
     end
     
     
     methods
         
-        function this = Attenuator(numberOfLayers, layerResolution, layerSize, distanceBetweenLayers, channels)
+        function this = Attenuator(numberOfLayers, layerResolution, layerSize, thickness, channels)
             if(numberOfLayers < Attenuator.minimumNumberOfLayers)
                 error('Attenuator must have a minimum of %i layers.', Attenuator.minimumNumberOfLayers);
             end
             this.planeSize = layerSize;
-            this.distanceBetweenLayers = distanceBetweenLayers;
             this.attenuationValues = zeros([numberOfLayers, layerResolution, channels]);
+            this.initLayerPositions(thickness, numberOfLayers);
+            this.assertInvariant();
         end
         
         function numberOfLayers = get.numberOfLayers(this)
-            numberOfLayers = size(this.attenuationValues, Attenuator.layerDimension);
+            numberOfLayers = numel(this.layerPositionZ);
         end
         
         function channels = get.channels(this)
@@ -61,14 +61,15 @@ classdef Attenuator < PixelPlane
         end
         
         function thickness = get.thickness(this)
-            thickness = (this.numberOfLayers - 1) * this.distanceBetweenLayers;
+            thickness = abs(max(this.layerPositionZ) - min(this.layerPositionZ));
         end
         
-        function layerPositionZ = get.layerPositionZ(this)
-            d = this.distanceBetweenLayers;
-            layerPositionZ = -this.thickness / 2 : d : this.thickness / 2;
+        function placeLayer(this, layerNumber, z)
+            arrayfun(@(n) this.errorIfInvalidLayerNumber(n), layerNumber);
+            this.layerPositionZ(layerNumber) = z;
+            this.assertInvariant();
         end
-        
+
         function layers = getAttenuationLayers(this, layerNumbers)
             arrayfun(@(n) this.errorIfInvalidLayerNumber(n), layerNumbers); 
             layers = this.attenuationValues(layerNumbers, :, :, :);
@@ -91,6 +92,19 @@ classdef Attenuator < PixelPlane
                 errorStruct.identifier = 'errorIfInvalidLayerNumber:invalidLayerNumber';
                 error(errorStruct);
             end
+        end
+        
+        function initLayerPositions(this, thickness, numberOfLayers)
+            % Equidistant spaced layers
+            distanceBetweenLayers = thickness / (numberOfLayers - 1);
+            this.layerPositionZ = -thickness / 2 : distanceBetweenLayers : thickness / 2;
+            this.assertInvariant();
+        end
+        
+        function assertInvariant(this)
+            assert(size(this.attenuationValues, Attenuator.layerDimension) == this.numberOfLayers, ...
+                   'assertInvariant:WrongNumberOfLayers', ...
+                   'The number of layers does not correspond to the size of the attenuation data.');
         end
         
     end
