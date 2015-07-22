@@ -136,6 +136,22 @@ classdef ReconstructionEvaluation < handle
             end
         end
         
+        function printLayers(this, layerNumbers, markerSize)
+            this.createOutputFolderIfNotExists();
+            layers = this.getReplicatedAttenuationLayers(layerNumbers);
+            
+            markerPositions = [markerSize, markerSize;
+                               this.attenuator.planeResolution(2) - markerSize, markerSize;
+                               markerSize, this.attenuator.planeResolution(1) - markerSize];
+            layerNumberPosition = this.attenuator.planeResolution([2, 1]) - markerSize;
+            
+            for number = 1 : numel(layerNumbers)
+                imageWithMarkers = insertMarker(squeeze(layers(number, :, :, :)), markerPositions, 'Color', 'black', 'Size', markerSize);
+                imageWithMarkers = insertTextIntoImage(imageWithMarkers, num2str(number), layerNumberPosition, markerSize);
+                imwrite(imageWithMarkers, sprintf('%s/print_%i.%s', this.outputFolder, number, ReconstructionEvaluation.imageOutputType));
+            end
+        end
+        
     end
     
     methods (Access = private)
