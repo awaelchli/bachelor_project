@@ -1,8 +1,8 @@
-function imageWithText = insertTextIntoImage(image, text, position, fontSize)
+function imageWithText = insertTextIntoImage(image, textString, position, fontSize)
 
     f = figure('Visible', 'off');
     imshow(image);
-    text('Position', position, 'String', text, 'FontSize', fontSize);
+    text('Position', position, 'String', textString, 'FontSize', fontSize);
 
     fFrame = getframe(gca);
     imageWithText = fFrame.cdata;
