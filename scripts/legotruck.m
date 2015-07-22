@@ -5,13 +5,13 @@ editor.angularSliceX(1 : 3 : 17);
 editor.distanceBetweenTwoCameras = [0.03, 0.03];
 editor.cameraPlaneZ = 10;
 editor.sensorSize = [1, 1];
-editor.sensorPlaneZ = 0;
+editor.sensorPlaneZ = 0.6;
 
 lightField = editor.getPerspectiveLightField();
 
-numberOfLayers = 10;
+numberOfLayers = 13;
 attenuatorThickness = 1.5;
-layerResolution = round( 1.3 * lightField.spatialResolution );
+layerResolution = round( 1.1 * lightField.spatialResolution );
 attenuator = Attenuator(numberOfLayers, layerResolution, [1.4, 1.4], attenuatorThickness, lightField.channels);
 attenuator.placeLayer(1, -0.2);
 attenuator.placeLayer(2, 0);
@@ -19,12 +19,15 @@ attenuator.placeLayer(3, 0.2);
 attenuator.placeLayer(4, 0.4);
 attenuator.placeLayer(5, 0.6);
 attenuator.placeLayer(6, 0.8);
-attenuator.placeLayer(7, 1.2);
-attenuator.placeLayer(8, 1.4);
-attenuator.placeLayer(9, 1.6);
-attenuator.placeLayer(10, 1.7);
+attenuator.placeLayer(7, 0.9);
+attenuator.placeLayer(8, 1);
+attenuator.placeLayer(9, 1.1);
+attenuator.placeLayer(10, 1.2);
+attenuator.placeLayer(11, 1.3);
+attenuator.placeLayer(12, 1.4);
+attenuator.placeLayer(13, 3);
 
-resamplingPlane = SensorPlane(round(1.3 * layerResolution), [1.4, 1.4], -attenuatorThickness / 2);
+resamplingPlane = SensorPlane(round(1 * layerResolution), [1.4, 1.4], -0.2);
 rec = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
 
 
@@ -55,7 +58,7 @@ rec.computeAttenuationLayers();
 rec.evaluation.displayLayers(1 : attenuator.numberOfLayers);
 
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
-resamplingPlane2 = SensorPlane(1 * layerResolution, [1, 1], 0);
+resamplingPlane2 = SensorPlane(1 * layerResolution, [1, 1], 0.6);
 rec2 = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec2.constructPropagationMatrix();
 

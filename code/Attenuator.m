@@ -69,6 +69,10 @@ classdef Attenuator < PixelPlane
             this.layerPositionZ(layerNumber) = z;
             this.assertInvariant();
         end
+        
+        function translateLayers(this, translationZ)
+            this.layerPositionZ = this.layerPositionZ + translationZ;
+        end
 
         function layers = getAttenuationLayers(this, layerNumbers)
             arrayfun(@(n) this.errorIfInvalidLayerNumber(n), layerNumbers); 
