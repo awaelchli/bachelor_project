@@ -10,5 +10,5 @@ function imageWithText = insertTextIntoImage(image, textString, position, fontSi
     close(f);
 
     imageWithText = imageWithText(1 : size(image, 1), 1 : size(image, 2), 1 : size(image, 3));
-
+    
 end
