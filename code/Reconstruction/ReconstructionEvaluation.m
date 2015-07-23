@@ -138,15 +138,15 @@ classdef ReconstructionEvaluation < handle
         
         function printLayers(this, layerNumbers, markerSize)
             this.createOutputFolderIfNotExists();
-            layers = this.getReplicatedAttenuationLayers(layerNumbers);
+            layers = this.getReplicatedAttenuationLayers(1 : this.attenuator.numberOfLayers);
             layersWithMarkers = addMarkersToLayers(layers, markerSize);
             
-            for number = 1 : numel(layerNumbers)
-                imwrite(squeeze(layersWithMarkers(number, :, :, :)), sprintf('%s/print_%i.%s', this.outputFolder, number, ReconstructionEvaluation.imageOutputType));
+            for i = 1 : numel(layerNumbers)
+                imwrite(squeeze(layersWithMarkers(layerNumbers(i), :, :, :)), sprintf('%s/print_%i.%s', this.outputFolder, layerNumbers(i), ReconstructionEvaluation.imageOutputType));
             end
             
             filename = ['Print_Layers' sprintf('-%i', reshape(layerNumbers, 1, []))];
-            printImagesToPDF(this.outputFolder, filename, layersWithMarkers, this.attenuator.planeSize);
+            printImagesToPDF(this.outputFolder, filename, layersWithMarkers(layerNumbers, :, :, :), this.attenuator.planeSize);
         end
         
     end
