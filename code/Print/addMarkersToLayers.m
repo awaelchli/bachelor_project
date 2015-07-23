@@ -20,7 +20,6 @@ function layersWithMarkers = addMarkersToLayers(layers, markerSize)
                                       'BoxColor', 'white', ...
                                       'BoxOpacity', 1);
         
-        figure; imshow(imageWithMarkers);
         layersWithMarkers(number, :, :, :) = imageWithMarkers;
     end
 end
