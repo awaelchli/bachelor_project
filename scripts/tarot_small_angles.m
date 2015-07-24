@@ -22,6 +22,8 @@ attenuatorThickness = actualThickness;
 layerResolution = round( 1.1 * lightField.spatialResolution );
 attenuator = Attenuator(numberOfLayers, layerResolution, 1.1 * attenuatorSize, attenuatorThickness, lightField.channels);
 
+attenuator.translateLayers(1);
+
 % attenuator.placeLayer(1, -3.2);
 % attenuator.placeLayer(2, -2.5);
 % attenuator.placeLayer(3, -1.6);
