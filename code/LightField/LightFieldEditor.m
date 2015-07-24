@@ -168,7 +168,7 @@ classdef LightFieldEditor < handle
                 errorStruct.identifier = 'slice:invalidSlice';
                 error(errorStruct);
             end
-            this.sliceIndices{dimensionIndex} = unique(indices);
+            this.sliceIndices{dimensionIndex} = indices;
         end
 
         function loadLightFieldData(this)
