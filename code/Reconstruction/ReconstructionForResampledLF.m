@@ -127,15 +127,15 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
                                   this.lightField.cameraPlane.z];
             
             distanceBetweenCameraPlaneAndFirstPlane = centerOfProjection(3) - Z;
-            distanceBetweenCameraPlaneAndSecondPlane = centerOfProjection(3) - targetPlaneZ;
+            distanceBetweenCameraPlaneAndTargetPlane = centerOfProjection(3) - targetPlaneZ;
        
             % Shift positions to camera coordinate system
             X = X - centerOfProjection(1);
             Y = Y - centerOfProjection(2);
 
             % Project positions from first plane to the target plane
-            X = X .* distanceBetweenCameraPlaneAndSecondPlane ./ distanceBetweenCameraPlaneAndFirstPlane;
-            Y = Y .* distanceBetweenCameraPlaneAndSecondPlane ./ distanceBetweenCameraPlaneAndFirstPlane;
+            X = X .* distanceBetweenCameraPlaneAndTargetPlane ./ distanceBetweenCameraPlaneAndFirstPlane;
+            Y = Y .* distanceBetweenCameraPlaneAndTargetPlane ./ distanceBetweenCameraPlaneAndFirstPlane;
 
             % Shift positions back to world coordinate system
             X = X + centerOfProjection(1);
