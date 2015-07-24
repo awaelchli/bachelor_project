@@ -7,9 +7,9 @@ attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.5);
-editor.angularSliceY(1 : 3 : 17);
-editor.angularSliceX(1 : 3 : 17);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.3);
+editor.angularSliceY(17 : -3 : 1);
+editor.angularSliceX(17 : -3 : 1);
 editor.distanceBetweenTwoCameras = [5.76, 5.76];
 editor.cameraPlaneZ = 80;
 editor.sensorSize = attenuatorSize;
@@ -80,6 +80,7 @@ rec.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
 rec.reconstructLightField();
 
 rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
+% rec.evaluation.evaluateViews([1, 3; 2, 3; 3, 3; 4, 3; 5, 3; 6, 3]);
 rec.evaluation.displayReconstructedViews();
 % rec.evaluation.displayErrorImages();
 rec.evaluation.storeReconstructedViews();
