@@ -4,22 +4,22 @@ function layersWithMarkers = addMarkersToLayers(layers, markerSize)
 
     markerPositions = [markerSize, markerSize;
                        resolution(2) - markerSize, markerSize;
-                       markerSize, resolution(1) - markerSize];
-    layerNumberPosition = resolution([2, 1]) - markerSize;
+                       markerSize, resolution(1) - markerSize;
+                       resolution([2, 1]) - markerSize];
 
-    layersWithMarkers = zeros(size(layers));
+    layersWithMarkers = layers;
     
-    for number = 1 : size(layers, 1)
-        imageWithMarkers = insertMarker(squeeze(layers(number, :, :, :)), markerPositions, ...
-                                        'Color', 'black', ...
-                                        'Size', markerSize);
+    for i = 1 : size(markerPositions, 1)
         
-        imageWithMarkers = insertText(imageWithMarkers, layerNumberPosition, num2str(number), ...
-                                      'FontSize', markerSize, ...
-                                      'AnchorPoint', 'Center', ...
-                                      'BoxColor', 'white', ...
-                                      'BoxOpacity', 1);
+        center = markerPositions(i, :);
         
-        layersWithMarkers(number, :, :, :) = imageWithMarkers;
+        verticalY = center(1) - markerSize + 1 : 1 : center(1) + markerSize - 1;
+        verticalX = repmat(center(2), size(verticalY));
+        horizontalX = center(2) - markerSize + 1 : 1 : center(2) + markerSize - 1;
+        horizontalY = repmat(center(1), size(horizontalX));
+        
+        layersWithMarkers(:, verticalY, verticalX, :) = 0;
+        layersWithMarkers(:, horizontalY, horizontalX, :) = 0;
     end
+    
 end
