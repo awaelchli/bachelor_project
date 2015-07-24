@@ -7,7 +7,7 @@ attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.3);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.5);
 editor.angularSliceY(17 : -3 : 1);
 editor.angularSliceX(17 : -3 : 1);
 editor.distanceBetweenTwoCameras = [5.76, 5.76];
