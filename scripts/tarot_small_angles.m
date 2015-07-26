@@ -7,7 +7,7 @@ attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.3);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.5);
 editor.angularSliceY(17 : -3 : 1);
 editor.angularSliceX(17 : -3 : 1);
 editor.distanceBetweenTwoCameras = [5.76, 5.76];
@@ -54,6 +54,10 @@ clear b backProjection;
 rec.computeAttenuationLayers();
 rec.evaluation.displayLayers(1 : attenuator.numberOfLayers);
 rec.evaluation.storeLayers(1 : attenuator.numberOfLayers);
+
+rec.evaluation.printLayers([1, 2], 15);
+rec.evaluation.printLayers([3, 4], 15);
+rec.evaluation.printLayers(5, 15);
 
 %% Reconstruct light field from layers
 
