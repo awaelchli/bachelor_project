@@ -1,22 +1,24 @@
-classdef PropagationMatrix < AbstractPropagationMatrix
+classdef PropagationMatrixM < AbstractPropagationMatrix
     
     properties (Access = private)
-        Is;
-        Js;
-        Ss;
+        I;
+        J;
+        S;
+        currentIndex = 1;
     end
     
     methods
         
-        function this = PropagationMatrix(lightField, attenuator)
+        function this = PropagationMatrixM(lightField, attenuator, numberOfNonZeros)
             this = this@AbstractPropagationMatrix(lightField, attenuator);
-            this.Is = cell([lightField.angularResolution, attenuator.numberOfLayers]);
-            this.Js = cell(size(this.Is));
-            this.Ss = cell(size(this.Is));
+            % Pre-allocate memory
+            this.I = zeros(1, numberOfNonZeros);
+            this.J = zeros(1, numberOfNonZeros);
+            this.S = zeros(1, numberOfNonZeros);
         end
         
         function P = formSparseMatrix(this)
-            P = sparse([this.Is{:}], [this.Js{:}], [this.Ss{:}], this.size(1), this.size(2));
+            P = sparse(this.I, this.J, this.S, this.size(1), this.size(2));
         end
         
         function submitEntries(this, cameraIndexY, cameraIndexX, ...
@@ -30,9 +32,12 @@ classdef PropagationMatrix < AbstractPropagationMatrix
             columns = this.computeColumnIndices(pixelIndexOnLayerY, pixelIndexOnLayerX, ...
                                                 layerIndex);
             
-            this.Is{cameraIndexY, cameraIndexX, layerIndex} = rows';
-            this.Js{cameraIndexY, cameraIndexX, layerIndex} = columns';
-            this.Ss{cameraIndexY, cameraIndexX, layerIndex} = permute(weightMatrix(:), [2, 1]);
+            numberOfInsertions = numel(rows);
+            this.I(this.currentIndex : this.currentIndex + numberOfInsertions - 1) = rows';
+            this.J(this.currentIndex : this.currentIndex + numberOfInsertions - 1) = columns';
+            this.S(this.currentIndex : this.currentIndex + numberOfInsertions - 1) = permute(weightMatrix(:), [2, 1]);
+            
+            this.currentIndex = this.currentIndex + numberOfInsertions;
         end
         
     end
