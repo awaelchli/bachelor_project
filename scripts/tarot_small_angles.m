@@ -23,7 +23,7 @@ layerResolution = round( 1.1 * lightField.spatialResolution );
 attenuator = Attenuator(numberOfLayers, layerResolution, 1.1 * attenuatorSize, attenuatorThickness, lightField.channels);
 
 resamplingPlane = SensorPlane(round(2 * layerResolution), samplingPlaneSize, attenuator.layerPositionZ(1));
-rec = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
+rec = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
 
 
 %% Back projection P^T * LF
