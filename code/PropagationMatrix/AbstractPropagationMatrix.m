@@ -40,10 +40,7 @@ classdef AbstractPropagationMatrix < handle
                                                 camIndexX, ...
                                                 cameraPixelIndicesY, ...
                                                 cameraPixelIndicesX)
-
-%             cameraPixelIndicesY = repmat(cameraPixelIndicesY, 1, numel(cameraPixelIndicesX)); 
-%             cameraPixelIndicesX = repmat(cameraPixelIndicesX, size(cameraPixelIndicesY, 1), 1); 
-
+            
             imageIndicesY = camIndexY + zeros(size(cameraPixelIndicesY));
             imageIndicesX = camIndexX + zeros(size(cameraPixelIndicesX));
 
@@ -56,10 +53,7 @@ classdef AbstractPropagationMatrix < handle
         function columns = computeColumnIndices(this, layerPixelIndicesY, ...
                                                       layerPixelIndicesX, ...
                                                       layer)
-                                            
-%             layerPixelIndicesY = repmat(layerPixelIndicesY, 1, numel(layerPixelIndicesX)); 
-%             layerPixelIndicesX = repmat(layerPixelIndicesX, size(layerPixelIndicesY, 1), 1); 
-
+            
             layerIndices = layer + zeros(size(layerPixelIndicesY));
 
             columns = sub2ind(this.attenuatorSubscriptRange, layerPixelIndicesY(:), ...
