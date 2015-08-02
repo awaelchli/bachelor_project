@@ -40,6 +40,13 @@ classdef PropagationMatrixM < AbstractPropagationMatrix
             this.currentIndex = this.currentIndex + numberOfInsertions;
         end
         
+        function clear(this)
+            this.I = [];
+            this.J = [];
+            this.S = [];
+            this.currentIndex = 1;
+        end
+        
     end
     
 end

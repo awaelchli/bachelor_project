@@ -18,7 +18,9 @@ classdef AbstractPropagationMatrix < handle
                             layerIndex, ...
                             pixelIndexOnLayerY, pixelIndexOnLayerX, ...
                             weightMatrix)
-            
+        
+        clear(this)
+    
     end
     
     methods

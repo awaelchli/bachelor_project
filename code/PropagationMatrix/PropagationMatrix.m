@@ -35,6 +35,12 @@ classdef PropagationMatrix < AbstractPropagationMatrix
             this.Ss{cameraIndexY, cameraIndexX, layerIndex} = permute(weightMatrix(:), [2, 1]);
         end
         
+        function clear(this)
+            this.Is = cell(size(this.Is));
+            this.Js = cell(size(this.Js));
+            this.Ss = cell(size(this.Ss));
+        end
+        
     end
     
 end
