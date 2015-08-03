@@ -1,5 +1,9 @@
 classdef PixelPlane < handle
     
+    properties (SetAccess = private)
+        planeCenter = [0, 0];
+    end
+    
     properties (Abstract, SetAccess = protected)
         planeResolution;
         planeSize;
@@ -22,6 +26,8 @@ classdef PixelPlane < handle
         
         function [ positionsY, positionsX ] = pixelPositionMatrices(this)
             [ positionsY, positionsX ] = computeCenteredGridPositions(this.planeResolution, this.pixelSize);
+            positionsY = positionsY + this.planeCenter(1);
+            positionsX = positionsX + this.planeCenter(2);
         end
         
         function positionsY = get.pixelPositionMatrixY(this)
@@ -30,6 +36,18 @@ classdef PixelPlane < handle
         
         function positionsX = get.pixelPositionMatrixX(this)
             [ ~, positionsX ] = pixelPositionMatrices(this);
+        end
+        
+        function translate(this, translationYX)
+            this.planeCenter = this.planeCenter + translationYX;
+        end
+        
+        function translateY(this, translationY)
+            this.translate([translationY, 0]);
+        end
+        
+        function translateX(this, translationX)
+            this.translate([0, translationX]);
         end
         
         function height = get.height(self)
@@ -46,24 +64,27 @@ classdef PixelPlane < handle
         
         function [Y, X, validIndices] = positionToPixelCoordinates(this, Y, X)
             
+            Y = Y - this.planeCenter(1);
+            X = X - this.planeCenter(2);
+            
             maxPositionY = this.height / 2;
             maxPositionX = this.width / 2;
             scalePositionToIndex = (this.planeResolution - 1) ./ this.planeSize;
-
+            
             % Convert to 'screen' coordinate system
             Y = maxPositionY - Y;
             X = X + maxPositionX;
-
+            
             validIndices = Y >= 0 & X >= 0 & Y <= this.planeSize(1) & X <= this.planeSize(2);
             
             % Scale positions to the range [0, resolution - 1]
             Y = scalePositionToIndex(1) .* Y;
             X = scalePositionToIndex(2) .* X;
-
+            
             % Add one to the coordinates so that they are in range of [1, resolution]
             Y = Y + 1;
             X = X + 1;
-
+            
             % In case the plane is 1D, correct the indices and positions
             if(this.planeResolution(1) == 1)
                 Y = ones(size(Y));
