@@ -21,15 +21,22 @@ numberOfLayers = 5;
 attenuatorThickness = actualThickness;
 layerResolution = round( 1.1 * lightField.spatialResolution );
 
+attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
 %% Compute tile positions
 
-numberOfTiles = [5, 5];
-tileSize = 1.2 * attenuatorSize ./ numberOfTiles;
-overlap = 0.2 * tileSize;
-tileStepSize = tileSize - overlap;
-[tileCentersY, tileCentersX] = computeCenteredGridPositions(numberOfTiles, tileStepSize);
+pixelSize = attenuatorSize ./ layerResolution;
+
 tileResolution = [100, 100];
+tileOverlap = [10, 10];
+tileSize = tileResolution .* pixelSize;
+tileOverlapSize = tileOverlap .* pixelSize;
+numberOfTiles = ceil(attenuatorSize ./ (tileSize - tileOverlapSize));
+
+tileStepSize = tileSize - tileOverlapSize;
+[tileCentersY, tileCentersX] = computeCenteredGridPositions(numberOfTiles, tileStepSize);
+
+totalTilingResolution = numberOfTiles .* tileResolution - (numberOfTiles - 1) .* tileOverlap;
 
 %% Solve for each tile
 
