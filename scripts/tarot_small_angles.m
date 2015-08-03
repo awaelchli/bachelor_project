@@ -7,7 +7,7 @@ attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.5);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
 editor.angularSliceY(17 : -3 : 1);
 editor.angularSliceX(17 : -3 : 1);
 editor.distanceBetweenTwoCameras = [5.76, 5.76];
@@ -63,7 +63,7 @@ rec.evaluation.printLayers(5, 15);
 
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
 resamplingPlane2 = SensorPlane(round(1.5 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
-rec2 = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
+rec2 = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec2.constructPropagationMatrix();
 
 rec.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
@@ -73,4 +73,17 @@ rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
 % rec.evaluation.evaluateViews([1, 3; 2, 3; 3, 3; 4, 3; 5, 3; 6, 3]);
 rec.evaluation.displayReconstructedViews();
 % rec.evaluation.displayErrorImages();
+rec.evaluation.storeReconstructedViews();
+
+
+%% Store all reconstructed views
+
+indY = 1 : lightField.angularResolution(1);
+indX = 1 : lightField.angularResolution(2);
+
+indY = repmat(indY, numel(indX), 1);
+indX = repmat(indX, 1, size(indY, 2));
+
+indices = [indY(:), indX(:)];
+rec.evaluation.evaluateViews(indices);
 rec.evaluation.storeReconstructedViews();
