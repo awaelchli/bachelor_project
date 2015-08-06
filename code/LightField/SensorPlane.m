@@ -1,6 +1,4 @@
 classdef SensorPlane < PixelPlane
-    %SENSORPLANE Summary of this class goes here
-    %   Detailed explanation goes here
     
     % Properties from superclass
     properties (SetAccess = protected)
