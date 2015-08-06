@@ -109,4 +109,3 @@ classdef PixelPlane < handle
     end
     
 end
-
