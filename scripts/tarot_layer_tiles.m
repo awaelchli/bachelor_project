@@ -7,7 +7,7 @@ attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.5);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.4);
 editor.angularSliceY(17 : -3 : 1);
 editor.angularSliceX(17 : -3 : 1);
 editor.distanceBetweenTwoCameras = [5.76, 5.76];
@@ -19,14 +19,14 @@ lightField = editor.getPerspectiveLightField();
 
 numberOfLayers = 5;
 attenuatorThickness = actualThickness;
-layerResolution = round( 2 * lightField.spatialResolution );
+layerResolution = round( 1 * lightField.spatialResolution );
 
 attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
 %% Compute tile positions
 
 tileResolution = [300, 300];
-tileOverlap = [10, 10];
+tileOverlap = [100, 100];
 tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
 tiledPlane.regularTiling(tileResolution, tileOverlap);
 
@@ -72,6 +72,7 @@ attenuator.attenuationValues = attenuationValues;
 
 
 %% Show the layers
+close all;
 for n = 1 : numberOfLayers
     
     figure; 
@@ -80,13 +81,13 @@ for n = 1 : numberOfLayers
 end
 
 %% Reconstruct light field from layers
-
+close all;
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
 resamplingPlane2 = SensorPlane(ceil(1 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
 rec2 = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec2.constructPropagationMatrix();
 
-% rec2.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
+rec2.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
 rec2.reconstructLightField();
 
 rec2.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
