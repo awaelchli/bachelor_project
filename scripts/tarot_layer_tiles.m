@@ -7,7 +7,7 @@ attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.5);
 editor.angularSliceY(17 : -3 : 1);
 editor.angularSliceX(17 : -3 : 1);
 editor.distanceBetweenTwoCameras = [5.76, 5.76];
@@ -19,72 +19,81 @@ lightField = editor.getPerspectiveLightField();
 
 numberOfLayers = 5;
 attenuatorThickness = actualThickness;
-layerResolution = round( 1.1 * lightField.spatialResolution );
+layerResolution = round( 2 * lightField.spatialResolution );
 
 attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
 %% Compute tile positions
 
-pixelSize = attenuatorSize ./ layerResolution;
-
-tileResolution = [100, 100];
+tileResolution = [300, 300];
 tileOverlap = [10, 10];
-tileSize = tileResolution .* pixelSize;
-tileOverlapSize = tileOverlap .* pixelSize;
-numberOfTiles = ceil(attenuatorSize ./ (tileSize - tileOverlapSize));
-
-tileStepSize = tileSize - tileOverlapSize;
-[tileCentersY, tileCentersX] = computeCenteredGridPositions(numberOfTiles, tileStepSize);
-
-totalTilingResolution = numberOfTiles .* tileResolution - (numberOfTiles - 1) .* tileOverlap;
+tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
+tiledPlane.regularTiling(tileResolution, tileOverlap);
 
 %% Solve for each tile
 
-for tileY = 1 : numberOfTiles(1)
-    for tileX = 1 : numberOfTiles(2)
+tileSumMatrix = zeros(size(attenuator.attenuationValues));
+
+tileIndexY = repmat(1 : tiledPlane.tilingResolution(1), [tiledPlane.tilingResolution(2), 1]);
+tileIndexX = repmat(1 : tiledPlane.tilingResolution(2), [1, tiledPlane.tilingResolution(1)]);
+tileIndices = [tileIndexY(:), tileIndexX(:)];
+
+for index = 1 : size(tileIndices, 1)
         
+        tileY = tileIndices(index, 1);
+        tileX = tileIndices(index, 2);
         
-        fprintf('\nWorking on tile (%i, %i)...\n', tileY, tileX);
+        fprintf('\nWorking on tile %i/%i...\n', index, size(tileIndices, 1));
         
-        tileCenter = [tileCentersY(tileY, tileX), tileCentersX(tileY, tileX)];
-        attenuatorTile = Attenuator(numberOfLayers, tileResolution, tileSize, attenuatorThickness, lightField.channels);
-        attenuatorTile.translate(tileCenter);
+        tile = tiledPlane.tiles{tileY, tileX};
+        attenuatorTile = Attenuator(numberOfLayers, tile.planeResolution, tile.planeSize, attenuatorThickness, lightField.channels);
+        attenuatorTile.translate(tile.planeCenter);
         
-        tileSamplingPlane = SensorPlane(round(2 * tileResolution), tileSize, attenuatorTile.layerPositionZ(1));
-        tileSamplingPlane.translate(tileCenter);
+        tileSamplingPlane = SensorPlane(ceil(1.2 * tile.planeResolution), 1.2 * tile.planeSize, attenuatorTile.layerPositionZ(1));
+        tileSamplingPlane.translate(tile.planeCenter);
         rec = FastReconstructionForResampledLF(lightField, attenuatorTile, tileSamplingPlane);
         rec.verbose = 0;
         rec.computeAttenuationLayers();
+        
+        tileValues = attenuatorTile.attenuationValues;
+        indicesY = tile.pixelIndexInParentY(:, 1);
+        indicesX = tile.pixelIndexInParentX(1, :);
+        tileSumMatrix(:, indicesY, indicesX, :) = tileSumMatrix(:, indicesY, indicesX, :) + tileValues;
         
         % Store the tiles
         out = sprintf('output/tile_%i_%i/', tileY, tileX);
         mkdir(out);
         rec.evaluation.outputFolder = out;
         rec.evaluation.storeLayers(1 : attenuator.numberOfLayers);
-        
-    end
 end
 
+attenuationValues = tileSumMatrix ./ permute(repmat(tiledPlane.coverageMatrix, [1, 1, numberOfLayers, attenuator.channels]), [3, 1, 2, 4]);
+attenuator.attenuationValues = attenuationValues;
 
-%% Re-assemble the tiles
 
-% TODO
+%% Show the layers
+for n = 1 : numberOfLayers
+    
+    figure; 
+    imshow(squeeze(attenuator.attenuationValues(n, :, :, :)));
+    
+end
 
 %% Reconstruct light field from layers
 
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
-resamplingPlane2 = SensorPlane(round(1.5 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
+resamplingPlane2 = SensorPlane(ceil(1 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
 rec2 = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec2.constructPropagationMatrix();
 
-rec.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
-rec.reconstructLightField();
+% rec2.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
+rec2.reconstructLightField();
 
-rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
+rec2.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
 % rec.evaluation.evaluateViews([1, 3; 2, 3; 3, 3; 4, 3; 5, 3; 6, 3]);
-rec.evaluation.displayReconstructedViews();
+rec2.evaluation.displayReconstructedViews();
 % rec.evaluation.displayErrorImages();
-rec.evaluation.storeReconstructedViews();
+% rec2.evaluation.storeReconstructedViews();
 
 
 %% Store all reconstructed views
@@ -96,5 +105,5 @@ indY = repmat(indY, numel(indX), 1);
 indX = repmat(indX, 1, size(indY, 2));
 
 indices = [indY(:), indX(:)];
-rec.evaluation.evaluateViews(indices);
-rec.evaluation.storeReconstructedViews();
+rec2.evaluation.evaluateViews(indices);
+rec2.evaluation.storeReconstructedViews();
