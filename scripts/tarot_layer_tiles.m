@@ -19,14 +19,14 @@ lightField = editor.getPerspectiveLightField();
 
 numberOfLayers = 5;
 attenuatorThickness = actualThickness;
-layerResolution = round( 1 * lightField.spatialResolution );
+layerResolution = round( 2 * lightField.spatialResolution );
 
 attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
 %% Compute tile positions
 
 tileResolution = [300, 300];
-tileOverlap = [100, 100];
+tileOverlap = [50, 50];
 tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
 tiledPlane.regularTiling(tileResolution, tileOverlap);
 
@@ -84,20 +84,20 @@ end
 close all;
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
 resamplingPlane2 = SensorPlane(ceil(1 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
-rec2 = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
-rec2.constructPropagationMatrix();
+rec = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
+rec.constructPropagationMatrix();
 
-rec2.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
-rec2.reconstructLightField();
+rec.usePropagationMatrixForReconstruction(rec.propagationMatrix);
+rec.reconstructLightField();
 
-rec2.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
+rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
 % rec.evaluation.evaluateViews([1, 3; 2, 3; 3, 3; 4, 3; 5, 3; 6, 3]);
-rec2.evaluation.displayReconstructedViews();
+rec.evaluation.displayReconstructedViews();
 % rec.evaluation.displayErrorImages();
 % rec2.evaluation.storeReconstructedViews();
 
 
-%% Store all reconstructed views
+%% Store evaluation data to output folder
 
 indY = 1 : lightField.angularResolution(1);
 indX = 1 : lightField.angularResolution(2);
@@ -106,5 +106,7 @@ indY = repmat(indY, numel(indX), 1);
 indX = repmat(indX, 1, size(indY, 2));
 
 indices = [indY(:), indX(:)];
-rec2.evaluation.evaluateViews(indices);
-rec2.evaluation.storeReconstructedViews();
+rec.evaluation.evaluateViews(indices);
+rec.evaluation.storeReconstructedViews();
+rec.evaluation.storeErrorImages();
+rec.evaluation.storeLayers(1 : numberOfLayers);
