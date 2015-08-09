@@ -48,7 +48,6 @@ classdef TiledPixelPlane < SimplePixelPlane
         function translate(this, translationYX)
             this.translate@SimplePixelPlane(translationYX);
             % Translate every tile
-%             nonEmptyCells = this.tiles(~cellfun(@isempty, this.tiles));
             cellfun(@(tile) tile.translate(translationYX), this.tiles);
         end
         
