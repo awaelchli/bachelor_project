@@ -1,12 +1,8 @@
 classdef Tile < PixelPlane
-    
-    % Property from superclass
-    properties (SetAccess = protected)
-        planeResolution;
-    end
-    
-    % Property from superclass
+
+    % Properties from superclass
     properties (Dependent, SetAccess = protected)
+        planeResolution;
         planeSize;
     end
     
@@ -24,8 +20,12 @@ classdef Tile < PixelPlane
                    'Tile:InvalidTileLocation', ...
                    'The tile must be placed at a pixel lying within the parent plane.');
             this.parentPlane = parentPlane;
-            this.initTileResolution(location, tileResolution)
+            this.initPixelIndexMatrices(location, tileResolution)
             this.initTileCenter(location);
+        end
+        
+        function resolution = get.planeResolution(this)
+            resolution = size(this.pixelIndexInParentY);
         end
         
         function planeSize = get.planeSize(this)
@@ -36,19 +36,19 @@ classdef Tile < PixelPlane
     
     methods (Access = private)
         
-        function initTileResolution(this, location, planeResolution)
+        function initPixelIndexMatrices(this, location, planeResolution)
             indicesY = location(1) : location(1) + planeResolution(1) - 1;
             indicesX = location(2) : location(2) + planeResolution(2) - 1;
-            indicesY = repmat(indicesY', 1, planeResolution(2));
-            indicesX = repmat(indicesX, planeResolution(1), 1);
             
-            % Reduce the resolution of this tile if it exeeds the limits of the parent plane
-            fun = @(y, x) PixelPlane.isValidIndex([y, x], this.parentPlane.planeResolution);
-            validIndices = arrayfun(fun, indicesY, indicesX);
-            this.planeResolution = [nnz(validIndices(:, 1)), nnz(validIndices(1, :))];
+            indicesY(indicesY <= 0) = 0;
+            indicesY(indicesY > this.parentPlane.planeResolution(1)) = 0;
+            indicesX(indicesX <= 0) = 0;
+            indicesX(indicesX > this.parentPlane.planeResolution(2)) = 0;
             
-            this.pixelIndexInParentY = indicesY(validIndices(:, 1), validIndices(1, :));
-            this.pixelIndexInParentX = indicesX(validIndices(:, 1), validIndices(1, :));
+            validIndicesY = indicesY(indicesY ~= 0);
+            validIndicesX = indicesX(indicesX ~= 0);
+            this.pixelIndexInParentY = repmat(validIndicesY', 1, size(validIndicesX, 2));
+            this.pixelIndexInParentX = repmat(validIndicesX, size(validIndicesY, 1), 1);
         end
         
         function initTileCenter(this, location)
