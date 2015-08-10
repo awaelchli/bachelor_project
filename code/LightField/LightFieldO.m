@@ -1,4 +1,8 @@
 classdef LightFieldO < LightField
+    % LIGHTFIELDO models a light field caputured from orthographic projections over a range of angles
+    %
+    %   The orthographic light field defines each light ray by the intersection with the sensor plane and the angle
+    %   between the ray and the normal on the sensor plane.
     
     properties (Constant)
         verticalFOVIndex = 1;
@@ -12,7 +16,9 @@ classdef LightFieldO < LightField
     end
     
     properties (Dependent, SetAccess = private)
+        % Vertical field of view in radians
         fovY;
+        % Horizontal field of view in radians
         fovX;
     end
     

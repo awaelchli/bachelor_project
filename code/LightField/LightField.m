@@ -1,7 +1,8 @@
 classdef LightField < handle
     % LIGHTFIELD is a general model class for the light field
-    % The class models a 4D light field. The data is stored in a 5D-matrix where the 5th dimension is used for the color
-    % space.
+    %   
+    %   The class models a 4D light field. The data is stored in a 5D-matrix where the 5th dimension is used for the color
+    %   space.
     
     properties (Constant)
         lightFieldDimension = 4;
@@ -50,12 +51,15 @@ classdef LightField < handle
             assert(this.isValidAngularIndex([angularIndexY, angularIndexX]), ...
                    'replaceView:InvalidAngularIndex', ...
                    sprintf('(%i, %i) is not a valid angular index.', angularIndexY, angularIndexX));
+            
             assert(all([size(image, 1), size(image, 2)] == [this.spatialResolution]), ...
                    'replaceView:InvalidSpatialResolutionOfViewReplacement', ...
                    'The size of the image does not correspond to spatial resolution.');
-            assert(size(image, 3) == this.channels, ...
+            
+          	assert(size(image, 3) == this.channels, ...
                    'replaceView:InvalidNumberOfChannelsInViewReplacement', ...
                    'The number of channels in the image does not correspond to the number of channels in the light field.');
+            
             this.lightFieldData(angularIndexY, angularIndexX, : , : , :) = image;
             this.assertInvariant();
         end

@@ -1,4 +1,8 @@
 classdef LightFieldP < LightField
+    % LIGHTFIELDP implements the geometry of a light field captured by perspective projections from a camera grid
+    %   
+    %   The light field is parameterized by two planes, the camera plane and the sensor plane. Each virtual camera from
+    %   the camera plane shares the same sensor plane.
     
     properties (SetAccess = private)
         cameraPlane;
