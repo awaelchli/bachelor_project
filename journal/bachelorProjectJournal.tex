@@ -544,6 +544,75 @@ Instead of rounding the ray intersection points on the sensor to the nearest pix
 \end{figure}
 
 \clearpage
+
+\subsection{Introduction of the sampling plane}
+From now on, the ray density is no longer tied to the resolution of the attenuator or the sensor plane. The introduction of a new and independent plane allows the sampling to be as dense as needed. This new \emph{sampling-plane} has the attributes:
+
+\begin{itemize}
+	\item	$z_{sampling}$: It can be placed at any depth. By default, it is set to coincide with the first layer.
+	\item	Size: The size of the plane is variable. The default size is the layer size.
+	\item	Resolution: The resolution together with the size of the sampling plane define the ray-density.
+\end{itemize}
+
+\subsection{Back-Projection and positioning the layers}
+Each layer of the attenuator corresponds to a specific disparity value in the scene. The goal is to optimally place the layers such that all disparities from the light field can be represented by the attenuator. The sensor plane acts as the plane with zero disparity and thus, if the scene has a symmetric disparity range $\left(D_{min} = -D_{max}\right)$, then the sensor plane should be placed at the center of the layer stack. In general, scenes that do not have symmetric disparity range and the sensor plane needs to be shifted inside the  layer stack. 
+
+Back-Projection can be used to make sure that the layers are placed correctly. Once the propagation matrix $P$ has been computed, the back-projection onto the layers can be performed by
+
+\begin{equation} \label{eq:back_projection}
+	b = P^T l.
+\end{equation}
+
+The vector $b$ holds the result of the back-projection. Equation~\ref{eq:back_projection} corresponds to the sum over all rays passing through a layer pixel. Figure~\ref{fig:comparison_of_two_backprojections} shows two back-projections of a scene with a symmetric disparity range.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-0.5/Back_Projection_layer_1.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-0.5/Back_Projection_layer_2.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-0.5/Back_Projection_layer_3.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-0.5/Back_Projection_layer_4.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-0.5/Back_Projection_layer_5.png} 
+	\end{subfigure}%
+	\\
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-3/Back_Projection_layer_1.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-3/Back_Projection_layer_2.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-3/Back_Projection_layer_3.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-3/Back_Projection_layer_4.png}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tarot_back_projection/sensorPlaneZ=-3/Back_Projection_layer_5.png}
+	\end{subfigure}%
+	
+	\caption{Comparison of two back-projections (top and bottom row) onto five layers (left to right). The first example has the sensor plane at $z_{sensor} = -0.5$, thus zero disparity is mapped onto the middle layer(s). The example below has the sensor plane at $z_{sensor} = -3$. This means that the zero-disparities are mapped onto a layer closer to the observer. The first example is better because it covers the entire depth-range of the scene (the cards in the back are in focus on the first layer and the card in the front is in focus on the 5th layer, not so in the example below).}
+	\label{fig:comparison_of_two_backprojections}
+\end{figure}
+
+
+\clearpage
 \bibliographystyle{alpha}
 \bibliography{lit}
 

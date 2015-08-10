@@ -14,3 +14,5 @@
 \contentsline {section}{\numberline {8}Fixing the artefacts that occur in the reconstruction}{13}{section.8}
 \contentsline {subsection}{\numberline {8.1}Comparison of the three methods implemented so far}{13}{subsection.8.1}
 \contentsline {subsection}{\numberline {8.2}Interpolation on the sensor plane}{14}{subsection.8.2}
+\contentsline {subsection}{\numberline {8.3}Introduction of the sampling plane}{16}{subsection.8.3}
+\contentsline {subsection}{\numberline {8.4}Back-Projection and positioning the layers}{16}{subsection.8.4}
