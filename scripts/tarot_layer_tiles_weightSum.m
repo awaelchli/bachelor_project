@@ -7,7 +7,7 @@ attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.4);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
 editor.angularSliceY(17 : -3 : 1);
 editor.angularSliceX(17 : -3 : 1);
 editor.distanceBetweenTwoCameras = [5.76, 5.76];
@@ -19,20 +19,22 @@ lightField = editor.getPerspectiveLightField();
 
 numberOfLayers = 5;
 attenuatorThickness = actualThickness;
-layerResolution = round( 2 * lightField.spatialResolution );
+layerResolution = round( 1 * lightField.spatialResolution );
 
 attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
 %% Compute tile positions
 
-tileResolution = [300, 300];
-tileOverlap = [50, 50];
+tileResolution = [100, 100];
+% tileOverlap = [25, 25];
+tileOverlap = ceil(0.25 * tileResolution);
 tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
 tiledPlane.regularTiling(tileResolution, tileOverlap);
 
 %% Solve for each tile
 
 tileSumMatrix = zeros(size(attenuator.attenuationValues));
+weightSumMatrix = zeros(size(attenuator.attenuationValues));
 
 tileIndexY = repmat(1 : tiledPlane.tilingResolution(1), [tiledPlane.tilingResolution(2), 1]);
 tileIndexX = repmat(1 : tiledPlane.tilingResolution(2), [1, tiledPlane.tilingResolution(1)]);
@@ -59,18 +61,35 @@ for index = 1 : size(tileIndices, 1)
         indicesY = tile.pixelIndexInParentY(:, 1);
         indicesX = tile.pixelIndexInParentX(1, :);
         
-        mu = [0 0];
-        Sigma = [.2, 0;
-                 0, .2];
-        x1 = linspace(-0.5, 0.5, tile.planeResolution(1)); 
-        x2 = linspace(-0.5, 0.5, tile.planeResolution(2));
-        [X1,X2] = meshgrid(x1,x2);
-        F = mvnpdf([X1(:) X2(:)],mu,Sigma);
-        F = reshape(F,length(x1),length(x2));
+        range = 10;
+        
+        x1 = linspace(-range, range, tile.planeResolution(1)); 
+        x2 = linspace(-range, range, tile.planeResolution(2));
+        [X, Y] = meshgrid(x2, x1);
+        
+        tmp = ones(tile.planeResolution);
+%         size(tmp)
+        tmp = min(cumsum(tmp,1), cumsum(tmp,2));
+        tmp = min(tmp, tmp(end:-1:1, end:-1:1));
+        tmp = tmp.^2;
+%         size(tmp)
+        F = tmp;
+%         F = 1 ./(X.^2 + Y.^2).^(1/5);
+%         F = rand(size(X));
+%         max(F(:))
+%         min(F(:))
+%         F(F > 100) = 100;
+%         F = 1 - F/max(F(:));
+        
+%         F = ones(size(X));
+        
+%         F = F ./ tiledPlane.coverageMatrix(indicesY, indicesX);
+%         figure; imshow(F);
         F = permute(repmat(F, [1, 1, attenuatorTile.channels, attenuatorTile.numberOfLayers]), [4, 1, 2, 3]);
         
         tileValues = F .* tileValues;
         tileSumMatrix(:, indicesY, indicesX, :) = tileSumMatrix(:, indicesY, indicesX, :) + tileValues;
+        weightSumMatrix(:, indicesY, indicesX, :) = weightSumMatrix(:, indicesY, indicesX, :) + F;
         
 %         figure; imshow(squeeze(tileValues(1, :, :, :)));
         
@@ -81,11 +100,16 @@ for index = 1 : size(tileIndices, 1)
         rec.evaluation.storeLayers(1 : attenuator.numberOfLayers);
 end
 
-attenuationValues = tileSumMatrix ./ permute(repmat(tiledPlane.coverageMatrix, [1, 1, numberOfLayers, attenuator.channels]), [3, 1, 2, 4]);
+% attenuationValues = tileSumMatrix ./ permute(repmat(tiledPlane.coverageMatrix, [1, 1, numberOfLayers, attenuator.channels]), [3, 1, 2, 4]);
+attenuationValues = tileSumMatrix ./ weightSumMatrix;
+W = weightSumMatrix ./ permute(repmat(tiledPlane.coverageMatrix, [1, 1, numberOfLayers, attenuator.channels]), [3, 1, 2, 4]);
+figure; imshow(squeeze(W(1, :, :, 1)), []);
+figure; imshow(squeeze(weightSumMatrix(1, :, :, 1)), []);
+figure; imshow(tiledPlane.coverageMatrix, []);
 attenuator.attenuationValues = attenuationValues;
 
 %% Show the layers
-close all;
+% close all;
 for n = 1 : numberOfLayers
     
     figure; 
