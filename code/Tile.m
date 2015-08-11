@@ -4,6 +4,8 @@ classdef Tile < PixelPlane
     properties (Dependent, SetAccess = protected)
         planeResolution;
         planeSize;
+        validPixelIndexInParentY;
+        validPixelIndexInParentX;
     end
     
     properties (SetAccess = private)
@@ -32,6 +34,18 @@ classdef Tile < PixelPlane
             planeSize = this.parentPlane.pixelSize .* this.planeResolution;
         end
         
+        function valid = get.validPixelIndexInParentY(this)
+            validY = sum(this.pixelIndexInParentY, 2) ~= 0; 
+            validX = sum(this.pixelIndexInParentY, 1) ~= 0; 
+            valid = this.pixelIndexInParentY(validY, validX);
+        end
+        
+        function valid = get.validPixelIndexInParentX(this)
+            validY = sum(this.pixelIndexInParentX, 2) ~= 0; 
+            validX = sum(this.pixelIndexInParentX, 1) ~= 0; 
+            valid = this.pixelIndexInParentX(validY, validX);
+        end
+        
     end
     
     methods (Access = private)
@@ -45,10 +59,8 @@ classdef Tile < PixelPlane
             indicesX(indicesX <= 0) = 0;
             indicesX(indicesX > this.parentPlane.planeResolution(2)) = 0;
             
-            validIndicesY = indicesY(indicesY ~= 0);
-            validIndicesX = indicesX(indicesX ~= 0);
-            this.pixelIndexInParentY = repmat(validIndicesY', 1, size(validIndicesX, 2));
-            this.pixelIndexInParentX = repmat(validIndicesX, size(validIndicesY, 1), 1);
+            this.pixelIndexInParentY = repmat(indicesY', 1, size(indicesX, 2));
+            this.pixelIndexInParentX = repmat(indicesX, size(indicesY, 1), 1);
         end
         
         function initTileCenter(this, location)
