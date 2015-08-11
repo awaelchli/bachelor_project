@@ -554,7 +554,7 @@ From now on, the ray density is no longer tied to the resolution of the attenuat
 	\item	Resolution: The resolution together with the size of the sampling plane define the ray-density.
 \end{itemize}
 
-\subsection{Back-Projection and positioning the layers}
+\subsection{Back-Projection and positioning of the layers}
 Each layer of the attenuator corresponds to a specific disparity value in the scene. The goal is to optimally place the layers such that all disparities from the light field can be represented by the attenuator. The sensor plane acts as the plane with zero disparity and thus, if the scene has a symmetric disparity range $\left(D_{min} = -D_{max}\right)$, then the sensor plane should be placed at the center of the layer stack. In general, scenes that do not have symmetric disparity range and the sensor plane needs to be shifted inside the  layer stack. 
 
 Back-Projection can be used to make sure that the layers are placed correctly. Once the propagation matrix $P$ has been computed, the back-projection onto the layers can be performed by
