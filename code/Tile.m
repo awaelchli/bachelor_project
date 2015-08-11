@@ -4,6 +4,9 @@ classdef Tile < PixelPlane
     properties (Dependent, SetAccess = protected)
         planeResolution;
         planeSize;
+    end
+    
+    properties (Dependent, SetAccess = private)
         validPixelIndexInParentY;
         validPixelIndexInParentX;
     end
