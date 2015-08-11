@@ -27,7 +27,7 @@ attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenua
 
 tileResolution = [100, 100];
 % tileOverlap = [25, 25];
-tileOverlap = ceil(0.25 * tileResolution);
+tileOverlap = ceil(0.5 * tileResolution);
 tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
 tiledPlane.regularTiling(tileResolution, tileOverlap);
 
@@ -39,6 +39,11 @@ weightSumMatrix = zeros(size(attenuator.attenuationValues));
 tileIndexY = repmat(1 : tiledPlane.tilingResolution(1), [tiledPlane.tilingResolution(2), 1]);
 tileIndexX = repmat(1 : tiledPlane.tilingResolution(2), [1, tiledPlane.tilingResolution(1)]);
 tileIndices = [tileIndexY(:), tileIndexX(:)];
+
+tileBlendingMask = ones(tileResolution);
+tileBlendingMask = min(cumsum(tileBlendingMask, 1), cumsum(tileBlendingMask, 2));
+tileBlendingMask = min(tileBlendingMask, tileBlendingMask(end : -1 : 1, end : -1 : 1));
+tileBlendingMask = tileBlendingMask.^2;
 
 for index = 1 : size(tileIndices, 1)
         
@@ -61,64 +66,44 @@ for index = 1 : size(tileIndices, 1)
         indicesY = tile.pixelIndexInParentY(:, 1);
         indicesX = tile.pixelIndexInParentX(1, :);
         
-        range = 10;
+        validY = indicesY ~= 0;
+        validX = indicesX ~= 0;
         
-        x1 = linspace(-range, range, tile.planeResolution(1)); 
-        x2 = linspace(-range, range, tile.planeResolution(2));
-        [X, Y] = meshgrid(x2, x1);
+        indicesY = indicesY(validY);
+        indicesX = indicesX(validX);
         
-        tmp = ones(tile.planeResolution);
-%         size(tmp)
-        tmp = min(cumsum(tmp,1), cumsum(tmp,2));
-        tmp = min(tmp, tmp(end:-1:1, end:-1:1));
-        tmp = tmp.^2;
-%         size(tmp)
-        F = tmp;
-%         F = 1 ./(X.^2 + Y.^2).^(1/5);
-%         F = rand(size(X));
-%         max(F(:))
-%         min(F(:))
-%         F(F > 100) = 100;
-%         F = 1 - F/max(F(:));
-        
-%         F = ones(size(X));
-        
-%         F = F ./ tiledPlane.coverageMatrix(indicesY, indicesX);
-%         figure; imshow(F);
+        F = tileBlendingMask(validY, validX);
         F = permute(repmat(F, [1, 1, attenuatorTile.channels, attenuatorTile.numberOfLayers]), [4, 1, 2, 3]);
         
-        tileValues = F .* tileValues;
+        tileValues = F .* tileValues(:, validY, validX, :);
         tileSumMatrix(:, indicesY, indicesX, :) = tileSumMatrix(:, indicesY, indicesX, :) + tileValues;
         weightSumMatrix(:, indicesY, indicesX, :) = weightSumMatrix(:, indicesY, indicesX, :) + F;
         
-%         figure; imshow(squeeze(tileValues(1, :, :, :)));
-        
-        % Store the tiles
+        % Store the current attenuator tile
         out = sprintf('output/tile_%i_%i/', tileY, tileX);
         mkdir(out);
         rec.evaluation.outputFolder = out;
         rec.evaluation.storeLayers(1 : attenuator.numberOfLayers);
 end
 
-% attenuationValues = tileSumMatrix ./ permute(repmat(tiledPlane.coverageMatrix, [1, 1, numberOfLayers, attenuator.channels]), [3, 1, 2, 4]);
 attenuationValues = tileSumMatrix ./ weightSumMatrix;
-W = weightSumMatrix ./ permute(repmat(tiledPlane.coverageMatrix, [1, 1, numberOfLayers, attenuator.channels]), [3, 1, 2, 4]);
-figure; imshow(squeeze(W(1, :, :, 1)), []);
-figure; imshow(squeeze(weightSumMatrix(1, :, :, 1)), []);
-figure; imshow(tiledPlane.coverageMatrix, []);
 attenuator.attenuationValues = attenuationValues;
+
+%% Show information about the tile coverage and blending weight distribution
+
+figure('Name', 'Distribution of the blending weights'); imshow(squeeze(weightSumMatrix(1, :, :, 1)), []);
+figure('Name', 'Coverage matrix'); imshow(tiledPlane.coverageMatrix, []);
+
 
 %% Show the layers
 % close all;
 for n = 1 : numberOfLayers
-    
     figure; 
     imshow(squeeze(attenuator.attenuationValues(n, :, :, :)));
-    
 end
 
 %% Reconstruct light field from layers
-close all;
+% close all;
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
 resamplingPlane2 = SensorPlane(ceil(1 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
 rec = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
@@ -128,11 +113,7 @@ rec.usePropagationMatrixForReconstruction(rec.propagationMatrix);
 rec.reconstructLightField();
 
 rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
-% rec.evaluation.evaluateViews([1, 3; 2, 3; 3, 3; 4, 3; 5, 3; 6, 3]);
 rec.evaluation.displayReconstructedViews();
-% rec.evaluation.displayErrorImages();
-% rec2.evaluation.storeReconstructedViews();
-
 
 %% Store evaluation data to output folder
 
