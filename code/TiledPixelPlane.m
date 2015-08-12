@@ -56,8 +56,8 @@ classdef TiledPixelPlane < SimplePixelPlane
                    'regularTiling:InvalidTileOverlap', ...
                    'The overlap must be smaller than a tile.');
             
-            anchorPixelsY = 1 : tileResolution(1) - tileOverlap(1) : this.planeResolution(1);
-            anchorPixelsX = 1 : tileResolution(2) - tileOverlap(2) : this.planeResolution(2);
+            anchorPixelsY = 1 : tileResolution(1) - tileOverlap(1) : this.planeResolution(1) - tileOverlap(1);
+            anchorPixelsX = 1 : tileResolution(2) - tileOverlap(2) : this.planeResolution(2) - tileOverlap(2);
             this.tiles = cell([numel(anchorPixelsY), numel(anchorPixelsX)]);
             
             % Create the tiles
