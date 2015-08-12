@@ -50,12 +50,12 @@ classdef PixelPlane < handle
             this.translate([0, translationX]);
         end
         
-        function height = get.height(self)
-            height = self.planeSize(1);
+        function height = get.height(this)
+            height = this.planeSize(1);
         end
         
-        function width = get.width(self)
-            width = self.planeSize(2);
+        function width = get.width(this)
+            width = this.planeSize(2);
         end
         
         function aspect = get.aspectRatio(this)
