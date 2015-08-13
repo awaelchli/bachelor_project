@@ -8,11 +8,11 @@ samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
 editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
-editor.angularSliceY(17 : -1 : 1);
-editor.angularSliceX(17 : -1 : 1);
-% editor.distanceBetweenTwoCameras = [5.76, 5.76];
-editor.distanceBetweenTwoCameras = [1.8, 1.8];
-editor.cameraPlaneZ = 80;
+editor.angularSliceY(17 : -3 : 1);
+editor.angularSliceX(17 : -3 : 1);
+editor.distanceBetweenTwoCameras = [5.76, 5.76] * 6;
+% editor.distanceBetweenTwoCameras = [1.8, 1.8] * 6;
+editor.cameraPlaneZ = 80 * 6;
 editor.sensorSize = attenuatorSize;
 editor.sensorPlaneZ = -0.5;
 
@@ -20,13 +20,13 @@ lightField = editor.getPerspectiveLightField();
 
 numberOfLayers = 5;
 attenuatorThickness = actualThickness;
-layerResolution = round( 1 * lightField.spatialResolution );
+layerResolution = round( 2 * lightField.spatialResolution );
 
 attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
 %% Compute tile positions
 
-tileResolution = 1 * [100, 100];
+tileResolution = 2 * [100, 100];
 % tileOverlap = [25, 25];
 tileOverlap = ceil(0.5 * tileResolution);
 tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
@@ -45,9 +45,10 @@ tileBlendingMask = ones(tileResolution);
 tileBlendingMask = min(cumsum(tileBlendingMask, 1), cumsum(tileBlendingMask, 2));
 tileBlendingMask = min(tileBlendingMask, tileBlendingMask(end : -1 : 1, end : -1 : 1));
 tileBlendingMask = tileBlendingMask.^2;
+% tileBlendingMask = ones(size(tileBlendingMask));
 
 % TODO: check which is better, tile sampling or entire layer
-tileSamplingPlane = SensorPlane(1 * attenuator.planeResolution, attenuator.planeSize, attenuator.layerPositionZ(1));
+% tileSamplingPlane = SensorPlane(1 * attenuator.planeResolution, attenuator.planeSize, attenuator.layerPositionZ(1));
 
 for index = 1 : size(tileIndices, 1)
         tic
@@ -60,9 +61,10 @@ for index = 1 : size(tileIndices, 1)
         attenuatorTile = Attenuator(numberOfLayers, tile.planeResolution, tile.planeSize, attenuatorThickness, lightField.channels);
         attenuatorTile.translate(tile.planeCenter);
         
-%         tileSamplingPlane = SensorPlane(ceil(1 * tile.planeResolution), 1 * tile.planeSize, attenuatorTile.layerPositionZ(1));
-%         tileSamplingPlane.translate(tile.planeCenter);
+        tileSamplingPlane = SensorPlane(ceil(2 * tile.planeResolution), 1 * tile.planeSize, attenuatorTile.layerPositionZ(1));
+        tileSamplingPlane.translate(tile.planeCenter);
         rec = FastReconstructionForResampledLF(lightField, attenuatorTile, tileSamplingPlane);
+        
         rec.verbose = 0;
         rec.computeAttenuationLayers();
         
@@ -75,6 +77,10 @@ for index = 1 : size(tileIndices, 1)
         
         indicesY = indicesY(validY);
         indicesX = indicesX(validX);
+        
+        %Debug
+        assert(all(indicesY == tile.validPixelIndexInParentY(:, 1)));
+        assert(all(indicesX == tile.validPixelIndexInParentX(1, :)));
         
         F = tileBlendingMask(validY, validX);
         F = permute(repmat(F, [1, 1, attenuatorTile.channels, attenuatorTile.numberOfLayers]), [4, 1, 2, 3]);
