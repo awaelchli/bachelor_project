@@ -7,7 +7,7 @@ attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.5);
 editor.angularSliceY(17 : -3 : 1);
 editor.angularSliceX(17 : -3 : 1);
 editor.distanceBetweenTwoCameras = [5.76, 5.76] * 6;
@@ -20,14 +20,13 @@ lightField = editor.getPerspectiveLightField();
 
 numberOfLayers = 5;
 attenuatorThickness = actualThickness;
-layerResolution = round( 2 * lightField.spatialResolution );
+layerResolution = round( 1 * lightField.spatialResolution );
 
 attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
 %% Compute tile positions
 
 tileResolution = 2 * [100, 100];
-% tileOverlap = [25, 25];
 tileOverlap = ceil(0.5 * tileResolution);
 tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
 tiledPlane.regularTiling(tileResolution, tileOverlap);
@@ -45,10 +44,6 @@ tileBlendingMask = ones(tileResolution);
 tileBlendingMask = min(cumsum(tileBlendingMask, 1), cumsum(tileBlendingMask, 2));
 tileBlendingMask = min(tileBlendingMask, tileBlendingMask(end : -1 : 1, end : -1 : 1));
 tileBlendingMask = tileBlendingMask.^2;
-% tileBlendingMask = ones(size(tileBlendingMask));
-
-% TODO: check which is better, tile sampling or entire layer
-% tileSamplingPlane = SensorPlane(1 * attenuator.planeResolution, attenuator.planeSize, attenuator.layerPositionZ(1));
 
 for index = 1 : size(tileIndices, 1)
         tic
@@ -77,10 +72,6 @@ for index = 1 : size(tileIndices, 1)
         
         indicesY = indicesY(validY);
         indicesX = indicesX(validX);
-        
-        %Debug
-        assert(all(indicesY == tile.validPixelIndexInParentY(:, 1)));
-        assert(all(indicesX == tile.validPixelIndexInParentX(1, :)));
         
         F = tileBlendingMask(validY, validX);
         F = permute(repmat(F, [1, 1, attenuatorTile.channels, attenuatorTile.numberOfLayers]), [4, 1, 2, 3]);
