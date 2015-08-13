@@ -7,11 +7,12 @@ attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.2);
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.5);
 editor.angularSliceY(17 : -3 : 1);
 editor.angularSliceX(17 : -3 : 1);
-editor.distanceBetweenTwoCameras = [5.76, 5.76];
-editor.cameraPlaneZ = 80;
+editor.distanceBetweenTwoCameras = [5.76, 5.76] * 6;
+% editor.distanceBetweenTwoCameras = [1.8, 1.8] * 6;
+editor.cameraPlaneZ = 80 * 6;
 editor.sensorSize = attenuatorSize;
 editor.sensorPlaneZ = -0.5;
 
@@ -19,8 +20,8 @@ lightField = editor.getPerspectiveLightField();
 
 numberOfLayers = 5;
 attenuatorThickness = actualThickness;
-layerResolution = round( 1.1 * lightField.spatialResolution );
-attenuator = Attenuator(numberOfLayers, layerResolution, 1.1 * attenuatorSize, attenuatorThickness, lightField.channels);
+layerResolution = round(1 * lightField.spatialResolution );
+attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
 resamplingPlane = SensorPlane(round(2 * layerResolution), samplingPlaneSize, attenuator.layerPositionZ(1));
 rec = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
