@@ -62,8 +62,8 @@ classdef Tile < PixelPlane
             indicesX(indicesX <= 0) = 0;
             indicesX(indicesX > this.parentPlane.planeResolution(2)) = 0;
             
-            this.pixelIndexInParentY = repmat(indicesY', 1, size(indicesX, 2));
-            this.pixelIndexInParentX = repmat(indicesX, size(indicesY, 1), 1);
+            this.pixelIndexInParentY = repmat(indicesY', 1, numel(indicesX));
+            this.pixelIndexInParentX = repmat(indicesX, numel(indicesY), 1);
         end
         
         function initTileCenter(this, location)
