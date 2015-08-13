@@ -78,4 +78,5 @@ rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6; 3, 7; 3, 8; 3,
 % rec.evaluation.evaluateViews([9, 1; 9, 2; 9, 3; 9, 4; 9, 5; 9, 6; 9, 7; 9, 8; 9, 9]);
 rec.evaluation.displayReconstructedViews();
 % rec.evaluation.displayErrorImages();
+rec.evaluation.storeErrorImages();
 rec.evaluation.storeReconstructedViews();
