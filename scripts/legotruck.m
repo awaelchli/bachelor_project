@@ -1,40 +1,49 @@
+actualLayerHeight = 90;
+actualThickness = 15.2;
+
+
 editor = LightFieldEditor();
 editor.inputFromImageCollection('lightFields/legotruck/', 'png', [17, 17], 0.3);
-editor.angularSliceY(1 : 3 : 17);
+editor.angularSliceY(17 : -3 : 1);
 editor.angularSliceX(1 : 3 : 17);
-editor.distanceBetweenTwoCameras = [0.03, 0.03];
-editor.cameraPlaneZ = 10;
-editor.sensorSize = [1, 1];
-editor.sensorPlaneZ = 0.6;
 
+actualLayerWidth = editor.spatialResolution(2) / editor.spatialResolution(1) * actualLayerHeight;
+attenuatorSize = [actualLayerHeight, actualLayerWidth];
+
+editor.distanceBetweenTwoCameras = [100, 100];
+editor.cameraPlaneZ = 2000;
+editor.sensorSize = attenuatorSize;
+editor.sensorPlaneZ = -1;
 lightField = editor.getPerspectiveLightField();
 
-numberOfLayers = 13;
-attenuatorThickness = 1.5;
-layerResolution = round( 1.1 * lightField.spatialResolution );
-attenuator = Attenuator(numberOfLayers, layerResolution, [1.4, 1.4], attenuatorThickness, lightField.channels);
-attenuator.placeLayer(1, -0.2);
-attenuator.placeLayer(2, 0);
-attenuator.placeLayer(3, 0.2);
-attenuator.placeLayer(4, 0.4);
-attenuator.placeLayer(5, 0.6);
-attenuator.placeLayer(6, 0.8);
-attenuator.placeLayer(7, 0.9);
-attenuator.placeLayer(8, 1);
-attenuator.placeLayer(9, 1.1);
-attenuator.placeLayer(10, 1.2);
-attenuator.placeLayer(11, 1.3);
-attenuator.placeLayer(12, 1.4);
-attenuator.placeLayer(13, 3);
 
-resamplingPlane = SensorPlane(round(1 * layerResolution), [1.4, 1.4], -0.2);
+
+numberOfLayers = 5;
+attenuatorThickness = actualThickness;
+layerResolution = round( 1 * lightField.spatialResolution );
+attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
+% attenuator.placeLayer(1, -0.2);
+% attenuator.placeLayer(2, 0);
+% attenuator.placeLayer(3, 0.2);
+% attenuator.placeLayer(4, 0.4);
+% attenuator.placeLayer(5, 0.6);
+% attenuator.placeLayer(6, 0.8);
+% attenuator.placeLayer(7, 0.9);
+% attenuator.placeLayer(8, 1);
+% attenuator.placeLayer(9, 1.1);
+% attenuator.placeLayer(10, 1.2);
+% attenuator.placeLayer(11, 1.3);
+% attenuator.placeLayer(12, 1.4);
+% attenuator.placeLayer(13, 3);
+
+resamplingPlane = SensorPlane(round(1 * layerResolution), attenuatorSize, attenuator.layerPositionZ(1));
 rec = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
 
 
 %% Back projection P^T * LF
 
 close all;
-rec.evaluation.clearOutputFolder();
+% rec.evaluation.clearOutputFolder();
 rec.constructPropagationMatrix();
 
 P = rec.propagationMatrix.formSparseMatrix();
@@ -58,7 +67,7 @@ rec.computeAttenuationLayers();
 rec.evaluation.displayLayers(1 : attenuator.numberOfLayers);
 
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
-resamplingPlane2 = SensorPlane(1 * layerResolution, [1, 1], 0.6);
+resamplingPlane2 = SensorPlane(1 * layerResolution, attenuatorSize, lightField.sensorPlane.z);
 rec2 = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec2.constructPropagationMatrix();
 
