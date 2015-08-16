@@ -17,7 +17,7 @@ function printImagesToPDF( outputFolder, filename, images, printSize )
 
     set(fig, 'PaperPositionMode', 'manual')
     set(fig, 'PaperUnits', 'centimeters')
-    set(fig, 'PaperPosition',[1, 1, printSize(1) * numberOfImages / 10,  printSize(2) * numberOfImages / 10])
+    set(fig, 'PaperPosition', [1, 1, printSize(1) * numberOfImages / 10, printSize(2) * numberOfImages / 10])
     set(fig, 'PaperType', 'A4')
     set(fig, 'PaperOrientation', 'portrait')
     
