@@ -110,13 +110,12 @@ end
 resamplingPlane2 = SensorPlane(ceil(1 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
 rec = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec.constructPropagationMatrix();
-
 rec.usePropagationMatrixForReconstruction(rec.propagationMatrix);
-rec.reconstructLightField();
 
-rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6; 9, 9; 9, 10; 10, 9; 10, 10]);
-rec.evaluation.displayReconstructedViews();
-rec.evaluation.displayErrorImages();
+evaluation = rec.evaluation();
+evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
+evaluation.displayReconstructedViews();
+evaluation.displayErrorImages();
 
 %% Store evaluation data to output folder
 
