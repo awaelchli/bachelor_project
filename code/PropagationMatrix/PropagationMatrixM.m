@@ -29,7 +29,11 @@ classdef PropagationMatrixM < AbstractPropagationMatrix
         function P = formSparseSubMatrix(this, angularIndexY, angularIndexX)
             M = this.maskForSparseSubMatrix(angularIndexY, angularIndexX);
             
-            slices = sub2ind(size(this.indexStart), angularIndexY, angularIndexX, layerIndex);
+            layerIndex = repmat(this.attenuatorSubscriptRange(3), numel(angularIndexY), 1);
+            angularIndexY = repmat(angularIndexY(:), size(layerIndex, 2), 1);
+            angularIndexX = repmat(angularIndexX(:), size(layerIndex, 2), 1);
+            slices = sub2ind(size(this.indexStart), angularIndexY(:), angularIndexX(:), layerIndex(:));
+            
             idxStart = this.indexStart(slices);
             idxEnd = this.indexEnd(slices);
             indices = arrayfun(@colon, idxStart, idxEnd, 'UniformOutput', false);
