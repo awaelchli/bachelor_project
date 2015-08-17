@@ -10,11 +10,11 @@ rec = ReconstructionForOrthographicLF(lightField, attenuator);
 rec.computeAttenuationLayers();
 
 close all;
-rec.evaluation.displayLayers(1 : 5);
-rec.reconstructLightField();
+evaluation = rec.evaluation();
+evaluation.displayLayers(1 : 5);
 
-rec.evaluation.clearOutputFolder();
-rec.evaluation.evaluateViews([4, 1; 4, 2; 4, 3; 4, 4; 4, 5; 4, 6; 4, 7]);
-rec.evaluation.displayReconstructedViews();
-rec.evaluation.displayErrorImages();
-rec.evaluation.storeReconstructedViews();
+evaluation.clearOutputFolder();
+evaluation.evaluateViews([4, 1; 4, 2; 4, 3; 4, 4; 4, 5; 4, 6; 4, 7]);
+evaluation.displayReconstructedViews();
+evaluation.displayErrorImages();
+evaluation.storeReconstructedViews();

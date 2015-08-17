@@ -90,11 +90,9 @@ rec.constructPropagationMatrix();
 rec.usePropagationMatrixForReconstruction(rec.propagationMatrix);
 rec.reconstructLightField();
 
-rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
-% rec.evaluation.evaluateViews([1, 3; 2, 3; 3, 3; 4, 3; 5, 3; 6, 3]);
-rec.evaluation.displayReconstructedViews();
-% rec.evaluation.displayErrorImages();
-% rec2.evaluation.storeReconstructedViews();
+evaluation = rec.evaluation();
+evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
+evaluation.displayReconstructedViews();
 
 
 %% Store evaluation data to output folder
@@ -106,7 +104,7 @@ indY = repmat(indY, numel(indX), 1);
 indX = repmat(indX, 1, size(indY, 2));
 
 indices = [indY(:), indX(:)];
-rec.evaluation.evaluateViews(indices);
-rec.evaluation.storeReconstructedViews();
-rec.evaluation.storeErrorImages();
-rec.evaluation.storeLayers(1 : numberOfLayers);
+evaluation.evaluateViews(indices);
+evaluation.storeReconstructedViews();
+evaluation.storeErrorImages();
+evaluation.storeLayers(1 : numberOfLayers);

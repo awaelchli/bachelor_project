@@ -25,7 +25,7 @@ attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenua
 
 resamplingPlane = SensorPlane(round(2 * layerResolution), samplingPlaneSize, attenuator.layerPositionZ(1));
 rec = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
-
+evaluation = rec.evaluation();
 
 %% Back projection P^T * LF
 
@@ -53,12 +53,12 @@ clear b backProjection;
 %% Compute the layers
 
 rec.computeAttenuationLayers();
-rec.evaluation.displayLayers(1 : attenuator.numberOfLayers);
-rec.evaluation.storeLayers(1 : attenuator.numberOfLayers);
+evaluation.displayLayers(1 : attenuator.numberOfLayers);
+evaluation.storeLayers(1 : attenuator.numberOfLayers);
 
-rec.evaluation.printLayers([1, 2], 15);
-rec.evaluation.printLayers([3, 4], 15);
-rec.evaluation.printLayers(5, 15);
+evaluation.printLayers([1, 2], 15);
+evaluation.printLayers([3, 4], 15);
+evaluation.printLayers(5, 15);
 
 %% Reconstruct light field from layers
 
@@ -68,13 +68,12 @@ rec2 = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2
 rec2.constructPropagationMatrix();
 
 rec.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
-rec.reconstructLightField();
 
-rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
+evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
 % rec.evaluation.evaluateViews([1, 3; 2, 3; 3, 3; 4, 3; 5, 3; 6, 3]);
-rec.evaluation.displayReconstructedViews();
+evaluation.displayReconstructedViews();
 % rec.evaluation.displayErrorImages();
-rec.evaluation.storeReconstructedViews();
+evaluation.storeReconstructedViews();
 
 
 %% Store all reconstructed views
@@ -86,5 +85,5 @@ indY = repmat(indY, numel(indX), 1);
 indX = repmat(indX, 1, size(indY, 2));
 
 indices = [indY(:), indX(:)];
-rec.evaluation.evaluateViews(indices);
-rec.evaluation.storeReconstructedViews();
+evaluation.evaluateViews(indices);
+evaluation.storeReconstructedViews();
