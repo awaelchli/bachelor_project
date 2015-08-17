@@ -13,7 +13,7 @@ classdef AbstractPropagationMatrix < handle
         
         P = formSparseMatrix(this)
         
-        P = formSparseSubMatrix(this, cameraIndexY, cameraIndexX, layerIndex)
+        P = formSparseSubMatrix(this, angularIndexY, angularIndexX)
         
         submitEntries(this, cameraIndexY, cameraIndexX, ...
                             pixelIndexOnSensorY, pixelIndexOnSensorX, ...
@@ -63,6 +63,25 @@ classdef AbstractPropagationMatrix < handle
             columns = sub2ind(this.attenuatorSubscriptRange, layerPixelIndicesY(:), ...
                                                              layerPixelIndicesX(:), ...
                                                              layerIndices(:));
+        end
+        
+        function M = maskForSparseSubMatrix(this, angularIndexY, angularIndexX)
+            
+            numberOfAngularSubscripts = numel(angularIndexY);
+            maskSize = [prod([numberOfAngularSubscripts, this.lightFieldSubscriptRange(LightField.spatialDimensions)]), this.size(1)];
+            
+            [ pixelIndicesY, pixelIndicesX ] = ndgrid(1 : this.lightFieldSubscriptRange(LightField.spatialDimensions(1)), ...
+                                                      1 : this.lightFieldSubscriptRange(LightField.spatialDimensions(2)));
+            
+            pixelIndicesY = repmat(pixelIndicesY, 1, numberOfAngularSubscripts);
+            pixelIndicesX = repmat(pixelIndicesX, 1, numberOfAngularSubscripts);
+            angularIndicesY = repmat(angularIndexY(:)', prod(this.lightFieldSubscriptRange(LightField.spatialDimensions)), 1);
+            angularIndicesX = repmat(angularIndexX(:)', prod(this.lightFieldSubscriptRange(LightField.spatialDimensions)), 1);
+            
+            I = 1 : maskSize(1);
+            J = sub2ind(this.lightFieldSubscriptRange, angularIndicesY(:), angularIndicesX(:), pixelIndicesY(:), pixelIndicesX(:));
+            S = ones(size(I));
+            M = sparse(I, J, S, maskSize(1), maskSize(2));
         end
         
     end

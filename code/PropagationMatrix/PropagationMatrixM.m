@@ -26,13 +26,16 @@ classdef PropagationMatrixM < AbstractPropagationMatrix
             P = sparse(this.I, this.J, this.S, this.size(1), this.size(2));
         end
         
-        function P = formSparseSubMatrix(this, cameraIndexY, cameraIndexX, layerIndex)
-            slices = sub2ind(size(this.indexStart), cameraIndexY, cameraIndexX, layerIndex);
+        function P = formSparseSubMatrix(this, angularIndexY, angularIndexX)
+            M = this.maskForSparseSubMatrix(angularIndexY, angularIndexX);
+            
+            slices = sub2ind(size(this.indexStart), angularIndexY, angularIndexX, layerIndex);
             idxStart = this.indexStart(slices);
             idxEnd = this.indexEnd(slices);
             indices = arrayfun(@colon, idxStart, idxEnd, 'UniformOutput', false);
             indices = [indices{:}];
-            P = sparse(this.I(indices), this.J(indices), this.S(indices), this.size(1), this.size(2));
+            
+            P = M * sparse(this.I(indices), this.J(indices), this.S(indices), this.size(1), this.size(2));
         end
         
         function submitEntries(this, cameraIndexY, cameraIndexX, ...

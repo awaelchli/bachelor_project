@@ -19,9 +19,15 @@ classdef PropagationMatrix < AbstractPropagationMatrix
             P = sparse([this.Is{:}], [this.Js{:}], [this.Ss{:}], this.size(1), this.size(2));
         end
         
-        function P = formSparseSubMatrix(this, cameraIndexY, cameraIndexX, layerIndex)
-            slices = sub2ind(size(this.Is), cameraIndexY, cameraIndexX, layerIndex);
-            P = sparse([this.Is{slices}], [this.Js{slices}], [this.Ss{slices}], this.size(1), this.size(2));
+        function P = formSparseSubMatrix(this, angularIndexY, angularIndexX)
+            M = this.maskForSparseSubMatrix(angularIndexY, angularIndexX);
+            
+            layerIndex = repmat(1 : size(this.Is, 3), numel(angularIndexY), 1);
+            angularIndexY = repmat(angularIndexY(:), size(layerIndex, 2), 1);
+            angularIndexX = repmat(angularIndexX(:), size(layerIndex, 2), 1);
+            slices = sub2ind(size(this.Is), angularIndexY(:), angularIndexX(:), layerIndex(:));
+            
+            P = M * sparse([this.Is{slices}], [this.Js{slices}], [this.Ss{slices}], this.size(1), this.size(2));
         end
         
         function submitEntries(this, cameraIndexY, cameraIndexX, ...
