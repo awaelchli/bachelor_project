@@ -126,7 +126,7 @@ indY = repmat(indY, numel(indX), 1);
 indX = repmat(indX, 1, size(indY, 2));
 
 indices = [indY(:), indX(:)];
-rec.evaluation.evaluateViews(indices);
-rec.evaluation.storeReconstructedViews();
-rec.evaluation.storeErrorImages();
-rec.evaluation.storeLayers(1 : numberOfLayers);
+evaluation.evaluateViews(indices);
+evaluation.storeReconstructedViews();
+evaluation.storeErrorImages();
+evaluation.storeLayers(1 : numberOfLayers);
