@@ -7,8 +7,7 @@ classdef ReconstructionEvaluation < handle
     
     properties (SetAccess = protected)
         lightField;
-        attenuator;
-        reconstructedLightField;
+        reconstruction;
     end
     
     properties (SetAccess = private)
@@ -17,6 +16,7 @@ classdef ReconstructionEvaluation < handle
     end
     
     properties (Dependent, SetAccess = private)
+        attenuator;
         numberOfReconstructions;
     end
     
@@ -26,10 +26,16 @@ classdef ReconstructionEvaluation < handle
     
     methods
         
-        function this = ReconstructionEvaluation(lightField, attenuator, reconstructedLightField)
-            this.lightField = lightField;
-            this.attenuator = attenuator;
-            this.reconstructedLightField = reconstructedLightField;
+        function this = ReconstructionEvaluation(reconstruction, lightField)
+            switch(nargin)
+                case 1
+                    this.lightField = reconstruction.lightField;
+                case 2
+                    this.lightField = lightField;
+                otherwise
+                    error('Wrong number of input arguments');
+            end
+            this.reconstruction = reconstruction;
         end
         
         function evaluateViews(this, angularIndices)
@@ -59,6 +65,10 @@ classdef ReconstructionEvaluation < handle
         
         function replicateSpatialDimensionX(this, replication)
             this.replicationSizes(LightField.spatialDimensions(2)) = replication;
+        end
+        
+        function attenuator = get.attenuator(this)
+            attenuator = this.reconstruction.attenuator;
         end
         
         function numberOfReconstructions = get.numberOfReconstructions(this)
@@ -115,7 +125,8 @@ classdef ReconstructionEvaluation < handle
         end
         
         function reconstructedView = getReplicatedReconstructedView(this, cameraIndex)
-            reconstructedView = this.reconstructedLightField.lightFieldData(cameraIndex(1), cameraIndex(2), :, :, :);
+            reconstructedView = this.reconstruction.reconstructLightFieldSlice(cameraIndex(1), cameraIndex(2));
+            reconstructedView = reshape(reconstructedView, [1, size(reconstructedView)]);
             reconstructedView = repmat(reconstructedView, this.replicationSizes);
             reconstructedView = squeeze(reconstructedView);
         end

@@ -4,10 +4,6 @@ classdef ReconstructionForOrthographicLF < AbstractReconstruction
         
         function this = ReconstructionForOrthographicLF(lightField, attenuator)
             this = this@AbstractReconstruction(lightField, attenuator);
-            
-            lightFieldData = zeros([this.lightField.resolution, this.lightField.channels]);
-            reconstructedLightField = LightFieldO(lightFieldData, lightField.sensorPlane, lightField.fov);
-            this.evaluation = ReconstructionEvaluation(this.lightField, attenuator, reconstructedLightField);
         end
         
         function constructPropagationMatrix(this)
@@ -65,7 +61,6 @@ classdef ReconstructionForOrthographicLF < AbstractReconstruction
         end
         
         function [X, Y] = projection(this, cameraIndex, targetPlaneZ, X, Y, Z)
-            
             rayAngle = this.lightField.rayAngle(cameraIndex);
             Y = Y + tan(rayAngle(1)) * (targetPlaneZ - Z);
             X = X + tan(rayAngle(2)) * (targetPlaneZ - Z);

@@ -19,11 +19,8 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
             newSensorPlane = SensorPlane(samplingPlane.planeResolution, lightField.sensorPlane.planeSize, lightField.sensorPlane.z);
             this.samplingPlane = samplingPlane;
             
-            % Initialize empty light fields
+            % Initialize empty resampled light field
             this.resampledLightField = LightFieldP(resampledLFData, lightField.cameraPlane, newSensorPlane);
-            reconstructedLightField = LightFieldP(resampledLFData, this.lightField.cameraPlane, newSensorPlane);
-            this.evaluation = ReconstructionEvaluation(this.resampledLightField, attenuator, reconstructedLightField);
-            
             this.propagationMatrix = PropagationMatrix(this.resampledLightField, attenuator);
         end
         
@@ -59,7 +56,7 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
 
                     for layer = 1 : this.attenuator.numberOfLayers
 
-                        % adjust distance for current layer; the coordinate origin is
+                        % Adjust distance for current layer; the coordinate origin is
                         % at the center of the layer stack
                         currentLayerZ = this.attenuator.layerPositionZ(layer);
                         
@@ -110,6 +107,10 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
             end
         end
         
+        function evaluation = evaluation(this)
+            evaluation = ReconstructionEvaluation(this, this.resampledLightField);
+        end
+        
     end
     
     methods (Access = protected)
@@ -121,7 +122,7 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
         
         function [X, Y] = projection(this, cameraIndex, targetPlaneZ, X, Y, Z)
             
-            % get the position of the current camera on the camera plane
+            % Get the position of the current camera on the camera plane
             centerOfProjection = [this.lightField.cameraPlane.cameraPositionMatrixY(cameraIndex(1), cameraIndex(2)), ...
                                   this.lightField.cameraPlane.cameraPositionMatrixX(cameraIndex(1), cameraIndex(2)), ...
                                   this.lightField.cameraPlane.z];

@@ -7,7 +7,6 @@ classdef AbstractReconstruction < handle
         propagationMatrix;
         % A different propagation matrix that can be used for reconstructing views from attenuation layers
         propagationMatrixForReconstruction;
-        evaluation;
     end
     
     properties
@@ -15,10 +14,6 @@ classdef AbstractReconstruction < handle
         weightFunctionHandle;
         verbose = 1;
         solver = @sart;
-    end
-    
-    properties (Dependent, SetAccess = private)
-        reconstructedLightField;
     end
     
     methods (Abstract)
@@ -74,22 +69,33 @@ classdef AbstractReconstruction < handle
             
         end
         
-        function reconstructLightField(this)
+        function reconstructedLF = reconstructLightField(this)
             
-            attenuationValues = permute(this.attenuator.attenuationValues, [2, 3, 1, 4]);
-            attenuationValues = reshape(attenuationValues, this.propagationMatrix.size(2), []);
+            attenuationValues = this.attenuator.vectorizeData();
             reconstructionVector = this.propagationMatrixForReconstruction.formSparseMatrix() * log(attenuationValues);
 
             % convert the light field vector to the 4D light field
-            reconstructionData = reshape(reconstructionVector, [this.propagationMatrixForReconstruction.lightFieldSubscriptRange, this.evaluation.reconstructedLightField.channels]);
+            reconstructionData = reshape(reconstructionVector, [this.propagationMatrixForReconstruction.lightFieldSubscriptRange, this.lightField.channels]);
             reconstructionData = exp(reconstructionData);
             reconstructedLF = LightField(reconstructionData);
-            this.evaluation = ReconstructionEvaluation(this.evaluation.lightField, this.attenuator, reconstructedLF);
             
         end
         
-        function reconstructedLightField = get.reconstructedLightField(this)
-            reconstructedLightField = this.evaluation.reconstructedLightField;
+        function reconstructionData = reconstructLightFieldSlice(this, angularIndexY, angularIndexX)
+            
+            attenuationValues = this.attenuator.vectorizeData();
+            reconstructionVector = this.propagationMatrixForReconstruction.formSparseSubMatrix(angularIndexY, angularIndexX) * log(attenuationValues);
+
+            reconstructionData = reshape(reconstructionVector, [this.propagationMatrixForReconstruction.lightFieldSubscriptRange(LightField.spatialDimensions), ...
+                                                                numel(angularIndexY), ...
+                                                                this.lightField.channels]);
+            
+            reconstructionData = permute(reconstructionData, [3, 1, 2, 4]);
+            reconstructionData = exp(reconstructionData);
+        end
+        
+        function evaluation = evaluation(this)
+            evaluation = ReconstructionEvaluation(this);
         end
         
         function usePropagationMatrixForReconstruction(this, P)
