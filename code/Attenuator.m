@@ -79,6 +79,11 @@ classdef Attenuator < PixelPlane
             layers = this.attenuationValues(layerNumbers, :, :, :);
         end
         
+        function vector = vectorizeData(this)
+            vector = reshape(permute(this.attenuationValues, [2, 3, 1, 4]), ...
+                             prod([this.planeResolution, this.numberOfLayers]), []);
+        end
+        
         function valid = isValidLayerNumber(this, layerNumber)
             valid = isscalar(layerNumber) & ...
                     1 <= layerNumber & ...
