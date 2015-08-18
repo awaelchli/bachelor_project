@@ -30,8 +30,8 @@ classdef TiledPixelPlane < SimplePixelPlane
             for tileY = 1 : this.tilingResolution(1)
                 for tileX = 1 : this.tilingResolution(2)
                     tile = this.tiles{tileY, tileX};
-                    coverageMatrix(tile.validPixelIndexInParentY(:), tile.validPixelIndexInParentX(:)) = ...
-                        coverageMatrix(tile.validPixelIndexInParentY(:), tile.validPixelIndexInParentX(:)) + 1;
+                    coverageMatrix(tile.validPixelIndexInParentY(:, 1), tile.validPixelIndexInParentX(1, :)) = ...
+                        coverageMatrix(tile.validPixelIndexInParentY(:, 1), tile.validPixelIndexInParentX(1, :)) + 1;
                 end
             end
         end
