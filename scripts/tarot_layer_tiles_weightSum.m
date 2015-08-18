@@ -96,7 +96,6 @@ attenuator.attenuationValues = attenuationValues;
 figure('Name', 'Distribution of the blending weights'); imshow(squeeze(weightSumMatrix(1, :, :, 1)), []);
 figure('Name', 'Coverage matrix'); imshow(tiledPlane.coverageMatrix, []);
 
-
 %% Show the layers
 % close all;
 for n = 1 : numberOfLayers
@@ -118,6 +117,9 @@ evaluation.displayReconstructedViews();
 evaluation.displayErrorImages();
 
 %% Store evaluation data to output folder
+
+W = (weightSumMatrix - min(weightSumMatrix(:))) / (max(weightSumMatrix(:)) - min(weightSumMatrix(:)));
+imwrite(squeeze(W(1, :, :, :)), [evaluation.outputFolder, 'blendingMaskSum.png']);
 
 indY = 1 : lightField.angularResolution(1);
 indX = 1 : lightField.angularResolution(2);
