@@ -33,13 +33,7 @@ close all;
 rec.evaluation.clearOutputFolder();
 rec.constructPropagationMatrix();
 
-P = rec.propagationMatrix.formSparseMatrix();
-l = rec.resampledLightField.vectorizeData();
-backProjection = P' * l;
-b = backProjection ./ repmat(sum(P, 1)', [1, lightField.channels]);
-b = permute(b, [2, 1]);
-b = reshape(b, [attenuator.channels, attenuator.planeResolution, attenuator.numberOfLayers]);
-b = permute(b, [4, 2, 3, 1]);
+b = rec.backprojectLightField();
 
 for i = 1 : attenuator.numberOfLayers
     figure('Name', sprintf('Layer %i', i));
@@ -47,7 +41,7 @@ for i = 1 : attenuator.numberOfLayers
     imwrite(squeeze(b(i, :, :, :)), sprintf('output/Back_Projection_Layer_%i.png', i));
 end
 
-clear b backProjection;
+clear b;
 
 
 %% Compute the layers
