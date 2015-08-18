@@ -611,6 +611,54 @@ The vector $b$ holds the result of the back-projection. Equation~\ref{eq:back_pr
 	\label{fig:comparison_of_two_backprojections}
 \end{figure}
 
+\subsection{Tile-based optimization for attenuation layers}
+High resolution light fields can take up a significant amount of space in memory. For example, A light field taken with a HD-camera from $17\times17$ angles would take up $1920 \cdot 1080 \cdot 17^2 \cdot 3 \cdot 8 / \left(1024^3\right) = 13.3947$ Gigabyte of memory. In addition, the propagation matrix stores information about every pixel in the light field and thus, can take up gigabytes of space depending on the resolution of the attenuation layers. The new approach divides the attenuation layers into tiles. The combination of the same tile from each layer forms a new attenuator of smaller size and lower resolution. The optimization is then performed for every tile separately, resulting in a smaller propagation matrix per tile. In the end, the optimized tiles are put together to form the attenuation layers. In general, the borders of the attenuator contain less ray-propagation information and thus, introduce a higher degree of freedom for the optimization. This introduces artefacts that are clearly visible in the reassembled layers. To solve this issue, the tiles have to overlap. In this case, when reassembling the layers from the tiles, the overlaps need to be blended with a mask. 
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0/1.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0/2.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0/3.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0/4.png}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0/5.png}
+	\end{subfigure}%
+	\\\quad
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0.5/1.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0.5/2.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0.5/3.png} 
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0.5/4.png}
+	\end{subfigure}%
+	~
+	\begin{subfigure}[t]{0.19\textwidth}
+		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0.5/5.png}
+	\end{subfigure}%
+	
+	\caption{Top row: Tiles with no overlap. Bottom row: Tiles with 50\% overlap. The layers have a resolution of $512 \times 512$ pixels and the tiles have $200 \times 200$ pixels.}
+	\label{fig:comparison_tile_overlap_vs_no_overlap}
+\end{figure}
 
 \clearpage
 \bibliographystyle{alpha}
