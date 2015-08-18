@@ -9,6 +9,7 @@ editor.angularSliceX(1 : 3 : 17);
 
 actualLayerWidth = editor.spatialResolution(2) / editor.spatialResolution(1) * actualLayerHeight;
 attenuatorSize = [actualLayerHeight, actualLayerWidth];
+samplingPlaneSize = attenuatorSize;
 
 editor.distanceBetweenTwoCameras = [100, 100];
 editor.cameraPlaneZ = 2000;
@@ -120,7 +121,7 @@ end
 %% Reconstruct light field from layers
 % close all;
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
-resamplingPlane2 = SensorPlane(ceil(1 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
+resamplingPlane2 = SensorPlane(ceil(2 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
 rec = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec.constructPropagationMatrix();
 rec.usePropagationMatrixForReconstruction(rec.propagationMatrix);
