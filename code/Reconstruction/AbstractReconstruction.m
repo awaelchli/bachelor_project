@@ -105,6 +105,18 @@ classdef AbstractReconstruction < handle
             this.propagationMatrixForReconstruction = P;
         end
         
+        function backProjection = backprojectLightField(this)
+            P = this.propagationMatrix.formSparseMatrix();
+            l = this.getLightFieldForOptimization().vectorizeData();
+            
+            backProjection = P' * l;
+            
+            backProjection = backProjection ./ repmat(sum(P, 1)', [1, this.lightField.channels]);
+            backProjection = permute(backProjection, [2, 1]);
+            backProjection = reshape(backProjection, [this.attenuator.channels, this.attenuator.planeResolution, this.attenuator.numberOfLayers]);
+            backProjection = permute(backProjection, [4, 2, 3, 1]);
+        end
+        
     end
     
     methods (Access = protected)
