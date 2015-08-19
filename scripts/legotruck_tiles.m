@@ -41,7 +41,7 @@ end
 
 %% Compute tile positions
 
-tileResolution = 2 * [100, 100];
+tileResolution = 2 * [90, 90];
 tileOverlap = ceil(0.5 * tileResolution);
 tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
 tiledPlane.regularTiling(tileResolution, tileOverlap);
@@ -59,6 +59,7 @@ tileBlendingMask = ones(tileResolution);
 tileBlendingMask = min(cumsum(tileBlendingMask, 1), cumsum(tileBlendingMask, 2));
 tileBlendingMask = min(tileBlendingMask, tileBlendingMask(end : -1 : 1, end : -1 : 1));
 tileBlendingMask = tileBlendingMask.^2;
+% tileBlendingMask = (tileBlendingMask - min(tileBlendingMask(:))) / (max(tileBlendingMask(:)) - min(tileBlendingMask(:)));
 
 for index = 1 : size(tileIndices, 1)
         tic
@@ -98,8 +99,9 @@ for index = 1 : size(tileIndices, 1)
         % Store the current attenuator tile
         out = sprintf('output/tile_%i_%i/', tileY, tileX);
         mkdir(out);
-        rec.evaluation.outputFolder = out;
-        rec.evaluation.storeLayers(1 : attenuator.numberOfLayers);
+        eval = rec.evaluation();
+        eval.outputFolder = out;
+        eval.storeLayers(1 : attenuator.numberOfLayers);
         toc
 end
 
@@ -121,7 +123,7 @@ end
 %% Reconstruct light field from layers
 % close all;
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
-resamplingPlane2 = SensorPlane(ceil(2 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
+resamplingPlane2 = SensorPlane(ceil(1 * layerResolution), samplingPlaneSize, lightField.sensorPlane.z);
 rec = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec.constructPropagationMatrix();
 rec.usePropagationMatrixForReconstruction(rec.propagationMatrix);
