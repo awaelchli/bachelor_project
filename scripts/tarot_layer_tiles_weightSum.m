@@ -83,8 +83,9 @@ for index = 1 : size(tileIndices, 1)
         % Store the current attenuator tile
         out = sprintf('output/tile_%i_%i/', tileY, tileX);
         mkdir(out);
-        rec.evaluation.outputFolder = out;
-        rec.evaluation.storeLayers(1 : attenuator.numberOfLayers);
+        eval = rec.evaluation();
+        eval.outputFolder = out;
+        eval.storeLayers(1 : attenuator.numberOfLayers);
         toc
 end
 
