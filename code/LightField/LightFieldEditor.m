@@ -71,8 +71,6 @@ classdef LightFieldEditor < handle
                 error(errorStruct);
             end
             
-            fprintf('Images found: %i \n', numberOfImages);
-            
             this.input.type = LightFieldEditor.inputTypeImageCollection;
             this.input.folder = inputFolder;
             this.input.filetype = filetype;
