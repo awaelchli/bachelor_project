@@ -5,6 +5,12 @@ classdef ReconstructionEvaluation < handle
         imageOutputType = 'png';
     end
     
+    properties (Constant, Hidden)
+        filenameReconstructionOfView = 'Reconstruction_of_view_(%i, %i)';
+        filenameErrorForView = 'MSE_for_view_(%i,%i)';
+        filenameRMSEFile = 'RMSE.txt';
+    end
+    
     properties (SetAccess = protected)
         lightField;
         reconstruction;
@@ -134,7 +140,7 @@ classdef ReconstructionEvaluation < handle
                 currentCameraIndex = this.reconstructionIndices(i, :);
                 errorImage = (errorImages{i} - minError) / (maxError - minError);
                 errorImage = ind2rgb(gray2ind(errorImage, 255^2), jet(255^2));
-                filename = sprintf('MSE_for_view_(%i,%i)', currentCameraIndex);
+                filename = sprintf(ReconstructionEvaluation.filenameErrorForView, currentCameraIndex);
                 imwrite(errorImage, [this.outputFolder '/' filename '.' ReconstructionEvaluation.imageOutputType]);
             end
         end
@@ -188,7 +194,7 @@ classdef ReconstructionEvaluation < handle
         end
         
         function storeSingleReconstructedView(this, cameraIndex)
-            filename = sprintf('Reconstruction_of_view_(%i,%i)', cameraIndex);
+            filename = sprintf(ReconstructionEvaluation.filenameReconstructionOfView, cameraIndex);
             reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
             imwrite(reconstructedView, [this.outputFolder '/' filename '.' ReconstructionEvaluation.imageOutputType]);
         end
@@ -243,7 +249,7 @@ classdef ReconstructionEvaluation < handle
         end
         
         function writeRMSEToTextFile(text, outputFolder)
-            rmseFileID = fopen([outputFolder '/' 'RMSE.txt'], 'wt');
+            rmseFileID = fopen([outputFolder '/' ReconstructionEvaluation.filenameRMSEFile], 'wt');
             fprintf(rmseFileID, text);
             fclose(rmseFileID);
         end
