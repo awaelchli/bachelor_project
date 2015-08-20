@@ -41,7 +41,7 @@ end
 
 %% Compute tile positions
 
-tileResolution = 2 * [90, 90];
+tileResolution = 2 * [100, 100];
 tileOverlap = ceil(0.5 * tileResolution);
 tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
 tiledPlane.regularTiling(tileResolution, tileOverlap);
