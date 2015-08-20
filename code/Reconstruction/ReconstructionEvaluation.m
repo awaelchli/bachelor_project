@@ -114,14 +114,29 @@ classdef ReconstructionEvaluation < handle
         function storeErrorImages(this)
             this.createOutputFolderIfNotExists();
             
+            errorImages = cell(1, this.numberOfReconstructions);
             RMSEoutput = '';
             for i = 1 : this.numberOfReconstructions
                 currentCameraIndex = this.reconstructionIndices(i, :);
-                [~, rmse] = this.storeSingleErrorImage(currentCameraIndex);
+                [errorImage, rmse] = this.getErrorForView(currentCameraIndex);
+                errorImages{i} = errorImage;
                 RMSEoutput = this.appendRMSEOutput(RMSEoutput, currentCameraIndex, rmse);
             end
             
             ReconstructionEvaluation.writeRMSEToTextFile(RMSEoutput, this.outputFolder);
+            
+            minErrors = cellfun(@(im) min(im(:)), errorImages);
+            maxErrors = cellfun(@(im) max(im(:)), errorImages);
+            minError = min(minErrors);
+            maxError = max(maxErrors);
+            
+            for i = 1 : this.numberOfReconstructions
+                currentCameraIndex = this.reconstructionIndices(i, :);
+                errorImage = (errorImages{i} - minError) / (maxError - minError);
+                errorImage = ind2rgb(gray2ind(errorImage, 255^2), jet(255^2));
+                filename = sprintf('MSE_for_view_(%i,%i)', currentCameraIndex);
+                imwrite(errorImage, [this.outputFolder '/' filename '.' ReconstructionEvaluation.imageOutputType]);
+            end
         end
         
         function reconstructedView = getReplicatedReconstructedView(this, cameraIndex)
@@ -184,12 +199,6 @@ classdef ReconstructionEvaluation < handle
             figure('Name', 'Mean-Square-Error for reconstructed view');
             imshow(errorImage, []);
             title(displayTitle);
-        end
-        
-        function [errorImage, rmse] = storeSingleErrorImage(this, cameraIndex)
-            [errorImage, rmse] = this.getErrorForView(cameraIndex);
-            filename = sprintf('MSE_for_view_(%i,%i)', cameraIndex);
-            imwrite(errorImage, [this.outputFolder '/' filename '.' ReconstructionEvaluation.imageOutputType]);
         end
         
         function viewFromOriginal = getReplicatedOriginalView(this, cameraIndex)
