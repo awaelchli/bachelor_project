@@ -545,7 +545,12 @@ Instead of rounding the ray intersection points on the sensor to the nearest pix
 
 \subsection{Conclusion}
 
-Consider a simple example: Given is a light ray $i$ with intensity $l_i$ passing through an attenuator made of two masks, each having two pixels (see figure~\ref{fig:problem_with_ray_space_interpolation}). The goal is to find attenuation values $a_1$, $a_1^\prime$, $a_2$ and $a_2^\prime$ such that
+Due to the fact that the intensity of an attenuated light ray is modeled by the Beer-Lambert law, 
+
+\begin{equation}
+	I = I_0 e^{-\int_{\mathcal{C}}\mu\left(r\right)dr}, 
+\end{equation}
+and a linear system in the log-domain is needed for the optimization, it is not possible to incorporate interpolation on the attenuation layers. Consider a simple example: Given is a light ray $i$ with intensity $l_i$ passing through an attenuator made of two masks, each having two pixels (see figure~\ref{fig:problem_with_ray_space_interpolation}). The goal is to find attenuation values $a_1$, $a_1^\prime$, $a_2$ and $a_2^\prime$ such that
 
 \begin{equation}
 	l_i = \left(\omega_1 a_1 + \left(1 - \omega_1\right) a_1^{\prime}\right) \left(\omega_2 a_2 + \left(1 - \omega_2\right) a_2^{\prime} \right).
@@ -557,17 +562,27 @@ Applying the logarithm gives
 	\bar{l_i} = log\left(l_i\right) = log\left(\omega_1 a_1 + \left(1 - \omega_1\right) a_1^{\prime}\right) + log\left(\omega_2 a_2 + \left(1 - \omega_2\right) a_2^{\prime} \right).
 \end{equation}
 
-The problem is that the constraint~\ref{eq:example_ray_interpolation_constraint} can not be expressed as a linear constraint on the variables $a_1$, $a_1^\prime$, $a_2$ and $a_2^\prime$.
+The problem is that in the log-domain, the constraint~\ref{eq:example_ray_interpolation_constraint} can not be expressed as a linear constraint on the variables $a_1$, $a_1^\prime$, $a_2$ and $a_2^\prime$, such as
+
+\begin{equation}
+	\bar{l_i} = P_i x = 
+	\begin{bmatrix}
+		p_{i1} & p_{i2} & p_{i3} & p_{i4}
+	\end{bmatrix}
+	\begin{bmatrix}
+		a_1 \\ a_1^{\prime} \\ a_2^{\prime} \\ a_2
+	\end{bmatrix}.
+\end{equation}
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=1]{sketches/ray_space_interpolation.pdf}
-	\caption{...}
+	\includegraphics[height=8cm]{sketches/ray_space_interpolation.pdf}
+	\caption{The light ray (red) is attenuated by two layers. The attenuation of the ray at the intersection of a layer is modeled by a weighted sum over the pixel neighbourhood.}
 	\label{fig:problem_with_ray_space_interpolation}
 \end{figure}
 
 \clearpage
-
+\section{Further improvements for the pipeline}
 \subsection{Introduction of the sampling plane}
 From now on, the ray density is no longer tied to the resolution of the attenuator or the sensor plane. The introduction of a new and independent plane allows the sampling to be as dense as needed. This new \emph{sampling-plane} has the attributes:
 

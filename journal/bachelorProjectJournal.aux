@@ -81,15 +81,15 @@
 \@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Comparison of the reconstruction with weights on layers on and off for the legotruck-scene. $9 \times 9$ views, 5 Layers, box-radius 0.\relax }}{15}{figure.caption.14}}
 \newlabel{fig:comparison_sensor_interpolation_w=1_vs_w=gauss}{{13}{15}{Comparison of the reconstruction with weights on layers on and off for the legotruck-scene. $9 \times 9$ views, 5 Layers, box-radius 0.\relax }{figure.caption.14}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Conclusion}{15}{subsection.8.3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces ...\relax }}{16}{figure.caption.15}}
-\newlabel{fig:problem_with_ray_space_interpolation}{{14}{16}{...\relax }{figure.caption.15}{}}
-\newlabel{eq:example_ray_interpolation_constraint}{{3}{16}{Conclusion}{equation.8.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {14}{\ignorespaces The light ray (red) is attenuated by two layers. The attenuation of the ray at the intersection of a layer is modeled by a weighted sum over the pixel neighbourhood.\relax }}{16}{figure.caption.15}}
+\newlabel{fig:problem_with_ray_space_interpolation}{{14}{16}{The light ray (red) is attenuated by two layers. The attenuation of the ray at the intersection of a layer is modeled by a weighted sum over the pixel neighbourhood.\relax }{figure.caption.15}{}}
+\newlabel{eq:example_ray_interpolation_constraint}{{4}{16}{Conclusion}{equation.8.4}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {15}{\ignorespaces Comparison of two back-projections (top and bottom row) onto five layers (left to right). The first example has the sensor plane at $z_{sensor} = -0.5$, thus zero disparity is mapped onto the middle layer(s). The example below has the sensor plane at $z_{sensor} = -3$. This means that the zero-disparities are mapped onto a layer closer to the observer. The first example is better because it covers the entire depth-range of the scene (the cards in the back are in focus on the first layer and the card in the front is in focus on the 5th layer, not so in the example below).\relax }}{17}{figure.caption.16}}
 \newlabel{fig:comparison_of_two_backprojections}{{15}{17}{Comparison of two back-projections (top and bottom row) onto five layers (left to right). The first example has the sensor plane at $z_{sensor} = -0.5$, thus zero disparity is mapped onto the middle layer(s). The example below has the sensor plane at $z_{sensor} = -3$. This means that the zero-disparities are mapped onto a layer closer to the observer. The first example is better because it covers the entire depth-range of the scene (the cards in the back are in focus on the first layer and the card in the front is in focus on the 5th layer, not so in the example below).\relax }{figure.caption.16}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Introduction of the sampling plane}{17}{subsection.8.4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}Back-Projection and positioning of the layers}{17}{subsection.8.5}}
-\newlabel{eq:back_projection}{{4}{17}{Back-Projection and positioning of the layers}{equation.8.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.6}Tile-based optimization for attenuation layers}{17}{subsection.8.6}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Further improvements for the pipeline}{17}{section.9}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Introduction of the sampling plane}{17}{subsection.9.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Back-Projection and positioning of the layers}{17}{subsection.9.2}}
+\newlabel{eq:back_projection}{{6}{17}{Back-Projection and positioning of the layers}{equation.9.6}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {16}{\ignorespaces Top row: Tiles without overlap. Bottom row: Tiles with 50\% overlap. The layers have a resolution of $512 \times 512$ pixels and the tiles have $200 \times 200$ pixels. The two examples use $3 \times 3$ tiles and $5 \times 5$ tiles respectively.\relax }}{18}{figure.caption.17}}
 \newlabel{fig:comparison_tile_overlap_vs_no_overlap}{{16}{18}{Top row: Tiles without overlap. Bottom row: Tiles with 50\% overlap. The layers have a resolution of $512 \times 512$ pixels and the tiles have $200 \times 200$ pixels. The two examples use $3 \times 3$ tiles and $5 \times 5$ tiles respectively.\relax }{figure.caption.17}{}}
 \newlabel{fig:quadratic_blending_mask}{{17a}{18}{\relax }{figure.caption.18}{}}
@@ -98,6 +98,7 @@
 \newlabel{sub@fig:sum_of_quadratic_blending_masks}{{b}{18}{\relax }{figure.caption.18}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {17}{\ignorespaces A quadratic mask (a) is used to blend the overlaps of the tiles. The sum of the masks is shown in (b).\relax }}{18}{figure.caption.18}}
 \newlabel{fig:blending_mask_for_tiles}{{17}{18}{A quadratic mask (a) is used to blend the overlaps of the tiles. The sum of the masks is shown in (b).\relax }{figure.caption.18}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Tile-based optimization for attenuation layers}{18}{subsection.9.3}}
 \@writefile{lof}{\contentsline {figure}{\numberline {18}{\ignorespaces Reconstructed views from the attenuation layers created with tiles shown in figure~\ref  {fig:comparison_tile_overlap_vs_no_overlap}.\relax }}{19}{figure.caption.19}}
 \newlabel{fig:Reconstructions_from_tiled_attenuator}{{18}{19}{Reconstructed views from the attenuation layers created with tiles shown in figure~\ref {fig:comparison_tile_overlap_vs_no_overlap}.\relax }{figure.caption.19}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {19}{\ignorespaces Mean square error (MSE) images for the reconstructed views in figure~\ref  {fig:Reconstructions_from_tiled_attenuator}. The root mean square error (RMSE) is written besides the angular coordinate.\relax }}{20}{figure.caption.20}}
