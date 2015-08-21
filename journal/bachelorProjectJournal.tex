@@ -543,6 +543,29 @@ Instead of rounding the ray intersection points on the sensor to the nearest pix
 	\label{fig:comparison_sensor_interpolation_w=1_vs_w=gauss}
 \end{figure}
 
+\subsection{Conclusion}
+
+Consider a simple example: Given is a light ray $i$ with intensity $l_i$ passing through an attenuator made of two masks, each having two pixels (see figure~\ref{fig:problem_with_ray_space_interpolation}). The goal is to find attenuation values $a_1$, $a_1^\prime$, $a_2$ and $a_2^\prime$ such that
+
+\begin{equation}
+	l_i = \left(\omega_1 a_1 + \left(1 - \omega_1\right) a_1^{\prime}\right) \left(\omega_2 a_2 + \left(1 - \omega_2\right) a_2^{\prime} \right).
+\end{equation}
+
+Applying the logarithm gives
+
+\begin{equation}\label{eq:example_ray_interpolation_constraint}
+	\bar{l_i} = log\left(l_i\right) = log\left(\omega_1 a_1 + \left(1 - \omega_1\right) a_1^{\prime}\right) + log\left(\omega_2 a_2 + \left(1 - \omega_2\right) a_2^{\prime} \right).
+\end{equation}
+
+The problem is that the constraint~\ref{eq:example_ray_interpolation_constraint} can not be expressed as a linear constraint on the variables $a_1$, $a_1^\prime$, $a_2$ and $a_2^\prime$.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=1]{sketches/ray_space_interpolation.pdf}
+	\caption{...}
+	\label{fig:problem_with_ray_space_interpolation}
+\end{figure}
+
 \clearpage
 
 \subsection{Introduction of the sampling plane}
