@@ -548,16 +548,14 @@ Instead of rounding the ray intersection points on the sensor to the nearest pix
 Due to the fact that the intensity of an attenuated light ray is modeled by the Beer-Lambert law, 
 
 \begin{equation}
-	I = I_0 e^{-\int_{\mathcal{C}}\mu\left(r\right)dr}, 
+	I = I_0 e^{-\int_{\mathcal{C}} \! \mu\left(r\right) \, \mathrm{d}r}, 
 \end{equation}
 and a linear system in the log-domain is needed for the optimization, it is not possible to incorporate interpolation on the attenuation layers. Consider a simple example: Given is a light ray $i$ with intensity $l_i$ passing through an attenuator made of two masks, each having two pixels (see figure~\ref{fig:problem_with_ray_space_interpolation}). The goal is to find attenuation values $a_1$, $a_1^\prime$, $a_2$ and $a_2^\prime$ such that
 
 \begin{equation}
 	l_i = \left(\omega_1 a_1 + \left(1 - \omega_1\right) a_1^{\prime}\right) \left(\omega_2 a_2 + \left(1 - \omega_2\right) a_2^{\prime} \right).
 \end{equation}
-
 Applying the logarithm gives
-
 \begin{equation}\label{eq:example_ray_interpolation_constraint}
 	\bar{l_i} = log\left(l_i\right) = log\left(\omega_1 a_1 + \left(1 - \omega_1\right) a_1^{\prime}\right) + log\left(\omega_2 a_2 + \left(1 - \omega_2\right) a_2^{\prime} \right).
 \end{equation}
@@ -649,8 +647,26 @@ The vector $b$ holds the result of the back-projection. Equation~\ref{eq:back_pr
 	\label{fig:comparison_of_two_backprojections}
 \end{figure}
 
-\subsection{Tile-based optimization for attenuation layers}
-High resolution light fields can take up a significant amount of space in memory. For example, a light field taken with a Full HD camera from $17\times17$ angles would take up $1920 \cdot 1080 \cdot 17^2 \cdot 3 \cdot 8 / \left(1024^3\right) = 13.3947$ Gigabyte of memory. In addition, the propagation matrix stores information about every pixel in the light field and thus, can take up gigabytes of space depending on the resolution of the attenuation layers. The new approach divides the attenuation layers into tiles. The combination of the same tile from each layer forms a new attenuator of smaller size and lower resolution. The optimization is then performed for every tile separately, resulting in a smaller propagation matrix per tile. In the end, the optimized tiles are put together to form the attenuation layers. In general, the borders of the attenuator contain less ray-propagation information and thus, introduce a higher degree of freedom for the optimization. This introduces artefacts that are clearly visible in the reassembled layers as shown in figure~\ref{fig:comparison_tile_overlap_vs_no_overlap}. To solve this issue, the tiles have to overlap. In this case, when reassembling the layers from the tiles, the overlaps need to be blended with a mask: After the optimization, each tile gets multiplied with a mask shown in figure~\ref{fig:quadratic_blending_mask}. The finished layers are then obtained by summing the tiles and dividing by the sum of the blending masks shown in figure~\ref{fig:sum_of_quadratic_blending_masks}.
+\subsection{Tile-based optimization for attenuation masks}
+High resolution light fields can take up a significant amount of space in memory. For example, a light field taken with a Full HD camera from $17\times17$ angles would take up $1920 \cdot 1080 \cdot 17^2 \cdot 3 \cdot 8 / \left(1024^3\right) = 13.3947$ Gigabyte of memory. In addition, the propagation matrix stores information about every pixel in the light field and thus, can take up gigabytes of space depending on the resolution of the attenuation layers. The new approach divides the attenuation layers into tiles. Figure~\ref{fig:sketch_of_tiling_algorithm} shows how the tiles are laid out. The inputs for the tiling algorithm are the resolution of the tiles, 
+$
+r = 
+\begin{bmatrix}
+	r_x & r_y
+\end{bmatrix}
+$, and the overlap in horizontal and vertical direction, 
+$
+o = 
+\begin{bmatrix}
+	o_x & o_y
+\end{bmatrix}
+$. The tiles are then laid out in a grid beginning at the top left corner of the layer. The number of tiles needed to cover the plane can be calculated by 
+
+\begin{align*}
+	N_x = \left \lceil \dfrac{R_x - o_x}{r_x - o_x} \right \rceil & & N_y = \left \lceil \dfrac{R_y - o_y}{r_y - o_y} \right \rceil.
+\end{align*}
+
+The combination of the same tile from each layer forms a new attenuator of smaller size and lower resolution. The optimization is then performed for every tile separately, resulting in a smaller propagation matrix per tile. In the end, the optimized tiles are put together to form the attenuation layers. In general, the borders of the attenuator contain less ray-propagation information and thus, introduce a higher degree of freedom for the optimization. This introduces artefacts that are clearly visible in the reassembled layers as shown in figure~\ref{fig:comparison_tile_overlap_vs_no_overlap}. To solve this issue, the tiles have to overlap. In this case, when reassembling the layers from the tiles, the overlaps need to be blended with a mask: After the optimization, each tile gets multiplied with a mask shown in figure~\ref{fig:quadratic_blending_mask}. The finished layers are then obtained by summing the tiles and dividing by the sum of the blending masks shown in figure~\ref{fig:sum_of_quadratic_blending_masks}.
 
 \begin{figure}
 	\centering
@@ -700,19 +716,32 @@ High resolution light fields can take up a significant amount of space in memory
 
 \begin{figure}
 	\centering
-	\begin{subfigure}[t]{0.30\textwidth}
-		\includegraphics[width=\textwidth]{results/tile_blending/quadratic_tile_blending_mask.png}
-		\caption{}
-		\label{fig:quadratic_blending_mask}
-	\end{subfigure}%
-	~\quad
-	\begin{subfigure}[t]{0.30\textwidth}
-		\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0.5/blendingMaskSum.png}
-		\caption{}
-		\label{fig:sum_of_quadratic_blending_masks}
-	\end{subfigure}%
+	\begin{tabular}[b]{cc}
+    	
+		\begin{subfigure}[t]{0.6\textwidth}
+			\includegraphics[width=\textwidth]{sketches/tiling.pdf}
+			\caption{}
+			\label{fig:sketch_of_tiling_algorithm}
+		\end{subfigure}%
+		&
+		\begin{tabular}[b]{c}			
+			
+			\begin{subfigure}[t]{0.25\textwidth}
+				\includegraphics[width=\textwidth]{results/tile_blending/quadratic_tile_blending_mask.png}
+				\caption{}
+				\label{fig:quadratic_blending_mask}
+			\end{subfigure}%
+			\\
+			\begin{subfigure}[t]{0.25\textwidth}
+				\includegraphics[width=\textwidth]{results/tile_blending/tarot6x6x512x512-512x512x5-sampling=2x_tileRes=200x200_overlap=0.5/blendingMaskSum.png}
+				\caption{}
+				\label{fig:sum_of_quadratic_blending_masks}
+			\end{subfigure}%
+			
+		\end{tabular}
+	\end{tabular}
 	
-	\caption{A quadratic mask (a) is used to blend the overlaps of the tiles. The sum of the masks is shown in (b).}
+	\caption{A plane of size $R_x \times R_y$ pixels is covered by tiles of size $r_x \times r_y$ pixels. The tiles overlap by $o_x$ pixels in horizontal direction and by $o_y$ pixels in vertical direction. A quadratic mask (b) is used to blend the overlaps of the tiles. The sum of the masks is shown in (c).}
 	\label{fig:blending_mask_for_tiles}
 \end{figure}
 

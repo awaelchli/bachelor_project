@@ -18,4 +18,4 @@
 \contentsline {section}{\numberline {9}Further improvements for the pipeline}{17}{section.9}
 \contentsline {subsection}{\numberline {9.1}Introduction of the sampling plane}{17}{subsection.9.1}
 \contentsline {subsection}{\numberline {9.2}Back-Projection and positioning of the layers}{17}{subsection.9.2}
-\contentsline {subsection}{\numberline {9.3}Tile-based optimization for attenuation layers}{18}{subsection.9.3}
+\contentsline {subsection}{\numberline {9.3}Tile-based optimization for attenuation masks}{18}{subsection.9.3}

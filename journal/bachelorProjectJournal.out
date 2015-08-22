@@ -17,4 +17,4 @@
 \BOOKMARK [1][-]{section.9}{Further improvements for the pipeline}{}% 17
 \BOOKMARK [2][-]{subsection.9.1}{Introduction of the sampling plane}{section.9}% 18
 \BOOKMARK [2][-]{subsection.9.2}{Back-Projection and positioning of the layers}{section.9}% 19
-\BOOKMARK [2][-]{subsection.9.3}{Tile-based optimization for attenuation layers}{section.9}% 20
+\BOOKMARK [2][-]{subsection.9.3}{Tile-based optimization for attenuation masks}{section.9}% 20
