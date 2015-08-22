@@ -648,7 +648,7 @@ The vector $b$ holds the result of the back-projection. Equation~\ref{eq:back_pr
 \end{figure}
 
 \subsection{Tile-based optimization for attenuation masks}
-High resolution light fields can take up a significant amount of space in memory. For example, a light field taken with a Full HD camera from $17\times17$ angles would take up $1920 \cdot 1080 \cdot 17^2 \cdot 3 \cdot 8 / \left(1024^3\right) = 13.3947$ Gigabyte of memory. In addition, the propagation matrix stores information about every pixel in the light field and thus, can take up gigabytes of space depending on the resolution of the attenuation layers. The new approach divides the attenuation layers into tiles. Figure~\ref{fig:sketch_of_tiling_algorithm} shows how the tiles are laid out. The inputs for the tiling algorithm are the resolution of the tiles, 
+High resolution light fields can take up a significant amount of space in memory. For example, a light field taken with a Full HD camera from $17\times17$ angles would take up $1920 \cdot 1080 \cdot 17^2 \cdot 3 \cdot 8 / \left(1024^3\right) = 13.3947$ Gigabyte of memory. In addition, the propagation matrix stores information about every pixel in the light field and thus, can take up gigabytes of space depending on the resolution of the attenuation layers. The new approach divides the attenuation layers into tiles. Figure~\ref{fig:sketch_of_tiling_algorithm} shows how the tiles are laid out. Following the notation in figure~\ref{fig:sketch_of_tiling_algorithm},  the inputs for the tiling algorithm are the resolution of the tiles, 
 $
 r = 
 \begin{bmatrix}
