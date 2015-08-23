@@ -3,9 +3,9 @@ function layersWithMarkers = addMarkersToLayers(layers, markerSize)
     resolution = [size(layers, 2), size(layers, 3)];
 
     markerPositions = [markerSize, markerSize;
-                       resolution(2) - markerSize + 1, markerSize;
-                       markerSize, resolution(1) - markerSize + 1;
-                       resolution([2, 1]) - markerSize + 1];
+                       resolution(1) - markerSize + 1, markerSize;
+                       markerSize, resolution(2) - markerSize + 1;
+                       resolution - markerSize + 1];
 
     layersWithMarkers = layers;
     
