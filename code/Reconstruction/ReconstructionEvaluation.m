@@ -168,8 +168,10 @@ classdef ReconstructionEvaluation < handle
             end
         end
         
-        function printLayers(this, layerNumbers, markerSize)
+        function printLayers(this, arrangementMatrix, markerSize)
             this.createOutputFolderIfNotExists();
+            
+            layerNumbers = unique(arrangementMatrix(arrangementMatrix ~= 0));
             layers = this.getReplicatedAttenuationLayers(1 : this.attenuator.numberOfLayers);
             layersWithMarkers = addMarkersToLayers(layers, markerSize);
             
@@ -178,7 +180,7 @@ classdef ReconstructionEvaluation < handle
             end
             
             filename = ['Print_Layers' sprintf('-%i', reshape(layerNumbers, 1, []))];
-            printImagesToPDF(this.outputFolder, filename, layersWithMarkers(layerNumbers, :, :, :), this.attenuator.planeSize);
+            printImagesToPDF(this.outputFolder, filename, layersWithMarkers, this.attenuator.planeSize, arrangementMatrix);
         end
         
     end
