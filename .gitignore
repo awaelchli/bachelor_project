@@ -229,3 +229,8 @@ output/*
 /lightFields/tarot/small_angular_extent/*
 /lightFields/beans/rectified/*
 /lightFields/bunny/rectified/*
+lightFields/4x4_cube.mat
+lightFields/coke.mat
+*.lfr
+*.lfp
+lightFields/cubes.mat
