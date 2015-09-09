@@ -1,9 +1,10 @@
 classdef LightFieldEditor < handle
     
-    properties (Constant, Access = private)
+    properties (Constant, Access = private, Hidden)
         inputTypeImageCollection = 'collection';
         inputTypeH5File = 'H5';
         inputTypeLytroFile = 'LytroLFR';
+        inputTypeRawLightField = 'rawLF';
         resizeInterpolationMethod = 'bilinear';
     end
     
@@ -85,6 +86,24 @@ classdef LightFieldEditor < handle
             this.initSliceIndices([angularResolution, ceil(resizeScale * this.input.spatialResolution), this.input.channels]);
         end
         
+        function inputFromRawLightField(this, lightField)
+            if(~isa(lightField, 'LightField'))
+                errorStruct.message = 'Input light field must be of type LightField.';
+                errorStruct.identifier = 'inputFromRawLightField:invalidLightFieldType';
+                error(errorStruct);
+            end
+            
+            this.input.type = LightFieldEditor.inputTypeRawLightField;
+            this.input.folder = [];
+            this.input.angularResolution = lightField.angularResolution;
+            this.input.spatialResolution = lightField.spatialResolution;
+            this.input.channels = lightField.channels;
+            
+            this.input.lightField = lightField;
+            
+            this.initSliceIndices([this.input.angularResolution, this.input.spatialResolution, this.input.channels]);
+        end
+        
         function resolution = get.resolution(this)
             resolution = cellfun(@numel, this.sliceIndices);
             resolution = resolution([LightField.angularDimensions, LightField.spatialDimensions]);
@@ -152,6 +171,8 @@ classdef LightFieldEditor < handle
             switch(this.input.type)
                 case LightFieldEditor.inputTypeImageCollection
                     this.loadDataFromImageCollection();
+                case LightFieldEditor.inputTypeRawLightField
+                    this.loadDataFromRawLightField();
                 otherwise
                     errorStruct.message = 'No input data specified.';
                     errorStruct.identifier = 'loadLightFieldData:noInputData';
@@ -180,6 +201,16 @@ classdef LightFieldEditor < handle
                     this.lightFieldData(y, x, :, :, :) = image;
                 end
             end
+        end
+        
+        function loadDataFromRawLightField(this)
+            angularSlicesY = this.sliceIndices{LightField.angularDimensions(1)};
+            angularSlicesX = this.sliceIndices{LightField.angularDimensions(2)};
+            spatialSlicesY = this.sliceIndices{LightField.spatialDimensions(1)};
+            spatialSlicesX = this.sliceIndices{LightField.spatialDimensions(2)};
+            channelSlices = this.sliceIndices{LightField.channelDimension};
+            
+            this.lightFieldData = this.input.lightField.lightFieldData(angularSlicesY, angularSlicesX, spatialSlicesY, spatialSlicesX, channelSlices);
         end
     
     end
