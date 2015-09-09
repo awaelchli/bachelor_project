@@ -24,5 +24,7 @@ DecodeOptions = LFDefaultField('DecodeOptions', 'WhiteImageDatabasePath', whiteI
 lightFieldData = lightFieldData(:, :, :, :, 1 : 3);
 lightFieldData = single(lightFieldData);
 
+fprintf('\n');
+
 end
 
