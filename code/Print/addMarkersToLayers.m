@@ -18,6 +18,12 @@ function layersWithMarkers = addMarkersToLayers(layers, markerSize)
         horizontalX = center(2) - markerSize + 1 : 1 : center(2) + markerSize - 1;
         horizontalY = repmat(center(1), size(horizontalX));
         
+        % white box for marker
+        boxY = repmat(verticalY', 1, numel(horizontalX));
+        boxX = repmat(horizontalX, numel(verticalY), 1);
+        layersWithMarkers(:, boxY(:), boxX(:), :) = 1;
+        
+        % black cross marker
         layersWithMarkers(:, verticalY, verticalX, :) = 0;
         layersWithMarkers(:, horizontalY, horizontalX, :) = 0;
     end
