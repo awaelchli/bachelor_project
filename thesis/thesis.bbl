@@ -1,0 +1,15 @@
+\begin{thebibliography}{1}
+
+\bibitem{WETZ_TOMO}
+G.~Wetzstein, D.~Lanman, W.~Heidrich, and R.~Raskar.
+\newblock Layered {3D}: Tomographic image synthesis for attenuation-based light
+  field and high dynamic range displays.
+\newblock {\em ACM Trans. Graph.}, 30(4), 2011.
+
+\bibitem{WETZ_TENS}
+G.~Wetzstein, D.~Lanman, M.~Hirsch, and R.~Raskar.
+\newblock {Tensor Displays: Compressive Light Field Synthesis using Multilayer
+  Displays with Directional Backlighting}.
+\newblock {\em ACM Trans. Graph. (Proc. SIGGRAPH)}, 31(4):1--11, 2012.
+
+\end{thebibliography}
