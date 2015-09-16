@@ -180,7 +180,13 @@ classdef ReconstructionEvaluation < handle
             end
             
             filename = ['Print_Layers' sprintf('-%i', reshape(layerNumbers, 1, []))];
-            printImagesToPDF(this.outputFolder, filename, layersWithMarkers, this.attenuator.planeSize, arrangementMatrix);
+            
+            % Account for added marker padding before printing to pdf
+            padding = 2 * markerSize - 1;
+            paddedSize = this.attenuator.pixelSize * 2 * padding;
+            printSize = this.attenuator.planeSize + paddedSize;
+            
+            printImagesToPDF(this.outputFolder, filename, layersWithMarkers, printSize, arrangementMatrix);
         end
         
     end
