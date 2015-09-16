@@ -55,10 +55,11 @@ rec2.constructPropagationMatrix();
 rec.usePropagationMatrixForReconstruction(rec2.propagationMatrix);
 rec.reconstructLightField();
 
-rec.evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6; 3, 7; 3, 8; 3, 9]);
+evaluation = rec.evaluation;
+evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6; 3, 7; 3, 8; 3, 9]);
 % rec.evaluation.evaluateViews([9, 1; 9, 2; 9, 3; 9, 4; 9, 5; 9, 6; 9, 7; 9, 8; 9, 9]);
-rec.evaluation.displayReconstructedViews();
+evaluation.displayReconstructedViews();
 % rec.evaluation.displayErrorImages();
-rec.evaluation.storeErrorImages();
-rec.evaluation.storeReconstructedViews();
-rec.evaluation.storeLayers(1 : numberOfLayers);
+evaluation.storeErrorImages();
+evaluation.storeReconstructedViews();
+evaluation.storeLayers(1 : numberOfLayers);
