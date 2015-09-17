@@ -20,3 +20,5 @@ JRTR/bin*
 JRTR/matlab/*
 JRTR/python/temp/*
 JRTR/out/*
+.recommenders/*
+.project
