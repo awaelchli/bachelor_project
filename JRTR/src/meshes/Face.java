@@ -3,8 +3,6 @@ package meshes;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
 import javax.vecmath.Vector3f;
 
 public class Face extends HEElement {
@@ -28,9 +26,7 @@ public class Face extends HEElement {
 	}
 	
 	public Iterator<HalfEdge> iteratorFE(){
-		//Implement this
-
-		return null;
+		return new IteratorFE(this.anEdge);
 	}
 	
 	
@@ -90,6 +86,38 @@ public class Face extends HEElement {
 		public Face face() {
 			return first.incident_f;
 		}
+	}
+	
+	public final class IteratorFE implements Iterator<HalfEdge> {
+		
+		private HalfEdge current, first;
+
+		public IteratorFE(HalfEdge anEdge) {
+			this.first = anEdge;
+			this.current = null;
+		}
+
+		@Override
+		public boolean hasNext() {
+			return current == null || current.next != first;
+		}
+
+		@Override
+		public HalfEdge next() {
+			current = current == null ? first : current.next;
+			return current;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+			
+		}
+		
+		public Face face() {
+			return first.incident_f;
+		}
+		
 	}
 
 

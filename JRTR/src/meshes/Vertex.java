@@ -1,10 +1,8 @@
 package meshes;
 
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 import javax.vecmath.Point3f;
-import javax.vecmath.Tuple3f;
 
 
 /**
@@ -43,7 +41,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<Vertex> iteratorVV(){
-		//Implement this...
+		
 		return null;
 	}
 	
@@ -52,8 +50,7 @@ public class Vertex extends HEElement{
 	 * @return
 	 */
 	public Iterator<HalfEdge> iteratorVE(){
-		//Implement this...
-		return null;
+		return new IteratorVE(this.anEdge);
 
 	}
 	
@@ -107,6 +104,33 @@ public class Vertex extends HEElement{
 			}
 		}
 		return false;
+	}
+	
+	public final class IteratorVE implements Iterator<HalfEdge>{
+		
+		private HalfEdge current, first;
+
+		public IteratorVE(HalfEdge anEdge) {
+			this.first = anEdge;
+			this.current = null;
+		}
+
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public HalfEdge next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
 	}
 	
 }
