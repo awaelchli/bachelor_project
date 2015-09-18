@@ -170,5 +170,27 @@ public class Vertex extends HEElement {
 			throw new UnsupportedOperationException();
 		}
 	}
+	
+	public final class IteratorVF implements Iterator<Face> {
+
+
+		public IteratorVF(HalfEdge anEdge) {			
+		}
+
+		@Override
+		public boolean hasNext() {
+			return false;
+		}
+
+		@Override
+		public Face next() {
+			return null;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+	}
 
 }
