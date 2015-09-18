@@ -12,7 +12,7 @@ import openGL.MyDisplay;
 
 /**
  * 
- * @author Adrian Wälchli
+ * @author Adrian Waelchli
  *
  */
 public class Exercise2 {

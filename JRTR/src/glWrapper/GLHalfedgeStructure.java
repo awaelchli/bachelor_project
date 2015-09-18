@@ -15,7 +15,7 @@ import openGL.objects.Transformation;
 
 /**
  * 
- * @author Adrian Wälchli
+ * @author Adrian Waelchli
  *
  */
 public class GLHalfedgeStructure extends GLDisplayable {
