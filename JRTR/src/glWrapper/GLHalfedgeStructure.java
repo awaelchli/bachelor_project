@@ -22,8 +22,6 @@ public class GLHalfedgeStructure extends GLDisplayable {
 
 	public GLHalfedgeStructure(HalfEdgeStructure structure) {
 		super(structure.getVertices().size());
-		
-		
 
 		/*
 		 * Add vertex positions
@@ -46,7 +44,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 			glVertices[c++] = point.z;
 
 			glValenceData[vertexIndex] = vertex.valence();
-			
+
 			vertexIndexMap.put(vertex, vertexIndex++);
 		}
 
@@ -70,12 +68,12 @@ public class GLHalfedgeStructure extends GLDisplayable {
 
 		}
 		this.addIndices(glIndices);
-		
+
 		/*
 		 * Add vertex colors
 		 */
-		this.addElement(glVertices, Semantic.USERSPECIFIED , 3, "color");
-		
+		this.addElement(glVertices, Semantic.USERSPECIFIED, 3, "color");
+
 		/*
 		 * Add valence data
 		 */
