@@ -80,9 +80,10 @@ public class Vertex extends HEElement {
 		int valence = 0;
 		Iterator<Vertex> iterator = iteratorVV();
 		while (iterator.hasNext()) {
+			iterator.next();
 			valence++;
 		}
-
+		
 		return valence;
 	}
 
