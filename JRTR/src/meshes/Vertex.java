@@ -1,5 +1,6 @@
 package meshes;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.vecmath.Point3f;
@@ -59,7 +60,20 @@ public class Vertex extends HEElement {
 	 * @return
 	 */
 	public Iterator<Face> iteratorVF() {
-		return new IteratorVF();
+		
+		ArrayList<Face> faces = new ArrayList<Face>();
+		
+		Iterator<HalfEdge> edgeIterator = iteratorVE();
+		while(edgeIterator.hasNext()){
+			// Skip the half-edge pointing to the center vertex
+			edgeIterator.next();
+			HalfEdge edge = edgeIterator.next();
+			if(edge.incident_f != null){
+				faces.add(edge.incident_f);
+			}
+		}
+		
+		return faces.iterator();
 	}
 
 	public String toString() {
@@ -168,32 +182,4 @@ public class Vertex extends HEElement {
 			throw new UnsupportedOperationException();
 		}
 	}
-	
-	public final class IteratorVF implements Iterator<Face> {
-
-		private Iterator<HalfEdge> edgeIterator;
-
-		public IteratorVF() {
-			edgeIterator = iteratorVE();
-		}
-
-		@Override
-		public boolean hasNext() {
-			return edgeIterator.hasNext();
-		}
-
-		@Override
-		public Face next() {
-			// Skip the half-edge pointing to the center vertex
-			edgeIterator.next();
-			HalfEdge edge = edgeIterator.next();
-			return edge.incident_f;
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-	}
-
 }
