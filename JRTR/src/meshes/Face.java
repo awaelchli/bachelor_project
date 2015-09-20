@@ -44,8 +44,12 @@ public class Face extends HEElement {
 		String s = "f: [";
 		Iterator<Vertex> it = this.iteratorFV();
 		while(it.hasNext()){
-			s += it.next().toString() + " , ";
+			s += it.next().toString();
+			if(it.hasNext()){
+				s += ", ";
+			}
 		}
+		
 		s+= "]";
 		return s;
 		
