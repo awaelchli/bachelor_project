@@ -173,18 +173,23 @@ public class Vertex extends HEElement {
 	
 	public final class IteratorVF implements Iterator<Face> {
 
+		private Iterator<HalfEdge> edgeIterator;
 
-		public IteratorVF(HalfEdge anEdge) {			
+		public IteratorVF(HalfEdge anEdge) {
+			edgeIterator = iteratorVE();
 		}
 
 		@Override
 		public boolean hasNext() {
-			return false;
+			return edgeIterator.hasNext();
 		}
 
 		@Override
 		public Face next() {
-			return null;
+			// Skip the half-edge pointing to the center vertex
+			edgeIterator.next();
+			HalfEdge edge = edgeIterator.next();
+			return edge.incident_f;
 		}
 
 		@Override
