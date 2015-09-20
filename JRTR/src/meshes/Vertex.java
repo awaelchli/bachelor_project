@@ -36,7 +36,7 @@ public class Vertex extends HEElement {
 	}
 
 	/**
-	 * Get an iterator which iterates over the 1-neighbouhood
+	 * Get an iterator which iterates over the 1-neighborhood
 	 * 
 	 * @return
 	 */
@@ -83,7 +83,7 @@ public class Vertex extends HEElement {
 			iterator.next();
 			valence++;
 		}
-		
+
 		return valence;
 	}
 
@@ -141,23 +141,12 @@ public class Vertex extends HEElement {
 
 		@Override
 		public boolean hasNext() {
-			return current == null || current.getNext() != first;
+			return current == null || current.getOpposite().getNext() != first;
 		}
 
 		@Override
 		public HalfEdge next() {
-			if (current == null) {
-				current = first;
-			} else if (current.end() != first.start()) {
-				/*
-				 * Go to opposite half-edge if current half-edge does not point
-				 * to the center vertex.
-				 */
-				current = current.getOpposite();
-			} else {
-				current = current.getNext();
-			}
-
+			current = current == null ? first : current.getOpposite().getNext();
 			return current;
 		}
 
@@ -182,10 +171,7 @@ public class Vertex extends HEElement {
 
 		@Override
 		public Vertex next() {
-			HalfEdge edge = edgeIterator.next();
-			// Skip the half-edge pointing to the center vertex
-			edgeIterator.next();
-			return edge.end();
+			return edgeIterator.next().end();
 		}
 
 		@Override
