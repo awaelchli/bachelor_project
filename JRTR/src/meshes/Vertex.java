@@ -60,29 +60,29 @@ public class Vertex extends HEElement {
 	 * @return
 	 */
 	public Iterator<Face> iteratorVF() {
-		
+
 		ArrayList<Face> faces = new ArrayList<Face>();
-		
+
 		Iterator<HalfEdge> edgeIterator = iteratorVE();
-		while(edgeIterator.hasNext()){
+		while (edgeIterator.hasNext()) {
 			// Skip the half-edge pointing to the center vertex
 			edgeIterator.next();
 			HalfEdge edge = edgeIterator.next();
-			if(edge.incident_f != null){
+			if (edge.incident_f != null) {
 				faces.add(edge.incident_f);
 			}
 		}
-		
+
 		return faces.iterator();
 	}
-	
-	public int valence(){
+
+	public int valence() {
 		int valence = 0;
 		Iterator<Vertex> iterator = iteratorVV();
-		while(iterator.hasNext()){
+		while (iterator.hasNext()) {
 			valence++;
 		}
-		
+
 		return valence;
 	}
 
@@ -165,7 +165,7 @@ public class Vertex extends HEElement {
 			throw new UnsupportedOperationException();
 		}
 	}
-	
+
 	public final class IteratorVV implements Iterator<Vertex> {
 
 		private final Iterator<HalfEdge> edgeIterator;

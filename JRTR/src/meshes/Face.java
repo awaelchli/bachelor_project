@@ -8,8 +8,8 @@ import javax.vecmath.Vector3f;
 public class Face extends HEElement {
 
 	private HalfEdge anEdge;
-	
-	public Face(){
+
+	public Face() {
 		anEdge = null;
 	}
 
@@ -20,45 +20,42 @@ public class Face extends HEElement {
 	public HalfEdge getHalfEdge() {
 		return anEdge;
 	}
-	
-	public Iterator<Vertex> iteratorFV(){
+
+	public Iterator<Vertex> iteratorFV() {
 		return new IteratorFV(anEdge);
 	}
-	
-	public Iterator<HalfEdge> iteratorFE(){
+
+	public Iterator<HalfEdge> iteratorFE() {
 		return new IteratorFE(this.anEdge);
 	}
-	
-	
+
 	public Vector3f normal() {
-		//implement this
-		
+		// implement this
+
 		throw new UnsupportedOperationException();
-		//return null;
+		// return null;
 	}
-	
-	public String toString(){
-		if(anEdge == null){
+
+	public String toString() {
+		if (anEdge == null) {
 			return "f: not initialized";
 		}
 		String s = "f: [";
 		Iterator<Vertex> it = this.iteratorFV();
-		while(it.hasNext()){
+		while (it.hasNext()) {
 			s += it.next().toString();
-			if(it.hasNext()){
+			if (it.hasNext()) {
 				s += ", ";
 			}
 		}
-		
-		s+= "]";
+
+		s += "]";
 		return s;
-		
+
 	}
-	
 
 	public final class IteratorFV implements Iterator<Vertex> {
-		
-		
+
 		private HalfEdge first, actual;
 
 		public IteratorFV(HalfEdge anEdge) {
@@ -73,12 +70,10 @@ public class Face extends HEElement {
 
 		@Override
 		public Vertex next() {
-			if(!hasNext()){
+			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
-			actual = (actual == null?
-						first:
-						actual.next);
+			actual = (actual == null ? first : actual.next);
 			return actual.incident_v;
 		}
 
@@ -91,9 +86,9 @@ public class Face extends HEElement {
 			return first.incident_f;
 		}
 	}
-	
+
 	public final class IteratorFE implements Iterator<HalfEdge> {
-		
+
 		private HalfEdge current, first;
 
 		public IteratorFE(HalfEdge anEdge) {
@@ -115,14 +110,13 @@ public class Face extends HEElement {
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
-			
+
 		}
-		
+
 		public Face face() {
 			return first.incident_f;
 		}
-		
-	}
 
+	}
 
 }
