@@ -22,12 +22,15 @@ public class GLHalfedgeStructure extends GLDisplayable {
 
 	public GLHalfedgeStructure(HalfEdgeStructure structure) {
 		super(structure.getVertices().size());
+		
+		
 
 		/*
-		 * Add vertices
+		 * Add vertex positions
 		 */
 		Iterator<Vertex> vertexIterator = structure.iteratorV();
-		float[] glVertices = new float[3 * this.getNumberOfVertices()];
+		float[] glVertices = new float[3 * getNumberOfVertices()];
+		float[] glValenceData = new float[getNumberOfVertices()];
 
 		HashMap<Vertex, Integer> vertexIndexMap = new HashMap<Vertex, Integer>();
 
@@ -42,11 +45,12 @@ public class GLHalfedgeStructure extends GLDisplayable {
 			glVertices[c++] = point.y;
 			glVertices[c++] = point.z;
 
+			glValenceData[vertexIndex] = vertex.valence();
+			
 			vertexIndexMap.put(vertex, vertexIndex++);
 		}
 
 		this.addElement(glVertices, Semantic.POSITION, 3);
-		this.addElement(glVertices, Semantic.USERSPECIFIED , 3, "color");
 
 		/*
 		 * Create indices
@@ -66,6 +70,16 @@ public class GLHalfedgeStructure extends GLDisplayable {
 
 		}
 		this.addIndices(glIndices);
+		
+		/*
+		 * Add vertex colors
+		 */
+		this.addElement(glVertices, Semantic.USERSPECIFIED , 3, "color");
+		
+		/*
+		 * Add valence data
+		 */
+		this.addElement(glValenceData, Semantic.USERSPECIFIED, 1, "valence");
 	}
 
 	@Override
