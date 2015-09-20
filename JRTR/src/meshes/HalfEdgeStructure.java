@@ -269,5 +269,47 @@ public class HalfEdgeStructure {
 			v.index= idx++;
 		}
 	}
+	
+	public void averageSmoothing(int iterations) {
+		if (iterations <= 0)
+			return;
+
+		for (int i = 0; i < iterations; i++) {
+			averageSmoothing();
+		}
+	}
+
+	public void averageSmoothing() {
+		
+		HEData3d averagedVertices = new HEData3d(this);
+
+		Iterator<Vertex> vertexIterator = iteratorV();
+		while (vertexIterator.hasNext()) {
+
+			Vertex center = vertexIterator.next();
+			Point3f averagePos = new Point3f(center.getPos());
+			
+			Iterator<Vertex> neighborhood = center.iteratorVV();
+			int n = 1;
+			while(neighborhood.hasNext()){
+				Point3f pos = neighborhood.next().getPos();
+				averagePos.add(pos);
+				n++;
+			}
+			
+			averagePos.scale(1 / (float) n);
+			averagedVertices.put(center, averagePos);
+		}
+		
+		/*
+		 * Replace original positions of vertices with the averaged positions
+		 */
+		vertexIterator = iteratorV();
+		while (vertexIterator.hasNext()) {
+			Vertex vertex = vertexIterator.next();
+			vertex.pos = new Point3f(averagedVertices.get(vertex));
+		}
+
+	}
 
 }
