@@ -10,7 +10,7 @@ out vec4 color_f;
 
 void main()
 {
-	float max = 7;
+	float max = 10;
 	float r = valence;
 	if(r > max){
 		r = max;

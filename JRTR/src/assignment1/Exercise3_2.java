@@ -19,7 +19,7 @@ public class Exercise3_2 {
 
 	public static void main(String[] args) throws IOException{
 		// Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/uglySphere.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/teapot.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 		
 		/*
@@ -36,14 +36,14 @@ public class Exercise3_2 {
 		
 		MyDisplay display = new MyDisplay();
 		
-		GLHalfedgeStructure glTeapot = new GLHalfedgeStructure(hs);
-		glTeapot.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", null);
-		display.addToDisplay(glTeapot);
+		GLHalfedgeStructure object = new GLHalfedgeStructure(hs);
+		object.configurePreferredShader("shaders/trimesh_flat.vert", "shaders/trimesh_flat.frag", null);
+		display.addToDisplay(object);
 		
 		// Do the same but choose a different shader
-		GLHalfedgeStructure glTeapot2 = new GLHalfedgeStructure(hs);
-		glTeapot2.configurePreferredShader("shaders/valence.vert", "shaders/valence.frag", null);
-		display.addToDisplay(glTeapot2);
+		GLHalfedgeStructure object2 = new GLHalfedgeStructure(hs);
+		object2.configurePreferredShader("shaders/valence.vert", "shaders/valence.frag", null);
+		display.addToDisplay(object2);
 	}
 
 }
