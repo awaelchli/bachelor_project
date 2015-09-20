@@ -75,6 +75,16 @@ public class Vertex extends HEElement {
 		
 		return faces.iterator();
 	}
+	
+	public int valence(){
+		int valence = 0;
+		Iterator<Vertex> iterator = iteratorVV();
+		while(iterator.hasNext()){
+			valence++;
+		}
+		
+		return valence;
+	}
 
 	public String toString() {
 		return "" + index;
