@@ -40,7 +40,7 @@ public class Vertex extends HEElement {
 	 * @return
 	 */
 	public Iterator<Vertex> iteratorVV() {
-		return new IteratorVV(this.anEdge);
+		return new IteratorVV();
 	}
 
 	/**
@@ -59,9 +59,7 @@ public class Vertex extends HEElement {
 	 * @return
 	 */
 	public Iterator<Face> iteratorVF() {
-		// Implement this...
-		return null;
-
+		return new IteratorVF();
 	}
 
 	public String toString() {
@@ -118,14 +116,14 @@ public class Vertex extends HEElement {
 
 		@Override
 		public boolean hasNext() {
-			return current == null || current.getOpposite() != first;
+			return current == null || current.getNext() != first;
 		}
 
 		@Override
 		public HalfEdge next() {
 			if (current == null) {
 				current = first;
-			} else if (current.incident_v != first.incident_v) {
+			} else if (current.end() != first.start()) {
 				/*
 				 * Go to opposite half-edge if current half-edge does not point
 				 * to the center vertex.
@@ -148,7 +146,7 @@ public class Vertex extends HEElement {
 
 		private final Iterator<HalfEdge> edgeIterator;
 
-		public IteratorVV(HalfEdge anEdge) {
+		public IteratorVV() {
 			this.edgeIterator = iteratorVE();
 		}
 
@@ -159,10 +157,10 @@ public class Vertex extends HEElement {
 
 		@Override
 		public Vertex next() {
+			HalfEdge edge = edgeIterator.next();
 			// Skip the half-edge pointing to the center vertex
 			edgeIterator.next();
-			HalfEdge edge = edgeIterator.next();
-			return edge.incident_v;
+			return edge.end();
 		}
 
 		@Override
@@ -175,7 +173,7 @@ public class Vertex extends HEElement {
 
 		private Iterator<HalfEdge> edgeIterator;
 
-		public IteratorVF(HalfEdge anEdge) {
+		public IteratorVF() {
 			edgeIterator = iteratorVE();
 		}
 
