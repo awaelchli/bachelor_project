@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 
 /**
  * Implementation of a vertex for the {@link HalfEdgeStructure}
@@ -110,6 +111,21 @@ public class Vertex extends HEElement {
 			}
 		}
 		return isAdj;
+	}
+	
+	public Vector3f normal(){
+		Iterator<Face> faceIterator = iteratorVF();
+		
+		Vector3f averageNormal = new Vector3f();
+		
+		while(faceIterator.hasNext()){
+			Face face = faceIterator.next();
+			Vector3f faceNormal = face.normal();
+			averageNormal.add(faceNormal);
+		}
+
+		averageNormal.normalize();
+		return averageNormal;
 	}
 
 	/**

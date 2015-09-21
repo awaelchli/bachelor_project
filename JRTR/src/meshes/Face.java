@@ -35,7 +35,6 @@ public class Face extends HEElement {
 		Point3f p2 = anEdge.end().getPos();
 		Point3f p3 = anEdge.getNext().end().getPos();
 		
-		
 		Vector3f v1 = new Vector3f(p2);
 		v1.sub(p1);
 		
