@@ -69,8 +69,8 @@ public class Vertex extends HEElement {
 			// Skip the half-edge pointing to the center vertex
 			edgeIterator.next();
 			HalfEdge edge = edgeIterator.next();
-			if (edge.incident_f != null) {
-				faces.add(edge.incident_f);
+			if (edge.hasFace()) {
+				faces.add(edge.getFace());
 			}
 		}
 
