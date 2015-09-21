@@ -3,6 +3,7 @@ package meshes;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 public class Face extends HEElement {
@@ -30,10 +31,20 @@ public class Face extends HEElement {
 	}
 
 	public Vector3f normal() {
-		// implement this
-
-		throw new UnsupportedOperationException();
-		// return null;
+		Point3f p1 = anEdge.start().getPos();
+		Point3f p2 = anEdge.end().getPos();
+		Point3f p3 = anEdge.getNext().end().getPos();
+		
+		
+		Vector3f v1 = new Vector3f(p2);
+		v1.sub(p1);
+		
+		Vector3f v2 = new Vector3f(p3);
+		v2.sub(p2);
+		
+		Vector3f normal = new Vector3f();
+		normal.cross(v1, v2);
+		return normal;
 	}
 
 	public String toString() {
