@@ -43,6 +43,7 @@ public class Face extends HEElement {
 		
 		Vector3f normal = new Vector3f();
 		normal.cross(v1, v2);
+		normal.normalize();
 		return normal;
 	}
 
