@@ -292,10 +292,10 @@ public class HalfEdgeStructure {
 		while (vertexIterator.hasNext()) {
 
 			Vertex center = vertexIterator.next();
-			Point3f averagePos = new Point3f(center.getPos());
+			Point3f averagePos = new Point3f();
 
 			Iterator<Vertex> neighborhood = center.iteratorVV();
-			int n = 1;
+			int n = 0;
 			while (neighborhood.hasNext()) {
 				Point3f pos = neighborhood.next().getPos();
 				averagePos.add(pos);
