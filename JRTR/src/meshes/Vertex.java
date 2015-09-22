@@ -121,6 +121,9 @@ public class Vertex extends HEElement {
 		while (edgeIterator.hasNext()) {
 			HalfEdge halfEdge = edgeIterator.next();
 
+			if(!halfEdge.hasFace())
+				continue;
+			
 			Vector3f v1 = halfEdge.vector();
 			Vector3f v2 = halfEdge.getPrev().vector();
 			v2.negate();

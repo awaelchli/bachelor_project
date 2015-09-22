@@ -1,9 +1,11 @@
 package assignment1;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import glWrapper.GLHalfedgeStructure;
 import meshes.HalfEdgeStructure;
+import meshes.Vertex;
 import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;
 import meshes.exception.MeshNotOrientedException;
@@ -35,9 +37,15 @@ public class Exercise3_4 {
 		}
 
 		MyDisplay display = new MyDisplay();
+		
+		Iterator<Vertex> it = hs.iteratorV();
+		while(it.hasNext()){
+			Vertex v = it.next();
+			System.out.println(v.normal());
+		}
 
 		GLHalfedgeStructure object = new GLHalfedgeStructure(hs);
-		object.configurePreferredShader("shaders/valence.vert", "shaders/valence.frag", null);
+		object.configurePreferredShader("shaders/normal.vert", "shaders/normal.frag", "shaders/normal.geom");
 		display.addToDisplay(object);
 
 	}
