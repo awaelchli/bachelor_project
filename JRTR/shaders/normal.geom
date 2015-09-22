@@ -18,6 +18,8 @@ out vec4 color_f;
 
 void main()
 {
+
+	float normalLength = 0.5;
 	
 	for(int i = 0; i < 3; i++)
 	{
@@ -31,7 +33,7 @@ void main()
 		
 		EmitVertex();
 		
-		gl_Position = projection * modelview * (position + normal);
+		gl_Position = projection * modelview * (position + normal * normalLength);
 		color_f = vertex[i].color;
 		EmitVertex();
 	}
