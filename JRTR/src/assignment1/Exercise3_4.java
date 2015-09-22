@@ -1,11 +1,10 @@
 package assignment1;
 
-import java.io.IOException;
-import java.util.Iterator;
-
 import glWrapper.GLHalfedgeStructure;
+
+import java.io.IOException;
+
 import meshes.HalfEdgeStructure;
-import meshes.Vertex;
 import meshes.WireframeMesh;
 import meshes.exception.DanglingTriangleException;
 import meshes.exception.MeshNotOrientedException;
@@ -21,7 +20,7 @@ public class Exercise3_4 {
 
 	public static void main(String[] args) throws IOException {
 		// Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/oneNeighborhood.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/cat.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 
 		/*
@@ -37,16 +36,14 @@ public class Exercise3_4 {
 		}
 
 		MyDisplay display = new MyDisplay();
-		
-		Iterator<Vertex> it = hs.iteratorV();
-		while(it.hasNext()){
-			Vertex v = it.next();
-			System.out.println(v.normal());
-		}
 
 		GLHalfedgeStructure object = new GLHalfedgeStructure(hs);
-		object.configurePreferredShader("shaders/normal.vert", "shaders/normal.frag", "shaders/normal.geom");
+		object.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
 		display.addToDisplay(object);
+		
+		GLHalfedgeStructure object2 = new GLHalfedgeStructure(hs);
+		object2.configurePreferredShader("shaders/normal.vert", "shaders/normal.frag", "shaders/normal.geom");
+		display.addToDisplay(object2);
 
 	}
 
