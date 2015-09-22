@@ -5,36 +5,40 @@ import javax.vecmath.Vector3f;
 
 /**
  * Implementation of a half-edge for the {@link HalfEdgeStructure}
+ * 
  * @author Alf
  *
  */
-public class HalfEdge extends HEElement{
-	
-	/** The end vertex of this edge*/
+public class HalfEdge extends HEElement {
+
+	/** The end vertex of this edge */
 	Vertex incident_v;
-	
-	/**The face this half edge belongs to, which is the face
-	* this edge is positively oriented for. This can be null if
-	* the half edge lies on a boundary*/
+
+	/**
+	 * The face this half edge belongs to, which is the face this edge is
+	 * positively oriented for. This can be null if the half edge lies on a
+	 * boundary
+	 */
 	Face incident_f;
-	
-	/**the opposite, next and previous edge*/
+
+	/** the opposite, next and previous edge */
 	HalfEdge opposite, next, prev;
-	
+
 	/**
 	 * Initialize a half-edge with the Face it belongs to (the face it is
-	 * positively oriented for) and the vertex it points to 
+	 * positively oriented for) and the vertex it points to
 	 */
 	public HalfEdge(Face f, Vertex v) {
 		incident_v = v;
 		incident_f = f;
 		opposite = null;
 	}
-	
+
 	/**
 	 * Initialize a half-edge with the Face it belongs to (the face it is
 	 * positively oriented for), the vertex it points to and its opposite
 	 * half-edge.
+	 * 
 	 * @param f
 	 * @param v
 	 * @param oppos
@@ -45,36 +49,38 @@ public class HalfEdge extends HEElement{
 		opposite = oppos;
 	}
 
-	
 	/**
 	 * If this is the edge (a->b) this returns the edge (b->a).
+	 * 
 	 * @return
 	 */
 	public HalfEdge getOpposite() {
 		return opposite;
 	}
-	
+
 	public void setOpposite(HalfEdge opp) {
 		this.opposite = opp;
 	}
 
 	/**
-	 * will return the next edge on the face this half-edge belongs to. 
-	 * (If this is the edge (a->b) on the triangle (a,b,c) this will be (b->c).
+	 * will return the next edge on the face this half-edge belongs to. (If this
+	 * is the edge (a->b) on the triangle (a,b,c) this will be (b->c).
+	 * 
 	 * @return
 	 */
 	public HalfEdge getNext() {
 		return next;
 	}
-	
+
 	public void setNext(HalfEdge he) {
 		this.next = he;
 	}
-	
+
 	/**
-	 * Returns the face this half-edge belongs to. If this is the edge (b->a) lying
-	 * on the faces (a,b,c) and (b,a,d) this will be the face (b,a,d). If the
-	 * half-edge lies on a boundary this can be null.
+	 * Returns the face this half-edge belongs to. If this is the edge (b->a)
+	 * lying on the faces (a,b,c) and (b,a,d) this will be the face (b,a,d). If
+	 * the half-edge lies on a boundary this can be null.
+	 * 
 	 * @return
 	 */
 	public Face getFace() {
@@ -82,57 +88,55 @@ public class HalfEdge extends HEElement{
 	}
 
 	/**
-	 * will return the previous edge on the face this half-edge belongs to. 
-	 * (If this is the edge (a->b) on the triangle (a,b,c) this will be (c->a).
+	 * will return the previous edge on the face this half-edge belongs to. (If
+	 * this is the edge (a->b) on the triangle (a,b,c) this will be (c->a).
+	 * 
 	 * @return
 	 */
 	public HalfEdge getPrev() {
 		return prev;
 	}
-	
+
 	public void setPrev(HalfEdge he) {
 		this.prev = he;
 	}
-	
-	
-	public void setEnd(Vertex v){
+
+	public void setEnd(Vertex v) {
 		this.incident_v = v;
 	}
 
-	
-	public Vertex start(){
+	public Vertex start() {
 		return opposite.incident_v;
 	}
-	
-	public Vertex end(){
+
+	public Vertex end() {
 		return incident_v;
 	}
-	
-	
-	public boolean hasFace(){
+
+	public boolean hasFace() {
 		return this.incident_f != null;
 	}
-	
+
 	/**
 	 * Returns a vector pointing from the start to the end of this half-edge.
 	 */
-	public Vector3f vector(){
+	public Vector3f vector() {
 		Point3f start = start().getPos();
 		Point3f end = end().getPos();
-		
+
 		Vector3f vector = new Vector3f(end);
 		vector.sub(start);
 		return vector;
 	}
-	
+
 	/**
 	 * Returns true if this edge and its opposite have a face only on one side.
 	 */
-	public boolean isOnBorder(){
+	public boolean isOnBorder() {
 		return this.incident_f == null || opposite.incident_f == null;
 	}
-	
-	public String toString(){
+
+	public String toString() {
 		return "( " + start().toString() + " --> " + end().toString() + ")";
 	}
 

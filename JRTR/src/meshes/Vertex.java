@@ -112,15 +112,23 @@ public class Vertex extends HEElement {
 		}
 		return isAdj;
 	}
-	
-	public Vector3f normal(){
-		Iterator<Face> faceIterator = iteratorVF();
-		
+
+	public Vector3f normal() {
+		Iterator<HalfEdge> edgeIterator = iteratorVE();
+
 		Vector3f averageNormal = new Vector3f();
-		
-		while(faceIterator.hasNext()){
-			Face face = faceIterator.next();
-			Vector3f faceNormal = face.normal();
+
+		while (edgeIterator.hasNext()) {
+			HalfEdge halfEdge = edgeIterator.next();
+
+			Vector3f v1 = halfEdge.vector();
+			Vector3f v2 = halfEdge.getPrev().vector();
+			v2.negate();
+
+			float angle = v1.angle(v2);
+
+			Vector3f faceNormal = halfEdge.getFace().normal();
+			faceNormal.scale(angle);
 			averageNormal.add(faceNormal);
 		}
 

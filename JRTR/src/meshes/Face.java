@@ -3,7 +3,6 @@ package meshes;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 public class Face extends HEElement {
@@ -31,13 +30,13 @@ public class Face extends HEElement {
 	}
 
 	public Vector3f normal() {
-		Vector3f v1 = anEdge.vector();
-		Vector3f v2 = anEdge.getNext().vector();
-		
+		Vector3f v1 = getHalfEdge().vector();
+		Vector3f v2 = getHalfEdge().getNext().vector();
+
 		Vector3f normal = new Vector3f();
 		normal.cross(v1, v2);
 		normal.normalize();
-		
+
 		return normal;
 	}
 
