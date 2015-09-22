@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import javax.media.opengl.GL;
 import javax.vecmath.Point3f;
+import javax.vecmath.Vector3f;
 
 import meshes.Face;
 import meshes.HalfEdgeStructure;
@@ -78,6 +79,8 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		 * Add valence data
 		 */
 		this.addElement(glValenceData, Semantic.USERSPECIFIED, 1, "valence");
+		
+		addVertexNormals(structure);
 	}
 
 	@Override
@@ -88,6 +91,25 @@ public class GLHalfedgeStructure extends GLDisplayable {
 	@Override
 	public void loadAdditionalUniforms(GLRenderer glRenderContext, Transformation mvMat) {
 		// To be implemented
+	}
+	
+	private void addVertexNormals(HalfEdgeStructure structure){
+		
+		float[] glNormals = new float[3 * getNumberOfVertices()];
+		
+		Iterator<Vertex> vertexIterator = structure.iteratorV();
+		int c = 0;
+		while(vertexIterator.hasNext()){
+			
+			Vertex vertex = vertexIterator.next();
+			Vector3f normal = vertex.normal();
+			
+			glNormals[c++] = normal.x;
+			glNormals[c++] = normal.y;
+			glNormals[c++] = normal.z;
+		}
+		
+		this.addElement(glNormals, Semantic.USERSPECIFIED, 3, "normal");
 	}
 
 }
