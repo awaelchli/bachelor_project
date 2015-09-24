@@ -29,7 +29,6 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		 */
 		Iterator<Vertex> vertexIterator = structure.iteratorV();
 		float[] glVertices = new float[3 * getNumberOfVertices()];
-		float[] glValenceData = new float[getNumberOfVertices()];
 
 		HashMap<Vertex, Integer> vertexIndexMap = new HashMap<Vertex, Integer>();
 
@@ -44,41 +43,16 @@ public class GLHalfedgeStructure extends GLDisplayable {
 			glVertices[c++] = point.y;
 			glVertices[c++] = point.z;
 
-			glValenceData[vertexIndex] = vertex.valence();
-
 			vertexIndexMap.put(vertex, vertexIndex++);
 		}
 
 		this.addElement(glVertices, Semantic.POSITION, 3);
 
-		/*
-		 * Create indices
-		 */
-		int[] glIndices = new int[3 * structure.getFaces().size()];
+		addIndices(structure, vertexIndexMap);
 
-		Iterator<Face> faceIterator = structure.iteratorF();
-		c = 0;
-		while (faceIterator.hasNext()) {
+		addVertexColors(glVertices);
 
-			Iterator<Vertex> faceVertexIterator = faceIterator.next().iteratorFV();
-			while (faceVertexIterator.hasNext()) {
-				Vertex vertex = faceVertexIterator.next();
-				int index = vertexIndexMap.get(vertex);
-				glIndices[c++] = index;
-			}
-
-		}
-		this.addIndices(glIndices);
-
-		/*
-		 * Add vertex colors
-		 */
-		this.addElement(glVertices, Semantic.USERSPECIFIED, 3, "color");
-
-		/*
-		 * Add valence data
-		 */
-		this.addElement(glValenceData, Semantic.USERSPECIFIED, 1, "valence");
+		addValenceData(structure);
 
 		addVertexNormals(structure);
 	}
@@ -94,6 +68,42 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		normalMatrix.invert();
 		normalMatrix.transpose();
 		glRenderContext.setUniform("normalMatrix", normalMatrix);
+	}
+
+	private void addVertexColors(float[] glVertices) {
+		this.addElement(glVertices, Semantic.USERSPECIFIED, 3, "color");
+	}
+
+	private void addIndices(HalfEdgeStructure structure, HashMap<Vertex, Integer> vertexIndexMap) {
+		int c;
+		int[] glIndices = new int[3 * structure.getFaces().size()];
+
+		Iterator<Face> faceIterator = structure.iteratorF();
+		c = 0;
+		while (faceIterator.hasNext()) {
+
+			Iterator<Vertex> faceVertexIterator = faceIterator.next().iteratorFV();
+			while (faceVertexIterator.hasNext()) {
+				Vertex vertex = faceVertexIterator.next();
+				int index = vertexIndexMap.get(vertex);
+				glIndices[c++] = index;
+			}
+
+		}
+		this.addIndices(glIndices);
+	}
+
+	private void addValenceData(HalfEdgeStructure structure) {
+		float[] glValenceData = new float[getNumberOfVertices()];
+		Iterator<Vertex> vertexIterator = structure.iteratorV();
+
+		int c = 0;
+		while (vertexIterator.hasNext()) {
+			Vertex vertex = vertexIterator.next();
+			glValenceData[c++] = vertex.valence();
+		}
+
+		this.addElement(glValenceData, Semantic.USERSPECIFIED, 1, "valence");
 	}
 
 	private void addVertexNormals(HalfEdgeStructure structure) {

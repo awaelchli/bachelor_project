@@ -40,7 +40,7 @@ public class Exercise3_4 {
 		GLHalfedgeStructure object = new GLHalfedgeStructure(hs);
 		object.configurePreferredShader("shaders/default.vert", "shaders/default.frag", null);
 		display.addToDisplay(object);
-		
+
 		GLHalfedgeStructure object2 = new GLHalfedgeStructure(hs);
 		object2.configurePreferredShader("shaders/normal.vert", "shaders/normal.frag", "shaders/normal.geom");
 		display.addToDisplay(object2);
