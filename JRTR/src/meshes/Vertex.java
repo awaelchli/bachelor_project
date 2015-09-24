@@ -66,8 +66,6 @@ public class Vertex extends HEElement {
 
 		Iterator<HalfEdge> edgeIterator = iteratorVE();
 		while (edgeIterator.hasNext()) {
-			// Skip the half-edge pointing to the center vertex
-			edgeIterator.next();
 			HalfEdge edge = edgeIterator.next();
 			if (edge.hasFace()) {
 				faces.add(edge.getFace());
@@ -90,15 +88,10 @@ public class Vertex extends HEElement {
 
 	public String toString() {
 		return "" + index;
-		// return pos.toString();
 	}
 
 	/**
-	 * Test if vertex w is adjacent to this vertex. Will work once the iterators
-	 * over neigbors are implemented
-	 * 
-	 * @param w
-	 * @return
+	 * Test if vertex w is adjacent to this vertex.
 	 */
 	public boolean isAdjascent(Vertex w) {
 		boolean isAdj = false;
@@ -121,9 +114,9 @@ public class Vertex extends HEElement {
 		while (edgeIterator.hasNext()) {
 			HalfEdge halfEdge = edgeIterator.next();
 
-			if(!halfEdge.hasFace())
+			if (!halfEdge.hasFace())
 				continue;
-			
+
 			Vector3f v1 = halfEdge.vector();
 			Vector3f v2 = halfEdge.getPrev().vector();
 			v2.negate();
@@ -139,21 +132,12 @@ public class Vertex extends HEElement {
 		return averageNormal;
 	}
 
-	/**
-	 * Test if vertex w is adjacent to this vertex. Will work once the iterators
-	 * over neigbors are implemented
-	 * 
-	 * @param w
-	 * @return
-	 */
-	public boolean isOnBoundary() {
-		Iterator<HalfEdge> it = iteratorVE();
-		while (it.hasNext()) {
-			if (it.next().isOnBorder()) {
-				return true;
-			}
-		}
-		return false;
+	public float meanCurvature() {
+		return laplaceBeltrami().length() / 2;
+	}
+
+	public Vector3f laplaceBeltrami() {
+		return new Vector3f();
 	}
 
 	public final class IteratorVE implements Iterator<HalfEdge> {
