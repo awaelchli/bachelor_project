@@ -60,7 +60,8 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		c = 0;
 		while (faceIterator.hasNext()) {
 
-			Iterator<Vertex> faceVertexIterator = faceIterator.next().iteratorFV();
+			Iterator<Vertex> faceVertexIterator = faceIterator.next()
+					.iteratorFV();
 			while (faceVertexIterator.hasNext()) {
 				Vertex vertex = faceVertexIterator.next();
 				int index = vertexIndexMap.get(vertex);
@@ -79,7 +80,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		 * Add valence data
 		 */
 		this.addElement(glValenceData, Semantic.USERSPECIFIED, 1, "valence");
-		
+
 		addVertexNormals(structure);
 	}
 
@@ -89,26 +90,27 @@ public class GLHalfedgeStructure extends GLDisplayable {
 	}
 
 	@Override
-	public void loadAdditionalUniforms(GLRenderer glRenderContext, Transformation mvMat) {
+	public void loadAdditionalUniforms(GLRenderer glRenderContext,
+			Transformation mvMat) {
 		// To be implemented
 	}
-	
-	private void addVertexNormals(HalfEdgeStructure structure){
-		
+
+	private void addVertexNormals(HalfEdgeStructure structure) {
+
 		float[] glNormals = new float[3 * getNumberOfVertices()];
-		
+
 		Iterator<Vertex> vertexIterator = structure.iteratorV();
 		int c = 0;
-		while(vertexIterator.hasNext()){
-			
+		while (vertexIterator.hasNext()) {
+
 			Vertex vertex = vertexIterator.next();
 			Vector3f normal = vertex.normal();
-			
+
 			glNormals[c++] = normal.x;
 			glNormals[c++] = normal.y;
 			glNormals[c++] = normal.z;
 		}
-		
+
 		this.addElement(glNormals, Semantic.USERSPECIFIED, 3, "normal");
 	}
 
