@@ -39,11 +39,11 @@ public class Face extends HEElement {
 
 		return normal;
 	}
-	
-	public float area(){
+
+	public float area() {
 		Vector3f v1 = getHalfEdge().vector();
 		Vector3f v2 = getHalfEdge().getNext().vector();
-		
+
 		v1.cross(v1, v2);
 		return v1.length() / 2;
 	}
