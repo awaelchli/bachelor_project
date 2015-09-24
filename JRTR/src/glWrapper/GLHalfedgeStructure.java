@@ -60,8 +60,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		c = 0;
 		while (faceIterator.hasNext()) {
 
-			Iterator<Vertex> faceVertexIterator = faceIterator.next()
-					.iteratorFV();
+			Iterator<Vertex> faceVertexIterator = faceIterator.next().iteratorFV();
 			while (faceVertexIterator.hasNext()) {
 				Vertex vertex = faceVertexIterator.next();
 				int index = vertexIndexMap.get(vertex);
@@ -90,8 +89,7 @@ public class GLHalfedgeStructure extends GLDisplayable {
 	}
 
 	@Override
-	public void loadAdditionalUniforms(GLRenderer glRenderContext,
-			Transformation mvMat) {
+	public void loadAdditionalUniforms(GLRenderer glRenderContext, Transformation mvMat) {
 		// To be implemented
 	}
 
