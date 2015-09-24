@@ -90,7 +90,10 @@ public class GLHalfedgeStructure extends GLDisplayable {
 
 	@Override
 	public void loadAdditionalUniforms(GLRenderer glRenderContext, Transformation mvMat) {
-		// To be implemented
+		Transformation normalMatrix = new Transformation(mvMat);
+		normalMatrix.invert();
+		normalMatrix.transpose();
+		glRenderContext.setUniform("normalMatrix", normalMatrix);
 	}
 
 	private void addVertexNormals(HalfEdgeStructure structure) {
