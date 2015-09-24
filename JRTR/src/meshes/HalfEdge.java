@@ -129,6 +129,10 @@ public class HalfEdge extends HEElement {
 		return vector;
 	}
 
+	public float length() {
+		return vector().length();
+	}
+
 	/**
 	 * Returns true if this edge and its opposite have a face only on one side.
 	 */
