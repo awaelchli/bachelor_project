@@ -4,7 +4,7 @@ uniform mat4 projection;
 uniform mat4 modelview;
 
 layout(triangles) in;
-layout(line_strip, max_vertices = 2) out;
+layout(line_strip, max_vertices = 6) out;
 
 in Vertex 
 {
@@ -33,11 +33,14 @@ void main()
 		
 		EmitVertex();
 		
+		
 		gl_Position = projection * modelview * (position + normal * normalLength);
 		color_f = vertex[i].color;
 		EmitVertex();
+		
+		EndPrimitive();
 	}
 	
-	EndPrimitive();
+	
 	
 }
