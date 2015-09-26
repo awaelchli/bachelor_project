@@ -51,8 +51,8 @@ public class Face extends HEElement {
 	public boolean isObtuse() {
 		return getObtuseVertex() != null;
 	}
-	
-	public Vertex getObtuseVertex(){
+
+	public Vertex getObtuseVertex() {
 		Iterator<HalfEdge> iterator = iteratorFE();
 		while (iterator.hasNext()) {
 			HalfEdge current = iterator.next();
