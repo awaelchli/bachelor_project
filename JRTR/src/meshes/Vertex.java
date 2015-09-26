@@ -117,12 +117,7 @@ public class Vertex extends HEElement {
 			if (!halfEdge.hasFace())
 				continue;
 
-			Vector3f v1 = halfEdge.vector();
-			Vector3f v2 = halfEdge.getPrev().vector();
-			v2.negate();
-
-			float angle = v1.angle(v2);
-
+			float angle = halfEdge.angle(halfEdge.getPrev().getOpposite());
 			Vector3f faceNormal = halfEdge.getFace().normal();
 			faceNormal.scale(angle);
 			averageNormal.add(faceNormal);
@@ -137,34 +132,55 @@ public class Vertex extends HEElement {
 	}
 
 	public Vector3f laplaceBeltrami() {
-		
+
 		Vector3f sum = new Vector3f();
-		
+
 		Iterator<HalfEdge> iterator = iteratorVE();
-		while(iterator.hasNext()){
+		while (iterator.hasNext()) {
 			HalfEdge edge = iterator.next();
-			
+
 			float alpha = edge.alpha();
 			float beta = edge.beta();
-			
+
 			Vector3f vector = edge.vector();
 			vector.negate();
 			vector.scale((float) (1 / Math.tan(alpha) + 1 / Math.tan(beta)));
-			
+
 			sum.add(vector);
 		}
-		
+
 		sum.scale(1 / (2 * mixedArea()));
 		return sum;
 	}
-	
-	public float mixedArea(){
-		Iterator<Face> iterator = iteratorVF();
-		while(iterator.hasNext()){
-			Face face = iterator.next();
-			
+
+	public float mixedArea() {
+		float mixedArea = 0;
+
+		Iterator<HalfEdge> iterator = iteratorVE();
+		while (iterator.hasNext()) {
+
+			HalfEdge edge = iterator.next();
+			if (!edge.hasFace())
+				continue;
+
+			Face face = edge.getFace();
+			Vertex obtuseV = face.getObtuseVertex();
+
+			if (obtuseV == null) {
+				HalfEdge pq = edge;
+				HalfEdge qr = edge.getNext();
+				HalfEdge rp = edge.getNext().getNext();
+				float angleQ = qr.angle(pq.getOpposite());
+				float angleR = rp.angle(qr.getOpposite());
+				mixedArea += 1 / 8 * (rp.length() * rp.length() / Math.tan(angleQ));
+				mixedArea += 1 / 8 * (pq.length() * pq.length() / Math.tan(angleR));
+			} else if (obtuseV == this) {
+				mixedArea += face.area() / 2;
+			} else {
+				mixedArea += face.area() / 4;
+			}
 		}
-		return 0;
+		return mixedArea;
 	}
 
 	public final class IteratorVE implements Iterator<HalfEdge> {
