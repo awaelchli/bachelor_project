@@ -49,16 +49,20 @@ public class Face extends HEElement {
 	}
 
 	public boolean isObtuse() {
+		return getObtuseVertex() != null;
+	}
+	
+	public Vertex getObtuseVertex(){
 		Iterator<HalfEdge> iterator = iteratorFE();
 		while (iterator.hasNext()) {
 			HalfEdge current = iterator.next();
 			HalfEdge prev = current.getPrev();
 
 			if (current.angle(prev.getOpposite()) > Math.PI / 2) {
-				return true;
+				return current.start();
 			}
 		}
-		return false;
+		return null;
 	}
 
 	public String toString() {
