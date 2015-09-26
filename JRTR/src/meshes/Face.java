@@ -48,6 +48,19 @@ public class Face extends HEElement {
 		return v1.length() / 2;
 	}
 
+	public boolean isObtuse() {
+		Iterator<HalfEdge> iterator = iteratorFE();
+		while (iterator.hasNext()) {
+			HalfEdge current = iterator.next();
+			HalfEdge prev = current.getPrev();
+
+			if (current.angle(prev.getOpposite()) > Math.PI / 2) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public String toString() {
 		if (anEdge == null) {
 			return "f: not initialized";
