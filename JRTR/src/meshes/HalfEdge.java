@@ -133,6 +133,10 @@ public class HalfEdge extends HEElement {
 		return vector().length();
 	}
 
+	public float angle(HalfEdge other) {
+		return vector().angle(other.vector());
+	}
+
 	/**
 	 * Returns true if this edge and its opposite have a face only on one side.
 	 */
