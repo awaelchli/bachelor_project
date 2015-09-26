@@ -174,8 +174,8 @@ public class Vertex extends HEElement {
 				float angleQ = qr.angle(pq.getOpposite());
 				float angleR = rp.angle(qr.getOpposite());
 				
-				mixedArea += 1 / 8 * (rp.length() * rp.length() / Math.tan(angleQ));
-				mixedArea += 1 / 8 * (pq.length() * pq.length() / Math.tan(angleR));
+				mixedArea += (rp.length() * rp.length() / Math.tan(angleQ)) / 8;
+				mixedArea += (pq.length() * pq.length() / Math.tan(angleR)) / 8;
 			} else if (obtuseV == this) {
 				mixedArea += face.area() / 2;
 			} else {
