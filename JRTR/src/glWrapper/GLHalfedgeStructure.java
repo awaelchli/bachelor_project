@@ -55,6 +55,8 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		addValenceData(structure);
 
 		addVertexNormals(structure);
+
+		addMeanCurvature(structure);
 	}
 
 	@Override
@@ -123,6 +125,18 @@ public class GLHalfedgeStructure extends GLDisplayable {
 		}
 
 		this.addElement(glNormals, Semantic.USERSPECIFIED, 3, "normal");
+	}
+
+	private void addMeanCurvature(HalfEdgeStructure structure) {
+		float[] glCurvature = new float[getNumberOfVertices()];
+
+		Iterator<Vertex> vertexIterator = structure.iteratorV();
+		int c = 0;
+		while (vertexIterator.hasNext()) {
+			glCurvature[c++] = vertexIterator.next().meanCurvature();
+		}
+
+		this.addElement(glCurvature, Semantic.USERSPECIFIED, 1, "meanCurvature");
 	}
 
 }
