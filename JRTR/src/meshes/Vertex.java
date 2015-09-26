@@ -170,8 +170,10 @@ public class Vertex extends HEElement {
 				HalfEdge pq = edge;
 				HalfEdge qr = edge.getNext();
 				HalfEdge rp = edge.getNext().getNext();
+				
 				float angleQ = qr.angle(pq.getOpposite());
 				float angleR = rp.angle(qr.getOpposite());
+				
 				mixedArea += 1 / 8 * (rp.length() * rp.length() / Math.tan(angleQ));
 				mixedArea += 1 / 8 * (pq.length() * pq.length() / Math.tan(angleR));
 			} else if (obtuseV == this) {
