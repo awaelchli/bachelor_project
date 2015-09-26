@@ -137,6 +137,18 @@ public class HalfEdge extends HEElement {
 		return vector().angle(other.vector());
 	}
 
+	public float alpha() {
+		HalfEdge e1 = getOpposite().getNext().getOpposite();
+		HalfEdge e2 = e1.getOpposite().getNext();
+		return e1.angle(e2);
+	}
+
+	public float beta() {
+		HalfEdge e1 = getPrev();
+		HalfEdge e2 = getNext().getOpposite();
+		return e1.angle(e2);
+	}
+
 	/**
 	 * Returns true if this edge and its opposite have a face only on one side.
 	 */
