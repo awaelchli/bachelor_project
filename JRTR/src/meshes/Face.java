@@ -48,10 +48,17 @@ public class Face extends HEElement {
 		return v1.length() / 2;
 	}
 
+	/**
+	 * Returns true if this face has obtuse angles and false otherwise.
+	 */
 	public boolean isObtuse() {
 		return getObtuseVertex() != null;
 	}
 
+	/**
+	 * Returns the vertex at which this face is obtuse. If this face does not
+	 * contain obtuse angles, the method returns null.
+	 */
 	public Vertex getObtuseVertex() {
 		Iterator<HalfEdge> iterator = iteratorFE();
 		while (iterator.hasNext()) {
