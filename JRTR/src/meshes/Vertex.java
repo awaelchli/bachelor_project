@@ -137,7 +137,34 @@ public class Vertex extends HEElement {
 	}
 
 	public Vector3f laplaceBeltrami() {
-		return new Vector3f();
+		
+		Vector3f sum = new Vector3f();
+		
+		Iterator<HalfEdge> iterator = iteratorVE();
+		while(iterator.hasNext()){
+			HalfEdge edge = iterator.next();
+			
+			float alpha = edge.alpha();
+			float beta = edge.beta();
+			
+			Vector3f vector = edge.vector();
+			vector.negate();
+			vector.scale((float) (1 / Math.tan(alpha) + 1 / Math.tan(beta)));
+			
+			sum.add(vector);
+		}
+		
+		sum.scale(1 / (2 * mixedArea()));
+		return sum;
+	}
+	
+	public float mixedArea(){
+		Iterator<Face> iterator = iteratorVF();
+		while(iterator.hasNext()){
+			Face face = iterator.next();
+			
+		}
+		return 0;
 	}
 
 	public final class IteratorVE implements Iterator<HalfEdge> {
