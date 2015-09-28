@@ -1,3 +1,13 @@
 \chapter{Capturing a Light Field}
 
 \section{The Light Field and It's Properties}
+
+The plenoptic function is defined as 
+
+\begin{align*}
+	p \colon \mathbb{R}^3 \times \left[0, 2 \pi \right)^2 \times \mathbb{R} & \to \mathbb{R} \\
+	\left(x, y, z, \theta, \phi, t\right) & \mapsto p\left(x, y, z, \theta, \phi, t\right), 
+\end{align*}
+
+where $\left(x, y, z\right)$ are the coordinates of a point in 3D space and the angles $\left(\theta, \phi \right)$ describe the direction of an incoming light ray at time $t$.
+This 6D plenoptic function stores the radiance along every light ray in space at any time.
