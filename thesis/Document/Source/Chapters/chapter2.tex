@@ -2,12 +2,13 @@
 
 \section{The Light Field and It's Properties}
 
-The plenoptic function is defined as 
+The plenoptic function, as introduced by \cite{AdelsonBergen}, is a 7D function that describes the intensity of light for every frequency, along every light ray in space, at any time. It is defined as
 
 \begin{align*}
-	p \colon \mathbb{R}^3 \times \left[0, 2 \pi \right)^2 \times \mathbb{R} & \to \mathbb{R} \\
-	\left(x, y, z, \theta, \phi, t\right) & \mapsto p\left(x, y, z, \theta, \phi, t\right), 
+	P \colon \mathbb{R}^3 \times \left[0, 2 \pi \right) \times \left[ 0, \pi \right] \times \mathbb{R}^2 & \to \mathbb{R}^+ \\
+	\left(x, y, z, \theta, \phi, t, \lambda \right) & \mapsto P\left(x, y, z, \theta, \phi, t, \lambda \right), 
 \end{align*}
 
-where $\left(x, y, z\right)$ are the coordinates of a point in 3D space and the angles $\left(\theta, \phi \right)$ describe the direction of an incoming light ray at time $t$.
-This 6D plenoptic function stores the radiance along every light ray in space at any time.
+where the parameters $\left(x, y, z\right)$ are the coordinates of a point in 3D space and the angles $\left(\theta, \phi \right)$ describe the direction of an incoming light ray at time $t$. 
+The light's intensity is given for every wavelength $\lambda$ and thus, the plenoptic function not only captures the visible frequency spectrum but all electromagnetic waves. A commonly used measure for light is the radiance, which is obtained from P by integrating over all wavelengths: 
+$R\left(x, y, z, \theta, \phi, t\right) = \int_{\mathbb{R}} \! P\left(x, y, z, \theta, \phi, t, \lambda \right) \, \mathrm{d} \lambda$.
