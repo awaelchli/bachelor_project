@@ -20,7 +20,7 @@ public class Exercise3_4 {
 
 	public static void main(String[] args) throws IOException {
 		// Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/oneNeighborhood.obj", true);
+		WireframeMesh m = ObjReader.read("./objs/teapot.obj", true);
 		HalfEdgeStructure hs = new HalfEdgeStructure();
 
 		/*

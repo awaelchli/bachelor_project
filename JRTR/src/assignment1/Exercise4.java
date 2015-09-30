@@ -19,17 +19,22 @@ import openGL.MyDisplay;
 public class Exercise4 {
 
 	public static void main(String[] args) throws IOException {
-		// Load a wireframe mesh
-		WireframeMesh m = ObjReader.read("./objs/teapot.obj", true);
-		HalfEdgeStructure hs = new HalfEdgeStructure();
+		
+		WireframeMesh m1 = ObjReader.read("./objs/teapot.obj", true);
+		HalfEdgeStructure hs1 = new HalfEdgeStructure();
 
-		/*
-		 * Create a half-edge structure out of the wireframe description. As not
-		 * every mesh can be represented as a half-edge structure exceptions
-		 * could occur.
-		 */
 		try {
-			hs.init(m);
+			hs1.init(m1);
+		} catch (MeshNotOrientedException | DanglingTriangleException e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		WireframeMesh m2 = ObjReader.read("./objs/sphere.obj", true);
+		HalfEdgeStructure hs2 = new HalfEdgeStructure();
+
+		try {
+			hs2.init(m2);
 		} catch (MeshNotOrientedException | DanglingTriangleException e) {
 			e.printStackTrace();
 			return;
@@ -37,9 +42,13 @@ public class Exercise4 {
 
 		MyDisplay display = new MyDisplay();
 
-		GLHalfedgeStructure object = new GLHalfedgeStructure(hs);
-		object.configurePreferredShader("shaders/meanCurvature.vert", "shaders/meanCurvature.frag", null);
-		display.addToDisplay(object);
+		GLHalfedgeStructure object1 = new GLHalfedgeStructure(hs1);
+		object1.configurePreferredShader("shaders/meanCurvature.vert", "shaders/meanCurvature.frag", null);
+		display.addToDisplay(object1);
+		
+		GLHalfedgeStructure object2 = new GLHalfedgeStructure(hs2);
+		object2.configurePreferredShader("shaders/meanCurvature.vert", "shaders/meanCurvature.frag", null);
+		display.addToDisplay(object2);
 	}
 
 }
