@@ -11,46 +11,44 @@ Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: thesis.bib
-Warning--there's no year in AdelsonBergen
-You've used 1 entry,
+You've used 5 entries,
             4793 wiz_defined-function locations,
-            896 strings with 6423 characters,
-and the built_in function-call counts, 553 in all, are:
-= -- 49
-> -- 19
-< -- 11
-+ -- 16
-- -- 7
-* -- 31
-:= -- 106
-add.period$ -- 1
-call.type$ -- 1
-change.case$ -- 5
-chr.to.int$ -- 1
-cite$ -- 2
-duplicate$ -- 17
-empty$ -- 38
-format.name$ -- 11
-if$ -- 101
+            930 strings with 7242 characters,
+and the built_in function-call counts, 3058 in all, are:
+= -- 298
+> -- 108
+< -- 62
++ -- 83
+- -- 39
+* -- 223
+:= -- 541
+add.period$ -- 5
+call.type$ -- 5
+change.case$ -- 28
+chr.to.int$ -- 5
+cite$ -- 5
+duplicate$ -- 95
+empty$ -- 219
+format.name$ -- 70
+if$ -- 608
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 3
-newline$ -- 15
-num.names$ -- 3
-pop$ -- 13
+missing$ -- 25
+newline$ -- 35
+num.names$ -- 15
+pop$ -- 42
 preamble$ -- 1
-purify$ -- 7
+purify$ -- 38
 quote$ -- 0
-skip$ -- 30
+skip$ -- 155
 stack$ -- 0
-substring$ -- 24
-swap$ -- 2
-text.length$ -- 2
-text.prefix$ -- 0
+substring$ -- 155
+swap$ -- 23
+text.length$ -- 18
+text.prefix$ -- 1
 top$ -- 0
-type$ -- 10
-warning$ -- 1
-while$ -- 5
-width$ -- 2
-write$ -- 18
-(There was 1 warning)
+type$ -- 50
+warning$ -- 0
+while$ -- 31
+width$ -- 7
+write$ -- 67
