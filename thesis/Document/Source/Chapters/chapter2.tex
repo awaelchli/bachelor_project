@@ -16,3 +16,21 @@ $R\left(x, y, z, \theta, \phi, t\right) = \int_{\mathbb{R}} \! P\left(x, y, z, \
 In practice, it is impossible to acquire all the data needed to model the 7D plenoptic function and hence it is reasonable to consider only a subset of the parameters. 
 Dropping the time parameter $t$ in $R\left( x, y, z, \theta, \phi, t \right) $ yields a 5D function for the radiance in a static scene. 
 As described by~\cite{LightFieldRendering}, this five dimensional representation can further be reduced to four dimensions.
+
+%\begin{center}
+%	
+%	\tdplotsetmaincoords{70}{130}
+%	
+%	\begin{tikzpicture}[tdplot_main_coords, scale = 3]
+%		
+%		\filldraw[draw = black, fill = white] (-1, -1, -1) -- (-1, -1, 1) -- (-1, 1, 1) -- (-1, 1, -1) -- cycle;
+%		\filldraw[draw = black, fill = white] (1, -1, -1) -- (1, -1, 1) -- (1, 1, 1) -- (1, 1, -1) -- cycle;
+%	
+%		
+%		\draw[->] (0, 0, 0) -- (1, 0, 0) node[below left]{$x$};
+%		\draw[->] (0, 0, 0) -- (0, 1, 0) node[below right]{$y$};
+%		\draw[->] (0, 0, 0) -- (0, 0, 1) node[above]{$z$};
+%		
+%	\end{tikzpicture}
+%	
+%\end{center}
