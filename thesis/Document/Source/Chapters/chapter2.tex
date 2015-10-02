@@ -15,7 +15,7 @@ $R\left(x, y, z, \theta, \phi, t\right) = \int_{\mathbb{R}} \! P\left(x, y, z, \
 
 In practice, it is impossible to acquire all the data needed to model the 7D plenoptic function and hence it is reasonable to consider only a subset of the parameters. 
 Dropping the time parameter $t$ in $R\left( x, y, z, \theta, \phi, t \right) $ yields a 5D function for the radiance in a static scene. 
-As described by~\cite{LightFieldRendering}, this five dimensional representation can further be reduced to four dimensions.
+As described by~\cite{LightFieldRendering}, this five dimensional representation can further be reduced to four dimensions in the following way. The radiance along a line is constant in free space and thus, the 5D plenoptic function holds redundant information for the points on this line.
 
 %\begin{center}
 %	
