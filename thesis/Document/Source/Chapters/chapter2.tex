@@ -15,7 +15,18 @@ $R\left(x, y, z, \theta, \phi, t\right) = \int_{\mathbb{R}} \! P\left(x, y, z, \
 
 In practice, it is impossible to acquire all the data needed to model the 7D plenoptic function and hence it is reasonable to consider only a subset of the parameters. 
 Dropping the time parameter $t$ in $R\left( x, y, z, \theta, \phi, t \right) $ yields a 5D function for the radiance in a static scene. 
-As described by~\cite{LightFieldRendering}, this five dimensional representation can further be reduced to four dimensions in the following way. The radiance along a line is constant in free space and thus, the 5D plenoptic function holds redundant information for the points on this line.
+As described by~\cite{LightFieldRendering}, this five dimensional representation can further be reduced to four dimensions in the following way. The radiance along a line is constant in free space and so, the 5D plenoptic function holds redundant information for the points on this line. 
+Ignoring this redundancy leads to the equivalent 4D parametrization of the ray space. 
+\cite{LightFieldRendering} propose a parametrization by two parallel planes, as seen in figure~\ref{fig:LightFieldParametrization}, where the coordinates of the lines (rays) are given by the intersections with the two planes.
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{/home/adrian/Documents/MATLAB/bachelor_project/thesis/Document/Figures/placeholder}
+	\caption{}
+	\label{fig:LightFieldParametrization}
+\end{figure}
+
 
 %\begin{center}
 %	

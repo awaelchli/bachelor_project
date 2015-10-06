@@ -2,8 +2,8 @@
 \contentsline {section}{\numberline {1.1}Related Work}{1}{section.1.1}
 \contentsline {chapter}{\numberline {2}Capturing a Light Field}{2}{chapter.2}
 \contentsline {section}{\numberline {2.1}The Light Field and It's Properties}{2}{section.2.1}
-\contentsline {chapter}{\numberline {A}ap1}{3}{appendix.A}
-\contentsline {section}{\numberline {A.1}apsec1}{3}{section.A.1}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{4}{section.A.1}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{4}{appendix*.2}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }Bibliography}{5}{appendix*.3}
+\contentsline {chapter}{\numberline {A}ap1}{4}{appendix.A}
+\contentsline {section}{\numberline {A.1}apsec1}{4}{section.A.1}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{5}{section.A.1}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{5}{appendix*.3}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Bibliography}{6}{appendix*.4}
