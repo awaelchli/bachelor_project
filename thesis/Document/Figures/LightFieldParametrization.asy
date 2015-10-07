@@ -16,11 +16,11 @@ triple XYO = -X - Y / 2 - Z / 2;
 path3 planeUV = plane(O = UVO, Y, Z);
 path3 planeXY = plane(O = XYO, Y, Z);
 
-triple rayStart = (2, -0.5, 0.5);
+triple rayStart = 2X;//(2, -0.5, 0.5);
 triple rayEnd = -rayStart;
 path3 ray = rayStart -- rayEnd;
 
-
+material m_white = material(diffusepen=gray(0.4), emissivepen=gray(0.6));
 
 draw(ray);
 
@@ -29,6 +29,9 @@ real i2 =  intersect(P = rayStart, Q = rayEnd, X, XYO);
 
 dot(point(ray, i1));
 dot(point(ray, i2));
-//dot(point(ray, i2[0]));
-draw(surface(planeUV), red);
+
+draw(surface(planeUV), m_white);
+draw(planeUV);
+
+draw(surface(planeXY), m_white);
 draw(planeXY);

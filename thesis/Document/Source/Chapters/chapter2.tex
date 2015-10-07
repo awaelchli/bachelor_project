@@ -31,20 +31,22 @@ The 4D light field $L(u, v, s, t)$ is therefore defined as the radiance along th
 \end{figure}
 
 
-%\begin{center}
-%	
-%	\tdplotsetmaincoords{70}{130}
-%	
-%	\begin{tikzpicture}[tdplot_main_coords, scale = 3]
-%		
-%		\filldraw[draw = black, fill = white] (-1, -1, -1) -- (-1, -1, 1) -- (-1, 1, 1) -- (-1, 1, -1) -- cycle;
-%		\filldraw[draw = black, fill = white] (1, -1, -1) -- (1, -1, 1) -- (1, 1, 1) -- (1, 1, -1) -- cycle;
-%	
-%		
-%		\draw[->] (0, 0, 0) -- (1, 0, 0) node[below left]{$x$};
-%		\draw[->] (0, 0, 0) -- (0, 1, 0) node[below right]{$y$};
-%		\draw[->] (0, 0, 0) -- (0, 0, 1) node[above]{$z$};
-%		
-%	\end{tikzpicture}
-%	
-%\end{center}
+\begin{center}
+	
+	\tdplotsetmaincoords{70}{130}
+	
+	\begin{tikzpicture}[tdplot_main_coords, scale = 3]
+		
+		\filldraw[draw = black, fill = white] (-1, -1, -1) -- (-1, -1, 1) -- (-1, 1, 1) -- (-1, 1, -1) -- cycle;
+		\filldraw[draw = black, fill = white] (1, -1, -1) -- (1, -1, 1) -- (1, 1, 1) -- (1, 1, -1) -- cycle;
+		
+		\draw[->] (3, 0, 0) -- (-3, 0, 0);
+	
+		
+		\draw[->] (0, 0, 0) -- (1, 0, 0) node[below left]{$x$};
+		\draw[->] (0, 0, 0) -- (0, 1, 0) node[below right]{$y$};
+		\draw[->] (0, 0, 0) -- (0, 0, 1) node[above]{$z$};
+		
+	\end{tikzpicture}
+	
+\end{center}
