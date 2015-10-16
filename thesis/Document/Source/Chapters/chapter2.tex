@@ -17,12 +17,20 @@ In practice, it is impossible to acquire all the data needed to model the 7D ple
 Dropping the time parameter $t$ in $R\left( x, y, z, \theta, \phi, t \right) $ yields a 5D function for the radiance in a static scene. 
 As described by~\cite{LightFieldRendering}, this five dimensional representation can further be reduced to four dimensions in the following way. 
 The radiance along a line is constant in free space and so, the 5D plenoptic function holds redundant information for the points on this line. 
-Ignoring this redundancy leads to the equivalent 4D parametrization of the ray space. 
-\cite{LightFieldRendering} propose a parametrization by two parallel planes, as seen in figure~\ref{fig:LightFieldParametrization}, where the coordinates of the lines (rays) are given by the intersections with the two planes.
+Ignoring this redundancy leads to the equivalent 4D parameterization of the ray space. 
+\cite{LightFieldRendering} propose a parameterization by two parallel planes, as seen in figure~\ref{fig:LightFieldParametrization}, where the coordinates of the lines (rays) are given by the intersections with the two planes.
 The 4D light field $L(u, v, s, t)$ is therefore defined as the radiance along the line intersecting the two planes at coordinates $(u, v)$ and $(s, t)$.
-This two plane parametrization of the light field is the most common one seen in literature, but there are many ways to choose a parametrization.
+This two plane parameterization of the light field is the most common one seen in literature, but there are many ways to choose a parameterization.
 For instance, one can use a plane and two angles to define each ray passing this plane, which would result in a light field $L(u, v, \theta, \phi)$ where $\theta, \phi \in (0, \pi)$.
 
+For practical applications, the light field must be discretized and so an appropriate sampling method needs to be chosen.
+A typical assumption is that the two planes are sampled uniformly. 
+One way is to capture the light field with a grid of optical systems (e.g. cameras) corresponding to the $(u, v)$. 
+The extent of this grid is called the \emph{baseline} (in vertical and horizontal direction). 
+This means that only a slice of the actual light field can be caputred and the two planes are clipped, usually so that they are rectangular.
+ 
+The samples on the $(u, v)$-plane correspond to the virtual positions of the camera. 
+Properties of the light field do not change under reparameterization. 
 
 
 \begin{figure}
