@@ -1,6 +1,6 @@
 \chapter{Capturing a Light Field}
 
-\section{The Light Field and It's Properties}
+\section{The Plenoptic Function and the Light Field}
 
 The plenoptic function, as introduced by~\cite{AdelsonBergen}, is a 7D function that describes the intensity of light for every frequency, along every light ray in space, at any time. 
 It is defined as
@@ -19,18 +19,20 @@ As described by~\cite{LightFieldRendering}, this five dimensional representation
 The radiance along a line is constant in free space and so, the 5D plenoptic function holds redundant information for the points on this line. 
 Ignoring this redundancy leads to the equivalent 4D parameterization of the ray space. 
 \cite{LightFieldRendering} propose a parameterization by two parallel planes, as seen in figure~\ref{fig:LightFieldParametrization}, where the coordinates of the lines (rays) are given by the intersections with the two planes.
-The 4D light field $L(u, v, s, t)$ is therefore defined as the radiance along the line intersecting the two planes at coordinates $(u, v)$ and $(s, t)$.
+The \textbf{4D light field} $L(u, v, s, t)$ is therefore defined as the radiance along the line intersecting the two planes at coordinates $(u, v)$ and $(s, t)$.
 This two plane parameterization of the light field is the most common one seen in literature, but there are many ways to choose a parameterization.
 For instance, one can use a plane and two angles to define each ray passing this plane, which would result in a light field $L(u, v, \theta, \phi)$ where $\theta, \phi \in (0, \pi)$.
 
+\section{Light Field Acquisition}
+
 For practical applications, the light field must be discretized and so an appropriate sampling method needs to be chosen.
-A typical assumption is that the two planes are sampled uniformly. 
-One way is to capture the light field with a grid of optical systems (e.g. cameras) corresponding to the $(u, v)$. 
-The extent of this grid is called the \emph{baseline} (in vertical and horizontal direction). 
-This means that only a slice of the actual light field can be caputred and the two planes are clipped, usually so that they are rectangular.
- 
+One way is to capture the light field with a grid of optical systems, e.g. cameras.
+Typically, the $(u, v)$-plane is uniformly sampled on a grid $G_{uv} = \left \{ \left( u_i, v_j \right) \mid i = 1,\dots, n, j = 1, \dots, m\right \}$ on the $(u, v)$-plane with a resolution $n \times m$.
+The extent in horizontal (vertical) direction is called the horizontal (vertical) \textbf{baseline}.
+This means that only a slice of the actual light field can be captured and the two planes are clipped to form a rectangle.
+
 The samples on the $(u, v)$-plane correspond to the virtual positions of the camera. 
-Properties of the light field do not change under reparameterization. 
+Properties of the light field do not change under re-parameterization. 
 
 
 \begin{figure}
