@@ -23,6 +23,13 @@ The \textbf{4D light field} $L(u, v, s, t)$ is therefore defined as the radiance
 This two plane parameterization of the light field is the most common one seen in literature, but there are many ways to choose a parameterization.
 For instance, one can use a plane and two angles to define each ray passing this plane, which would result in a light field $L(u, v, \theta, \phi)$ where $\theta, \phi \in (0, \pi)$.
 
+\begin{figure}
+	\centering
+	\includegraphics[height=5cm]{placeholder}
+	\caption{Parametrization of the light field with two planes.}
+	\label{fig:LightFieldParametrization}
+\end{figure}
+
 \section{Light Field Acquisition}
 
 For practical applications, the light field must be discretized and so an appropriate sampling method needs to be chosen.
@@ -34,13 +41,23 @@ This means that only a slice of the actual light field can be captured and the t
 The samples on the $(u, v)$-plane correspond to the virtual positions of the camera. 
 Properties of the light field do not change under re-parameterization. 
 
+\subsection*{Orthographic Projections}
+% Figure
+% Parameterization, Advantages, Disadvantages
+% Mention Tomography
+% Rotation 
 
-\begin{figure}
-	\centering
-	\includegraphics[height=5cm]{placeholder}
-	\caption{Parametrization of the light field with two planes.}
-	\label{fig:LightFieldParametrization}
-\end{figure}
+\subsection*{Perspective Projections}
+% Figure
+% Parameterization, two main types: global or relative
+% Reparameterization: Orthographic <-> Perspective
+%
+
+
+
+\section{Spectral Analysis}
+
+\section{Light Field Tomography}
 
 
 %\begin{center}
