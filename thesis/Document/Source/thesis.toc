@@ -3,8 +3,8 @@
 \contentsline {chapter}{\numberline {2}Capturing a Light Field}{2}{chapter.2}
 \contentsline {section}{\numberline {2.1}The Plenoptic Function and the Light Field}{2}{section.2.1}
 \contentsline {section}{\numberline {2.2}Light Field Acquisition}{3}{section.2.2}
-\contentsline {section}{\numberline {2.3}Spectral Analysis}{3}{section.2.3}
-\contentsline {section}{\numberline {2.4}Light Field Tomography}{3}{section.2.4}
+\contentsline {section}{\numberline {2.3}Light Field Tomography}{3}{section.2.3}
+\contentsline {section}{\numberline {2.4}Spectral Analysis}{3}{section.2.4}
 \contentsline {chapter}{\numberline {A}ap1}{4}{appendix.A}
 \contentsline {section}{\numberline {A.1}apsec1}{4}{section.A.1}
 \contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{5}{section.A.1}
