@@ -9,7 +9,7 @@
 #declare AngularResolutionY = 1;
 #declare AngularResolutionX = 100;
 #declare FOV_horizontal = 60;
-#declare aspectRatio = 1;
+#declare aspectRatio = 4 / 3;
 
 // The camera index is between 0 and AngularResolution - 1
 #declare CameraIndexX = mod(frame_number, AngularResolutionX);
@@ -19,13 +19,13 @@
 #declare CameraPositionX = (-(AngularResolutionX - 1) / 2 + CameraIndexX) * DistanceBetweenCamerasX;
  
 camera {    
-//orthographic
-  location <-DistanceToCameraPlane * 0.6, CameraPositionY, CameraPositionX>
+  orthographic
+  location <-DistanceToCameraPlane / 2, CameraPositionY, CameraPositionX>
   direction <0, 0, -1>     
   angle FOV_horizontal 
   right <0, 0, aspectRatio>
-  //look_at <0, 0, 0>      
-  look_at <0, CameraPositionY, CameraPositionX>
+  look_at <0, 0, 0>      
+  //look_at <0, CameraPositionY, CameraPositionX>
 }
  
 light_source { <-9, 7, -6> color White }   
