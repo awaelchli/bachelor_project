@@ -3,7 +3,7 @@
 editor = LightFieldEditor();
 editor.inputFromImageCollection('lightFields/dice/perspective/1x100x1000x1000/', 'png', [1, 100], 1);
 
-LF = editor.getOrthographicLightField();
+LF = editor.getPerspectiveLightField();
 data = LF.lightFieldData;
 
 spatialResolution = LF.spatialResolution;
