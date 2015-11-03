@@ -1,13 +1,14 @@
+#version 3.7;
 // Source: http://commons.wikimedia.org/wiki/File:PNG_transparency_demonstration_1.png
 // Modified by Adrian Wälchli, May 2015
 
 #include "colors.inc"  
 
-#declare DistanceBetweenCamerasY = 0.01;
-#declare DistanceBetweenCamerasX = 0.01;
+#declare DistanceBetweenCamerasY = 0.002;
+#declare DistanceBetweenCamerasX = 0.002;
 #declare DistanceToCameraPlane = 8;
 #declare AngularResolutionY = 1;
-#declare AngularResolutionX = 100;
+#declare AngularResolutionX = 500;
 #declare FOV_horizontal = 60;
 #declare aspectRatio = 1;
 
