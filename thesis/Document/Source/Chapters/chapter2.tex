@@ -23,13 +23,6 @@ The \textbf{4D light field} $L(u, v, s, t)$ is therefore defined as the radiance
 This two plane parameterization of the light field is the most common one seen in literature, but there are many ways to choose a parameterization.
 For instance, one can use a plane and two angles to define each ray passing this plane, which would result in a light field $L(u, v, \theta, \phi)$ where $\theta, \phi \in (0, \pi)$.
 
-\begin{figure}
-	\centering
-	\includegraphics[height=5cm]{placeholder}
-	\caption{Parametrization of the light field with two planes.}
-	\label{fig:LightFieldParametrization}
-\end{figure}
-
 \section{Light Field Acquisition}
 % Figure epipolar image
 % Explain epipolar images: line slope <-> depth
@@ -40,14 +33,26 @@ Typically, the $(u, v)$-plane is uniformly sampled on a grid $G_{uv} = \left \{ 
 The extent in horizontal (vertical) direction is called the horizontal (vertical) \textbf{baseline}.
 This means that only a slice of the actual light field can be captured and the two planes are clipped to form a rectangle.
 
-The samples on the $(u, v)$-plane correspond to the virtual positions of the camera. 
-Properties of the light field do not change under re-parameterization. 
+%There are different methods to sample a light field. In principle, every camera can be used to capture 
 
-\subsection*{Orthographic Projections}
-% Figure
+%The samples on the $(u, v)$-plane correspond to the virtual positions of the camera. 
+%Properties of the light field do not change under re-parameterization. 
+
+\subsection*{Oblique Projections}
 % Parameterization, Advantages, Disadvantages
 % Mention Tomography
 % Rotation 
+
+Oblique projection, as shown in figure~\ref{fig:ObliqueProjection}, is a special case of orthographic projection: The parallel rays do not need to be perpendicular to the image plane of the camera.
+The advantage is that there is a one to one correspondence between camera position and ray angle, since all rays in one camera are parallel.
+This means that the angular resolution is simply the number of cameras, and the spatial resolution is the number of pixels in the image plane.
+Given a light field $L(u, v, s, t)$ and the distance $d$ between the two planes, a re-parameterization $L^{\prime}(\theta, \phi, s, t)$ can be obtained by the transformation
+\begin{align*}
+		& \theta = \arctan\left(\frac{u - s}{d}\right), & \phi = \arctan\left(\frac{v - t}{d}\right).
+\end{align*}
+However, this type of projection is only applicable for synthetic scenes that are rendered with a computer.
+% TODO: Refer to a figure with a synthetic scene.
+
 
 \subsection*{Perspective Projections}
 % Figure
@@ -68,23 +73,212 @@ Properties of the light field do not change under re-parameterization.
 
 
 
+\begin{figure}
+	\centering
+	\begin{tikzpicture}[scale = 0.4]
+		
+		\filldraw[draw = black, fill = white] (0, 0) -- (5, -2) -- (5, 5) -- (0, 7) -- cycle;
+		\filldraw[draw = black, fill = white] (9, 3) -- (14, 1) -- (14, 8) -- (9, 10) -- cycle;
+		
+		\draw[<-] (-3, 4) -- (1, 4);
+		\draw (5, 4) -- (11, 4);
+		\draw (14, 4) -- (17, 4);
+		
+		\node [left] at (-3, 4) {$L(u, v, s, t)$};
 
-%\begin{center}
-%	
-%	\tdplotsetmaincoords{70}{130}
-%	
-%	\begin{tikzpicture}[tdplot_main_coords, scale = 3]
-%		
-%		\filldraw[draw = black, fill = white] (-1, -1, -1) -- (-1, -1, 1) -- (-1, 1, 1) -- (-1, 1, -1) -- cycle;
-%		\filldraw[draw = black, fill = white] (1, -1, -1) -- (1, -1, 1) -- (1, 1, 1) -- (1, 1, -1) -- cycle;
-%		
-%		\draw[->] (3, 0, 0) -- (-3, 0, 0);
-%	
-%		
-%		\draw[->] (0, 0, 0) -- (1, 0, 0) node[below left]{$x$};
-%		\draw[->] (0, 0, 0) -- (0, 1, 0) node[below right]{$y$};
-%		\draw[->] (0, 0, 0) -- (0, 0, 1) node[above]{$z$};
-%		
-%	\end{tikzpicture}
-%	
-%\end{center}
+		
+		\draw[fill] (1, 4) circle [radius = 0.1];
+		\draw[fill] (11, 4) circle [radius = 0.1];
+		
+		\node[below right] at (1, 4) {$(u, v)$};
+		\node[below right] at (11, 4) {$(s, t)$};
+		
+	\end{tikzpicture}
+	\caption{Parametrization of the light field with two planes.}
+	\label{fig:LightFieldParametrization}
+\end{figure}
+
+\begin{figure}
+		\centering
+		\begin{tikzpicture}[scale = 0.3]
+			\draw[->] (-11, 0) -- (13, 0);
+			\draw[->] (-11, 7) -- (13, 7);
+			
+			\node[right] at (13, 0) {$s$}; 
+			\node[right] at (13, 7) {$u$}; 
+			
+			\draw[->] (0, 0) -- (-9, 8);
+			\draw[->] (1, 0) -- (-8, 8);
+			\draw[->] (2, 0) -- (-7, 8);
+			\draw[->] (3, 0) -- (-6, 8);
+			\draw[->] (4, 0) -- (-5, 8);
+			\draw[->] (5, 0) -- (-4, 8);
+			\draw[->] (6, 0) -- (-3, 8);
+			\draw[->] (7, 0) -- (-2, 8);
+			\draw[->] (8, 0) -- (-1, 8);
+			
+			\draw[->] (0, 0) -- (3, 8);
+			\draw[->] (1, 0) -- (4, 8);
+			\draw[->] (2, 0) -- (5, 8);
+			\draw[->] (3, 0) -- (6, 8);
+			\draw[->] (4, 0) -- (7, 8);
+			\draw[->] (5, 0) -- (8, 8);
+			\draw[->] (6, 0) -- (9, 8);
+			\draw[->] (7, 0) -- (10, 8);
+			\draw[->] (8, 0) -- (11, 8);
+			
+			\draw[fill] (4, 0) circle [radius = 0.1];
+			
+			%		\draw (0, 0) -- (0, {-sqrt(81/49 + 1)});
+			%		\draw (0, 0) -- (9/7, -1);
+			%		\draw (0, -1) arc (-90 : -90 + atan(9/7) : 1);
+			%		
+			%		\node[below right] at (0, 0) {$\theta$};
+		\end{tikzpicture}
+		\label{fig:ObliqueProjection}
+\end{figure}
+\begin{figure}
+		\centering
+		\begin{tikzpicture}[scale = 0.3]
+			\draw[->] (-1, 0) -- (6, 0);
+			\draw[name path=uAxis, ->] (-1, 7) -- (6, 7);
+			
+			\draw[name path=ray, ->] (0, 0) -- (5, 8);
+			\node[above left] {$s$};
+			
+			\draw[fill] (0, 0) circle [radius = 0.1];
+			\draw[fill] (0, 7) circle [radius = 0.1];
+			
+			\fill[name intersections={of=uAxis and ray, total=\t}]
+			\foreach \s in {1,...,\t}{(intersection-\s) circle[radius = 0.1] node[below right] {$u$}};
+			
+			\draw (0, 0) -- (0, 3.5);
+			\draw (0, 3) arc (90 : 90 - atan(5/8) : 3);
+			\node at (0.55, 2) {$\theta$};
+			
+			\node[above] at (2, 7) {$u - s$};
+		\end{tikzpicture}
+		\label{fig:ObliqueProjectionReparameterization}
+	\caption{BLa}
+\end{figure}
+
+\begin{figure}
+	\begin{subfigure}
+		\centering
+		\begin{tikzpicture}[scale = 0.3]
+		
+		\draw[->] (-9, 0) -- (15, 0);
+		\draw[->] (-9, 7) -- (15, 7);
+		
+		\node[right] at (15, 0) {$s$};
+		\node[right] at (15, 7) {$u$};
+		
+		\draw (-1, 7) -- (-8, 0);
+		\draw (-1, 7) -- (-7, 0);
+		\draw (-1, 7) -- (-6, 0);
+		\draw (-1, 7) -- (-5, 0);
+		\draw (-1, 7) -- (-4, 0);
+		\draw (-1, 7) -- (-3, 0);
+		\draw (-1, 7) -- (-2, 0);
+		\draw (-1, 7) -- (-1, 0);
+		\draw (-1, 7) -- (0, 0);
+		\draw (-1, 7) -- (1, 0);
+		\draw (-1, 7) -- (2, 0);
+		\draw (-1, 7) -- (3, 0);
+		\draw (-1, 7) -- (4, 0);
+		\draw (-1, 7) -- (5, 0);
+		\draw (-1, 7) -- (6, 0);
+		
+		\draw (3, 7) -- (-4, 0);
+		\draw (3, 7) -- (-3, 0);
+		\draw (3, 7) -- (-2, 0);
+		\draw (3, 7) -- (-1, 0);
+		\draw (3, 7) -- (0, 0);
+		\draw (3, 7) -- (1, 0);
+		\draw (3, 7) -- (2, 0);
+		\draw (3, 7) -- (3, 0);
+		\draw (3, 7) -- (4, 0);
+		\draw (3, 7) -- (5, 0);
+		\draw (3, 7) -- (6, 0);
+		\draw (3, 7) -- (7, 0);
+		\draw (3, 7) -- (8, 0);
+		\draw (3, 7) -- (9, 0);
+		\draw (3, 7) -- (10, 0);
+		
+		\draw (7, 7) -- (0, 0);
+		\draw (7, 7) -- (1, 0);
+		\draw (7, 7) -- (2, 0);
+		\draw (7, 7) -- (3, 0);
+		\draw (7, 7) -- (4, 0);
+		\draw (7, 7) -- (5, 0);
+		\draw (7, 7) -- (6, 0);
+		\draw (7, 7) -- (7, 0);
+		\draw (7, 7) -- (8, 0);
+		\draw (7, 7) -- (9, 0);
+		\draw (7, 7) -- (10, 0);
+		\draw (7, 7) -- (11, 0);
+		\draw (7, 7) -- (12, 0);
+		\draw (7, 7) -- (13, 0);
+		\draw (7, 7) -- (14, 0);
+		
+		\draw[fill, red] (0, 0) circle [radius = 0.1];
+		\draw[fill, red] (1, 0) circle [radius = 0.1];
+		\draw[fill, red] (2, 0) circle [radius = 0.1];
+		\draw[fill, red] (3, 0) circle [radius = 0.1];
+		\draw[fill, red] (4, 0) circle [radius = 0.1];
+		\draw[fill, red] (5, 0) circle [radius = 0.1];
+		\draw[fill, red] (6, 0) circle [radius = 0.1];
+		
+		\end{tikzpicture}
+		\label{fig:ShiftedPerspectiveProjection}
+	\end{subfigure}%
+	\quad
+	\begin{subfigure}
+		\centering
+		\begin{tikzpicture}[scale = 0.3]
+		
+		\draw[->] (-2, 0) -- (8, 0);
+		\draw[->] (-2, 7) -- (8, 7);
+		
+		\node[right] at (8, 0) {$s$};
+		\node[right] at (8, 7) {$u$};
+		
+		\draw (-1, 7) -- (0, 0);
+		\draw (-1, 7) -- (1, 0);
+		\draw (-1, 7) -- (2, 0);
+		\draw (-1, 7) -- (3, 0);
+		\draw (-1, 7) -- (4, 0);
+		\draw (-1, 7) -- (5, 0);
+		\draw (-1, 7) -- (6, 0);
+		
+		\draw (3, 7) -- (0, 0);
+		\draw (3, 7) -- (1, 0);
+		\draw (3, 7) -- (2, 0);
+		\draw (3, 7) -- (3, 0);
+		\draw (3, 7) -- (4, 0);
+		\draw (3, 7) -- (5, 0);
+		\draw (3, 7) -- (6, 0);
+		
+		\draw (7, 7) -- (0, 0);
+		\draw (7, 7) -- (1, 0);
+		\draw (7, 7) -- (2, 0);
+		\draw (7, 7) -- (3, 0);
+		\draw (7, 7) -- (4, 0);
+		\draw (7, 7) -- (5, 0);
+		\draw (7, 7) -- (6, 0);
+		
+		\draw[fill, red] (0, 0) circle [radius = 0.1];
+		\draw[fill, red] (1, 0) circle [radius = 0.1];
+		\draw[fill, red] (2, 0) circle [radius = 0.1];
+		\draw[fill, red] (3, 0) circle [radius = 0.1];
+		\draw[fill, red] (4, 0) circle [radius = 0.1];
+		\draw[fill, red] (5, 0) circle [radius = 0.1];
+		\draw[fill, red] (6, 0) circle [radius = 0.1];
+		
+		\end{tikzpicture}
+		\label{fig:ShearedPerspectiveProjection}
+	\end{subfigure}%
+	\caption{Perspective projections of a scene. Left: Shifted Projection. Right: Sheared projection.}
+\end{figure}
+
+

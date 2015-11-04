@@ -21,6 +21,7 @@ d = 1;
 
 Y = orthographicLF.sensorPlane.pixelPositionMatrixY;
 X = orthographicLF.sensorPlane.pixelPositionMatrixX;
+% Y = flip(Y, 1);
 
 phi = repmat(rayAnglesY', [1 angularResolution(2)]);
 theta = repmat(rayAnglesX, [angularResolution(1) 1]);
@@ -47,7 +48,7 @@ uvPlane = CameraPlane(gridResolution, step, -d);
 Vq = repmat(uvPlane.cameraPositionMatrixY, [1 1 spatialResolution]);
 Uq = repmat(uvPlane.cameraPositionMatrixX, [1 1 spatialResolution]);
 
-% P = interpn(V(:), U(:), Y(:), X(:), squeeze(orthographicLF.lightFieldData(:, :, :, :, 1)), Vq(:), Uq(:), Yq(:), Xq(:));
+% P = interpn(V, U, Y, X, squeeze(orthographicLF.lightFieldData(:, :, :, :, 1)), Vq, Uq, Yq, Xq);
 
 
 Lo = reshape(orthographicLF.lightFieldData(:, :, :, :, 1), [], 1);
