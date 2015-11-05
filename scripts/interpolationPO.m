@@ -1,5 +1,10 @@
 close all;
 
+outputFolder = 'output/ortho/';
+if ~exist(outputFolder, 'dir')
+    mkdir(outputFolder);
+end
+
 % Load perspective light field data
 editor = LightFieldEditor();
 editor.inputFromImageCollection('lightFields/dice/perspective/3x3-.2_rect/', 'png', [3, 3], 1);
@@ -58,5 +63,9 @@ U = S + dtantheta_rep;
 
 O = interpn(Vg, Ug, Tg, Sg, squeeze(perspectiveLF.lightFieldData(:, :, :, :, 1)), V, U, T, S);
 
-figure;
-imshow(squeeze(O(5, 5, :, :)));
+for i = 1 : angularResolutionO(1)
+    for j = 1 : angularResolutionO(2)
+        name = sprintf('(%s, %s).png', i, j);
+        imwrite(squeeze(O(i, j, :, :, 1)), [outputFolder name]);
+    end
+end
