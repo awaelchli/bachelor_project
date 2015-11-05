@@ -7,12 +7,12 @@ end
 
 % Load perspective light field data
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/dice/perspective/3x3-.2_rect/', 'png', [3, 3], 1);
+editor.inputFromImageCollection('lightFields/dice/perspective/sheared/', 'png', [6, 6], 1);
 % editor.spatialSliceX(1 : 100);
 % editor.spatialSliceY(1 : 100);
 
 editor.distanceBetweenTwoCameras = [0.2 0.2];
-d = 6;
+d = 5;
 editor.sensorPlaneZ = d;
 perspectiveLF = editor.getPerspectiveLightField();
 
@@ -20,9 +20,9 @@ angularResolutionP = perspectiveLF.angularResolution;
 spatialResolutionP = perspectiveLF.spatialResolution;
 
 % Parameters for the orthographic projection
-FOV = [10 10];
+FOV = [20 20];
 resolutionO = [10, 10, 600, 800];
-sensorSize = 1;
+sensorSize = [1 1];
 sensorPlane = SensorPlane(resolutionO([3, 4]), sensorSize, d);
 orthographicLF = LightFieldO(zeros([resolutionO 1]), sensorPlane, FOV);
 
@@ -65,7 +65,7 @@ O = interpn(Vg, Ug, Tg, Sg, squeeze(perspectiveLF.lightFieldData(:, :, :, :, 1))
 
 for i = 1 : angularResolutionO(1)
     for j = 1 : angularResolutionO(2)
-        name = sprintf('(%s, %s).png', i, j);
+        name = sprintf('(%i, %i).png', i, j);
         imwrite(squeeze(O(i, j, :, :, 1)), [outputFolder name]);
     end
 end
