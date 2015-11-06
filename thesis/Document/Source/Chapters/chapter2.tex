@@ -38,7 +38,7 @@ This means that only a slice of the actual light field can be captured and the t
 %The samples on the $(u, v)$-plane correspond to the virtual positions of the camera. 
 %Properties of the light field do not change under re-parameterization. 
 
-\subsection*{Oblique Projections}
+\subsection*{Oblique Projection}
 % Parameterization, Advantages, Disadvantages
 % Mention Tomography
 % Rotation 
@@ -54,7 +54,7 @@ However, this type of projection is only applicable for synthetic scenes that ar
 % TODO: Refer to a figure with a synthetic scene.
 
 
-\subsection*{Perspective Projections}
+\subsection*{Perspective Projection}
 % Figure
 % Parameterization, two main types: global or relative
 % Reparameterization: Orthographic <-> Perspective
@@ -62,11 +62,13 @@ However, this type of projection is only applicable for synthetic scenes that ar
 The angles of the rays in a light field captured by perspective projections are determined by the focal length and the sensor resolution of the camera.
 For a camera light field, typically it is expected that
 \begin{itemize}
-	\item all cameras are placed at grid positions in $G_{uv}$ on the same plane, called the $(u, v)$-plane, 
-	\item the optical axes of the cameras are parallel to the $(u, v)$-plane, 
-	\item all cameras have the same intrinsic parameters (e.g. focal length).
-\end{itemize}}
-In this case, the focal planes of all cameras are forming the same plane. 
+	\item All cameras are placed at grid positions in $G_{uv}$ on the same plane, called the $(u, v)$-plane, 
+	\item The optical axes of the cameras are parallel to the $(u, v)$-plane, 
+	\item All cameras have the same intrinsic parameters (e.g. focal length).
+\end{itemize}
+In this case, the focal planes of all cameras coincide with a common focal plane, the $(s, t)$-plane.
+Figure~\ref{fig:ShiftedPerspectiveProjection} shows this scenario for three cameras in two dimensions.
+
 %This means that each ray can be represented by coordinates in each of the coordinate systems of the cameras.
 %The only problem is that some rays are not captured by all
 
@@ -116,7 +118,7 @@ In this case, the focal planes of all cameras are forming the same plane.
 	\subfigure[]{
 		\centering
 		\input{../Figures/perspective-projection-sheared}
-		\label{fig:ShearedPerspectiveProjection}
+		\label{fig:RectifiedPerspectiveProjection}
 	}
 	\caption{Perspective projections of a scene. (a) Shifted Projection (b) Sheared projection.}
 \end{figure}
