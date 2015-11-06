@@ -59,6 +59,17 @@ However, this type of projection is only applicable for synthetic scenes that ar
 % Parameterization, two main types: global or relative
 % Reparameterization: Orthographic <-> Perspective
 % 
+The angles of the rays in a light field captured by perspective projections are determined by the focal length and the sensor resolution of the camera.
+For a camera light field, typically it is expected that
+\begin{itemize}
+	\item all cameras are placed at grid positions in $G_{uv}$ on the same plane, called the $(u, v)$-plane, 
+	\item the optical axes of the cameras are parallel to the $(u, v)$-plane, 
+	\item all cameras have the same intrinsic parameters (e.g. focal length).
+\end{itemize}}
+In this case, the focal planes of all cameras are forming the same plane. 
+%This means that each ray can be represented by coordinates in each of the coordinate systems of the cameras.
+%The only problem is that some rays are not captured by all
+
 
 \section{Light Field Tomography}
 % Derivation according to Wetzstein
