@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #################
 ## Eclipse
 #################
@@ -237,3 +238,29 @@ lightFields/cubes.mat
 lightFields/gnome.mat
 lightFields/cubes-1.mat
 thesis/Document/Figures/texput.aux
+=======
+j3d*
+jogamp*
+jogl*
+Maven/*
+JRTR/.settings/
+*.7z
+JRTR/bin*
+*.class
+.metadata*
+*buddha*
+*.classpath
+*.orig
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*peter_complete*
+*armadillo.obj
+*tyra.obj
+JRTR/matlab/*
+JRTR/python/temp/*
+JRTR/out/*
+.recommenders/*
+.project
+>>>>>>> 52784779531fcf2b6d31deeffb890fd33ef6a4ba
