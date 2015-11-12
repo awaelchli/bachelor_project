@@ -9,10 +9,10 @@ global_settings {assumed_gamma 1.0}
 #declare DistanceBetweenCamerasY = 0.2;
 #declare DistanceBetweenCamerasX = 0.2;
 #declare DistanceToCameraPlane = 8;
-#declare AngularResolutionY = 10;
-#declare AngularResolutionX = 1;
+#declare AngularResolutionY = 1;
+#declare AngularResolutionX = 500;
 #declare aspectRatio = image_width / image_height;
-#declare angleOfView = <10, 10>;
+#declare angleOfView = <15, 15>;
 
 #declare theta = angleOfView.x;
 #declare phi = angleOfView.y;
@@ -24,8 +24,8 @@ global_settings {assumed_gamma 1.0}
 #declare CameraIndexX = mod(frame_number, AngularResolutionX);
 #declare CameraIndexY = (frame_number - CameraIndexX) / AngularResolutionX; 
 
-#declare theta_i = -theta / 2 + (CameraIndexX - 1) * delta_theta;
-#declare phi_i = phi / 2 - (CameraIndexY - 1) * delta_phi;
+#declare theta_i = -theta / 2 + CameraIndexX * delta_theta;
+#declare phi_i = phi / 2 - CameraIndexY * delta_phi;
 
 #declare CameraPositionX = DistanceToCameraPlane * tand(theta_i);
 #declare CameraPositionY = DistanceToCameraPlane * tand(phi_i);
