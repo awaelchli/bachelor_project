@@ -1,15 +1,16 @@
+#version 3.7;
 // Source: http://commons.wikimedia.org/wiki/File:PNG_transparency_demonstration_1.png
 // Modified by Adrian Wälchli, May 2015
+global_settings {assumed_gamma 1.0}
 
 #include "colors.inc"  
 
-#declare DistanceBetweenCamerasY = 0.01;
-#declare DistanceBetweenCamerasX = 0.01;
+#declare DistanceBetweenCamerasY = 0.2;
+#declare DistanceBetweenCamerasX = 0.2;
 #declare DistanceToCameraPlane = 8;
-#declare AngularResolutionY = 1;
-#declare AngularResolutionX = 100;
-#declare FOV_horizontal = 60;
-#declare aspectRatio = 4 / 3;
+#declare AngularResolutionY = 8;
+#declare AngularResolutionX = 8;
+#declare aspectRatio = image_width / image_height;
 
 // The camera index is between 0 and AngularResolution - 1
 #declare CameraIndexX = mod(frame_number, AngularResolutionX);
@@ -17,19 +18,21 @@
 
 #declare CameraPositionY = ((AngularResolutionY - 1) / 2 - CameraIndexY) * DistanceBetweenCamerasY;             
 #declare CameraPositionX = (-(AngularResolutionX - 1) / 2 + CameraIndexX) * DistanceBetweenCamerasX;
+
+#declare CameraPosition = <CameraPositionX, CameraPositionY, -DistanceToCameraPlane>;
+#declare Look_At = <0, 0, 0>;
+#declare Sensor_Height = 5;
  
 camera {    
-  orthographic
-  location <-DistanceToCameraPlane / 2, CameraPositionY, CameraPositionX>
-  direction <0, 0, -1>     
-  angle FOV_horizontal 
-  right <0, 0, aspectRatio>
-  look_at <0, 0, 0>      
-  //look_at <0, CameraPositionY, CameraPositionX>
+  orthographic 
+  location CameraPosition  
+  up y * Sensor_Height
+  right x * Sensor_Height * aspectRatio
+  direction Look_At - CameraPosition     
 }
- 
-light_source { <-9, 7, -6> color White }   
-light_source { <9, -7, 6> color White }   
+                                     
+light_source { <-6, 7, -9> color White }   
+light_source { <6, -7, 9> color White }   
 background { color White }
  
 #declare DiceColor = color red 1 green .95 blue .65;
@@ -48,14 +51,14 @@ background { color White }
   sphere { <.25, .6, .25>, .13 }
 }
  
-#declare Corners2 = union {
-  sphere { <-.25, .6, .25>, .13 }
+#declare Corners2 = union { 
   sphere { <.25, .6, -.25>, .13 }
+  sphere { <-.25, .6, .25>, .13 }
 }
  
-#declare Middles = union {
-  sphere { <-.25, .6, 0>, .13 }
-  sphere { <.25, .6, 0>, .13 }
+#declare Middles = union { 
+  sphere { <0, .6, -.25>, .13 }
+  sphere { <0, .6, .25>, .13 }
 }
  
 #declare One = Middle
@@ -108,8 +111,21 @@ difference {
   bounded_by { box { <-.52, -.52, -.52>, <.52, .52, .52> } }
 }
 #end
- 
-object { Dice(color rgb <.7, 0, 0>)  rotate <195, -30, 10> translate <-1.0, 0, 0>}//Red
-object { Dice(color rgb <0, 0, .7>)  rotate <30,40,50> translate <-0.5,1,1>}//Blue
-object { Dice(color rgb <0, .5, 0>)  rotate <-40,20,-120> translate <0.3,1,-1>}//Green
-object { Dice(color rgb <.5,.5, 0>)  rotate <-10,290,-30> translate <1,-1,.4>}//Yellow
+
+object { Dice(color rgb <.7, 0, 0>)  rotate <10, -30, 195> translate <0, 0, -1>} //Red
+object { Dice(color rgb <0, 0, .7>)  rotate <50, 40, 30> translate <1, 1, -0.5>} //Blue
+object { Dice(color rgb <0, .5, 0>)  rotate <-120, 20, -40> translate <-1, 1, 0.3>} //Green
+object { Dice(color rgb <.5,.5, 0>)  rotate <-30, 290, -10> translate <0.4, -1, 1>} //Yellow
+   
+/*   
+polygon {
+    4,
+    <0, 0>, <0, 1>, <1, 1>, <1, 0>
+    texture {
+        finish { ambient 1 diffuse 0 }
+    }
+    translate <-0.5, -0.5, 0>
+    scale y * Sensor_Height / 2
+    scale x * Sensor_Height * aspectRatio / 2
+}
+*/
