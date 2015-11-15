@@ -51,6 +51,11 @@ classdef LightFieldEditor < handle
             lightField = LightFieldO(this.lightFieldData, sensorPlane, this.lightFieldFOV);
         end
         
+        function lightField = getRawLightField(this)
+            this.loadLightFieldData();
+            lightField = LightField(this.lightFieldData);
+        end
+        
         function inputFromImageCollection(this, inputFolder, filetype, angularResolution, resizeScale)
             if(exist(inputFolder, 'dir') ~= 7)
                 errorStruct.message = sprintf('The path "%s" is not a folder.', inputFolder);
@@ -225,9 +230,9 @@ classdef LightFieldEditor < handle
         
         function rectifiedData = shear(lightFieldData, disparityShift)
             
-            if(~isscalar(disparityShift) || disparityShift < 0)
-                errorStruct.message = 'The disparity shift must be a positive scalar.';
-                errorStruct.identifier = 'shear:disparityNotPositiveScalar';
+            if(any(disparityShift < 0))
+                errorStruct.message = 'The disparity shift must be positive.';
+                errorStruct.identifier = 'shear:disparityNotPositive';
                 error(errorStruct);
             end
             
@@ -237,15 +242,19 @@ classdef LightFieldEditor < handle
                 error(errorStruct);
             end
             
-            if(disparityShift == 0)
+            if(isscalar(disparityShift))
+                disparityShift = [disparityShift disparityShift];
+            end
+            
+            if(all(disparityShift == 0))
                 rectifiedData = lightFieldData;
                 return;
             end
             
             resolution = size(lightFieldData);
             
-            cutSizesTop = (resolution(LightField.angularDimensions(1)) - 1) * disparityShift : -disparityShift : 0;
-            cutSizesLeft = (resolution(LightField.angularDimensions(2)) - 1) * disparityShift : -disparityShift : 0;
+            cutSizesTop = (resolution(LightField.angularDimensions(1)) - 1) * disparityShift(1) : -disparityShift(1) : 0;
+            cutSizesLeft = (resolution(LightField.angularDimensions(2)) - 1) * disparityShift(2) : -disparityShift(2) : 0;
             newHeight = resolution(LightField.spatialDimensions(1)) - cutSizesTop(1);
             newWidth = resolution(LightField.spatialDimensions(2)) - cutSizesLeft(1);
 
