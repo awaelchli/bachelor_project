@@ -1,36 +1,37 @@
 #version 3.7;
 // Source: http://commons.wikimedia.org/wiki/File:PNG_transparency_demonstration_1.png
 // Modified by Adrian Wälchli, May 2015
+global_settings {assumed_gamma 1.0}
 
 #include "colors.inc"  
 
-#declare DistanceBetweenCamerasY = 0.002;
-#declare DistanceBetweenCamerasX = 0.002;
-#declare DistanceToCameraPlane = 8;
-#declare AngularResolutionY = 1;
-#declare AngularResolutionX = 500;
+#declare baseline = <2.7, 2.7>;
+#declare DistanceToCameraPlane = 7;
+#declare AngularResolutionX = 10;
+#declare AngularResolutionY = 10;
 #declare FOV_horizontal = 60;
-#declare aspectRatio = 1;
+
+#declare DistanceBetweenCamerasX = baseline.x / (AngularResolutionX - 1);
+#declare DistanceBetweenCamerasY = baseline.y / (AngularResolutionY - 1);
+#declare aspectRatio = image_width / image_height;
 
 // The camera index is between 0 and AngularResolution - 1
 #declare CameraIndexX = mod(frame_number, AngularResolutionX);
 #declare CameraIndexY = (frame_number - CameraIndexX) / AngularResolutionX; 
 
-#declare CameraPositionY = ((AngularResolutionY - 1) / 2 - CameraIndexY) * DistanceBetweenCamerasY;             
 #declare CameraPositionX = (-(AngularResolutionX - 1) / 2 + CameraIndexX) * DistanceBetweenCamerasX;
+#declare CameraPositionY = ((AngularResolutionY - 1) / 2 - CameraIndexY) * DistanceBetweenCamerasY;             
+
  
 camera {    
-//orthographic
-  location <-DistanceToCameraPlane * 0.6, CameraPositionY, CameraPositionX>
-  direction <0, 0, -1>     
+  location <CameraPositionX, CameraPositionY, DistanceToCameraPlane>     
   angle FOV_horizontal 
-  right <0, 0, aspectRatio>
-  //look_at <0, 0, 0>      
-  look_at <0, CameraPositionY, CameraPositionX>
+  right <0, 0, aspectRatio>    
+  look_at <CameraPositionX, CameraPositionY, 0>
 }
  
-light_source { <-9, 7, -6> color White }   
-light_source { <9, -7, 6> color White }   
+light_source { <-6, 7, -9> color White }   
+light_source { <6, -7, 9> color White }   
 background { color White }
  
 #declare DiceColor = color red 1 green .95 blue .65;
@@ -50,13 +51,13 @@ background { color White }
 }
  
 #declare Corners2 = union {
-  sphere { <-.25, .6, .25>, .13 }
   sphere { <.25, .6, -.25>, .13 }
+  sphere { <-.25, .6, .25>, .13 }
 }
  
 #declare Middles = union {
-  sphere { <-.25, .6, 0>, .13 }
-  sphere { <.25, .6, 0>, .13 }
+  sphere { <0, .6, -.25>, .13 }
+  sphere { <0, .6, .25>, .13 }
 }
  
 #declare One = Middle
@@ -110,7 +111,7 @@ difference {
 }
 #end
  
-object { Dice(color rgb <.7, 0, 0>)  rotate <195, -30, 10> translate <-1.0, 0, 0>}//Red
-object { Dice(color rgb <0, 0, .7>)  rotate <30,40,50> translate <-0.5,1,1>}//Blue
-object { Dice(color rgb <0, .5, 0>)  rotate <-40,20,-120> translate <0.3,1,-1>}//Green
-object { Dice(color rgb <.5,.5, 0>)  rotate <-10,290,-30> translate <1,-1,.4>}//Yellow
+object { Dice(color rgb <.7, 0, 0>)  rotate <195, -30, 10> translate <0, 0, 1>} //Red
+object { Dice(color rgb <0, 0, .7>)  rotate <30,40,50> translate <1, 1, 0.5>} //Blue
+object { Dice(color rgb <0, .5, 0>)  rotate <-40,20,-120> translate <-1, 1, -0.3>} //Green
+object { Dice(color rgb <.5,.5, 0>)  rotate <-10,290,-30> translate <0.4, -1, -1>} //Yellow
