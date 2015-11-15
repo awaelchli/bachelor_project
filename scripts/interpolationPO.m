@@ -6,25 +6,29 @@ if ~exist(outputFolder, 'dir')
 end
 
 % Load perspective light field data
-editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/dice/perspective/sheared/', 'png', [6, 6], 1);
-% editor.spatialSliceX(1 : 100);
-% editor.spatialSliceY(1 : 100);
-
-editor.distanceBetweenTwoCameras = [0.2 0.2];
-d = 5;
-editor.sensorPlaneZ = d;
-perspectiveLF = editor.getPerspectiveLightField();
+% editor = LightFieldEditor();
+% editor.inputFromImageCollection('lightFields/dice/perspective/baseline_2.7/rectified/', 'png', [10 10], 1);
+% % editor.spatialSliceX(1 : 100);
+% % editor.spatialSliceY(1 : 100);
+% 
+% editor.distanceBetweenTwoCameras = [0.3 0.3];
+% d = 7;
+% editor.sensorPlaneZ = d;
+% perspectiveLF = editor.getPerspectiveLightField();
+load('lightFields/dice/perspective/baseline_2.7/10x10x500x500/rectified/rectified');
+perspectiveLF = sheared;
+d = perspectiveLF.cameraPlane.z;
 
 angularResolutionP = perspectiveLF.angularResolution;
 spatialResolutionP = perspectiveLF.spatialResolution;
+channels = perspectiveLF.channels;
 
 % Parameters for the orthographic projection
-FOV = [20 20];
-resolutionO = [10, 10, 600, 800];
-sensorSize = [1 1];
+FOV = [10 10];
+resolutionO = [10, 10, 500, 500];
+sensorSize = perspectiveLF.sensorPlane.planeSize;
 sensorPlane = SensorPlane(resolutionO([3, 4]), sensorSize, d);
-orthographicLF = LightFieldO(zeros([resolutionO 1]), sensorPlane, FOV);
+orthographicLF = LightFieldO(zeros([resolutionO channels]), sensorPlane, FOV);
 
 angularResolutionO = orthographicLF.angularResolution;
 spatialResolutionO = orthographicLF.spatialResolution;
@@ -42,7 +46,6 @@ Sg = perspectiveLF.sensorPlane.pixelPositionMatrixX(1, :);
 Tg = perspectiveLF.sensorPlane.pixelPositionMatrixY(:, 1);
 
 % Grid vectors for the orthographic light field (query points)
-
 T = orthographicLF.sensorPlane.pixelPositionMatrixY;
 S = orthographicLF.sensorPlane.pixelPositionMatrixX;
 
@@ -61,11 +64,17 @@ S = permute(repmat(S, [1 1 angularResolutionO]), [3 4 1 2]);
 V = T + dtanphi_rep;
 U = S + dtantheta_rep;
 
-O = interpn(Vg, Ug, Tg, Sg, squeeze(perspectiveLF.lightFieldData(:, :, :, :, 1)), V, U, T, S);
+method = 'linear';
+
+O1 = interpn(Vg, Ug, Tg, Sg, squeeze(perspectiveLF.lightFieldData(:, :, :, :, 1)), V, U, T, S, method);
+O2 = interpn(Vg, Ug, Tg, Sg, squeeze(perspectiveLF.lightFieldData(:, :, :, :, 2)), V, U, T, S, method);
+O3 = interpn(Vg, Ug, Tg, Sg, squeeze(perspectiveLF.lightFieldData(:, :, :, :, 3)), V, U, T, S, method);
+
+O = cat(5, O1, O2, O3);
 
 for i = 1 : angularResolutionO(1)
     for j = 1 : angularResolutionO(2)
         name = sprintf('(%i, %i).png', i, j);
-        imwrite(squeeze(O(i, j, :, :, 1)), [outputFolder name]);
+        imwrite(squeeze(O(i, j, :, :, :)), [outputFolder name]);
     end
 end

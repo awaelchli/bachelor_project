@@ -37,9 +37,9 @@ data = LightFieldEditor.shear(rawLF.lightFieldData, disparity);
 
 cameraPlane = CameraPlane(angularResolution, delta, d);
 sensorPlane = SensorPlane([size(data, 3) size(data, 4)], [1 1], 0);
-sheared = LightFieldP(data, cameraPlane, sensorPlane);
+rectified = LightFieldP(data, cameraPlane, sensorPlane);
 
-save([outputFolder 'rectified'], 'sheared');
+save([outputFolder 'rectified'], 'rectified');
 
 for y = 1 : angularResolution(1)
     for x = 1 : angularResolution(2)
