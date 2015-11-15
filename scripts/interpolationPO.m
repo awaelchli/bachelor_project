@@ -25,7 +25,7 @@ channels = perspectiveLF.channels;
 
 % Parameters for the orthographic projection
 FOV = [10 10];
-resolutionO = [10, 10, 500, 500];
+resolutionO = [10, 10, spatialResolutionP];
 sensorSize = perspectiveLF.sensorPlane.planeSize;
 sensorPlane = SensorPlane(resolutionO([3, 4]), sensorSize, d);
 orthographicLF = LightFieldO(zeros([resolutionO channels]), sensorPlane, FOV);

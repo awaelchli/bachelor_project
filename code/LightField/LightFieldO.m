@@ -34,7 +34,8 @@ classdef LightFieldO < LightField
         function rayAngle = rayAngle(this, angularIndex)
             halfFOV = this.fov / 2;
             angularStep = this.fov ./ (this.angularResolution - 1);
-            rayAngle = -halfFOV + (angularIndex - 1) .* angularStep;
+            rayAngle(1) = halfFOV(1) - (angularIndex(1) - 1) .* angularStep(1);
+            rayAngle(2) = -halfFOV(2) + (angularIndex(2) - 1) .* angularStep(2);
             this.assertInvariant();
         end
         
