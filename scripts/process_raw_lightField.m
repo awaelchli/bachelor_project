@@ -1,4 +1,6 @@
-inputFolder = 'lightFields/dice/perspective/';
+%% Setup the parameters for rectification
+
+inputFolder = 'lightFields/dice/perspective/baseline_2.7/10x10x500x500/';
 outputFolder = [inputFolder 'rectified/'];
 
 % Baseline in vertical and horizontal direction
@@ -11,6 +13,8 @@ fov_h = 60;
 angularResolution = [10 10];
 % File format
 filetype = 'png';
+
+%% Rectify light field to the desired focal plane
 
 if ~exist(outputFolder, 'dir')
     mkdir(outputFolder);
@@ -39,7 +43,11 @@ cameraPlane = CameraPlane(angularResolution, delta, d);
 sensorPlane = SensorPlane([size(data, 3) size(data, 4)], [1 1], 0);
 rectified = LightFieldP(data, cameraPlane, sensorPlane);
 
+%% Save the data of the rectified light field
+
 save([outputFolder 'rectified'], 'rectified');
+
+%% Save the individual pictures
 
 for y = 1 : angularResolution(1)
     for x = 1 : angularResolution(2)
