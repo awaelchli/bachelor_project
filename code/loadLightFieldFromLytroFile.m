@@ -4,7 +4,6 @@ function [lightFieldData, metadata] = loadLightFieldFromLytroFile( lytroFile, ly
 
 
 file = fullfile(lytroFile);
-
 whiteImageDatabasePath = fullfile(lytroCameraPath, 'WhiteImageDatabase.mat');
 
 if(~exist(whiteImageDatabasePath, 'file'))
@@ -15,16 +14,23 @@ if(~exist(file, 'file'))
     error('The file "%s" does not exist.', file);
 end
 
-LFUtilUnpackLytroArchive(lytroCameraPath);
-LFUtilProcessWhiteImages(lytroCameraPath);
+FileOptions = LFDefaultField('FileOptions', 'SaveResult', true);
+FileOptions = LFDefaultField('FileOptions', 'SaveFnamePattern', '%s_Decoded.mat');
 
 DecodeOptions = LFDefaultField('DecodeOptions', 'WhiteImageDatabasePath', whiteImageDatabasePath);
-[lightFieldData, metadata, ~] = LFLytroDecodeImage(file, DecodeOptions);
+DecodeOptions = LFDefaultField('DecodeOptions', 'OptionalTasks', {'ColourCorrect'});
 
+LFUtilUnpackLytroArchive(lytroCameraPath);
+LFUtilProcessWhiteImages(lytroCameraPath);
+LFUtilDecodeLytroFolder(file, FileOptions, DecodeOptions, []);
+
+[path, name, ~] = fileparts(file);
+load([path '/' name '_Decoded.mat']);
+
+lightFieldData = LFHistEqualize(LF);
 lightFieldData = lightFieldData(:, :, :, :, 1 : 3);
 lightFieldData = single(lightFieldData);
-
-fprintf('\n');
+metadata = LFMetadata;
 
 end
 
