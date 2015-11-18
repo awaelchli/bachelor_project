@@ -23,13 +23,20 @@ The \textbf{4D light field} $L(u, v, s, t)$ is therefore defined as the radiance
 This two plane parameterization of the light field is the most common one seen in literature, but there are many ways to choose a parameterization.
 For instance, one can use a plane and two angles to define each ray passing this plane, which would result in a light field $L(u, v, \theta, \phi)$ where $\theta, \phi \in (0, \pi)$.
 
+\begin{figure}
+	\centering
+	\input{../Figures/two-plane-parameterization}
+	\caption{Parametrization of the light field with two planes.}
+	\label{fig:LightFieldParametrization}
+\end{figure}
+
 \section{Light Field Acquisition}
 % Figure epipolar image
 % Explain epipolar images: line slope <-> depth
 
 For practical applications, the light field must be discretized and so an appropriate sampling method needs to be chosen.
 One way is to capture the light field with a grid of optical systems, e.g. cameras.
-Typically, the $(u, v)$-plane is uniformly sampled on a grid $G_{uv} = \left \{ \left( u_i, v_j \right) \mid i = 1,\dots, n, j = 1, \dots, m\right \}$ on the $(u, v)$-plane with a resolution $n \times m$.
+Typically, the $(u, v)$-plane is sampled on a grid $G_{uv} = \left \{ \left( u_i, v_j \right) \mid i = 1,\dots, n, j = 1, \dots, m\right \}$ on the $(u, v)$-plane with a resolution $n \times m$.
 The extent in horizontal (vertical) direction is called the horizontal (vertical) \textbf{baseline}.
 This means that only a slice of the actual light field can be captured and the two planes are clipped to form a rectangle.
 
@@ -53,46 +60,6 @@ Given a light field $L(u, v, s, t)$ and the distance $d$ between the two planes,
 However, this type of projection is only applicable for synthetic scenes that are rendered with a computer.
 % TODO: Refer to a figure with a synthetic scene.
 
-
-\subsection*{Perspective Projection}
-% Figure
-% Parameterization, two main types: global or relative
-% Reparameterization: Orthographic <-> Perspective
-% 
-The angles of the rays in a light field captured by perspective projections are determined by the focal length and the sensor resolution of the camera.
-For a camera light field, typically it is expected that
-\begin{itemize}
-	\item All cameras are placed at grid positions in $G_{uv}$ on the same plane, called the $(u, v)$-plane, 
-	\item The optical axes of the cameras are parallel to the $(u, v)$-plane, 
-	\item All cameras have the same intrinsic parameters (e.g. focal length).
-\end{itemize}
-In this case, the focal planes of all cameras coincide with a common focal plane, the $(s, t)$-plane.
-Figure~\ref{fig:ShiftedPerspectiveProjection} shows this scenario for three cameras in two dimensions.
-
-%This means that each ray can be represented by coordinates in each of the coordinate systems of the cameras.
-%The only problem is that some rays are not captured by all
-
-
-\section{Light Field Tomography}
-% Derivation according to Wetzstein
-% Explain linearity in log domain
-% Mention other tomographic projection types
-% SART and ART solvers
-%
-
-\section{Spectral Analysis}
-% Introduction to fourier transform
-% Explain the spectral support of LF
-
-
-
-\begin{figure}
-	\centering
-	\input{../Figures/two-plane-parameterization}
-	\caption{Parametrization of the light field with two planes.}
-	\label{fig:LightFieldParametrization}
-\end{figure}
-
 \begin{figure}
 	\subfigure[]{
 		\centering
@@ -108,6 +75,27 @@ Figure~\ref{fig:ShiftedPerspectiveProjection} shows this scenario for three came
 	\caption{(a) Light field aquisition using oblique projection. (b) Re-parameterization of the two-plane representation to angular coordinates.}
 \end{figure}
 
+\subsection*{Perspective Projection}
+% Figure
+% Parameterization, two main types: global or relative
+% Reparameterization: Orthographic <-> Perspective
+% 
+The angles of the rays in a light field captured by perspective projections are determined by the focal length and the sensor resolution of the camera.
+For a camera light field, typically it is expected that
+\begin{itemize}
+	\item All cameras are placed at grid positions in $G_{uv}$ on the same plane, called the $(u, v)$-plane, 
+	\item The optical axes of the cameras are parallel to the $(u, v)$-plane, 
+	\item All cameras have the same intrinsic parameters (e.g. focal length).
+\end{itemize}
+In this case, the focal planes of all cameras coincide with a common focal plane, the $(s, t)$-plane.
+Figure~\ref{fig:ShiftedPerspectiveProjection} shows this scenario for three cameras in two dimensions.
+Each camera captures sample points on the $(s, t)$-plane, but not every point on the $(s, t)$-plane is captured by ever camera.
+As demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera images need to be rectified such that all discrete coordinates $(u, v, s, t)$ correspond to valid rays.
+
+
+%This means that each ray can be represented by coordinates in each of the coordinate systems of the cameras.
+%The only problem is that some rays are not captured by all
+
 \begin{figure}
 	\subfigure[]{
 		\centering
@@ -120,7 +108,20 @@ Figure~\ref{fig:ShiftedPerspectiveProjection} shows this scenario for three came
 		\input{../Figures/perspective-projection-sheared}
 		\label{fig:RectifiedPerspectiveProjection}
 	}
-	\caption{Perspective projections of a scene. (a) Shifted Projection (b) Sheared projection.}
+	\caption{Perspective projections of a scene. 
+			 (a) Projections with three pinhole cameras. 
+			 (b) Discarding unused rays corresponds to cropping the camera images.}
 \end{figure}
 
 
+\section{Light Field Tomography}
+% Derivation according to Wetzstein
+% Explain linearity in log domain
+% Mention other tomographic projection types
+% SART and ART solvers
+%
+
+\section{Spectral Analysis}
+% Introduction to fourier transform
+% Explain the spectral support of LF
+% Fourier slice theorem
