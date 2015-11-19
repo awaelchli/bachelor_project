@@ -129,7 +129,7 @@ According to the Beer-Lambert law, the intensity of a light ray $\mathcal{R} \su
 \end{equation}
 The incident intensity $I_0$ is the intensity of the ray before it enters the attenuator.
 Equation~\ref{eq:beer_lambert_law} can be rewritten into 
-\begin{equation}
+\begin{equation}\label{eq:log_beer_lambert_law}
 	\bar{I} \coloneqq \log \left( \frac{I}{I_0} \right) = -\int_\mathcal{R} \mu(r) \, \mathrm{d}r.
 \end{equation} 
 Now, let the attenuator $\mu(x, y, z)$ be a cubic slab of height $d$ in Z-direction and let $L(u, v, s, t)$ be the two-plane parameterization of the light field such that the $(s, t)$-plane coincides with the $(x, y)$-plane of the attenuator and the $(u, v)$-plane is at distance $d$.
@@ -151,7 +151,23 @@ The set of points describing the ray defined by the coordinates $(u, v, s, t)$ i
 	\lambda \in \mathbb{R} 
 	\right\}.
 \end{equation}
-Now, $I$ can be replaced with the light field $L$
+A point $p = (x, y, z)^T$ is part of the ray $\mathcal{R}$ if and only if
+\begin{align}
+	& \exists \lambda \in \mathbb{R} : p = \lambda a + b & & \iff & & a \times (p - b) = 0, 
+\end{align} 
+where $\times$ denotes the cross product.
+Now, $I$ can be replaced with the light field $L$ and the right hand side of equation~\ref{eq:log_beer_lambert_law} can be written as an integral over~$\mathbb{R}^3$:
+\begin{equation}\label{eq:radon_transform}
+	\bar{L}(u, v, s, t) = 
+	%\int \limits_{-\infty}^{\infty} \int \limits_{-\infty}^{\infty} \int \limits_{-\infty}^{\infty}
+	-\int_{\mathbb{R}^3}
+	\mu(p) \delta ( a \times (p - b) ) \, \mathrm{d}p.
+\end{equation}
+Here, $\delta$ denotes the Dirac delta function on $\mathbb{R}^3$ and $\mu$ is zero outside the boundaries of the slab. 
+This means that integrand is only non-zero for points on the ray with coordinates $(u, v, s, t)$.
+
+Combining equation~\ref{eq:beer_lambert_law} and~\ref{eq:radon_transform} gives the light field emmitted by the attenuator.
+The goal is to produce such an attenuation display that emmits a given target light field.
 
 \section{Spectral Analysis}
 % Introduction to fourier transform
