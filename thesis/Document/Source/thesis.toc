@@ -4,9 +4,9 @@
 \contentsline {section}{\numberline {2.1}The Plenoptic Function and the Light Field}{2}{section.2.1}
 \contentsline {section}{\numberline {2.2}Light Field Acquisition}{3}{section.2.2}
 \contentsline {section}{\numberline {2.3}Light Field Tomography}{4}{section.2.3}
-\contentsline {section}{\numberline {2.4}Spectral Analysis}{4}{section.2.4}
-\contentsline {chapter}{\numberline {A}ap1}{5}{appendix.A}
-\contentsline {section}{\numberline {A.1}apsec1}{5}{section.A.1}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{6}{section.A.1}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{6}{appendix*.4}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }Bibliography}{7}{appendix*.5}
+\contentsline {section}{\numberline {2.4}Spectral Analysis}{5}{section.2.4}
+\contentsline {chapter}{\numberline {A}ap1}{6}{appendix.A}
+\contentsline {section}{\numberline {A.1}apsec1}{6}{section.A.1}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{7}{section.A.1}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{7}{appendix*.4}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Bibliography}{8}{appendix*.5}
