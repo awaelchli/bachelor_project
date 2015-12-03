@@ -60,7 +60,7 @@ Given a light field $L(u, v, s, t)$ and the distance $d$ between the two planes,
 However, this type of projection is only applicable for synthetic scenes that are rendered with a computer.
 % TODO: Refer to a figure with a synthetic scene.
 
-\begin{figure}
+\begin{figure}[tb]
 	\subfigure[]{
 		\centering
 		\input{../Figures/oblique-projection}
@@ -96,7 +96,7 @@ As demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera 
 %This means that each ray can be represented by coordinates in each of the coordinate systems of the cameras.
 %The only problem is that some rays are not captured by all
 
-\begin{figure}
+\begin{figure}[tb]
 	\subfigure[]{
 		\centering
 		\input{../Figures/perspective-projection-shift}
@@ -112,6 +112,39 @@ As demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera 
 			 (a) Projections with three pinhole cameras. 
 			 (b) Discarding unused rays corresponds to cropping the camera images.}
 \end{figure}
+
+
+\section{Visualization}
+
+\begin{figure}[htb]
+	\subfigure[]{
+		\centering
+		\frame{
+			\includegraphics[height = 0.16\linewidth]{epi_1x500x1000x1000/overview}
+		}
+		\label{fig:epi_1x500x1000x1000_overview}
+	}
+	%\hfill
+	\subfigure[]{
+		\centering
+		\frame{
+			\includegraphics[height = 0.16\linewidth]{epi_1x500x1000x1000/scanY=379}
+		}
+		\label{fig:epi_1x500x1000x1000_scanline1}
+	}
+	%\hfill
+	\subfigure[]{
+		\centering
+		\frame{
+			\includegraphics[height = 0.16\linewidth]{epi_1x500x1000x1000/scanY=641}
+		}
+		\label{fig:fig:epi_1x500x1000x1000_scanline2}
+	}
+	\caption{}
+	\label{fig:epi_example_perspective}
+\end{figure}
+
+
 
 
 \section{Light Field Tomography}

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.2)  19 NOV 2015 19:01
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.2)  3 DEC 2015 18:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -828,7 +828,33 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 86.
  [3]
 (../Figures/perspective-projection-shift.tex)
-(../Figures/perspective-projection-sheared.tex) [4]) [5]
+(../Figures/perspective-projection-sheared.tex)
+<../Figures/epi_1x500x1000x1000/overview.png, id=122, 1003.75pt x 617.30624pt>
+File: ../Figures/epi_1x500x1000x1000/overview.png Graphic file (type png)
+
+<use ../Figures/epi_1x500x1000x1000/overview.png>
+Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/overview.png used on in
+put line 126.
+(pdftex.def)             Requested size: 89.75159pt x 55.20126pt.
+
+<../Figures/epi_1x500x1000x1000/scanY=379.png, id=123, 1003.75pt x 501.875pt>
+File: ../Figures/epi_1x500x1000x1000/scanY=379.png Graphic file (type png)
+
+<use ../Figures/epi_1x500x1000x1000/scanY=379.png>
+Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=379.png used on i
+nput line 134.
+(pdftex.def)             Requested size: 110.39752pt x 55.20126pt.
+
+<../Figures/epi_1x500x1000x1000/scanY=641.png, id=124, 1003.75pt x 501.875pt>
+File: ../Figures/epi_1x500x1000x1000/scanY=641.png Graphic file (type png)
+
+<use ../Figures/epi_1x500x1000x1000/scanY=641.png>
+Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=641.png used on i
+nput line 142.
+(pdftex.def)             Requested size: 110.39752pt x 55.20126pt.
+ [4 <../Figures/epi_1x500x1000x1000/overview.png (PNG copy)> <../Figures/epi_1x
+500x1000x1000/scanY=379.png (PNG copy)> <../Figures/epi_1x500x1000x1000/scanY=6
+41.png (PNG copy)>]) [5]
 \openout2 = `Chapters/appendix.aux'.
 
 
@@ -859,7 +885,7 @@ ion. (b) Re-parameterization
 
  (./thesis.bbl [8
 
-]) <Erklaerung.pdf, id=162, 597.23125pt x 845.1575pt>
+]) <Erklaerung.pdf, id=175, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf>
@@ -872,7 +898,7 @@ Package pdftex.def Info: Erklaerung.pdf used on input line 91.
  [9
 
 ]
-<Erklaerung.pdf, id=175, page=1, 597.23125pt x 845.1575pt>
+<Erklaerung.pdf, id=188, page=1, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
@@ -904,14 +930,14 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 93.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 93.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 93.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: 2970A2F2C18EE5C2B056FF6CC494C1F8;698.
+(rerunfilecheck)             Checksum: 58549D331805CD716A9CD95919725513;758.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 93.
  ) 
 Here is how much of TeX's memory you used:
- 19136 strings out of 494985
- 332386 string characters out of 6180357
- 425961 words of memory out of 5000000
- 21870 multiletter control sequences out of 15000+600000
+ 19167 strings out of 494985
+ 333396 string characters out of 6180357
+ 426738 words of memory out of 5000000
+ 21890 multiletter control sequences out of 15000+600000
  9015 words of font info for 34 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  56i,18n,59p,420b,796s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -932,10 +958,10 @@ are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/te
 xmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on thesis.pdf (13 pages, 246611 bytes).
+Output written on thesis.pdf (13 pages, 636644 bytes).
 PDF statistics:
- 269 PDF objects out of 1000 (max. 8388607)
- 223 compressed objects within 3 object streams
- 45 named destinations out of 1000 (max. 500000)
- 129 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 283 PDF objects out of 1000 (max. 8388607)
+ 234 compressed objects within 3 object streams
+ 50 named destinations out of 1000 (max. 500000)
+ 152 words of extra memory for PDF output out of 10000 (max. 10000000)
 
