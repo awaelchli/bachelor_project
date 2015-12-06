@@ -81,7 +81,7 @@ classdef AbstractPropagationMatrix < handle
             I = 1 : maskSize(1);
             J = sub2ind(this.lightFieldSubscriptRange, angularIndicesY(:), angularIndicesX(:), pixelIndicesY(:), pixelIndicesX(:));
             S = ones(size(I));
-            M = sparse(I, J, S, maskSize(1), maskSize(2));
+            M = logical(sparse(I, J, S, maskSize(1), maskSize(2)));
         end
         
     end

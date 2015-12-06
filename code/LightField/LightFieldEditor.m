@@ -186,7 +186,7 @@ classdef LightFieldEditor < handle
         end
         
         function loadDataFromImageCollection(this)
-            this.lightFieldData = zeros([this.resolution, this.channels]);
+            this.lightFieldData = zeros([this.resolution, this.channels], 'single');
             angularSlicesY = this.sliceIndices{LightField.angularDimensions(1)};
             angularSlicesX = this.sliceIndices{LightField.angularDimensions(2)};
             spatialSlicesY = this.sliceIndices{LightField.spatialDimensions(1)};
