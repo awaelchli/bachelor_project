@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.2)  3 DEC 2015 18:57
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.2)  7 DEC 2015 10:42
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -835,7 +835,7 @@ File: ../Figures/epi_1x500x1000x1000/overview.png Graphic file (type png)
 <use ../Figures/epi_1x500x1000x1000/overview.png>
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/overview.png used on in
 put line 126.
-(pdftex.def)             Requested size: 89.75159pt x 55.20126pt.
+(pdftex.def)             Requested size: 84.13063pt x 51.7479pt.
 
 <../Figures/epi_1x500x1000x1000/scanY=379.png, id=123, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=379.png Graphic file (type png)
@@ -843,7 +843,7 @@ File: ../Figures/epi_1x500x1000x1000/scanY=379.png Graphic file (type png)
 <use ../Figures/epi_1x500x1000x1000/scanY=379.png>
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=379.png used on i
 nput line 134.
-(pdftex.def)             Requested size: 110.39752pt x 55.20126pt.
+(pdftex.def)             Requested size: 103.49002pt x 51.7479pt.
 
 <../Figures/epi_1x500x1000x1000/scanY=641.png, id=124, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=641.png Graphic file (type png)
@@ -851,7 +851,7 @@ File: ../Figures/epi_1x500x1000x1000/scanY=641.png Graphic file (type png)
 <use ../Figures/epi_1x500x1000x1000/scanY=641.png>
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=641.png used on i
 nput line 142.
-(pdftex.def)             Requested size: 110.39752pt x 55.20126pt.
+(pdftex.def)             Requested size: 103.49002pt x 51.7479pt.
  [4 <../Figures/epi_1x500x1000x1000/overview.png (PNG copy)> <../Figures/epi_1x
 500x1000x1000/scanY=379.png (PNG copy)> <../Figures/epi_1x500x1000x1000/scanY=6
 41.png (PNG copy)>]) [5]
@@ -936,7 +936,7 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 93.
 Here is how much of TeX's memory you used:
  19167 strings out of 494985
  333396 string characters out of 6180357
- 426738 words of memory out of 5000000
+ 426736 words of memory out of 5000000
  21890 multiletter control sequences out of 15000+600000
  9015 words of font info for 34 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
@@ -958,7 +958,7 @@ are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/te
 xmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on thesis.pdf (13 pages, 636644 bytes).
+Output written on thesis.pdf (13 pages, 636636 bytes).
 PDF statistics:
  283 PDF objects out of 1000 (max. 8388607)
  234 compressed objects within 3 object streams
