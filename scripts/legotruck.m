@@ -20,11 +20,11 @@ lightField = editor.getPerspectiveLightField();
 
 numberOfLayers = 5;
 attenuatorThickness = actualThickness;
-layerResolution = round( 1 * lightField.spatialResolution );
+layerResolution = round( 3 * lightField.spatialResolution );
 attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
 resamplingPlane = SensorPlane(round(1 * layerResolution), attenuatorSize, attenuator.layerPositionZ(1));
-rec = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
+rec = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane);
 
 
 %% Back projection P^T * LF
@@ -49,7 +49,7 @@ rec.evaluation.displayLayers(1 : attenuator.numberOfLayers);
 
 % For the reconstruction, use a propagation matrix that projects from the sensor plane instead of the sampling plane
 resamplingPlane2 = SensorPlane(1 * layerResolution, attenuatorSize, lightField.sensorPlane.z);
-rec2 = ReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
+rec2 = FastReconstructionForResampledLF(lightField, attenuator, resamplingPlane2);
 rec2.constructPropagationMatrix();
 
 rec.usePropagationMatrixForReconstruction(rec2.propagationMatrix);

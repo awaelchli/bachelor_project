@@ -84,7 +84,7 @@ classdef LightFieldEditor < handle
             this.input.resizeScale = resizeScale;
             
             % Load the first image to get the spatial resolution and color channels
-            firstImage = im2double(imread([inputFolder imageList(1).name]));
+            firstImage = im2single(imread([inputFolder imageList(1).name]));
             this.input.spatialResolution = [size(firstImage, 1), size(firstImage, 2)];
             this.input.channels = size(firstImage, 3);
             
@@ -186,7 +186,7 @@ classdef LightFieldEditor < handle
         end
         
         function loadDataFromImageCollection(this)
-            this.lightFieldData = zeros([this.resolution, this.channels]);
+            this.lightFieldData = zeros([this.resolution, this.channels], 'single');
             angularSlicesY = this.sliceIndices{LightField.angularDimensions(1)};
             angularSlicesX = this.sliceIndices{LightField.angularDimensions(2)};
             spatialSlicesY = this.sliceIndices{LightField.spatialDimensions(1)};
@@ -200,7 +200,7 @@ classdef LightFieldEditor < handle
                     
                     imageIndex = (angularSlicesY(y) - 1) * this.input.angularResolution(2) + angularSlicesX(x);
                     
-                    image = im2double(imread([this.input.folder imageList(imageIndex).name]));
+                    image = im2single(imread([this.input.folder imageList(imageIndex).name]));
                     image = imresize(image, this.input.resizeScale, LightFieldEditor.resizeInterpolationMethod);
                     image = image(spatialSlicesY, spatialSlicesX, channelSlices);
                     this.lightFieldData(y, x, :, :, :) = image;
