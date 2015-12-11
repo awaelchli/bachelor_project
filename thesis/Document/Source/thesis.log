@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.2)  10 DEC 2015 11:27
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Debian) (format=pdflatex 2014.6.2)  11 DEC 2015 10:08
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -627,10 +627,150 @@ File: tikzlibraryarrows.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
 File: pgflibraryarrows.code.tex 2008/10/27 v2.10 (rcs-revision 1.9)
 \arrowsize=\dimen181
 )))
+(/usr/share/texlive/texmf-dist/tex/latex/pgfplots/pgfplots.sty
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.revision.tex)
+Package: pgfplots 2013/10/03 v1.9 Data Visualization (1.9)
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotscore.code.tex
+\t@pgfplots@toka=\toks37
+\t@pgfplots@tokb=\toks38
+\t@pgfplots@tokc=\toks39
+\pgfplots@tmpa=\dimen182
+\c@pgfplots@coordindex=\count149
+\c@pgfplots@scanlineindex=\count150
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/sys/pgfplotssysgeneric.code
+.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/libs/pgfplotslibrary.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_loader.code.tex
+Package pgfplots: loading complementary code for your PGF version...
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_misc.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_pgfkeys.code.tex
+\pgfkeys@pathtoks=\toks40
+\pgfkeys@temptoks=\toks41
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_pgfkeysfiltered.code.tex
+\pgfkeys@tmptoks=\toks42
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_pgfmathfloat.code.tex
+\c@pgfmathroundto@lastzeros=\count151
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_pgflibraryplothandlers.code.tex
+File: pgflibraryplothandlers.code.tex 2012/09/11 v2.10 (rcs-revision 1.17)
+\pgf@plot@mark@count=\count152
+\pgfplotmarksize=\dimen183
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_pgflibraryfpu.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_pgfcorescopes.code.tex
+File: pgfcorescopes.code.tex 2012/11/30  (rcs-revision 1.38)
+\pgfpic=\box42
+\pgf@hbox=\box43
+\pgf@layerbox@main=\box44
+\pgf@picture@serial@count=\count153
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/oldpgfcompatib/pgfplotsoldp
+gfsupp_pgfcorelayers.code.tex
+File: pgfcorelayers.code.tex 2012/11/07  (rcs-revision 1.5)
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotsutil.code.tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotslists
+tructure.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotslists
+tructureext.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotsarray
+.code.tex
+\c@pgfplotsarray@tmp=\count154
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotsmatri
+x.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/numtable/pgfplotstableshare
+d.code.tex
+\c@pgfplotstable@counta=\count155
+\t@pgfplotstable@a=\toks43
+)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/liststructure/pgfplotsdeque
+.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotsbinary.code.te
+x
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotsbinary.data.co
+de.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotsutil.verb.code
+.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/libs/pgflibrarypgfplots.sur
+fshading.code.tex
+\c@pgfplotslibrarysurf@no=\count156
+
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/sys/pgflibrarypgfplots.surf
+shading.pgfsys-pdftex.def)))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotscolormap.code.
+tex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/util/pgfplotscolor.code.tex
+))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotsstackedplots.code.t
+ex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotsplothandlers.code.t
+ex
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotsmeshplothandler.cod
+e.tex))
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.scaling.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotscoordprocessing.cod
+e.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.errorbars.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.markers.code.tex
+) (/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplotsticks.code.tex)
+(/usr/share/texlive/texmf-dist/tex/generic/pgfplots/pgfplots.paths.code.tex)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarydecor
+ations.code.tex
+(/usr/share/texmf/tex/generic/pgf/modules/pgfmoduledecorations.code.tex
+\pgfdecoratedcompleteddistance=\dimen184
+\pgfdecoratedremainingdistance=\dimen185
+\pgfdecoratedinputsegmentcompleteddistance=\dimen186
+\pgfdecoratedinputsegmentremainingdistance=\dimen187
+\pgf@decorate@distancetomove=\dimen188
+\pgf@decorate@repeatstate=\count157
+\pgfdecorationsegmentamplitude=\dimen189
+\pgfdecorationsegmentlength=\dimen190
+)
+\tikz@lib@dec@box=\box45
+)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarydecor
+ations.pathmorphing.code.tex
+(/usr/share/texmf/tex/generic/pgf/libraries/decorations/pgflibrarydecorations.p
+athmorphing.code.tex))
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibrarydecor
+ations.pathreplacing.code.tex
+(/usr/share/texmf/tex/generic/pgf/libraries/decorations/pgflibrarydecorations.p
+athreplacing.code.tex))
+\pgfplots@numplots=\count158
+\pgfplots@xmin@reg=\dimen191
+\pgfplots@xmax@reg=\dimen192
+\pgfplots@ymin@reg=\dimen193
+\pgfplots@ymax@reg=\dimen194
+\pgfplots@zmin@reg=\dimen195
+\pgfplots@zmax@reg=\dimen196
+)
+(/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryplotm
+arks.code.tex
+File: tikzlibraryplotmarks.code.tex 2008/01/09 v2.10 (rcs-revision 1.1)
+
+(/usr/share/texmf/tex/generic/pgf/libraries/pgflibraryplotmarks.code.tex
+File: pgflibraryplotmarks.code.tex 2010/10/15 v2.10 (rcs-revision 1.12)
+)))
 (/usr/share/texmf/tex/generic/pgf/frontendlayer/tikz/libraries/tikzlibraryinter
 sections.code.tex
 (/usr/share/texmf/tex/generic/pgf/libraries/pgflibraryintersections.code.tex
-\pgf@intersect@solutions=\count149
+\pgf@intersect@solutions=\count159
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/standalone/standalone.sty
 Package: standalone 2012/09/15 v1.1b Package to include TeX sub-files with prea
@@ -640,9 +780,9 @@ mbles
 Package: xkeyval 2012/10/14 v2.6b package option processing (HA)
 
 (/usr/share/texlive/texmf-dist/tex/generic/xkeyval/xkeyval.tex
-\XKV@toks=\toks37
-\XKV@tempa@toks=\toks38
-\XKV@depth=\count150
+\XKV@toks=\toks44
+\XKV@tempa@toks=\toks45
+\XKV@depth=\count160
 File: xkeyval.tex 2012/10/14 v2.6b key=value parser (HA)
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/currfile/currfile.sty
@@ -652,7 +792,7 @@ nt input file
 (/usr/share/texlive/texmf-dist/tex/latex/filehook/filehook.sty
 Package: filehook 2011/10/12 v0.5d Hooks for input files
 )
-\c@currfiledepth=\count151
+\c@currfiledepth=\count161
 )
 (/usr/share/texlive/texmf-dist/tex/latex/gincltex/gincltex.sty
 (/usr/share/texlive/texmf-dist/tex/latex/svn-prov/svn-prov.sty
@@ -672,34 +812,34 @@ Package: trimclip 2012/05/16 v1.0 Trim and clip general TeX material
 
 (/usr/share/texlive/texmf-dist/tex/latex/collectbox/collectbox.sty
 Package: collectbox 2012/05/17 v0.4b Collect macro arguments as boxes
-\collectedbox=\box42
+\collectedbox=\box46
 )
-\tc@llx=\dimen182
-\tc@lly=\dimen183
-\tc@urx=\dimen184
-\tc@ury=\dimen185
+\tc@llx=\dimen197
+\tc@lly=\dimen198
+\tc@urx=\dimen199
+\tc@ury=\dimen200
 Package trimclip Info: Using driver 'tc-pdftex.def'.
 
 (/usr/share/texlive/texmf-dist/tex/latex/adjustbox/tc-pdftex.def
 File: tc-pdftex.def 2012/05/13 v1.0 Clipping driver for pdftex
 ))
-\adjbox@Width=\dimen186
-\adjbox@Height=\dimen187
-\adjbox@Depth=\dimen188
-\adjbox@Totalheight=\dimen189
+\adjbox@Width=\dimen201
+\adjbox@Height=\dimen202
+\adjbox@Depth=\dimen203
+\adjbox@Totalheight=\dimen204
 
 (/usr/share/texlive/texmf-dist/tex/latex/ifoddpage/ifoddpage.sty
 Package: ifoddpage 2011/09/13 v1.0 Conditionals for odd/even page detection
-\c@checkoddpage=\count152
+\c@checkoddpage=\count162
 )
 (/usr/share/texlive/texmf-dist/tex/latex/varwidth/varwidth.sty
 Package: varwidth 2009/03/30 ver 0.92;  Variable-width minipages
-\@vwid@box=\box43
-\sift@deathcycles=\count153
-\@vwid@loff=\dimen190
-\@vwid@roff=\dimen191
+\@vwid@box=\box47
+\sift@deathcycles=\count163
+\@vwid@loff=\dimen205
+\@vwid@roff=\dimen206
 ))
-\gincltex@box=\box44
+\gincltex@box=\box48
 )
 (/usr/share/texlive/texmf-dist/tex/latex/filemod/filemod-expmin.sty
 Package: filemod-expmin 2011/09/19 v1.2 Get and compare file modification times
@@ -709,34 +849,34 @@ Package: filemod-expmin 2011/09/19 v1.2 Get and compare file modification times
 (./Chapters/appendix.aux))
 \openout1 = `thesis.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 33.
-LaTeX Font Info:    ... okay on input line 33.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 34.
+LaTeX Font Info:    ... okay on input line 34.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count154
-\scratchdimen=\dimen192
-\scratchbox=\box45
-\nofMPsegments=\count155
-\nofMParguments=\count156
-\everyMPshowfont=\toks39
-\MPscratchCnt=\count157
-\MPscratchDim=\dimen193
-\MPnumerator=\count158
-\makeMPintoPDFobject=\count159
-\everyMPtoPDFconversion=\toks40
+\scratchcounter=\count164
+\scratchdimen=\dimen207
+\scratchbox=\box49
+\nofMPsegments=\count165
+\nofMParguments=\count166
+\everyMPshowfont=\toks46
+\MPscratchCnt=\count167
+\MPscratchDim=\dimen208
+\MPnumerator=\count168
+\makeMPintoPDFobject=\count169
+\everyMPtoPDFconversion=\toks47
 ) (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
@@ -752,8 +892,8 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\AtBeginShipoutBox=\box46
-Package hyperref Info: Link coloring OFF on input line 33.
+\AtBeginShipoutBox=\box50
+Package hyperref Info: Link coloring OFF on input line 34.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
@@ -761,25 +901,32 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/share/texlive/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count160
+\c@section@level=\count170
 )
-LaTeX Info: Redefining \ref on input line 33.
-LaTeX Info: Redefining \pageref on input line 33.
-LaTeX Info: Redefining \nameref on input line 33.
+LaTeX Info: Redefining \ref on input line 34.
+LaTeX Info: Redefining \pageref on input line 34.
+LaTeX Info: Redefining \nameref on input line 34.
 
 (./thesis.out) (./thesis.out)
 \@outlinefile=\write6
 \openout6 = `thesis.out'.
 
-\c@lstlisting=\count161
- ABD: EveryShipout initializing macros [1
+\c@lstlisting=\count171
+ ABD: EveryShipout initializing macros
+
+Package pgfplots Warning: running in backwards compatibility mode (unsuitable t
+ick labels; missing features). Consider writing \pgfplotsset{compat=1.9} into y
+our preamble.
+ on input line 34.
+
+[1
 
 {/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]pdfTeX warning (ext4): dest
 ination with the same identifier (name{page.i}) has been already used, duplicat
 e ignored
 <to be read again> 
                    \relax 
-l.59 \tableofcontents
+l.60 \tableofcontents
                       [1] (./thesis.toc
 LaTeX Font Info:    Try loading font information for U+msa on input line 2.
 
@@ -836,31 +983,35 @@ File: ../Figures/epi_1x500x1000x1000/overview.png Graphic file (type png)
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/overview.png used on in
 put line 126.
 (pdftex.def)             Requested size: 84.13063pt x 51.7479pt.
-
+ (../Figures/epi_dice_1.tex
 <../Figures/epi_1x500x1000x1000/scanY=379.png, id=123, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=379.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=379.png>
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=379.png used on i
-nput line 134.
-(pdftex.def)             Requested size: 103.49002pt x 51.7479pt.
-
+nput line 11.
+(pdftex.def)             Requested size: 194.98764pt x 97.4938pt.
+)
 <../Figures/epi_1x500x1000x1000/scanY=641.png, id=124, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=641.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=641.png>
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=641.png used on i
-nput line 142.
+nput line 143.
 (pdftex.def)             Requested size: 103.49002pt x 51.7479pt.
- [4 <../Figures/epi_1x500x1000x1000/overview.png (PNG copy)> <../Figures/epi_1x
-500x1000x1000/scanY=379.png (PNG copy)> <../Figures/epi_1x500x1000x1000/scanY=6
-41.png (PNG copy)>]) [5]
+
+Overfull \hbox (8.22682pt too wide) in paragraph at lines 126--147
+[][]  [][]
+ []
+
+[4]) [5 <../Figures/epi_1x500x1000x1000/overview.png (PNG copy)> <../Figures/ep
+i_1x500x1000x1000/scanY=379.png (PNG copy)> <../Figures/epi_1x500x1000x1000/sca
+nY=641.png (PNG copy)>] [6]
 \openout2 = `Chapters/appendix.aux'.
 
-
-(./Chapters/appendix.tex
+ (./Chapters/appendix.tex
 Appendix A.
-) [6
+) [7
 
 
 
@@ -869,7 +1020,7 @@ Appendix A.
 \tf@lot=\write8
 \openout8 = `thesis.lot'.
 
- [7
+ [8
 
 
 
@@ -883,64 +1034,64 @@ ion. (b) Re-parameterization
 \tf@lof=\write9
 \openout9 = `thesis.lof'.
 
- (./thesis.bbl [8
+ (./thesis.bbl [9
 
-]) <Erklaerung.pdf, id=179, 597.23125pt x 845.1575pt>
+]) <Erklaerung.pdf, id=183, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf>
-Package pdftex.def Info: Erklaerung.pdf used on input line 91.
+Package pdftex.def Info: Erklaerung.pdf used on input line 92.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
 File: Erklaerung.pdf Graphic file (type pdf)
  <use Erklaerung.pdf>
-Package pdftex.def Info: Erklaerung.pdf used on input line 91.
+Package pdftex.def Info: Erklaerung.pdf used on input line 92.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
- [9
+ [10
 
 ]
-<Erklaerung.pdf, id=192, page=1, 597.23125pt x 845.1575pt>
+<Erklaerung.pdf, id=197, page=1, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
-Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 91.
+Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
 File: Erklaerung.pdf Graphic file (type pdf)
  <use Erklaerung.pdf, page 1>
-Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 91.
+Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
-Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 91.
+Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
 File: Erklaerung.pdf Graphic file (type pdf)
  <use Erklaerung.pdf, page 1>
-Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 91.
+Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
-Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 91.
+Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 92.
 (pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
- [10 <./Erklaerung.pdf>]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 93.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 93.
+ [11 <./Erklaerung.pdf>]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 94.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 94.
  (./thesis.aux
 (./Chapters/chapter1.aux) (./Chapters/chapter2.aux) (./Chapters/appendix.aux))
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 93.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 93.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 94.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 94.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
 (rerunfilecheck)             Checksum: 58549D331805CD716A9CD95919725513;758.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 93.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 94.
  ) 
 Here is how much of TeX's memory you used:
- 19167 strings out of 494985
- 333396 string characters out of 6180357
- 429842 words of memory out of 5000000
- 21890 multiletter control sequences out of 15000+600000
+ 26895 strings out of 494985
+ 581401 string characters out of 6180357
+ 746435 words of memory out of 5000000
+ 29466 multiletter control sequences out of 15000+600000
  9015 words of font info for 34 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 56i,18n,59p,472b,796s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 65i,18n,105p,732b,2268s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/share/tex
@@ -958,10 +1109,10 @@ are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/tex
 live/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></usr/share/texlive/t
 exmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/share/texlive/te
 xmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on thesis.pdf (13 pages, 637358 bytes).
+Output written on thesis.pdf (14 pages, 638775 bytes).
 PDF statistics:
- 287 PDF objects out of 1000 (max. 8388607)
- 238 compressed objects within 3 object streams
- 50 named destinations out of 1000 (max. 500000)
+ 291 PDF objects out of 1000 (max. 8388607)
+ 241 compressed objects within 3 object streams
+ 51 named destinations out of 1000 (max. 500000)
  152 words of extra memory for PDF output out of 10000 (max. 10000000)
 
