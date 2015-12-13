@@ -84,7 +84,7 @@ The angles of the rays in a light field captured by perspective projections are 
 For a camera light field, typically it is expected that
 \begin{itemize}
 	\item All cameras are placed at grid positions in $G_{uv}$ on the same plane, called the $(u, v)$-plane, 
-	\item The optical axes of the cameras are parallel to the $(u, v)$-plane, 
+	\item The optical axes of the cameras are orthogonal to the $(u, v)$-plane, 
 	\item All cameras have the same intrinsic parameters (e.g. focal length).
 \end{itemize}
 In this case, the focal planes of all cameras coincide with a common focal plane, the $(s, t)$-plane.
@@ -194,7 +194,7 @@ Now, $I$ can be replaced with the light field $L$ and the right hand side of equ
 	\mu(p) \delta ( a \times (p - b) ) \, \mathrm{d}p.
 \end{equation}
 Here, $\delta$ denotes the Dirac delta function on $\mathbb{R}^3$ and $\mu$ is zero outside the boundaries of the slab. 
-This means that integrand is only non-zero for points on the ray with coordinates $(u, v, s, t)$.
+This means that the integrand is only non-zero for points on the ray with coordinates $(u, v, s, t)$.
 
 Combining equation~\ref{eq:beer_lambert_law} and~\ref{eq:radon_transform} gives the light field emmitted by the attenuator.
 The goal is to produce such an attenuation display that emmits a given target light field.
