@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  14 DEC 2015 20:39
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  14 DEC 2015 21:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -972,7 +972,7 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (../Figures/perspective-projection-shift.tex)
 (../Figures/perspective-projection-sheared.tex) [4]
 (../Figures/epi_dice_overview.tex
-<../Figures/epi_1x500x1000x1000/overview.png, id=140, 1003.75pt x 617.30624pt>
+<../Figures/epi_1x500x1000x1000/overview.png, id=141, 1003.75pt x 617.30624pt>
 File: ../Figures/epi_1x500x1000x1000/overview.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/overview.png>
@@ -980,7 +980,7 @@ Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/overview.png used on in
 put line 25.
 (pdftex.def)             Requested size: 92.3553pt x 56.79851pt.
 ) (../Figures/epi_dice_1.tex
-<../Figures/epi_1x500x1000x1000/scanY=379.png, id=141, 1003.75pt x 501.875pt>
+<../Figures/epi_1x500x1000x1000/scanY=379.png, id=142, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=379.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=379.png>
@@ -988,7 +988,7 @@ Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=379.png used on i
 nput line 24.
 (pdftex.def)             Requested size: 92.3553pt x 46.17764pt.
 ) (../Figures/epi_dice_2.tex
-<../Figures/epi_1x500x1000x1000/scanY=641.png, id=142, 1003.75pt x 501.875pt>
+<../Figures/epi_1x500x1000x1000/scanY=641.png, id=143, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=641.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=641.png>
@@ -1028,7 +1028,7 @@ ion. (b) Re-parameterization
 
  (./thesis.bbl [9
 
-]) <Erklaerung.pdf, id=188, 597.23125pt x 845.1575pt>
+]) <Erklaerung.pdf, id=189, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf>
@@ -1041,7 +1041,7 @@ Package pdftex.def Info: Erklaerung.pdf used on input line 98.
  [10
 
 ]
-<Erklaerung.pdf, id=201, page=1, 597.23125pt x 845.1575pt>
+<Erklaerung.pdf, id=202, page=1, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
@@ -1100,10 +1100,10 @@ blic/amsfonts/cm/cmsy7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmti10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbo
 ls/msbm10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/m
 sbm7.pfb>
-Output written on thesis.pdf (14 pages, 627911 bytes).
+Output written on thesis.pdf (14 pages, 628117 bytes).
 PDF statistics:
- 292 PDF objects out of 1000 (max. 8388607)
- 243 compressed objects within 3 object streams
+ 293 PDF objects out of 1000 (max. 8388607)
+ 244 compressed objects within 3 object streams
  52 named destinations out of 1000 (max. 500000)
  152 words of extra memory for PDF output out of 10000 (max. 10000000)
 

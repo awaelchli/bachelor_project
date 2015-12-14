@@ -130,8 +130,8 @@ The EPIs shown in figures~\ref{fig:epi_1x500x1000x1000_scanline1} and ~\ref{fig:
 
 The shift in pixels of projections of the same point $P$ in consecutive images is called the (pixel) \textbf{disparity} $D$.
 Following the projection of the point $P$ in every image corresponds to a line in the EPI with slope $1 / D$.
-This means that points close to the camera will appear as a lines in the EPI with steeper slope than points farther away.
-
+\cite{EPI} refer to this line as the \textbf{feature path}.
+This means that points farther away from the camera will appear as a feature path in the EPI with steeper slope than points close to the camera.
 
 \begin{figure}[tb]
 	\subfigure[]{
@@ -153,8 +153,8 @@ This means that points close to the camera will appear as a lines in the EPI wit
 	}
 	\caption{(a) Raw 3D light field rendered from 500 positions along a horizontal baseline.
 				 Two scanlines are extracted from every image. 
-			 (b) The slope of the epipolar lines from blue and green dice are larger than those from the red die.
-			 (c) Epipolar lines of the yellow die have an even larger slope, indicating greater depth.}
+			 (b) The feature paths of the blue and green dice have a steeper slope than those of the red die.
+			 (c) Feature paths of the yellow die have an even steeper slope, indicating greater depth.}
 	\label{fig:epi_example_perspective}
 \end{figure}
 
