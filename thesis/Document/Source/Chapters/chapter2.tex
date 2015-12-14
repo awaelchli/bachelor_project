@@ -115,6 +115,15 @@ As demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera 
 
 
 \section{Visualization}
+%TODO Show how rectification affects EPI
+
+The epipolar-plane image (EPI) allows for a very intuitive visualization of depth from a 4D light field.
+It was first defined by~\cite{EPI} as follows.
+Consider a point $P$ in 3D space and a pair of cameras with the optical axis pointing in the same direcion.
+The plane passing through $P$ and the two centers of projection is called the \textbf{epipolar plane}.
+The epipolar plane projects to a line on each of the camera image planes, named the \textbf{epipolar line}.
+This line represents a constraint for the projection of $P$ in each of the images and it is used to solve the correspondance problem in computer vision.
+The notion of 
 
 \begin{figure}[htb]
 	\subfigure[]{
@@ -145,7 +154,7 @@ As demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera 
 
 
 \section{Light Field Tomography}
-% Derivation according to Wetzstein
+%TODO: Derivation according to Wetzstein
 % Explain linearity in log domain
 % Mention other tomographic projection types
 % SART and ART solvers

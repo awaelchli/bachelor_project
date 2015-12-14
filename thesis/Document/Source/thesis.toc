@@ -4,7 +4,7 @@
 \contentsline {section}{\numberline {2.1}The Plenoptic Function and the Light Field}{2}{section.2.1}
 \contentsline {section}{\numberline {2.2}Light Field Acquisition}{3}{section.2.2}
 \contentsline {section}{\numberline {2.3}Visualization}{4}{section.2.3}
-\contentsline {section}{\numberline {2.4}Light Field Tomography}{5}{section.2.4}
+\contentsline {section}{\numberline {2.4}Light Field Tomography}{4}{section.2.4}
 \contentsline {section}{\numberline {2.5}Spectral Analysis}{5}{section.2.5}
 \contentsline {chapter}{\numberline {A}ap1}{6}{appendix.A}
 \contentsline {section}{\numberline {A.1}apsec1}{6}{section.A.1}
