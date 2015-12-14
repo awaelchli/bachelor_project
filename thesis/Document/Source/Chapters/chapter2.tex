@@ -123,9 +123,17 @@ Consider a point $P$ in 3D space and a pair of cameras with the optical axis poi
 The plane passing through $P$ and the two centers of projection is called the \textbf{epipolar plane}.
 The epipolar plane projects to a line on each of the camera image planes, named the \textbf{epipolar line}.
 This line represents a constraint for the projection of $P$ in each of the images and it is used to solve the correspondance problem in computer vision.
-The notion of 
+The notion of epipolar lines can be directly applied to a multiple camera setup.
+In figure~\ref{fig:epi_example_perspective}, a synthetic scene is rendered in 500 different positions along a horizontal baseline.
+Since the camera movement is in horizontal direction only, the epipolar lines correspond to a fixed pixel row in each image.
+The EPIs shown in figures~\ref{fig:epi_1x500x1000x1000_scanline1} and ~\ref{fig:epi_1x500x1000x1000_scanline2} are created by collecting the chosen pixel row (scanline) in every image and stacking it up.
 
-\begin{figure}[htb]
+The shift in pixels of projections of the same point $P$ in consecutive images is called the (pixel) \textbf{disparity} $D$.
+Following the projection of the point $P$ in every image corresponds to a line in the EPI with slope $1 / D$.
+This means that points close to the camera will appear as a lines in the EPI with steeper slope than points farther away.
+
+
+\begin{figure}[tb]
 	\subfigure[]{
 		\centering
 		\input{../Figures/epi_dice_overview}
@@ -141,7 +149,7 @@ The notion of
 	\subfigure[]{
 		\centering
 		\input{../Figures/epi_dice_2.tex}
-		\label{fig:fig:epi_1x500x1000x1000_scanline2}
+		\label{fig:epi_1x500x1000x1000_scanline2}
 	}
 	\caption{(a) Raw 3D light field rendered from 500 positions along a horizontal baseline.
 				 Two scanlines are extracted from every image. 
