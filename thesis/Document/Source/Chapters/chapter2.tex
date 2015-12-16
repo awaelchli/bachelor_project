@@ -216,7 +216,7 @@ This means that the integrand is only non-zero for points on the ray with coordi
 Combining equation~\ref{eq:beer_lambert_law} and~\ref{eq:radon_transform} gives the light field emitted by the attenuator.
 The goal is to produce such an attenuation display that emits a given target light field.
 
-In computed tomography, the two-dimensional \textbf{radon transform} of a real valued function $f(x, y)$ of compact support is defined as
+In computed tomography, the two-dimensional \textbf{Radon transform} of a real valued function $f(x, y)$ of compact support is defined as
 \begin{equation}
 	p(\rho, \theta) = 	\int \limits_{-\infty}^{\infty} 
 						\int \limits_{-\infty}^{\infty}
@@ -225,8 +225,14 @@ In computed tomography, the two-dimensional \textbf{radon transform} of a real v
 						\mathrm{d}y,
 \end{equation}
 where $(\rho, \theta) \in \mathbb{R} \times \left(- \frac{\pi}{2}, \frac{\pi}{2}\right)$ defines a ray as shown in figure~\ref{fig:radon_transform_2D_sketch}.
-Because the radon transform is essentially a line integral, it can be generalized to three or more dimensions.
-Adapting the notation from the two-plane parameterization, the radon transform of the attenuation map $\mu$ along ray $\mathcal{R}$ becomes
+Because the Radon transform is essentially a line integral, it can be generalized to three or more dimensions.
+\begin{figure}[tb]
+	\centering
+	\input{../Figures/radon_transform_2D.tex}
+	\caption{The 2D Radon transform of the ray $(\rho, \theta)$ passing a material with density $f(x, y)$.}
+	\label{fig:radon_transform_2D_sketch}
+\end{figure}
+Adapting the notation from the two-plane parameterization, the Radon transform of the attenuation map $\mu$ along ray $\mathcal{R}$ becomes
 \begin{equation}
 	p(u, v, s, t) = 	\int \limits_{-\infty}^{\infty} 
 						\int \limits_{-\infty}^{\infty}
@@ -241,14 +247,7 @@ This shows that
 \begin{equation}
 	\bar{L}(u, v, s, t) = -p(u, v, s, t), 
 \end{equation}
-or in other words:
-
-\begin{figure}[tb]
-	\centering
-	\input{../Figures/radon_transform_2D.tex}
-	\caption{The 2D radon transform of the ray $(\rho, \theta)$ passing a material with density $f(x, y)$.}
-	\label{fig:radon_transform_2D_sketch}
-\end{figure}
+or in the words of~\cite{WetzsteinTomo}: \say{The logarithm of the emitted light field is equivalent to the negative Radon transform of the attenuation map.}
 
 
 \section{Spectral Analysis}
