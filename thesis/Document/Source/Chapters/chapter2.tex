@@ -20,7 +20,7 @@ The radiance along a line is constant in free space and so, the 5D plenoptic fun
 Ignoring this redundancy leads to the equivalent 4D parameterization of the ray space. 
 \cite{LightFieldRendering} propose a parameterization by two parallel planes, as seen in figure~\ref{fig:LightFieldParametrization}, where the coordinates of the lines (rays) are given by the intersections with the two planes.
 The \textbf{4D light field} $L(u, v, s, t)$ is therefore defined as the radiance along the line intersecting the two planes at coordinates $(u, v)$ and $(s, t)$.
-This two plane parameterization of the light field is the most common one seen in literature, but there are many ways to choose a parameterization.
+This two-plane parameterization of the light field is the most common one seen in literature, but there are many ways to choose a parameterization.
 For instance, one can use a plane and two angles to define each ray passing this plane, which would result in a light field $L(u, v, \theta, \phi)$ where $\theta, \phi \in (0, \pi)$.
 
 \begin{figure}
@@ -204,19 +204,52 @@ A point $p = (x, y, z)^T$ is part of the ray $\mathcal{R}$ if and only if
 \end{align} 
 where $\times$ denotes the cross product.
 Now, $I$ can be replaced with the light field $L$ and the right hand side of equation~\ref{eq:log_beer_lambert_law} can be written as an integral over~$\mathbb{R}^3$:
-\begin{equation}\label{eq:radon_transform}
-	\bar{L}(u, v, s, t) = 
-	%\int \limits_{-\infty}^{\infty} \int \limits_{-\infty}^{\infty} \int \limits_{-\infty}^{\infty}
-	-\int_{\mathbb{R}^3}
-	\mu(p) \delta ( a \times (p - b) ) \, \mathrm{d}p.
+\begin{equation}\label{eq:log_lightfield_and_radon_transform}
+	\bar{L}(u, v, s, t) = 	%\int \limits_{-\infty}^{\infty} \int \limits_{-\infty}^{\infty} \int \limits_{-\infty}^{\infty}
+							-\int_{\mathbb{R}^3}
+								\mu(p) \delta ( a \times (p - b) ) \, 
+							\mathrm{d}p.
 \end{equation}
 Here, $\delta$ denotes the Dirac delta function on $\mathbb{R}^3$ and $\mu$ is zero outside the boundaries of the slab. 
 This means that the integrand is only non-zero for points on the ray with coordinates $(u, v, s, t)$.
 
-Combining equation~\ref{eq:beer_lambert_law} and~\ref{eq:radon_transform} gives the light field emmitted by the attenuator.
-The goal is to produce such an attenuation display that emmits a given target light field.
+Combining equation~\ref{eq:beer_lambert_law} and~\ref{eq:radon_transform} gives the light field emitted by the attenuator.
+The goal is to produce such an attenuation display that emits a given target light field.
 
-%TODO: Explain connection to radon transform
+In computed tomography, the two-dimensional \textbf{radon transform} of a real valued function $f(x, y)$ of compact support is defined as
+\begin{equation}
+	p(\rho, \theta) = 	\int \limits_{-\infty}^{\infty} 
+						\int \limits_{-\infty}^{\infty}
+							f(x, y) \delta (x \cos \theta - y \sin \theta - \rho) \, 
+						\mathrm{d}x \,
+						\mathrm{d}y,
+\end{equation}
+where $(\rho, \theta) \in \mathbb{R} \times \left(- \frac{\pi}{2}, \frac{\pi}{2}\right)$ defines a ray as shown in figure~\ref{fig:radon_transform_2D_sketch}.
+Because the radon transform is essentially a line integral, it can be generalized to three or more dimensions.
+Adapting the notation from the two-plane parameterization, the radon transform of the attenuation map $\mu$ along ray $\mathcal{R}$ becomes
+\begin{equation}
+	p(u, v, s, t) = 	\int \limits_{-\infty}^{\infty} 
+						\int \limits_{-\infty}^{\infty}
+						\int \limits_{-\infty}^{\infty}
+							\mu(x, y, z) \delta \left(a \times \left((x, y, z)^T - b\right) \right) \, 
+						\mathrm{d}x \,
+						\mathrm{d}y \,
+						\mathrm{d}z, 
+\end{equation}
+which is equivalent to equation~\ref{eq:log_lightfield_and_radon_transform}.
+This shows that
+\begin{equation}
+	\bar{L}(u, v, s, t) = -p(u, v, s, t), 
+\end{equation}
+or in other words:
+
+\begin{figure}[tb]
+	\centering
+	\input{../Figures/radon_transform_2D.tex}
+	\caption{The 2D radon transform of the ray $(\rho, \theta)$ passing a material with density $f(x, y)$.}
+	\label{fig:radon_transform_2D_sketch}
+\end{figure}
+
 
 \section{Spectral Analysis}
 % Introduction to fourier transform
