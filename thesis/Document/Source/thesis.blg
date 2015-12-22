@@ -3,6 +3,7 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: thesis.aux
 A level-1 auxiliary file: Chapters/chapter1.aux
 A level-1 auxiliary file: Chapters/chapter2.aux
+A level-1 auxiliary file: Chapters/chapter3.aux
 A level-1 auxiliary file: Chapters/appendix.aux
 The style file: alphadin.bst
 Reallocated singl_function (elt_size=4) to 100 items from 50.
@@ -13,7 +14,7 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: thesis.bib
 You've used 6 entries,
             4793 wiz_defined-function locations,
-            937 strings with 7437 characters,
+            938 strings with 7458 characters,
 and the built_in function-call counts, 3873 in all, are:
 = -- 384
 > -- 133
