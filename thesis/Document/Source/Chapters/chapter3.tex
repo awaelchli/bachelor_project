@@ -121,12 +121,28 @@ However, it is still possible to find values for $\alpha$ such that the error $\
 Thus, the objective becomes
 \begin{equation} \label{eq:minimize_norm}
 	\begin{aligned}
-		& \underset{x}{\text{argmin}} & & \lVert P \alpha + \bar{L} \rVert \\
-		& \text{subject to} & & 0 \leq \alpha \leq \infty.
+		& \underset{\alpha}{\text{argmin}} 	& & \lVert P \alpha + \bar{L} \rVert ^2 \\
+		& \text{subject to} 				& & 0 \leq \alpha \leq \infty.
 	\end{aligned}
 \end{equation}
 Finally, when optimal values $\alpha$ are found, the transmittance used to fabricate the layers is obtained by calculating $e^{-\alpha}$.
 
 \section{Iterative Reconstruction}
 
+The optimization problem in equation~\ref{eq:minimize_norm} is essentially a fitting problem.
+Theoretically, it can be solved in a least squares sense using the normal equation $P^T P \alpha = P^T \bar{L}$ and by inverting the matrix $P^T P$.
+For high resolution light fields, the matrix $P$ becomes extremely large and it is unfeasible to compute the inverse of $P^T P$.
 
+In general, the approach to solve these kind of problems is to use iterative methods.
+The choice of the method depends on the type of problem and the structure of the design matrix.
+In computed tomography, a variety of iterative solvers have been developed to solve the exact same problem. 
+Among the different methods is the Simultaneous Algebraic Reconstruction Technique (\mbox{SART}) first proposed by \cite{SART}.
+
+The update rule of \mbox{SART} for iteration $k = 0, 1, 2, \dots$ is
+\begin{equation}\label{eq:SART_update_rule}
+	\alpha^{(k + 1)} = \alpha^{(k)} + \lambda C P^T R \left( \bar{L} - P \alpha^{(k)} \right), 	
+\end{equation}
+$\lambda$ is a relaxation factor.
+$R$ and $C$ denote the diagonal matrices with entries $R_{ii} = \frac{1}{r_i}$ and $C_{ii} = \frac{1}{c_i}$, where $r_i$ and $c_i$ are the sum of the elements in the \mbox{$i$-th} row and column of $P$ respectively.
+
+The convergence of SART has been studied by 

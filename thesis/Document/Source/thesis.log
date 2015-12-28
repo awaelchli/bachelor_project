@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  22 DEC 2015 23:26
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  29 DEC 2015 00:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1012,12 +1012,12 @@ Chapter 3.
 
 
 
-] (../Figures/radon_transform_2D.tex) [7]) [8]
+] (../Figures/radon_transform_2D.tex) [7] [8]) [9]
 \openout2 = `Chapters/appendix.aux'.
 
  (./Chapters/appendix.tex
 Appendix A.
-) [9
+) [10
 
 
 
@@ -1026,7 +1026,7 @@ Appendix A.
 \tf@lot=\write8
 \openout8 = `thesis.lot'.
 
- [10
+ [11
 
 
 
@@ -1040,9 +1040,9 @@ ion. (b) Re-parameterization
 \tf@lof=\write9
 \openout9 = `thesis.lof'.
 
- (./thesis.bbl [11
+ (./thesis.bbl [12
 
-]) <Erklaerung.pdf, id=232, 597.23125pt x 845.1575pt>
+]) <Erklaerung.pdf, id=241, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf>
@@ -1052,10 +1052,10 @@ File: Erklaerung.pdf Graphic file (type pdf)
  <use Erklaerung.pdf>
 Package pdftex.def Info: Erklaerung.pdf used on input line 104.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
- [12
+ [13
 
 ]
-<Erklaerung.pdf, id=244, page=1, 597.23125pt x 845.1575pt>
+<Erklaerung.pdf, id=253, page=1, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
@@ -1079,7 +1079,7 @@ File: Erklaerung.pdf Graphic file (type pdf)
 <use Erklaerung.pdf, page 1>
 Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 104.
 (pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
- [13 <./Erklaerung.pdf>]
+ [14 <./Erklaerung.pdf>]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 106.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 106.
  (./thesis.aux
@@ -1092,10 +1092,10 @@ Package rerunfilecheck Info: File `thesis.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 106.
  ) 
 Here is how much of TeX's memory you used:
- 30435 strings out of 494931
- 697676 string characters out of 6178405
- 863897 words of memory out of 5000000
- 32995 multiletter control sequences out of 15000+600000
+ 30440 strings out of 494931
+ 697734 string characters out of 6178405
+ 863895 words of memory out of 5000000
+ 32997 multiletter control sequences out of 15000+600000
  9015 words of font info for 34 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  84i,18n,377p,732b,2493s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1105,21 +1105,21 @@ live/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2014
 ist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2014/texmf-dist/fonts
 /type1/public/amsfonts/cmextra/cmex7.pfb><c:/texlive/2014/texmf-dist/fonts/type
 1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmmi7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmr10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pf
-b><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><c:/texli
-ve/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2014/tex
-mf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2014/texmf-dist/fon
-ts/type1/public/amsfonts/cm/cmsy10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/
-public/amsfonts/cm/cmsy5.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmsy7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/c
-mti10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm1
-0.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb
->
-Output written on thesis.pdf (16 pages, 656155 bytes).
+amsfonts/cm/cmmi5.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmmi7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pf
+b><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb><c:/texl
+ive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb><c:/texlive/2014/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb><c:/texlive/2014/texmf-dist/fo
+nts/type1/public/amsfonts/cm/cmr8.pfb><c:/texlive/2014/texmf-dist/fonts/type1/p
+ublic/amsfonts/cm/cmsy10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/ams
+fonts/cm/cmsy5.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/c
+msy7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb>
+<c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb><c:/
+texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
+Output written on thesis.pdf (17 pages, 666734 bytes).
 PDF statistics:
- 340 PDF objects out of 1000 (max. 8388607)
- 288 compressed objects within 3 object streams
- 64 named destinations out of 1000 (max. 500000)
+ 353 PDF objects out of 1000 (max. 8388607)
+ 299 compressed objects within 3 object streams
+ 67 named destinations out of 1000 (max. 500000)
  176 words of extra memory for PDF output out of 10000 (max. 10000000)
 

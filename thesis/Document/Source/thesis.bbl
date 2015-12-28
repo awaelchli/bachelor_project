@@ -13,6 +13,12 @@
 \newblock {In: }\emph{Computational Models of Visual Processing}  (1991), S.
   3--20
 
+\bibitem[AK84]{SART}
+\textsc{Andersen}, A.~H. ; \textsc{Kak}, A.~C.:
+\newblock Simultaneous Algebraic Reconstruction Technique ({SART}): A Superior
+  Implementation of the {ART} Algorithm.
+\newblock {In: }\emph{Ultrasonic Imaging} 6 (1984), Nr. 1, S. 81--94
+
 \bibitem[BBM87]{EPI}
 \textsc{Bolles}, Robert~C. ; \textsc{Baker}, H.~H.  ; \textsc{Marimont},
   David~H.:
