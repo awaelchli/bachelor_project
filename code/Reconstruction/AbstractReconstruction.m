@@ -133,7 +133,8 @@ classdef AbstractReconstruction < handle
             % Optimization constraints
             ub = zeros(this.propagationMatrix.size(2), this.getLightFieldForOptimization().channels); 
             lb = zeros(size(ub)) + log(Attenuator.minimumTransmission);
-            x0 = zeros(size(ub));
+%             x0 = zeros(size(ub));
+            x0 = log(this.attenuator.vectorizeData());
             
             % Solve the optimization problem using the provided solver
             attenuationValuesLogDomain = this.solver(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
