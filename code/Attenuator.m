@@ -38,7 +38,7 @@ classdef Attenuator < PixelPlane
                 error('Attenuator must have a minimum of %i layers.', Attenuator.minimumNumberOfLayers);
             end
             this.planeSize = layerSize;
-            this.attenuationValues = zeros([numberOfLayers, layerResolution, channels]);
+            this.attenuationValues = ones([numberOfLayers, layerResolution, channels]);
             this.initLayerPositions(thickness, numberOfLayers);
             this.assertInvariant();
         end
