@@ -20,16 +20,30 @@ function layers = sart( P, l, x0, lb, ub, iterations )
 
     % Start with initial guess
     layers = x0;
+    
+    % Relaxation parameter
+    lambda = 1;
+    
+    residual = zeros(1, iterations);
 
     for i = 1 : iterations
 
+        difference = l - P * layers;
+        
         % Perform SART update
-        layers = layers + V .* (P' * ( W .* (l - P * layers)));
+        layers = layers + lambda * V .* (P' * ( W .* (difference)));
 
+        residual(i) = norm(difference);
+        
         % Clamp to desired range
         layers(layers < lb) = lb(layers < lb);
         layers(layers > ub) = ub(layers > ub);
     end
+
+    figure; 
+    plot(residual);
+    title('Residual Norm');
+    drawnow;
 
 end
 
