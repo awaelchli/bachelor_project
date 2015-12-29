@@ -7,8 +7,9 @@ function x = linearLeastSquares( P, l, x0, lb, ub, iterations )
         Jinfo = speye(size(P));
         jmfun = @(Jinfo, Y, flag) projection(P, Y, flag);
         options = optimset('Display', 'off', 'MaxIter', iterations, 'JacobMult', jmfun);
-        x(:, c) = lsqlin(Jinfo, l(:, c), [], [], [], [], lb(:, c), ub(:, c), x0(:, c), options);
-    
+        [x(:, c), resnorm, ~, ~, ~, ~] = lsqlin(Jinfo, l(:, c), [], [], [], [], lb(:, c), ub(:, c), x0(:, c), options);
+
+        fprintf('Residual Norm: %i\n', resnorm);
     end
 
 end
