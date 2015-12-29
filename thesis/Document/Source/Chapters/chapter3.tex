@@ -130,6 +130,10 @@ Thus, $P$ can be efficiently stored using an appropriate data structure.
 
 \section{Iterative Reconstruction}
 
+%TODO: Show plot of residual norm in each iteration
+%TODO: Compare to linear least squares method from MATLAB
+%TODO: Mention choice of relaxation parameter lambda = 1
+
 The optimization problem in equation~\ref{eq:minimize_norm} is essentially a fitting problem.
 Theoretically, it can be solved in a least squares sense using the normal equation $P^T P \alpha = P^T \bar{L}$ and by inverting the matrix $P^T P$.
 For high resolution light fields, the matrix $P$ becomes extremely large and it is unfeasible to compute the inverse of $P^T P$.
@@ -145,5 +149,5 @@ The update rule of \mbox{SART} for iteration $k = 0, 1, 2, \dots$ is
 where $\lambda$ is a relaxation factor.
 $R$ and $C$ denote the diagonal matrices with entries $R_{ii} = \frac{1}{r_i}$ and $C_{ii} = \frac{1}{c_i}$, where $r_i$ and $c_i$ are the sum of the elements in the \mbox{$i$-th} row and column of $P$ respectively.
 
-The convergence of SART has been studied by \cite{ConvergenceSART2}.
-They have proven that SART converges to a weighted least squares solution.
+The convergence of \mbox{SART} has been studied by \cite{ConvergenceSART2}.
+They have proven that it converges to a weighted least squares solution.
