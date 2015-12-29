@@ -27,6 +27,13 @@
 \newblock {In: }\emph{International Journal of Computer Vision}  (1987), S.
   7--55
 
+\bibitem[JW01]{ConvergenceSART2}
+\textsc{Jiang}, Min ; \textsc{Wang}, Ge:
+\newblock Convergence of the Simultaneous Algebraic Reconstruction Technique
+  ({SART}).
+\newblock {In: }\emph{Conference Record of the Thirty-Fifth Asilomar Conference
+  on Signals, Systems and Computers} 1 (2001), S. 360 -- 364
+
 \bibitem[LH96]{LightFieldRendering}
 \textsc{Levoy}, M. ; \textsc{Hanrahan}, P.:
 \newblock Light Field Rendering.
@@ -49,7 +56,7 @@
 
 \bibitem[Yan10]{ConvergenceSART}
 \textsc{Yan}, Ming:
-\newblock Convergence Analysis of SART by Bregman Iteration and Dual Gradient
+\newblock Convergence Analysis of {SART} by Bregman Iteration and Dual Gradient
   Descent.
 \newblock   (2010), S. 1--15
 

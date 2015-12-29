@@ -1,11 +1,10 @@
 \chapter{Light Field Tomography}
 
-\section{A Model for Attenuation}
+\section{A Model for Light Attenuation}
 %TODO: Derivation according to Wetzstein
 % Explain linearity in log domain
 % Mention other tomographic projection types
 % SART and ART solvers
-% Make a chapter?
 % Explain "intensity of ray" and unit
 
 The light field display is modeled by a volumetric attenuator $\mu(x, y, z)$ that attenuates the light traveling through its material.
@@ -126,6 +125,8 @@ Thus, the objective becomes
 	\end{aligned}
 \end{equation}
 Finally, when optimal values $\alpha$ are found, the transmittance used to fabricate the layers is obtained by calculating $e^{-\alpha}$.
+Also note that the matrix P is very sparse because it is assumed that a ray passes through each layer at exactly one pixel no more than once and inter-reflections between the layers are not supported by the model.
+Thus, $P$ can be efficiently stored using an appropriate data structure.
 
 \section{Iterative Reconstruction}
 
@@ -137,12 +138,12 @@ In general, the approach to solve these kind of problems is to use iterative met
 The choice of the method depends on the type of problem and the structure of the design matrix.
 In computed tomography, a variety of iterative solvers have been developed to solve the exact same problem. 
 Among the different methods is the Simultaneous Algebraic Reconstruction Technique (\mbox{SART}) first proposed by \cite{SART}.
-
 The update rule of \mbox{SART} for iteration $k = 0, 1, 2, \dots$ is
 \begin{equation}\label{eq:SART_update_rule}
 	\alpha^{(k + 1)} = \alpha^{(k)} + \lambda C P^T R \left( \bar{L} - P \alpha^{(k)} \right), 	
 \end{equation}
-$\lambda$ is a relaxation factor.
+where $\lambda$ is a relaxation factor.
 $R$ and $C$ denote the diagonal matrices with entries $R_{ii} = \frac{1}{r_i}$ and $C_{ii} = \frac{1}{c_i}$, where $r_i$ and $c_i$ are the sum of the elements in the \mbox{$i$-th} row and column of $P$ respectively.
 
-The convergence of SART has been studied by 
+The convergence of SART has been studied by \cite{ConvergenceSART2}.
+They have proven that SART converges to a weighted least squares solution.

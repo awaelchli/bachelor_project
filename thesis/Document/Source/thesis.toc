@@ -6,7 +6,7 @@
 \contentsline {section}{\numberline {2.3}Visualization}{4}{section.2.3}
 \contentsline {section}{\numberline {2.4}Spectral Analysis}{5}{section.2.4}
 \contentsline {chapter}{\numberline {3}Light Field Tomography}{6}{chapter.3}
-\contentsline {section}{\numberline {3.1}A Model for Attenuation}{6}{section.3.1}
+\contentsline {section}{\numberline {3.1}A Model for Light Attenuation}{6}{section.3.1}
 \contentsline {section}{\numberline {3.2}Discrete Attenuation Layers}{7}{section.3.2}
 \contentsline {section}{\numberline {3.3}Iterative Reconstruction}{8}{section.3.3}
 \contentsline {chapter}{\numberline {A}ap1}{10}{appendix.A}
