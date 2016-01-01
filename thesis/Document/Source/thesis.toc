@@ -4,13 +4,15 @@
 \contentsline {section}{\numberline {2.1}The Plenoptic Function and the Light Field}{2}{section.2.1}
 \contentsline {section}{\numberline {2.2}Light Field Acquisition}{3}{section.2.2}
 \contentsline {section}{\numberline {2.3}Visualization}{4}{section.2.3}
-\contentsline {section}{\numberline {2.4}Spectral Analysis}{5}{section.2.4}
 \contentsline {chapter}{\numberline {3}Light Field Tomography}{6}{chapter.3}
 \contentsline {section}{\numberline {3.1}A Model for Light Attenuation}{6}{section.3.1}
 \contentsline {section}{\numberline {3.2}Discrete Attenuation Layers}{7}{section.3.2}
 \contentsline {section}{\numberline {3.3}Iterative Reconstruction}{8}{section.3.3}
-\contentsline {chapter}{\numberline {A}ap1}{10}{appendix.A}
-\contentsline {section}{\numberline {A.1}apsec1}{10}{section.A.1}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{11}{section.A.1}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{11}{appendix*.4}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }Bibliography}{12}{appendix*.5}
+\contentsline {chapter}{\numberline {4}Spectral Analysis}{10}{chapter.4}
+\contentsline {section}{\numberline {4.1}Definitions}{10}{section.4.1}
+\contentsline {section}{\numberline {4.2}Spectral Support of Display}{10}{section.4.2}
+\contentsline {chapter}{\numberline {A}ap1}{11}{appendix.A}
+\contentsline {section}{\numberline {A.1}apsec1}{11}{section.A.1}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{12}{section.A.1}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{12}{appendix*.4}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Bibliography}{13}{appendix*.5}
