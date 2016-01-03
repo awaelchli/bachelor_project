@@ -4,6 +4,7 @@ The top-level auxiliary file: thesis.aux
 A level-1 auxiliary file: Chapters/chapter1.aux
 A level-1 auxiliary file: Chapters/chapter2.aux
 A level-1 auxiliary file: Chapters/chapter3.aux
+A level-1 auxiliary file: Chapters/chapter4.aux
 A level-1 auxiliary file: Chapters/appendix.aux
 The style file: alphadin.bst
 Reallocated singl_function (elt_size=4) to 100 items from 50.
@@ -14,7 +15,7 @@ Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: thesis.bib
 You've used 8 entries,
             4793 wiz_defined-function locations,
-            952 strings with 7860 characters,
+            953 strings with 7881 characters,
 and the built_in function-call counts, 5123 in all, are:
 = -- 511
 > -- 171

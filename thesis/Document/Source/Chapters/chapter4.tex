@@ -9,9 +9,34 @@
 
 \section{Definitions}
 
-The fourier transform of an integrable function $f \colon \mathbb{R}^n \to \mathbb{R}$ is defined as 
+The \textbf{Fourier transform} $\hat{f}$ of an integrable function $f \colon \mathbb{R}^n \to \mathbb{C}$ is defined as 
 \begin{equation}
-	\hat{f}(\xi) = \mathcal{F}(f)(\xi) \coloneqq \int_{\mathbb{R}^n} f(x) e^{-2 \pi \mathrm{i} x \cdot \xi} \, \mathrm{d}x.
+	\hat{f}(\xi) = \mathcal{F}(f)(\xi) \coloneqq \int_{\mathbb{R}^n} f(x) e^{-2 \pi \mathrm{i} x \cdot \xi} \, \mathrm{d}x
+\end{equation}
+for any $\xi \in \mathbb{R}^n$. 
+According to the Fourier integral theorem, if both $f$ and $\hat{f}$ are absolutely integrable and $f$ is continuous, then the inverse transform 
+\begin{equation}
+	f(x) = \mathcal{F}^{-1}(\hat{f})(x) \coloneqq \int_{\mathbb{R}^n} \hat{f}(\xi) e^{2 \pi \mathrm{i} x \cdot \xi} \, \mathrm{d}\xi
+\end{equation}
+is well defined.
+The domain of $f$ is called the \textbf{spatial domain} and the domain of $\hat{f}$ is referred to as the \textbf{frequency domain}.
+An important property of the Fourier transform is that a convolution in the spatial domain becomes a multiplication in the frequency domain, or in other words, 
+\begin{equation}
+	\widehat{(f \ast g)}(\xi) = \hat{f}(\xi) \cdot \hat{g}(\xi)
+\end{equation}
+for integrable functions $f, g \colon \mathbb{R}^n \to \mathbb{C}$.
+On the other hand, a multiplication in the spatial domain becomes a convolution in the frequency domain after applying the Fourier transform, that is
+\begin{equation}
+	\widehat{(f \cdot g)}(\xi) = (\hat{f} \ast \hat{g})(\xi).
 \end{equation}
 
 \section{Spectral Support of Display}
+
+\begin{figure}
+	\centering
+	\input{../Figures/epi_fourier_transform.tex}
+	\caption{}
+	\label{fig:epi_fourier_transform_1}
+\end{figure}
+
+\section{The Fourier Slice Theorem}
