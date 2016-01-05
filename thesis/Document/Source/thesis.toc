@@ -10,8 +10,8 @@
 \contentsline {section}{\numberline {3.3}Iterative Reconstruction}{8}{section.3.3}
 \contentsline {chapter}{\numberline {4}Spectral Analysis}{10}{chapter.4}
 \contentsline {section}{\numberline {4.1}Definitions}{10}{section.4.1}
-\contentsline {section}{\numberline {4.2}Spectral Support of Display}{10}{section.4.2}
-\contentsline {section}{\numberline {4.3}The Fourier Slice Theorem}{10}{section.4.3}
+\contentsline {section}{\numberline {4.2}Spectral Support of Display}{11}{section.4.2}
+\contentsline {section}{\numberline {4.3}The Fourier Slice Theorem}{11}{section.4.3}
 \contentsline {chapter}{\numberline {A}ap1}{12}{appendix.A}
 \contentsline {section}{\numberline {A.1}apsec1}{12}{section.A.1}
 \contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{13}{section.A.1}

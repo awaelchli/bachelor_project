@@ -115,6 +115,7 @@ As demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera 
 
 
 \section{Visualization}
+\label{sec:Visualization}
 %TODO Show how rectification affects EPI
 
 The epipolar-plane image (EPI) allows for a very intuitive visualization of depth from a 4D light field.
@@ -132,6 +133,7 @@ The shift in pixels of projections of the same point $P$ in consecutive images i
 Following the projection of the point $P$ in every image corresponds to a line in the EPI with slope $1 / D$.
 \cite{EPI} refer to this line as the \textbf{feature path}.
 This means that points farther away from the camera will appear as a feature path in the EPI with steeper slope than points close to the camera.
+The depth range in the light field can immediately be determined by identifying the maximum and minimum slope in the EPI.
 
 \begin{figure}[tb]
 	\subfigure[]{
@@ -151,9 +153,29 @@ This means that points farther away from the camera will appear as a feature pat
 		\input{../Figures/epi_dice_2.tex}
 		\label{fig:epi_1x500x1000x1000_scanline2}
 	}
+	\\
+	\subfigure[]{
+		\centering
+		\input{../Figures/epi_dice_overview_rectified.tex}
+		\label{fig:epi_1x500x1000x1000_overview_rectified}
+	}
+	\hfill
+	\subfigure[]{
+		\centering
+		\input{../Figures/epi_dice_1_rectified.tex}
+		\label{fig:epi_1x500x1000x1000_scanline1_rectified}
+	}
+	\hfill
+	\subfigure[]{
+		\centering
+		\input{../Figures/epi_dice_2_rectified.tex}
+		\label{fig:epi_1x500x1000x1000_scanline2_rectified}
+	}
 	\caption{(a) Raw 3D light field rendered from 500 positions along a horizontal baseline.
 				 Two scanlines are extracted from every image. 
 			 (b) The feature paths of the blue and green dice have a steeper slope than those of the red die.
-			 (c) Feature paths of the yellow die have an even steeper slope, indicating greater depth.}
+			 (c) Feature paths of the yellow die have an even steeper slope, indicating greater depth.
+			 (d) Images are cropped according to figure~\ref{fig:RectifiedPerspectiveProjection} such that the disparities of the red die are approximately zero.
+			 (e) - (f) EPIs from the same scanlines. The slopes of the feature paths stay the same relative to each other. }
 	\label{fig:epi_example_perspective}
 \end{figure}

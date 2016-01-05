@@ -116,11 +116,11 @@ Note that equation~\ref{eq:discrete_log_light_field_negative_radon} is the equiv
 Finally, the above equations indexed by $m$ can be combined into one large linear system $P \alpha = -\bar{L}$.
 
 In most cases, $P$ is not a square matrix and the system can become overdetermined, which means that it has no solution in general.
-However, it is still possible to find values for $\alpha$ such that the error $\lVert P \alpha + \bar{L} \rVert$ is small. 
+However, it is still possible to find values for $\alpha$ such that the error $\left\lVert P \alpha + \bar{L} \right\rVert$ is small. 
 Thus, the objective becomes
 \begin{equation} \label{eq:minimize_norm}
 	\begin{aligned}
-		& \underset{\alpha}{\text{argmin}} 	& & \lVert P \alpha + \bar{L} \rVert ^2 \\
+		& \underset{\alpha}{\text{argmin}} 	& & \left\lVert P \alpha + \bar{L} \right\rVert ^2 \\
 		& \text{subject to} 				& & 0 \leq \alpha \leq \infty.
 	\end{aligned}
 \end{equation}
