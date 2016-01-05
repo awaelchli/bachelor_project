@@ -7,7 +7,14 @@
 %TODO: Explain the spectral support of LF
 %TODO: Fourier slice theorem
 
+This chapter is intended to give an overview of the spectral properties and limitations specific to multiplicative light field displays.
+Spectral analysis is a crucial method for the quality assessment and it is the origin of a comprehensive understanding of 3D displays. 
+A light field emitted by the display can be interpreted as a signal that is composed of sine waves with different amplitude, phase and frequency.
+Section~\ref{sec:Definitions} introduces the Fourier transform, an operation that decomposes such a signal into the frequencies that produce it.
+The spectral support, i.e. the range of frequencies the display is able to produce, is analyzed in section~\ref{sec:Spectral_Support}. 
+
 \section{Definitions}
+\label{sec:Definitions}
 
 The \textbf{Fourier transform} $\hat{f}$ of an integrable function $f \colon \mathbb{R}^n \to \mathbb{C}$ is defined as 
 \begin{equation}
@@ -31,6 +38,15 @@ On the other hand, a multiplication in the spatial domain becomes a convolution 
 \end{equation}
 
 \section{Spectral Support of Display}
+\label{sec:Spectral_Support}
+
+Consider a scene with a bounded depth range $Z_{\text{min}} \leq Z \leq Z_{\text{max}}$.
+In section~\ref{sec:Visualization}, it was shown that an object at a certain depth will be represented in the EPI as a line with a slope proportional to the depth.
+
+
+
+Now, consider a single attenuation layer. 
+The light field emitted by this layer has constant depth and thus, the lines in the EPI all have the same slope.
 
 \begin{figure}
 	\centering
