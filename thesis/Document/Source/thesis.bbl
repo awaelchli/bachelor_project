@@ -27,6 +27,12 @@
 \newblock {In: }\emph{International Journal of Computer Vision}  (1987), S.
   7--55
 
+\bibitem[IMG00]{DynamicallyReparameterizedLF}
+\textsc{Isaksen}, Aaron ; \textsc{McMillan}, Leonard  ; \textsc{Gortler},
+  Steven~J.:
+\newblock Dynamically Reparameterized Light Fields.
+\newblock {In: }\emph{SIGGRAPH 2000}  (2000), S. 297–306
+
 \bibitem[JW01]{ConvergenceSART2}
 \textsc{Jiang}, Min ; \textsc{Wang}, Ge:
 \newblock Convergence of the Simultaneous Algebraic Reconstruction Technique

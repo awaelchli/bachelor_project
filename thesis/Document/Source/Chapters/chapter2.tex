@@ -91,6 +91,23 @@ In this case, the focal planes of all cameras coincide with a common focal plane
 Figure~\ref{fig:ShiftedPerspectiveProjection} shows this scenario for three cameras in two dimensions.
 Each camera captures sample points on the $(s, t)$-plane, but not every point on the $(s, t)$-plane is captured by ever camera.
 As demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera images need to be rectified such that all discrete coordinates $(u, v, s, t)$ correspond to valid rays.
+This rectification process is equivalent to a re-parameterization $L^\prime$ of the continuous light field $L$ given by the formula
+\begin{equation}
+	L^\prime (u, v, s^\prime, t^\prime) = L \left(u, v, \gamma (s - u) + u, \gamma (t - v) + v \right), 
+\end{equation}
+where $\gamma = \frac{d^\prime}{d}$ and $d^\prime$ is the distance between the $(u, v)$-plane and the new \mbox{$(s^\prime, t^\prime)$-plane}.
+The re-parameterization is equivalent to a 4D shear, as derived by \cite{DynamicallyReparameterizedLF}. 
+
+From stereo vision, it is known that the displacement of the projections in the image planes of two cameras is only dependent on the focal length $f$, the baseline $\Delta u$ and the distance $z$, and the relation is given by $\Delta s = f \Delta u / z$.
+This knowledge can directly be applied to the two-plane parameterization. 
+For the continuous light field, it amounts to
+\begin{equation}
+	\textrm{d}s = \frac{d}{z} \, \textrm{d}u 
+	\qquad
+	\text{and} 
+	\qquad
+	\textrm{d}t = \frac{d}{z} \, \textrm{d}v.
+\end{equation}
 
 
 %This means that each ray can be represented by coordinates in each of the coordinate systems of the cameras.
@@ -129,7 +146,7 @@ In figure~\ref{fig:epi_example_perspective}, a synthetic scene is rendered in 50
 Since the camera movement is in horizontal direction only, the epipolar lines correspond to a fixed pixel row in each image.
 The EPIs shown in figures~\ref{fig:epi_1x500x1000x1000_scanline1} and ~\ref{fig:epi_1x500x1000x1000_scanline2} are created by collecting the chosen pixel row (scanline) in every image and stacking it up.
 
-The shift in pixels of projections of the same point $P$ in consecutive images is called the (pixel) \textbf{disparity} $D$.
+The shift in pixels of projections of the same point $P$ in consecutive images is called the (pixel-) \textbf{disparity} $D$.
 Following the projection of the point $P$ in every image corresponds to a line in the EPI with slope $1 / D$.
 \cite{EPI} refer to this line as the \textbf{feature path}.
 This means that points farther away from the camera will appear as a feature path in the EPI with steeper slope than points close to the camera.
@@ -175,7 +192,7 @@ The depth range in the light field can immediately be determined by identifying 
 				 Two scanlines are extracted from every image. 
 			 (b) The feature paths of the blue and green dice have a steeper slope than those of the red die.
 			 (c) Feature paths of the yellow die have an even steeper slope, indicating greater depth.
-			 (d) Images are cropped according to figure~\ref{fig:RectifiedPerspectiveProjection} such that the disparities of the red die are approximately zero.
+			 (d) The light field is rectified according to figure~\ref{fig:RectifiedPerspectiveProjection} such that the disparities of the red die are approximately zero.
 			 (e) - (f) EPIs from the same scanlines. The slopes of the feature paths stay the same relative to each other. }
 	\label{fig:epi_example_perspective}
 \end{figure}
