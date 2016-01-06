@@ -53,24 +53,23 @@
 \pagenumbering{roman} \setcounter{page}{1}
 \maketitle
 
+% Abstract
 \newpage
-\thispagestyle{empty}
-\vspace{8cm}
-\noindent
-{\centerline {\bf \large Abstract}}
-\vspace{1cm}
-\noindent
-
-Abstract goes here
-
-
-
-\pagenumbering{roman} \setcounter{page}{1}
-\tableofcontents
-
+\include{Chapters/abstract}
 \newpage{\pagestyle{empty} \cleardoublepage}
 
-% Hauptdokument
+% Acknowledgements
+\include{Chapters/acknowledgements}
+\newpage{\pagestyle{empty} \cleardoublepage}
+
+% Begin page numbering
+\pagenumbering{roman} \setcounter{page}{1}
+
+% Table of contents
+\tableofcontents
+\newpage{\pagestyle{empty} \cleardoublepage}
+
+% Main Document
 \pagenumbering{arabic} \setcounter{page}{1}
 \pagestyle{fancy}
 
@@ -87,8 +86,8 @@ Abstract goes here
 \newpage{\pagestyle{empty} \cleardoublepage}
 
 \begin{appendix}
-\include{Chapters/appendix}
-\newpage{\pagestyle{empty} \cleardoublepage}
+	\include{Chapters/appendix}
+	\newpage{\pagestyle{empty} \cleardoublepage}
 \end{appendix}
 
 \addcontentsline{toc}{chapter}{\numberline{}List of Tables}

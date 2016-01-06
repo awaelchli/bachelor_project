@@ -38,7 +38,7 @@ For practical applications, the light field must be discretized and so an approp
 One way is to capture the light field with a grid of optical systems, e.g. cameras.
 Typically, the $(u, v)$-plane is sampled on a grid $G_{uv} = \left \{ \left( u_i, v_j \right) \mid i = 1,\dots, n, j = 1, \dots, m\right \}$ on the $(u, v)$-plane with a resolution $n \times m$.
 The extent in horizontal (vertical) direction is called the horizontal (vertical) \textbf{baseline}.
-This means that only a slice of the actual light field can be captured and the two planes are clipped to form a rectangle.
+This means that only a slice of the actual light field can be captured and the two planes are clipped to form rectangles.
 
 %There are different methods to sample a light field. In principle, every camera can be used to capture 
 
@@ -57,7 +57,7 @@ Given a light field $L(u, v, s, t)$ and the distance $d$ between the two planes,
 \begin{align*}
 		& \theta = \arctan\left(\frac{u - s}{d}\right), & \phi = \arctan\left(\frac{v - t}{d}\right).
 \end{align*}
-However, this type of projection is only applicable for synthetic scenes that are rendered with a computer.
+However, it is not feasible to build cameras of this type and so, oblique projection is left to be used exclusively by computers for rendering synthetic scenes.
 % TODO: Refer to a figure with a synthetic scene.
 
 \begin{figure}[tb]
@@ -96,7 +96,14 @@ This rectification process is equivalent to a re-parameterization $L^\prime$ of 
 	L^\prime (u, v, s^\prime, t^\prime) = L \left(u, v, \gamma (s - u) + u, \gamma (t - v) + v \right), 
 \end{equation}
 where $\gamma = \frac{d^\prime}{d}$ and $d^\prime$ is the distance between the $(u, v)$-plane and the new \mbox{$(s^\prime, t^\prime)$-plane}.
-The re-parameterization is equivalent to a 4D shear, as derived by \cite{DynamicallyReparameterizedLF}. 
+As derived by \cite{DynamicallyReparameterizedLF}, the re-parameterization is equivalent to a 4D shear.
+
+Another way to understand this coordinate change is to imagine the $(u, v)$- and $(s, t)$-plane being the aperture and sensor planes respectively, resulting in one big camera in which a light field is formed.
+Changing the distance between the two planes is now equivalent to changing the focal length of this one camera.
+The effect on the light field inside is similar to refocusing, except that in a conventional camera, the image on the sensor is formed by a weighted integral over $u$ and $v$ such that the angular information vanishes.
+Objects at focal distance from the camera would appear sharp and objects away from the focal point would become blurred.
+
+%TODO: Refer section about the plenoptic camera
 
 From stereo vision, it is known that the displacement of the projections in the image planes of two cameras is only dependent on the focal length $f$, the baseline $\Delta u$ and the distance $z$, and the relation is given by $\Delta s = f \Delta u / z$.
 This knowledge can directly be applied to the two-plane parameterization. 
@@ -108,10 +115,7 @@ For the continuous light field, it amounts to
 	\qquad
 	\textrm{d}t = \frac{d}{z} \, \textrm{d}v.
 \end{equation}
-
-
-%This means that each ray can be represented by coordinates in each of the coordinate systems of the cameras.
-%The only problem is that some rays are not captured by all
+In the discrete case, the displacement $\Delta s$ or $\Delta t$ is also called the \textbf{disparity} and is often given in pixel units.
 
 \begin{figure}[tb]
 	\subfigure[]{
@@ -146,11 +150,14 @@ In figure~\ref{fig:epi_example_perspective}, a synthetic scene is rendered in 50
 Since the camera movement is in horizontal direction only, the epipolar lines correspond to a fixed pixel row in each image.
 The EPIs shown in figures~\ref{fig:epi_1x500x1000x1000_scanline1} and ~\ref{fig:epi_1x500x1000x1000_scanline2} are created by collecting the chosen pixel row (scanline) in every image and stacking it up.
 
-The shift in pixels of projections of the same point $P$ in consecutive images is called the (pixel-) \textbf{disparity} $D$.
-Following the projection of the point $P$ in every image corresponds to a line in the EPI with slope $1 / D$.
+As described in the previous section, the depth component of $P$ occurs as a displacement of the projections in consecutive images 
+Under the assumption that the $(u, v)$-plane is sampled uniformly, the disparity $D$ with respect to $P$ is stays constant from one image to the next.
+Thus, following the projection of the point $P$ in every image corresponds to a line in the EPI with slope $1 / D$.
 \cite{EPI} refer to this line as the \textbf{feature path}.
 This means that points farther away from the camera will appear as a feature path in the EPI with steeper slope than points close to the camera.
-The depth range in the light field can immediately be determined by identifying the maximum and minimum slope in the EPI.
+Note that the depth range in the light field can immediately be determined by identifying the maximum and minimum slope in the EPI.
+Also, for a perfectly Lambertian scene, each line in the EPI has a uniform color.
+
 
 \begin{figure}[tb]
 	\subfigure[]{
