@@ -1,7 +1,7 @@
 close all;
 clc;
 
-I = imread('thesis/Document/Figures/epi_1x500x1000x1000/scanY=379.png');
+I = imread('thesis/Document/Figures/epi_1x500x1000x1000/rectified/scanY=379.png');
 % I = imread('scripts/epi.png');
 
 % h = fspecial('disk', 4);
@@ -36,48 +36,50 @@ spectrum = (spectrum - minimum) / (maximum - minimum);
 
 figure;
 imshow(spectrum);
+title('$ \log (1 + \textrm{abs} ( \hat{f} ) )$', 'interpreter', 'latex');
 
 figure;
 imshow(spectrum > 0.4);
+title('$ \log (1 + \textrm{abs} ( \hat{f} ) ) > 0.4$', 'interpreter', 'latex');
 
 
 
-%% Artificially create Fourier image and apply inverse Fourier transform
-
-% Size of the image
-s = 500;
-
-% Specify slope of the two lines
-slope1 = -5;
-slope2 = -1.5;
-
-m1 = createLineMask(s, slope1, 4 * s);
-m2 = createLineMask(s, slope2, 4 * s);
-
-m = m1 | m2;
-
-figure;
-imshow(m);
-
-convolution = conv2(m1, m2);
-
-figure; 
-imshow(convolution);
-
-
-slopes = -5 : 0.5 : -1.5;
-
-m = createLineMask(s, slopes(1), 4 * s);
-convolution = m;
-
-for i = 2 : numel(slopes)
-    
-    m1 = createLineMask(s, slopes(i), 4 * s);
-    
-    convolution = conv2(convolution, m1);
-    
-end
-
-figure;
-imshow(convolution);
+% %% Artificially create Fourier image and apply inverse Fourier transform
+% 
+% % Size of the image
+% s = 500;
+% 
+% % Specify slope of the two lines
+% slope1 = -5;
+% slope2 = -1.5;
+% 
+% m1 = createLineMask(s, slope1, 4 * s);
+% m2 = createLineMask(s, slope2, 4 * s);
+% 
+% m = m1 | m2;
+% 
+% figure;
+% imshow(m);
+% 
+% convolution = conv2(m1, m2);
+% 
+% figure; 
+% imshow(convolution);
+% 
+% 
+% slopes = -5 : 0.5 : -1.5;
+% 
+% m = createLineMask(s, slopes(1), 4 * s);
+% convolution = m;
+% 
+% for i = 2 : numel(slopes)
+%     
+%     m1 = createLineMask(s, slopes(i), 4 * s);
+%     
+%     convolution = conv2(convolution, m1);
+%     
+% end
+% 
+% figure;
+% imshow(convolution);
 
