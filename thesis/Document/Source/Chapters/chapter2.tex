@@ -31,6 +31,7 @@ For instance, one can use a plane and two angles to define each ray passing this
 \end{figure}
 
 \section{Light Field Acquisition}
+\label{sec:light_field_aquisition}
 % Figure epipolar image
 % Explain epipolar images: line slope <-> depth
 
@@ -89,14 +90,19 @@ For a camera light field, typically it is expected that
 \end{itemize}
 In this case, the focal planes of all cameras coincide with a common focal plane, the $(s, t)$-plane.
 Figure~\ref{fig:ShiftedPerspectiveProjection} shows this scenario for three cameras in two dimensions.
-Each camera captures sample points on the $(s, t)$-plane, but not every point on the $(s, t)$-plane is captured by ever camera.
-As demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera images need to be rectified such that all discrete coordinates $(u, v, s, t)$ correspond to valid rays.
+Given images $I_{uv}(x, y)$ with respect to a coordinate system centered at the camera position $(u, v)$, the coordinates on the $(s, t)$-plane are $s = u + x$, and $t = v + y$.
+Thus, the light field in continuous coordinates is obtained by 
+\begin{equation}
+	L(u, v, s, t) = L(u, v, u + x, v + y) = I_{uv}(x, y).
+\end{equation}
+In the discrete case, each camera captures sample points on the $(s, t)$-plane, but not everyone of these sample points on the $(s, t)$-plane is captured by every camera.
+So, as demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera images need to be rectified such that all discrete coordinates $(u, v, s, t)$ correspond to valid rays.
 This rectification process is equivalent to a re-parameterization $L^\prime$ of the continuous light field $L$ given by the formula
 \begin{equation}
 	L^\prime (u, v, s^\prime, t^\prime) = L \left(u, v, \gamma (s - u) + u, \gamma (t - v) + v \right), 
 \end{equation}
-where $\gamma = \frac{d^\prime}{d}$ and $d^\prime$ is the distance between the $(u, v)$-plane and the new \mbox{$(s^\prime, t^\prime)$-plane}.
-As derived by \cite{DynamicallyReparameterizedLF}, the re-parameterization is equivalent to a 4D shear.
+where $\gamma = \frac{d}{d^\prime}$ and $d^\prime$ is the distance between the $(u, v)$-plane and the new \mbox{$(s^\prime, t^\prime)$-plane}.
+As derived by \cite{DynamicallyReparameterizedLF}, this re-parameterization is equivalent to a 4D shear.
 
 Another way to understand this coordinate change is to imagine the $(u, v)$- and $(s, t)$-plane being the aperture and sensor planes respectively, resulting in one big camera in which a light field is formed.
 Changing the distance between the two planes is now equivalent to changing the focal length of this one camera.
@@ -137,7 +143,7 @@ In the discrete case, the displacement $\Delta s$ or $\Delta t$ is also called t
 
 \section{Visualization}
 \label{sec:Visualization}
-%TODO Show how rectification affects EPI
+%TODO: Mention other types of visualization: 2D grid of images, etc.
 
 The epipolar-plane image (EPI) allows for a very intuitive visualization of depth from a 4D light field.
 It was first defined by~\cite{EPI} as follows.

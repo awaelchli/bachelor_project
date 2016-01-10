@@ -148,6 +148,37 @@ The update rule of \mbox{SART} for iteration $k = 0, 1, 2, \dots$ is
 \end{equation}
 where $\lambda$ is a relaxation factor.
 $R$ and $C$ denote the diagonal matrices with entries $R_{ii} = \frac{1}{r_i}$ and $C_{ii} = \frac{1}{c_i}$, where $r_i$ and $c_i$ are the sum of the elements in the \mbox{$i$-th} row and column of $P$ respectively.
+The parts in~\ref{eq:SART_update_rule} involving $P$ and $P^T$ are also referred to as the \textbf{forward}- and \textbf{back-projection} respectively.
 
 The convergence of \mbox{SART} has been studied by \cite{ConvergenceSART2}.
 They have proven that it converges to a weighted least squares solution.
+
+\section{Ray Casting}
+\label{sec:ray_casting}
+
+To obtain the linear system $P$, the intersections between the rays and the attenuation layers have to be calculated.
+This calculation depends on the parameterization of the light field.
+For continuous light fields, it is always possible to apply a re-parameterization to get the desired representation (e.g. the two-plane parameterization) and then compute the intersection in a standard way.
+For discrete light fields however, this would require a suitable interpolation in ray-space, which gives poor results when the distribution of samples in the target space becomes too sparse.
+
+What follows is a description of two methods to compute the indices for the non-zero entries in $P$. 
+For simplicity, a two-dimensional attenuator of size $w$ is assumed, consisting of two layers at depth $Z_{\text{min}}$ and $Z_{\text{max}}$.
+It is also assumed that the image plane $s$ of the virtual cameras is bisecting the attenuator in the middle, at depth zero.
+
+\subsection*{Oblique Projection}
+
+The setup for the oblique projection type is illustrated in figure~\ref{fig:ray_casting_oblique_projection}.
+
+%TODO: Insert text for caption
+%TODO: Naming layer axes
+%TODO: Naming layer spacing
+\begin{figure}
+	\centering
+	\input{../Figures/ray_casting_oblique_projection}
+	\caption{text}
+	\label{fig:ray_casting_oblique_projection}
+\end{figure}
+
+
+\subsection*{Perspective Projection}
+%TODO: Figure

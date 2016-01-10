@@ -8,6 +8,7 @@
 \contentsline {section}{\numberline {3.1}A Model for Light Attenuation}{7}{section.3.1}
 \contentsline {section}{\numberline {3.2}Discrete Attenuation Layers}{8}{section.3.2}
 \contentsline {section}{\numberline {3.3}Iterative Reconstruction}{9}{section.3.3}
+\contentsline {section}{\numberline {3.4}Ray Casting}{10}{section.3.4}
 \contentsline {chapter}{\numberline {4}Spectral Analysis}{11}{chapter.4}
 \contentsline {section}{\numberline {4.1}Definitions}{11}{section.4.1}
 \contentsline {section}{\numberline {4.2}Spectral Support of Light Fields}{12}{section.4.2}
@@ -16,5 +17,5 @@
 \contentsline {chapter}{\numberline {A}ap1}{13}{appendix.A}
 \contentsline {section}{\numberline {A.1}apsec1}{13}{section.A.1}
 \contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Tables}{14}{section.A.1}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{14}{appendix*.5}
-\contentsline {chapter}{\hbox to\@tempdima {\hfil }Bibliography}{15}{appendix*.6}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }List of Figures}{14}{appendix*.7}
+\contentsline {chapter}{\hbox to\@tempdima {\hfil }Bibliography}{15}{appendix*.8}
