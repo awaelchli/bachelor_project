@@ -162,12 +162,20 @@ For continuous light fields, it is always possible to apply a re-parameterizatio
 For discrete light fields however, this would require a suitable interpolation in ray-space, which gives poor results when the distribution of samples in the target space becomes too sparse.
 
 What follows is a description of two methods to compute the indices for the non-zero entries in $P$. 
-For simplicity, a two-dimensional attenuator of size $w$ is assumed, consisting of two layers at depth $Z_{\text{min}}$ and $Z_{\text{max}}$.
-It is also assumed that the image plane $s$ of the virtual cameras is bisecting the attenuator in the middle, at depth zero.
+For simplicity, a two-dimensional attenuator of size $w$ is assumed, consisting of $N$ layers at various depths 
+$Z_{\text{min}} = z_1 < z_2 < \dots < z_N = Z_{\text{max}}$.
+It is also assumed that the image plane $s$ of the virtual cameras is bisecting the attenuator in the middle, at depth 
+$z_0 = \frac{Z_{\text{max}} - Z_{\text{min}}}{2}$.
 
 \subsection*{Oblique Projection}
 
 The setup for the oblique projection type is illustrated in figure~\ref{fig:ray_casting_oblique_projection}.
+Let $\theta_i$ denote the angle of the \mbox{$i$-th} view $L(\theta_i, s)$ from the light field.
+The intersection of the ray $(\theta_i, s)$ with the \mbox{$n$-th} layer is simply
+\begin{equation}\label{eq:layer_intersection}
+	s_n = s + \Delta z \tan (\theta_i), 
+\end{equation}
+where $\Delta z = z_0 - z_n$ is the distance between the image plane and layer $n$.
 
 %TODO: Insert text for caption
 %TODO: Naming layer axes
@@ -178,7 +186,6 @@ The setup for the oblique projection type is illustrated in figure~\ref{fig:ray_
 	\caption{text}
 	\label{fig:ray_casting_oblique_projection}
 \end{figure}
-
 
 \subsection*{Perspective Projection}
 %TODO: Figure

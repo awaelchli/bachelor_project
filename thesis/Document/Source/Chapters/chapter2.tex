@@ -32,14 +32,10 @@ For instance, one can use a plane and two angles to define each ray passing this
 
 \section{Light Field Acquisition}
 \label{sec:light_field_aquisition}
-% Figure epipolar image
-% Explain epipolar images: line slope <-> depth
 
-For practical applications, the light field must be discretized and so an appropriate sampling method needs to be chosen.
-One way is to capture the light field with a grid of optical systems, e.g. cameras.
-Typically, the $(u, v)$-plane is sampled on a grid $G_{uv} = \left \{ \left( u_i, v_j \right) \mid i = 1,\dots, n, j = 1, \dots, m\right \}$ on the $(u, v)$-plane with a resolution $n \times m$.
-The extent in horizontal (vertical) direction is called the horizontal (vertical) \textbf{baseline}.
+For practical applications, the light field must be discretized and so, an appropriate sampling method needs to be chosen.
 This means that only a slice of the actual light field can be captured and the two planes are clipped to form rectangles.
+In this work, the term \emph{light field} is used for both the infinite, continuous light field as well as the discrete collection of data samples.
 
 %There are different methods to sample a light field. In principle, every camera can be used to capture 
 
@@ -54,11 +50,24 @@ This means that only a slice of the actual light field can be captured and the t
 Oblique projection, as shown in figure~\ref{fig:ObliqueProjection}, is a special case of orthographic projection: The parallel rays do not need to be perpendicular to the image plane of the camera.
 The advantage is that there is a one-to-one correspondence between camera position and ray angle, since all rays in one camera are parallel.
 This means that the angular resolution is simply the number of cameras, and the spatial resolution is the number of pixels in the image plane.
+The angular extent from $\theta_\text{min}$ to $\theta_\text{max}$ is called the \textbf{field of view} (FOV) of the light field and should not be confused with the field of view of a conventional camera.
+For a uniform angular sampling with resolution $N_\theta \times N_\phi$, the angles $\theta_i$ and $\phi_j$ are
+\begin{equation}
+	\begin{aligned}
+		\theta_i = \theta_\text{min} + (i - 1) \frac{\text{FOV}_\theta}{N_\theta - 1}, & \qquad & 	
+		\phi_j 	 = \phi_\text{min} + (j - 1) \frac{\text{FOV}_\phi}{N_\phi - 1},
+	\end{aligned}
+\end{equation}
+where $i = 1, 2, \dots, N_\theta$ and $j = 1, 2, \dots, N_\phi$.
+
 Given a light field $L(u, v, s, t)$ and the distance $d$ between the two planes, a re-parameterization $L^{\prime}(\theta, \phi, s, t)$ can be obtained according to figure~\ref{fig:ObliqueProjectionReparameterization} by the transformation
-\begin{align*}
-		& \theta = \arctan\left(\frac{u - s}{d}\right), & \phi = \arctan\left(\frac{v - t}{d}\right).
-\end{align*}
-However, it is not feasible to build cameras of this type and so, oblique projection is left to be used exclusively by computers for rendering synthetic scenes.
+\begin{equation}
+	\begin{aligned}
+		\theta = \arctan\left(\frac{u - s}{d}\right), & \qquad \qquad & \phi = \arctan\left(\frac{v - t}{d}\right).
+	\end{aligned}
+\end{equation}
+Note that uniform sampling in angular dimension does not yield a uniform grid in the $(u, v)$-plane.
+Despite the simplicity of this projection type, it is not feasible to build cameras of this type and so, oblique projection is left to be used exclusively by computers for rendering synthetic scenes.
 % TODO: Refer to a figure with a synthetic scene.
 
 \begin{figure}[tb]
@@ -77,11 +86,14 @@ However, it is not feasible to build cameras of this type and so, oblique projec
 \end{figure}
 
 \subsection*{Perspective Projection}
-% Figure
 % Parameterization, two main types: global or relative
 % Reparameterization: Orthographic <-> Perspective
-% 
-The angles of the rays in a light field captured by perspective projections are determined by the focal length and the sensor resolution of the camera.
+
+Another way to capture the light field is with a grid of optical systems, e.g. cameras.
+Typically, the $(u, v)$-plane is sampled on a grid $G_{uv} = \left \{ \left( u_i, v_j \right) \mid i = 1,\dots, n, j = 1, \dots, m\right \}$ on the $(u, v)$-plane with a resolution $n \times m$.
+The extent in horizontal (vertical) direction is called the horizontal (vertical) \textbf{baseline}.
+Although it is strictly speaking not correct, the resolution of the $(u, v)$-plane is often referred to as the angular resolution. 
+The angles of the rays in a light field captured by perspective projections are determined by the focal length, the sensor size and the sensor resolution of the camera.
 For a camera light field, typically it is expected that
 \begin{itemize}
 	\item All cameras are placed at grid positions in $G_{uv}$ on the same plane, called the $(u, v)$-plane, 
@@ -97,14 +109,14 @@ Thus, the light field in continuous coordinates is obtained by
 \end{equation}
 In the discrete case, each camera captures sample points on the $(s, t)$-plane, but not everyone of these sample points on the $(s, t)$-plane is captured by every camera.
 So, as demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera images need to be rectified such that all discrete coordinates $(u, v, s, t)$ correspond to valid rays.
-This rectification process is equivalent to a re-parameterization $L^\prime$ of the continuous light field $L$ given by the formula
+This rectification process is equivalent to a re-parameterization $L^\prime$ of the continuous light field $L$, given by the formula
 \begin{equation}
-	L^\prime (u, v, s^\prime, t^\prime) = L \left(u, v, \gamma (s - u) + u, \gamma (t - v) + v \right), 
+	L^\prime (u, v, s^\prime, t^\prime) = L \left(u, v, \gamma (s^\prime - u) + u, \gamma (t^\prime - v) + v \right), 
 \end{equation}
 where $\gamma = \frac{d}{d^\prime}$ and $d^\prime$ is the distance between the $(u, v)$-plane and the new \mbox{$(s^\prime, t^\prime)$-plane}.
 As derived by \cite{DynamicallyReparameterizedLF}, this re-parameterization is equivalent to a 4D shear.
 
-Another way to understand this coordinate change is to imagine the $(u, v)$- and $(s, t)$-plane being the aperture and sensor planes respectively, resulting in one big camera in which a light field is formed.
+A different way to understand this coordinate change is to imagine the $(u, v)$- and $(s, t)$-plane being the aperture and sensor planes respectively, resulting in one big camera in which a light field is formed.
 Changing the distance between the two planes is now equivalent to changing the focal length of this one camera.
 The effect on the light field inside is similar to refocusing, except that in a conventional camera, the image on the sensor is formed by a weighted integral over $u$ and $v$ such that the angular information vanishes.
 Objects at focal distance from the camera would appear sharp and objects away from the focal point would become blurred.

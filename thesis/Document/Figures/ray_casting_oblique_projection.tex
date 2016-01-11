@@ -47,15 +47,17 @@
 		\draw[->, red] (-2, -8) -- (6, 8);	
 		
 		% Intersection markers
-		\fill[red] (2, 0) circle[radius = 0.2];
-		\fill[red] (5, 6) circle[radius = 0.2];
-		\fill[red] (-1, -6) circle[radius = 0.2];	
+		\fill[red] (2, 0) circle[radius = 0.25];
+		\fill[red] (5, 6) circle[radius = 0.25];
+		\fill[red] (-1, -6) circle[radius = 0.25];	
 		
 		% Width markers
-		\draw (-12, -0.5) -- (-12, 0.5);
-		\draw (12, -0.5) -- (12, 0.5);
-		\node[below] at (-12, -0.5) {$-\frac{w}{2}$};
-		\node[below] at (12, -0.5) {$\frac{w}{2}$};
+		\draw (-12, -0.5 + 6) -- (-12, 0.5 + 6);
+		\draw (12, -0.5 + 6) -- (12, 0.5 + 6);
+		\draw (-12, -0.5 - 6) -- (-12, 0.5 - 6);
+		\draw (12, -0.5 - 6) -- (12, 0.5 - 6);
+		\node[below] at (-12, -0.5 - 6) {$-\frac{w}{2}$};
+		\node[below] at (12, -0.5 - 6) {$\frac{w}{2}$};
 		
 	\end{tikzpicture}
 	
