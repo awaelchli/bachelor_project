@@ -8,14 +8,6 @@
 	
 		\colorlet{lightgray}{gray!30}
 		
-		% Top and bottom layer planes
-		\draw[->] (-14, -6) -- (14, -6);
-		\draw[->] (-14, 6) -- (14, 6);
-		
-		% Sensor plane
-		\draw[<-] (14, 0) -- (-14, 0);
-		\node[right] at (14, 0) {$s$};
-		
 		% Rays and intersections
 		
 		\draw[->, lightgray] (8, -8) -- (16, 8);
@@ -34,6 +26,14 @@
 		
 		\draw[ultra thick] (-12, -6) -- (12, -6);
 		\draw[ultra thick] (-12, 6) -- (12, 6);
+		
+		% Sensor plane
+		\draw[<-] (14, 0) -- (-14, 0);
+		\node[right] at (14, 0) {$s$};
+		
+		% Top and bottom layer planes
+		\draw[->] (-14, -6) -- (14, -6);
+		\draw[->] (-14, 6) -- (14, 6);
 		
 		% z-axis
 		\draw[->] (0, 8) -- (0, -8);

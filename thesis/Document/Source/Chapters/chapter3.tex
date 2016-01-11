@@ -168,7 +168,7 @@ It is also assumed that the image plane $s$ of the virtual cameras is bisecting 
 $z_0 = \frac{Z_{\text{max}} - Z_{\text{min}}}{2}$.
 
 \subsection*{Oblique Projection}
-%TODO: Explain how to compute indices
+
 The setup for the oblique projection type is illustrated in figure~\ref{fig:ray_casting_oblique_projection}.
 Let $\theta_i$ denote the angle of the \mbox{$i$-th} oblique view from the light field.
 Following the notation in previous sections, the linear index $m = m(i, k)$ indentifies the ray $(\theta_i, s(k))$.
@@ -186,10 +186,7 @@ and the new index is $k^\prime = k + \Delta k$.
 The brackets in the above equation denote the rounding operation.
 Finally, this information is stored in the propagation matrix with the assignment $P_{m k^\prime}^{(n)} = 1$.
 
-%TODO: Insert text for caption
-%TODO: Naming layer axes
-%TODO: Naming layer spacing
-\begin{figure}
+\begin{figure}[htb]
 	\centering
 	\input{../Figures/ray_casting_oblique_projection}
 	\caption{Computation of the ray-layer intersection for the construction of the propagation matrix.
@@ -199,4 +196,10 @@ Finally, this information is stored in the propagation matrix with the assignmen
 \end{figure}
 
 \subsection*{Perspective Projection}
-%TODO: Figure
+
+\begin{figure}[htb]
+	\centering
+	\input{../Figures/ray_casting_perspective_projection}
+	\caption{text}
+	\label{fig:ray_casting_perspective_projection}
+\end{figure}
