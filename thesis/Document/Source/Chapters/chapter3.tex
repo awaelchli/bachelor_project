@@ -168,14 +168,23 @@ It is also assumed that the image plane $s$ of the virtual cameras is bisecting 
 $z_0 = \frac{Z_{\text{max}} - Z_{\text{min}}}{2}$.
 
 \subsection*{Oblique Projection}
-
+%TODO: Explain how to compute indices
 The setup for the oblique projection type is illustrated in figure~\ref{fig:ray_casting_oblique_projection}.
-Let $\theta_i$ denote the angle of the \mbox{$i$-th} view $L(\theta_i, s)$ from the light field.
-The intersection of the ray $(\theta_i, s)$ with the \mbox{$n$-th} layer is simply
+Let $\theta_i$ denote the angle of the \mbox{$i$-th} oblique view from the light field.
+Following the notation in previous sections, the linear index $m = m(i, k)$ indentifies the ray $(\theta_i, s(k))$.
+The intersection of ray $m$ with the \mbox{$n$-th} layer is simply
 \begin{equation}\label{eq:layer_intersection}
-	s_n = s + \Delta z \tan (\theta_i), 
+	h(m, n) = s(k) + \Delta z \tan (\theta_i), 
 \end{equation}
-where $\Delta z = z_0 - z_n$ is the distance between the image plane and layer $n$.
+where $\Delta z = z_0 - z_n$ is the displacement of layer $n$ from the image plane.
+The next step is to compute the pixel index at the point $h(m, n)$.
+The shift in pixel units can directly be derived from the shift in equation~\ref{eq:layer_intersection} given the pixel size $\Delta s$, yielding
+\begin{equation}
+	\Delta k = \left[ \frac{\Delta z \tan (\theta_i)}{\Delta s} \right],
+\end{equation}
+and the new index is $k^\prime = k + \Delta k$.
+The brackets in the above equation denote the rounding operation.
+Finally, this information is stored in the propagation matrix with the assignment $P_{m k^\prime}^{(n)} = 1$.
 
 %TODO: Insert text for caption
 %TODO: Naming layer axes
@@ -183,7 +192,9 @@ where $\Delta z = z_0 - z_n$ is the distance between the image plane and layer $
 \begin{figure}
 	\centering
 	\input{../Figures/ray_casting_oblique_projection}
-	\caption{text}
+	\caption{Computation of the ray-layer intersection for the construction of the propagation matrix.
+			 Two attenuation layers are drawn (top and bottom) with the virtual image plane in the center.
+			 Light rays (gray) at a fixed angle $\theta_i$ intersect the layers at positions to be calculated.}
 	\label{fig:ray_casting_oblique_projection}
 \end{figure}
 
