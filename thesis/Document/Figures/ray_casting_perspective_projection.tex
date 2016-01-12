@@ -5,9 +5,9 @@
 
 \begin{document}
 	
-	\begin{tikzpicture}[scale = 0.25,
-						one end extended/.style={shorten <=-#1},
-	 					one end extended/.default=1cm,
+	\begin{tikzpicture}[scale = 0.19,
+						one end extended/.style = {shorten <= -#1},
+	 					one end extended/.default = 1cm,
 	 					]
 	
 		\colorlet{lightgray}{gray!30}
@@ -81,6 +81,8 @@
 		\draw[ultra thick] (-12, 6) -- (12, 6);
 		\draw[->] (0, 15 + 2) -- (0, -8);
 		\node[below] at (0, -8) {$z$};
+		
+		\draw[one end extended = 10cm, red, name path = ray] (s7) -- (cameraCenter);
 		
 		% Intersection markers
 		\fill[red] (-1.2, -6) circle[radius = 0.25];

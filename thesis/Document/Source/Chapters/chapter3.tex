@@ -162,10 +162,27 @@ For continuous light fields, it is always possible to apply a re-parameterizatio
 For discrete light fields however, this would require a suitable interpolation in ray-space, which gives poor results when the distribution of samples in the target space becomes too sparse.
 
 What follows is a description of two methods to compute the indices for the non-zero entries in $P$. 
-For simplicity, a two-dimensional attenuator of size $w$ is assumed, consisting of $N$ layers at various depths 
+For simplicity, only a two-dimensional attenuator of size $w$ is assumed, consisting of $N$ layers at various depths 
 $Z_{\text{min}} = z_1 < z_2 < \dots < z_N = Z_{\text{max}}$.
 It is also assumed that the image plane $s$ of the virtual cameras is bisecting the attenuator in the middle, at depth 
 $z_0 = \frac{Z_{\text{max}} - Z_{\text{min}}}{2}$.
+
+\begin{figure}[htb]
+	\subfigure[]{
+		\centering
+		\input{../Figures/ray_casting_oblique_projection}
+		\label{fig:ray_casting_oblique_projection}
+	}
+	\hfill
+	\subfigure[]{
+		\centering
+		\input{../Figures/ray_casting_perspective_projection}
+		\label{fig:ray_casting_perspective_projection}
+	}
+	\caption{Computation of the ray-layer intersections from oblique (a) and perspective (b) projections.
+			 Two attenuation layers are drawn (top and bottom) with the virtual image plane in the center.
+			 Light rays intersect the layers at positions to be calculated.}
+\end{figure}
 
 \subsection*{Oblique Projection}
 
@@ -186,20 +203,17 @@ and the new index is $k^\prime = k + \Delta k$.
 The brackets in the above equation denote the rounding operation.
 Finally, this information is stored in the propagation matrix with the assignment $P_{m k^\prime}^{(n)} = 1$.
 
-\begin{figure}[htb]
-	\centering
-	\input{../Figures/ray_casting_oblique_projection}
-	\caption{Computation of the ray-layer intersection for the construction of the propagation matrix.
-			 Two attenuation layers are drawn (top and bottom) with the virtual image plane in the center.
-			 Light rays (gray) at a fixed angle $\theta_i$ intersect the layers at positions to be calculated.}
-	\label{fig:ray_casting_oblique_projection}
-\end{figure}
-
 \subsection*{Perspective Projection}
 
-\begin{figure}[htb]
-	\centering
-	\input{../Figures/ray_casting_perspective_projection}
-	\caption{text}
-	\label{fig:ray_casting_perspective_projection}
-\end{figure}
+For the perspective projection, it is assumed that the \mbox{$(u, v)$-plane} (or \mbox{$u$-plane} here) is at depth $Z_u$, with a distance $z_0 - Z_u$ from the image plane.
+Again, let $m = m(i, k)$ be the index that identifieds the ray $(u(i), s(k))$.
+Finding the coordinates of the ray $(u, s)$ on a layer is similar to the re-parameterization in equation~\ref{eq:two_plane_reparameterization}.
+Setting $\gamma = \frac{z_0 - Z_u}{z_n - Z_u}$ for layer $n$, the formula for the intersection is
+\begin{equation}
+	h(m, n) = \gamma (s(k) - u(i)) + u(i).
+\end{equation}
+As before, the new pixel index $k^\prime = k + \Delta k$ is computed from the shift in the number of pixels
+\begin{equation}
+	\Delta k = \left[ \frac{h(m, n) - s(k)}{\Delta s} \right], 
+\end{equation}
+and the assignment $P_{m k^\prime}^{(n)} = 1$ is made.

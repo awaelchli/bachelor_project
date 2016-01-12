@@ -110,7 +110,7 @@ Thus, the light field in continuous coordinates is obtained by
 In the discrete case, each camera captures sample points on the $(s, t)$-plane, but not everyone of these sample points on the $(s, t)$-plane is captured by every camera.
 So, as demonstrated in figure~\ref*{fig:RectifiedPerspectiveProjection}, the camera images need to be rectified such that all discrete coordinates $(u, v, s, t)$ correspond to valid rays.
 This rectification process is equivalent to a re-parameterization $L^\prime$ of the continuous light field $L$, given by the formula
-\begin{equation}
+\begin{equation}\label{eq:two_plane_reparameterization}
 	L^\prime (u, v, s^\prime, t^\prime) = L \left(u, v, \gamma (s^\prime - u) + u, \gamma (t^\prime - v) + v \right), 
 \end{equation}
 where $\gamma = \frac{d}{d^\prime}$ and $d^\prime$ is the distance between the $(u, v)$-plane and the new \mbox{$(s^\prime, t^\prime)$-plane}.

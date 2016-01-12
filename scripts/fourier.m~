@@ -1,8 +1,8 @@
 close all;
 clc;
 
-% inputEPI = 'thesis/Document/Figures/epi_1x500x1000x1000/scanY=641.png';
-inputEPI = 'thesis/Document/Figures/epi_1x500x1000x1000/rectified/scanY=641.png';
+% inputEPI = 'thesis/Document/Figures/epi_1x500x1000x1000/scanY=379.png';
+inputEPI = 'thesis/Document/Figures/epi_1x500x1000x1000/rectified/scanY=379.png';
 % inputEPI = 'lightFields/constant/one_object.png';
 % inputEPI = 'lightFields/constant/two_objects.png';
 
@@ -44,7 +44,6 @@ minimum = min(min(spectrum));
 spectrum = (spectrum - minimum) / (maximum - minimum);
 
 %% Display spectrum
-
 figure;
 imshow(spectrum);
 title('$ \log (1 + \textrm{abs} ( \hat{f} ) )$', 'interpreter', 'latex');
@@ -53,4 +52,45 @@ figure;
 clamp = 0.5;
 imshow(spectrum > clamp);
 title(sprintf('$ \log (1 + \textrm{abs} ( \hat{f} ) ) > %i$', clamp), 'interpreter', 'latex');
+
+%% Convolution
+
+% %% Artificially create Fourier image and apply inverse Fourier transform
+% 
+% % Size of the image
+% s = 500;
+% 
+% % Specify slope of the two lines
+% slope1 = -5;
+% slope2 = -1.5;
+% 
+% m1 = createLineMask(s, slope1, 4 * s);
+% m2 = createLineMask(s, slope2, 4 * s);
+% 
+% m = m1 | m2;
+% 
+% figure;
+% imshow(m);
+% 
+% convolution = conv2(m1, m2);
+% 
+% figure; 
+% imshow(convolution);
+% 
+% 
+% slopes = -5 : 0.5 : -1.5;
+% 
+% m = createLineMask(s, slopes(1), 4 * s);
+% convolution = m;
+% 
+% for i = 2 : numel(slopes)
+%     
+%     m1 = createLineMask(s, slopes(i), 4 * s);
+%     
+%     convolution = conv2(convolution, m1);
+%     
+% end
+% 
+% figure;
+% imshow(convolution);
 
