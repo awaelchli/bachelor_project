@@ -2,9 +2,13 @@ close all;
 clc;
 
 % inputEPI = 'thesis/Document/Figures/epi_1x500x1000x1000/scanY=641.png';
-inputEPI = 'thesis/Document/Figures/epi_1x500x1000x1000/rectified/scanY=641.png';
-% inputEPI = 'lightFields/constant/one_object.png';
+% inputEPI = 'thesis/Document/Figures/epi_1x500x1000x1000/rectified/scanY=641.png';
+inputEPI = 'lightFields/constant/one_object1.png';
+% inputEPI = 'lightFields/constant/one_object2.png';
 % inputEPI = 'lightFields/constant/two_objects.png';
+
+% Name and location to store the fourier image as .mat file
+output = 'output/fft1.mat';
 
 %% Read input
 I = imread(inputEPI);
@@ -42,6 +46,8 @@ maximum = max(max(spectrum));
 minimum = min(min(spectrum));
 % Scaling maximum to 255 and minimum to 0:
 spectrum = (spectrum - minimum) / (maximum - minimum);
+
+save(output, 'f');
 
 %% Display spectrum
 
