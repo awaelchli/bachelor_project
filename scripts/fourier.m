@@ -52,5 +52,5 @@ title('$ \log (1 + \textrm{abs} ( \hat{f} ) )$', 'interpreter', 'latex');
 figure;
 clamp = 0.5;
 imshow(spectrum > clamp);
-title(sprintf('$ \log (1 + \textrm{abs} ( \hat{f} ) ) > %i$', clamp), 'interpreter', 'latex');
+title(['$ \log (1 + \textrm{abs} ( \hat{f} ) ) > ' num2str(clamp) '$'], 'interpreter', 'latex');
 
