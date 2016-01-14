@@ -76,13 +76,13 @@
 		\node[right] at (14, 15) {$u$};
 		\draw[<-] (14, 0) -- (-14, 0);
 		\node[right] at (14, 0) {$s$};
-		\fill[black] (cameraCenter) circle[radius = 0.25];
 		\draw[ultra thick] (-12, -6) -- (12, -6);
 		\draw[ultra thick] (-12, 6) -- (12, 6);
 		\draw[->] (0, 15 + 2) -- (0, -8);
 		\node[below] at (0, -8) {$z$};
 		
 		\draw[one end extended = 10cm, red, name path = ray] (s7) -- (cameraCenter);
+		\fill[black] (cameraCenter) circle[radius = 0.25];
 		
 		% Intersection markers
 		\fill[red] (-1.2, -6) circle[radius = 0.25];
