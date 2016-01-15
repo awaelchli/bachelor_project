@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  15 JAN 2016 00:45
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  15 JAN 2016 23:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -996,7 +996,7 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (../Figures/perspective-projection-shift.tex)
 (../Figures/perspective-projection-sheared.tex) [5]
 (../Figures/epi_dice_overview.tex
-<../Figures/epi_1x500x1000x1000/overview.png, id=206, 1003.75pt x 617.30624pt>
+<../Figures/epi_1x500x1000x1000/overview.png, id=211, 1003.75pt x 617.30624pt>
 File: ../Figures/epi_1x500x1000x1000/overview.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/overview.png>
@@ -1004,7 +1004,7 @@ Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/overview.png used on in
 put line 25.
 (pdftex.def)             Requested size: 92.3553pt x 56.79851pt.
 ) (../Figures/epi_dice_1.tex
-<../Figures/epi_1x500x1000x1000/scanY=379.png, id=207, 1003.75pt x 501.875pt>
+<../Figures/epi_1x500x1000x1000/scanY=379.png, id=212, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=379.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=379.png>
@@ -1012,7 +1012,7 @@ Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=379.png used on i
 nput line 24.
 (pdftex.def)             Requested size: 92.3553pt x 46.17764pt.
 ) (../Figures/epi_dice_2.tex
-<../Figures/epi_1x500x1000x1000/scanY=641.png, id=208, 1003.75pt x 501.875pt>
+<../Figures/epi_1x500x1000x1000/scanY=641.png, id=213, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=641.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=641.png>
@@ -1021,7 +1021,7 @@ nput line 24.
 (pdftex.def)             Requested size: 92.3553pt x 46.17764pt.
 )
 (../Figures/epi_dice_overview_rectified.tex
-<../Figures/epi_1x500x1000x1000/rectified/overview.png, id=209, 752.8125pt x 61
+<../Figures/epi_1x500x1000x1000/rectified/overview.png, id=214, 752.8125pt x 61
 7.30624pt>
 File: ../Figures/epi_1x500x1000x1000/rectified/overview.png Graphic file (type 
 png)
@@ -1031,7 +1031,7 @@ used on input line 25.
 (pdftex.def)             Requested size: 69.26648pt x 56.79851pt.
 )
 (../Figures/epi_dice_1_rectified.tex
-<../Figures/epi_1x500x1000x1000/rectified/scanY=379.png, id=210, 752.8125pt x 5
+<../Figures/epi_1x500x1000x1000/rectified/scanY=379.png, id=215, 752.8125pt x 5
 01.875pt>
 File: ../Figures/epi_1x500x1000x1000/rectified/scanY=379.png Graphic file (type
  png)
@@ -1041,7 +1041,7 @@ Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/rectified/scanY=379.png
 (pdftex.def)             Requested size: 69.26648pt x 46.17764pt.
 )
 (../Figures/epi_dice_2_rectified.tex
-<../Figures/epi_1x500x1000x1000/rectified/scanY=641.png, id=211, 752.8125pt x 5
+<../Figures/epi_1x500x1000x1000/rectified/scanY=641.png, id=216, 752.8125pt x 5
 01.875pt>
 File: ../Figures/epi_1x500x1000x1000/rectified/scanY=641.png Graphic file (type
  png)
@@ -1078,10 +1078,13 @@ Chapter 4.
 
 
 
-] (../Figures/epi_fourier_transform.tex)) [13]
+] (../Figures/spectral_support/two_objects.tex)
+(../Figures/spectral_support/epi_two_objects.tex)
+(../Figures/spectral_support/epi_fourier_transform.tex)) [13]
 \openout2 = `Chapters/appendix.aux'.
 
- (./Chapters/appendix.tex
+
+(./Chapters/appendix.tex
 Appendix A.
 ) [14
 
@@ -1112,7 +1115,7 @@ ion. (b) Re-parameterization
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
-) <Erklaerung.pdf, id=349, 597.23125pt x 845.1575pt>
+) <Erklaerung.pdf, id=357, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf>
@@ -1125,7 +1128,7 @@ Package pdftex.def Info: Erklaerung.pdf used on input line 105.
  [17
 
 ]
-<Erklaerung.pdf, id=359, page=1, 597.23125pt x 845.1575pt>
+<Erklaerung.pdf, id=367, page=1, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
@@ -1159,14 +1162,14 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 107.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 107.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 107.
 Package rerunfilecheck Info: File `thesis.out' has not changed.
-(rerunfilecheck)             Checksum: A25B58C19D52704C8F8805AF4AE7868C;1314.
+(rerunfilecheck)             Checksum: F6FE59DF8DC34ECB776E8454F49349B4;1381.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 107.
  ) 
 Here is how much of TeX's memory you used:
- 30782 strings out of 494931
- 704887 string characters out of 6178405
- 865895 words of memory out of 5000000
- 33265 multiletter control sequences out of 15000+600000
+ 30815 strings out of 494931
+ 705679 string characters out of 6178405
+ 865947 words of memory out of 5000000
+ 33287 multiletter control sequences out of 15000+600000
  8714 words of font info for 33 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  84i,18n,377p,756b,2493s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1186,10 +1189,10 @@ blic/amsfonts/cm/cmsy5.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmsy7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
 i10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.
 pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on thesis.pdf (22 pages, 1090336 bytes).
+Output written on thesis.pdf (22 pages, 1092653 bytes).
 PDF statistics:
- 462 PDF objects out of 1000 (max. 8388607)
- 399 compressed objects within 4 object streams
- 102 named destinations out of 1000 (max. 500000)
- 231 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 472 PDF objects out of 1000 (max. 8388607)
+ 408 compressed objects within 5 object streams
+ 106 named destinations out of 1000 (max. 500000)
+ 239 words of extra memory for PDF output out of 10000 (max. 10000000)
 
