@@ -1,31 +1,52 @@
 close all;
 clc;
 
-input1 = 'output/fft3.mat';
-input2 = 'output/fft4.mat';
+input1 = 'output/fft_layer_1.mat';
+input2 = 'output/fft_layer_2.mat';
+input3 = 'output/fft_layer_3.mat';
+
+inputs = {input1, input2, input3};
 
 %% Read input
 
-load(input1, 'f');
-fft1 = f;
-load(input2, 'f');
-fft2 = f;
+n = numel(inputs);
+ffts = cell(1, numel(n));
+
+m = ceil(sqrt(n));
 
 figure;
-subplot(1, 2, 1); 
-imagesc(fftshift(fft1));
-axis equal image;
-subplot(1, 2, 2);
-imagesc(fftshift(fft2));
-axis equal image;
 
-%% Convolution
-c = conv2(fft1, fft2);
+for i = 1 : n
+    
+    load(inputs{i}, 'f');
+    ffts{i} = f;
+  
+    subplot(m, m, i); 
+    imagesc(log(1 + abs(ffts{i})));
+    colormap jet;
+    axis equal image;
+end
+
+%% Repeated convolution
+
+c = ffts{1};
+for i = 2 : n
+    
+    c = conv2(c, ffts{i}, 'same');
+    
+end
 
 %% Display
 
+% Normalize
+response = abs(c);
+response = log(1 + response);
+response = (response - min(response(:))) / (max(response(:)) - min(response(:)));
+
 figure;
-imagesc(c);
+imagesc(log(1 + response));
+colormap jet;
+colorbar;
 axis equal image;
 title('Convolution of Fourier images');
 
