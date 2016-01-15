@@ -53,18 +53,17 @@ This means that the angular resolution is simply the number of cameras, and the 
 The angular extent from $\theta_\text{min}$ to $\theta_\text{max}$ is called the \textbf{field of view} (FOV) of the light field and should not be confused with the field of view of a conventional camera.
 For a uniform angular sampling with resolution $N_\theta \times N_\phi$, the angles $\theta_i$ and $\phi_j$ are
 \begin{equation}
-	\begin{aligned}
-		\theta_i = \theta_\text{min} + (i - 1) \frac{\text{FOV}_\theta}{N_\theta - 1}, & \qquad & 	
+		\theta_i = \theta_\text{min} + (i - 1) \frac{\text{FOV}_\theta}{N_\theta - 1}, 
+		\qquad 
 		\phi_j 	 = \phi_\text{min} + (j - 1) \frac{\text{FOV}_\phi}{N_\phi - 1},
-	\end{aligned}
 \end{equation}
 where $i = 1, 2, \dots, N_\theta$ and $j = 1, 2, \dots, N_\phi$.
 
 Given a light field $L(u, v, s, t)$ and the distance $d$ between the two planes, a re-parameterization $L^{\prime}(\theta, \phi, s, t)$ can be obtained according to figure~\ref{fig:ObliqueProjectionReparameterization} by the transformation
 \begin{equation}
-	\begin{aligned}
-		\theta = \arctan\left(\frac{u - s}{d}\right), & \qquad \qquad & \phi = \arctan\left(\frac{v - t}{d}\right).
-	\end{aligned}
+		\theta = \arctan\left(\frac{u - s}{d}\right), 
+		\qquad \qquad
+		\phi = \arctan\left(\frac{v - t}{d}\right).
 \end{equation}
 Note that uniform sampling in angular dimension does not yield a uniform grid in the $(u, v)$-plane.
 Despite the simplicity of this projection type, it is not feasible to build cameras of this type and so, oblique projection is left to be used exclusively by computers for rendering synthetic scenes.
@@ -123,17 +122,19 @@ Objects at focal distance from the camera would appear sharp and objects away fr
 
 %TODO: Refer section about the plenoptic camera
 
-From stereo vision, it is known that the displacement of the projections in the image planes of two cameras is only dependent on the focal length $f$, the baseline $\Delta u$ and the distance $z$, and the relation is given by $\Delta s = f \Delta u / z$.
+From stereo vision, it is known that the displacement of the projections in the image planes of two cameras is only dependent on the focal length $f$, the baseline $\Delta u$ and the distance $z$, and the relation is given by $\Delta x = f \Delta u / z$.
 This knowledge can directly be applied to the two-plane parameterization. 
 For the continuous light field, it amounts to
 \begin{equation}
-	\textrm{d}s = \frac{d}{z} \, \textrm{d}u 
+	\textrm{d}s = \frac{z - Z_{st}}{z - Z_{uv}} \, \textrm{d}u 
 	\qquad
 	\text{and} 
 	\qquad
-	\textrm{d}t = \frac{d}{z} \, \textrm{d}v.
+	\textrm{d}t = \frac{z - Z_{st}}{z - Z_{uv}} \, \textrm{d}v,
 \end{equation}
-In the discrete case, the displacement $\Delta s$ or $\Delta t$ is also called the \textbf{disparity} and is often given in pixel units.
+with $Z_{uv}$ and $Z_{st}$ denoting the placement of the $(u, v)$- and \mbox{$(s, t)$-planes} in \mbox{$Z$-direction}.
+Usually, the coordinate system is chosen such that $Z_{uv} = 0$.
+In the discrete case, the displacement $\Delta s$ or $\Delta t$ is also called the \textbf{disparity} and is often measured in pixel units.
 
 \begin{figure}[tb]
 	\subfigure[]{
@@ -152,7 +153,6 @@ In the discrete case, the displacement $\Delta s$ or $\Delta t$ is also called t
 			 (b) Discarding unused rays corresponds to cropping the camera images.}
 \end{figure}
 
-
 \section{Visualization}
 \label{sec:Visualization}
 %TODO: Mention other types of visualization: 2D grid of images, etc.
@@ -168,9 +168,9 @@ In figure~\ref{fig:epi_example_perspective}, a synthetic scene is rendered in 50
 Since the camera movement is in horizontal direction only, the epipolar lines correspond to a fixed pixel row in each image.
 The EPIs shown in figures~\ref{fig:epi_1x500x1000x1000_scanline1} and ~\ref{fig:epi_1x500x1000x1000_scanline2} are created by collecting the chosen pixel row (scanline) in every image and stacking it up.
 
-As described in the previous section, the depth component of $P$ occurs as a displacement of the projections in consecutive images 
+As described in the previous section, the depth component of $P$ occurs as a displacement of the projections in consecutive images.
 Under the assumption that the $(u, v)$-plane is sampled uniformly, the disparity $D$ with respect to $P$ is stays constant from one image to the next.
-Thus, following the projection of the point $P$ in every image corresponds to a line in the EPI with slope $1 / D$.
+Thus, following the projection of the point $P$ in every image corresponds to a line in the EPI with a slope proportional to $1 / D$.
 \cite{EPI} refer to this line as the \textbf{feature path}.
 This means that points farther away from the camera will appear as a feature path in the EPI with steeper slope than points close to the camera.
 Note that the depth range in the light field can immediately be determined by identifying the maximum and minimum slope in the EPI.

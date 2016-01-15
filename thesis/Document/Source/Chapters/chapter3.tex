@@ -1,6 +1,7 @@
 \chapter{Light Field Tomography}
 
 \section{A Model for Light Attenuation}
+\label{sec:light_attenuation_model}
 %TODO: Derivation according to Wetzstein
 % Explain linearity in log domain
 % Mention other tomographic projection types
@@ -128,31 +129,6 @@ Finally, when optimal values $\alpha$ are found, the transmittance used to fabri
 Also note that the matrix P is very sparse because it is assumed that a ray passes through each layer at exactly one pixel no more than once and inter-reflections between the layers are not supported by the model.
 Thus, $P$ can be efficiently stored using an appropriate data structure.
 
-\section{Iterative Reconstruction}
-
-%TODO: Show plot of residual norm in each iteration
-%TODO: Compare to linear least squares method from MATLAB
-%TODO: Mention choice of relaxation parameter lambda = 1
-
-The optimization problem in equation~\ref{eq:minimize_norm} is essentially a fitting problem.
-Theoretically, it can be solved in a least squares sense using the normal equation $P^T P \alpha = P^T \bar{L}$ and by inverting the matrix $P^T P$.
-For high resolution light fields, the matrix $P$ becomes extremely large and it is unfeasible to compute the inverse of $P^T P$.
-
-In general, the approach to solve these kind of problems is to use iterative methods.
-The choice of the method depends on the type of problem and the structure of the design matrix.
-In computed tomography, a variety of iterative solvers have been developed to solve the exact same problem. 
-Among the different methods is the Simultaneous Algebraic Reconstruction Technique (\mbox{SART}) first proposed by \cite{SART}.
-The update rule of \mbox{SART} for iteration $k = 0, 1, 2, \dots$ is
-\begin{equation}\label{eq:SART_update_rule}
-	\alpha^{(k + 1)} = \alpha^{(k)} + \lambda C P^T R \left( \bar{L} - P \alpha^{(k)} \right), 	
-\end{equation}
-where $\lambda$ is a relaxation factor.
-$R$ and $C$ denote the diagonal matrices with entries $R_{ii} = \frac{1}{r_i}$ and $C_{ii} = \frac{1}{c_i}$, where $r_i$ and $c_i$ are the sum of the elements in the \mbox{$i$-th} row and column of $P$ respectively.
-The parts in~\ref{eq:SART_update_rule} involving $P$ and $P^T$ are also referred to as the \textbf{forward}- and \textbf{back-projection} respectively.
-
-The convergence of \mbox{SART} has been studied by \cite{ConvergenceSART2}.
-They have proven that it converges to a weighted least squares solution.
-
 \section{Ray Casting}
 \label{sec:ray_casting}
 
@@ -168,6 +144,7 @@ It is also assumed that the image plane $s$ of the virtual cameras is bisecting 
 $z_0 = \frac{Z_{\text{max}} - Z_{\text{min}}}{2}$.
 
 \begin{figure}[htb]
+	\centering
 	\subfigure[]{
 		\centering
 		\input{../Figures/ray_casting_oblique_projection}
@@ -217,3 +194,28 @@ As before, the new pixel index $k^\prime = k + \Delta k$ is computed from the sh
 	\Delta k = \left[ \frac{h(m, n) - s(k)}{\Delta s} \right], 
 \end{equation}
 and the assignment $P_{m k^\prime}^{(n)} = 1$ is made.
+
+\section{Iterative Reconstruction}
+
+%TODO: Show plot of residual norm in each iteration
+%TODO: Compare to linear least squares method from MATLAB
+%TODO: Mention choice of relaxation parameter lambda = 1
+
+The optimization problem in equation~\ref{eq:minimize_norm} is essentially a fitting problem.
+Theoretically, it can be solved in a least squares sense using the normal equation $P^T P \alpha = P^T \bar{L}$ and by inverting the matrix $P^T P$.
+For high resolution light fields, the matrix $P$ becomes extremely large and it is unfeasible to compute the inverse of $P^T P$.
+
+In general, the approach to solve these kind of problems is to use iterative methods.
+The choice of the method depends on the type of problem and the structure of the design matrix.
+In computed tomography, a variety of iterative solvers have been developed to solve the exact same problem. 
+Among the different methods is the Simultaneous Algebraic Reconstruction Technique (\mbox{SART}) first proposed by \cite{SART}.
+The update rule of \mbox{SART} for iteration $k = 0, 1, 2, \dots$ is
+\begin{equation}\label{eq:SART_update_rule}
+\alpha^{(k + 1)} = \alpha^{(k)} + \lambda C P^T R \left( \bar{L} - P \alpha^{(k)} \right), 	
+\end{equation}
+where $\lambda$ is a relaxation factor.
+$R$ and $C$ denote the diagonal matrices with entries $R_{ii} = \frac{1}{r_i}$ and $C_{ii} = \frac{1}{c_i}$, where $r_i$ and $c_i$ are the sum of the elements in the \mbox{$i$-th} row and column of $P$ respectively.
+The parts in~\ref{eq:SART_update_rule} involving $P$ and $P^T$ are also referred to as the \textbf{forward}- and \textbf{back-projection} respectively.
+
+The convergence of \mbox{SART} has been studied by \cite{ConvergenceSART2}.
+They have proven that it converges to a weighted least squares solution.
