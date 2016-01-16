@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  15 JAN 2016 23:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  16 JAN 2016 21:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1009,7 +1009,7 @@ File: ../Figures/epi_1x500x1000x1000/scanY=379.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=379.png>
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=379.png used on i
-nput line 24.
+nput line 25.
 (pdftex.def)             Requested size: 92.3553pt x 46.17764pt.
 ) (../Figures/epi_dice_2.tex
 <../Figures/epi_1x500x1000x1000/scanY=641.png, id=213, 1003.75pt x 501.875pt>
@@ -1017,7 +1017,7 @@ File: ../Figures/epi_1x500x1000x1000/scanY=641.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=641.png>
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=641.png used on i
-nput line 24.
+nput line 25.
 (pdftex.def)             Requested size: 92.3553pt x 46.17764pt.
 )
 (../Figures/epi_dice_overview_rectified.tex
@@ -1037,7 +1037,7 @@ File: ../Figures/epi_1x500x1000x1000/rectified/scanY=379.png Graphic file (type
  png)
  <use ../Figures/epi_1x500x1000x1000/rectified/scanY=379.png>
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/rectified/scanY=379.png
- used on input line 27.
+ used on input line 28.
 (pdftex.def)             Requested size: 69.26648pt x 46.17764pt.
 )
 (../Figures/epi_dice_2_rectified.tex
@@ -1047,7 +1047,7 @@ File: ../Figures/epi_1x500x1000x1000/rectified/scanY=641.png Graphic file (type
  png)
  <use ../Figures/epi_1x500x1000x1000/rectified/scanY=641.png>
 Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/rectified/scanY=641.png
- used on input line 27.
+ used on input line 28.
 (pdftex.def)             Requested size: 69.26648pt x 46.17764pt.
 ))
 [6 <../Figures/epi_1x500x1000x1000/overview.png (PNG copy)> <../Figures/epi_1x5
@@ -1166,10 +1166,10 @@ Package rerunfilecheck Info: File `thesis.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 107.
  ) 
 Here is how much of TeX's memory you used:
- 30815 strings out of 494931
- 705679 string characters out of 6178405
- 865947 words of memory out of 5000000
- 33287 multiletter control sequences out of 15000+600000
+ 30867 strings out of 494931
+ 706750 string characters out of 6178405
+ 864897 words of memory out of 5000000
+ 33339 multiletter control sequences out of 15000+600000
  8714 words of font info for 33 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  84i,18n,377p,756b,2493s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1189,7 +1189,7 @@ blic/amsfonts/cm/cmsy5.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmsy7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
 i10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.
 pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on thesis.pdf (22 pages, 1092653 bytes).
+Output written on thesis.pdf (22 pages, 1093011 bytes).
 PDF statistics:
  472 PDF objects out of 1000 (max. 8388607)
  408 compressed objects within 5 object streams

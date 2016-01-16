@@ -19,7 +19,8 @@
 						ylabel = {$u$}
 					]
 	
-			\addplot graphics [xmin = 0, xmax = 1000, ymin = 0, ymax = 500] {epi_1x500x1000x1000/scanY=641};
+			\addplot[plot graphics/node/.append style={yscale=-1,anchor=north west}] % Flip EPI vertically (MATLAB matrix)
+					graphics [xmin = 0, xmax = 1000, ymin = 0, ymax = 500] {epi_1x500x1000x1000/scanY=641};
 			
 		\end{axis}
 	\end{tikzpicture}	

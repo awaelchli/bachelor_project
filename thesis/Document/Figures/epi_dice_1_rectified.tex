@@ -22,7 +22,8 @@
 			% Add dummy line to set the size of the coordinate system
 			\addplot[mark = none, white] coordinates {(0, 0) (1000, 0)};
 	
-			\addplot graphics [xmin = 125, xmax = 875, ymin = 0, ymax = 500] {epi_1x500x1000x1000/rectified/scanY=379};
+			\addplot[plot graphics/node/.append style={yscale=-1,anchor=north west}] % Flip EPI vertically (MATLAB matrix)
+					graphics [xmin = 125, xmax = 875, ymin = 0, ymax = 500] {epi_1x500x1000x1000/rectified/scanY=379};
 		
 		\end{axis}
 	\end{tikzpicture}	

@@ -12,8 +12,8 @@
 	
 		\begin{scope}
 			\clip (-5, -5) rectangle (5, 5);
-			\draw[scale = 1, smooth, variable = \x, black, dashed] plot ({\x}, {3});
-			\draw[scale = 1, smooth, variable = \x, black, dashed] plot ({\x}, {-2});
+			\draw[scale = 1, smooth, domain = -10 : 10, variable = \x, black, dashed] plot ({\x}, {3});
+			\draw[scale = 1, smooth, domain = -10 : 10, variable = \x, black, dashed] plot ({\x}, {-2});
 		\end{scope}
 		
 		\node[left] at (-5, 3) {$Z_\textrm{min}$};
@@ -21,32 +21,6 @@
 		
 		\draw[very thick, blue] (0, 3) -- (2, 3);
 		\draw[very thick, red] (-3, -2) -- (0, -2);
-	
-%		\begin{axis}[ 	x = 2cm,
-%						y = 2cm,
-%						axis x line = center,
-%						axis y line = center,
-%						xtick = {},
-%						ytick = {0.2},
-%						yticklabels = {$Z_\textrm{max}$},
-%						xticklabels = {},
-%						xtick style = {draw = none},
-%						xlabel = {$s$},
-%						ylabel = {$z$},
-%						xlabel style = {right},
-%						ylabel style = {above},
-%						xmin = 0,
-%						xmax = 1,
-%						ymin = -0.5,
-%						ymax = 0.5,
-%						y dir = reverse,
-%						axis line style={->},
-%					]
-%		
-%			\addplot[blue] {0.5}; % -3.4 * x
-%			\addplot[red] {-0.5}; % -1.1 * x
-%		
-%		\end{axis}
 		
 	\end{tikzpicture}
 \end{document}
