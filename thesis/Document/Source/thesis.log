@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  16 JAN 2016 21:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  16 JAN 2016 22:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1115,7 +1115,7 @@ ion. (b) Re-parameterization
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
-) <Erklaerung.pdf, id=357, 597.23125pt x 845.1575pt>
+) <Erklaerung.pdf, id=360, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf>
@@ -1128,7 +1128,7 @@ Package pdftex.def Info: Erklaerung.pdf used on input line 105.
  [17
 
 ]
-<Erklaerung.pdf, id=367, page=1, 597.23125pt x 845.1575pt>
+<Erklaerung.pdf, id=370, page=1, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
@@ -1189,10 +1189,10 @@ blic/amsfonts/cm/cmsy5.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmsy7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
 i10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.
 pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on thesis.pdf (22 pages, 1093011 bytes).
+Output written on thesis.pdf (22 pages, 1093479 bytes).
 PDF statistics:
- 472 PDF objects out of 1000 (max. 8388607)
- 408 compressed objects within 5 object streams
+ 475 PDF objects out of 1000 (max. 8388607)
+ 411 compressed objects within 5 object streams
  106 named destinations out of 1000 (max. 500000)
  239 words of extra memory for PDF output out of 10000 (max. 10000000)
 
