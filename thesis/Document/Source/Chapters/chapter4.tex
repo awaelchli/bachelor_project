@@ -11,7 +11,7 @@ This chapter is intended to give an overview of the spectral properties and limi
 Spectral analysis is a crucial method for the quality assessment and it is the origin of a comprehensive understanding of 3D displays. 
 A light field emitted by the display can be interpreted as a signal that is composed of sine waves with different amplitude, phase and frequency.
 Section~\ref{sec:Definitions} introduces the Fourier transform, an operation that decomposes such a signal into the frequencies that produce it.
-The spectral support, i.e. the range of frequencies the display is able to produce, is analyzed in section~\ref{sec:Spectral_Support}. 
+The spectral support, i.e. the range of frequencies the display is able to produce, is analyzed in section~\ref{sec:Spectral_Support_for_Display}. 
 
 \section{Definitions}
 \label{sec:Definitions}
@@ -25,7 +25,7 @@ According to the Fourier integral theorem, if both $f$ and $\hat{f}$ are absolut
 \begin{equation}
 	f(x) = \mathcal{F}^{-1}(\hat{f})(x) \coloneqq \int_{\mathbb{R}^n} \hat{f}(\xi) e^{2 \pi \mathrm{i} x \cdot \xi} \, \mathrm{d}\xi
 \end{equation}
-is well defined.
+is well-defined.
 The domain of $f$ is called the \textbf{spatial domain} and the domain of $\hat{f}$ is referred to as the \textbf{frequency domain}.
 An important property of the Fourier transform is that a convolution in the spatial domain becomes a multiplication in the frequency domain, or in other words, 
 \begin{equation}
@@ -37,16 +37,32 @@ On the other hand, a multiplication in the spatial domain becomes a convolution 
 	\widehat{(f \cdot g)}(\xi) = (\hat{f} \ast \hat{g})(\xi).
 \end{equation}
 
-\section{The Fourier Slice Theorem}
-%TODO: Explain usage of the theorem in this work
-
-As in section~\ref{sec:light_attenuation_model}, let $p(\theta, \rho)$ be the parallel projection
-The Fourier Slice Theorem, also known as the Projection-Slice Theorem, states that 
-
-
 \section{Spectral Support of Light Fields}
+\label{sec:Spectral_Support_for_Light_Field}
 
-\begin{figure}
+Consider a scene with a bounded depth range between $Z_{\text{min}}$ and $Z_{\text{max}}$.
+The two objects at the boundaries are shown in figure~\ref{fig:two_objects}, with the virtual image $s$ plane between them.
+The consequent 2D light field $L(u, s)$ (or EPI) is shown in figure~\ref{fig:epi_two_objects}.
+From equation~\ref{eq:disparity_for_two_plane_parameterization} it follows that objects appear in the EPI with a slope $\frac{\textrm{d}u}{\textrm{d}s} = \frac{z - Z_u}{z - Z_s}$.
+Substituting $z$ with $Z_\text{min}$ and $Z_\text{max}$ gives the slopes for the red and blue objects at the boundary, defining the range of slopes in the EPI for objects between the two.
+
+Applying the Fourier transform to the continuous light field reveals that the frequency response is non-zero on lines $\frac{\textrm{d}s}{\textrm{d}u} \xi_s + \xi_u = 0$. 
+Again, for the scene with bounded depth range, this yields two lines representing the limits of the spectral support as shown in figure~\ref{fig:epi_fourier_transform_1}.
+Objects between the red and blue ones will also have a frequency response within the fan spanned by the two lines.
+Therefore, the region of support for a continuous light field with bounded depth range can be defined in the following way.
+\begin{equation}\label{eq:region_of_support_for_light_field}
+	\mathcal{S}(\xi_u, \xi_s) \coloneqq 
+	    \begin{dcases*}
+		    1, 			& if $Z_\text{min} \leq \dfrac{Z_u \xi_u + Z_s \xi_s}{\xi_u + \xi_s} \leq Z_\text{max}$ \\
+		    0,			& otherwise $\vphantom{\dfrac{0}{0}}$ 
+	    \end{dcases*}
+\end{equation}
+A similar expression follows for the 4D light field, defining a 4D hyperfan for the region of support as derived by~\cite{LinearVolumetricFocus}.
+Note that occlusions as well as specular reflections are not incorporated in the above expression.
+These effects introduce additional discontinuities in the EPI that result in a high frequency response possibly outside the fan defined in equation~\ref{eq:region_of_support_for_light_field}.
+
+%TODO: Come up with a good way to arrange subfigures
+\begin{figure}[htb]
 	\subfigure[]{
 		\input{../Figures/spectral_support/two_objects.tex}
 		\label{fig:two_objects}
@@ -76,16 +92,14 @@ The Fourier Slice Theorem, also known as the Projection-Slice Theorem, states th
 				 Absolute values are represented with colors on a logarithmic scale.}
 \end{figure}
 
-
 \section{Spectral Support of Multiplicative Displays}
-\label{sec:Spectral_Support}
-
-Consider a scene with a bounded depth range $Z_{\text{min}} \leq Z \leq Z_{\text{max}}$.
-In section~\ref{sec:Visualization}, it was shown that an object at a certain depth will be represented in the EPI as a line with a slope proportional to the depth.
-
-
+\label{sec:Spectral_Support_for_Display}
 
 Now, consider a single attenuation layer. 
 The light field emitted by this layer has constant depth and thus, the lines in the EPI all have the same slope.
 
+\section{The Fourier Slice Theorem}
+%TODO: Explain usage of the theorem in this work
 
+%As in section~\ref{sec:light_attenuation_model}, let $p(\theta, \rho)$ be the parallel projection
+%The Fourier Slice Theorem, also known as the Projection-Slice Theorem, states that 

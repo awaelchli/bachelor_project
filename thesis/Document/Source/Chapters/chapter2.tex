@@ -128,7 +128,7 @@ Objects at focal distance from the camera would appear sharp and objects away fr
 From stereo vision, it is known that the displacement of the projections in the image planes of two cameras is only dependent on the focal length $f$, the baseline $\Delta u$ and the distance $z$, and the relation is given by $\Delta x = f \Delta u / z$.
 This knowledge can directly be applied to the two-plane parameterization. 
 For the continuous light field, it amounts to
-\begin{equation}
+\begin{equation}\label{eq:disparity_for_two_plane_parameterization}
 	\textrm{d}s = \frac{z - Z_{st}}{z - Z_{uv}} \, \textrm{d}u 
 	\qquad
 	\text{and} 
@@ -173,7 +173,7 @@ Since the camera movement is in horizontal direction only, the epipolar lines co
 The EPIs shown in figures~\ref{fig:epi_1x500x1000x1000_scanline1} and ~\ref{fig:epi_1x500x1000x1000_scanline2} are created by collecting the chosen pixel row (scanline) in every image and stacking it up.
 
 As described in the previous section, the depth component of $P$ occurs as a displacement of the projections in consecutive images.
-Under the assumption that the $(u, v)$-plane is sampled uniformly, the disparity $D$ with respect to $P$ is stays constant from one image to the next.
+Under the assumption that the $(u, v)$-plane is sampled uniformly, the disparity $D$ with respect to $P$ stays constant from one image to the next.
 Thus, following the projection of the point $P$ in every image corresponds to a line in the EPI with a slope proportional to $1 / D$.
 \cite{EPI} refer to this line as the \textbf{feature path}.
 This means that points farther away from the camera will appear as a feature path in the EPI with steeper slope than points close to the camera.
