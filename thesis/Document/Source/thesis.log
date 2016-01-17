@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  17 JAN 2016 13:53
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  17 JAN 2016 15:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -980,18 +980,19 @@ Chapter 2.
 ]
 (../Figures/oblique-projection.tex)
 (../Figures/oblique-projection-reparameterization.tex)
-Overfull \hbox (66.60094pt too wide) in paragraph at lines 91--97
+Overfull \hbox (66.60094pt too wide) in paragraph at lines 94--100
 \OT1/cmr/m/n/10 eras. Typ-i-cally, the $(\OML/cmm/m/it/10 u; v\OT1/cmr/m/n/10 )
 $-plane is sam-pled on a grid $\OML/cmm/m/it/10 G[] \OT1/cmr/m/n/10 = []$
  []
 
 [3]
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 98.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 101.
+
  (c:/texlive/2014/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 98.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 101.
  [4]
 (../Figures/perspective-projection-shift.tex)
 (../Figures/perspective-projection-sheared.tex) [5]
@@ -1080,11 +1081,18 @@ Chapter 4.
 
 ] (../Figures/spectral_support/two_objects.tex)
 (../Figures/spectral_support/epi_two_objects.tex)
-(../Figures/spectral_support/epi_fourier_transform.tex)) [13]
+(../Figures/spectral_support/epi_fourier_transform.tex)
+<../Figures/spectral_support/fft_red_and_blue.png, id=312, 1003.75pt x 1003.75p
+t>
+File: ../Figures/spectral_support/fft_red_and_blue.png Graphic file (type png)
+ <use ../Figures/spectral_support/fft_red_and_blue.png>
+Package pdftex.def Info: ../Figures/spectral_support/fft_red_and_blue.png used 
+on input line 69.
+(pdftex.def)             Requested size: 85.35591pt x 85.35826pt.
+) [13 <../Figures/spectral_support/fft_red_and_blue.png (PNG copy)>]
 \openout2 = `Chapters/appendix.aux'.
 
-
-(./Chapters/appendix.tex
+ (./Chapters/appendix.tex
 Appendix A.
 ) [14
 
@@ -1099,13 +1107,7 @@ Appendix A.
 
 
 
-] (./thesis.lof
-Overfull \hbox (38.60262pt too wide) in paragraph at lines 4--4
- [][] [][]\OT1/cmr/m/n/10 (a) Light field aqui-si-tion us-ing oblique pro-jec-t
-ion. (b) Re-parameterization 
- []
-
-)
+] (./thesis.lof)
 \tf@lof=\write9
 \openout9 = `thesis.lof'.
 
@@ -1115,20 +1117,21 @@ ion. (b) Re-parameterization
 Missing character: There is no â in font cmr10!
 Missing character: There is no € in font cmr10!
 Missing character: There is no “ in font cmr10!
-) <Erklaerung.pdf, id=360, 597.23125pt x 845.1575pt>
+)
+<Erklaerung.pdf, id=344, 597.23125pt x 845.1575pt>
+File: Erklaerung.pdf Graphic file (type pdf)
+ <use Erklaerung.pdf>
+Package pdftex.def Info: Erklaerung.pdf used on input line 105.
+(pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf>
 Package pdftex.def Info: Erklaerung.pdf used on input line 105.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
-File: Erklaerung.pdf Graphic file (type pdf)
- <use Erklaerung.pdf>
-Package pdftex.def Info: Erklaerung.pdf used on input line 105.
-(pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
  [17
 
 ]
-<Erklaerung.pdf, id=370, page=1, 597.23125pt x 845.1575pt>
+<Erklaerung.pdf, id=354, page=1, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
@@ -1166,13 +1169,13 @@ Package rerunfilecheck Info: File `thesis.out' has not changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 107.
  ) 
 Here is how much of TeX's memory you used:
- 30867 strings out of 494931
- 706750 string characters out of 6178405
+ 30875 strings out of 494931
+ 707058 string characters out of 6178405
  864897 words of memory out of 5000000
- 33339 multiletter control sequences out of 15000+600000
+ 33345 multiletter control sequences out of 15000+600000
  8714 words of font info for 33 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 84i,18n,377p,756b,2493s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 84i,18n,377p,732b,2493s stack positions out of 5000i,500n,10000p,200000b,80000s
 <c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/tex
 live/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><c:/texlive/2014
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><c:/texlive/2014/texmf-di
@@ -1189,10 +1192,10 @@ blic/amsfonts/cm/cmsy5.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmsy7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
 i10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.
 pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on thesis.pdf (22 pages, 1093506 bytes).
+Output written on thesis.pdf (22 pages, 2353942 bytes).
 PDF statistics:
- 475 PDF objects out of 1000 (max. 8388607)
- 411 compressed objects within 5 object streams
- 106 named destinations out of 1000 (max. 500000)
- 239 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 458 PDF objects out of 1000 (max. 8388607)
+ 394 compressed objects within 4 object streams
+ 107 named destinations out of 1000 (max. 500000)
+ 244 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -26,7 +26,8 @@ For instance, one can use a plane and two angles to define each ray passing this
 \begin{figure}
 	\centering
 	\input{../Figures/two-plane-parameterization}
-	\caption{Parametrization of the light field with two planes.}
+	\caption[Parametrization of the light field with two planes]
+			{Parametrization of the light field with two planes.}
 	\label{fig:LightFieldParametrization}
 \end{figure}
 
@@ -81,7 +82,9 @@ Despite the simplicity of this projection type, it is not feasible to build came
 		\input{../Figures/oblique-projection-reparameterization}
 		\label{fig:ObliqueProjectionReparameterization}
 	}
-	\caption{(a) Light field aquisition using oblique projection. (b) Re-parameterization of the two-plane representation to angular coordinates.}
+	\caption[Parameterization for light fields from oblique projections]
+			{(a) Light field acquisition using oblique projection. 
+			 (b) Re-parameterization of the two-plane representation to angular coordinates.}
 \end{figure}
 
 \subsection*{Perspective Projection}
@@ -148,7 +151,8 @@ In the discrete case, the displacement $\Delta s$ or $\Delta t$ is also called t
 		\input{../Figures/perspective-projection-sheared}
 		\label{fig:RectifiedPerspectiveProjection}
 	}
-	\caption{Perspective projections of a scene. 
+	\caption[Parameterization for light fields from perspective projections]
+			{Perspective projections of a scene. 
 			 (a) Projections with three pinhole cameras. 
 			 (b) Discarding unused rays corresponds to cropping the camera images.}
 \end{figure}
@@ -213,7 +217,8 @@ Also, for a perfectly Lambertian scene, each line in the EPI has a uniform color
 		\input{../Figures/epi_dice_2_rectified.tex}
 		\label{fig:epi_1x500x1000x1000_scanline2_rectified}
 	}
-	\caption{(a) Raw 3D light field rendered from 500 positions along a horizontal baseline.
+	\caption[Visualization of the light field with epipolar plane images]
+			{(a) Raw 3D light field rendered from 500 positions along a horizontal baseline.
 				 Two scanlines are extracted from every image. 
 			 (b) The feature paths of the blue and green dice have a steeper slope than those of the red die.
 			 (c) Feature paths of the yellow die have an even steeper slope, indicating greater depth.
