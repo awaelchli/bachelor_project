@@ -141,7 +141,7 @@ What follows is a description of two methods to compute the indices for the non-
 For simplicity, only a two-dimensional attenuator of size $w$ is assumed, consisting of $N$ layers at various depths 
 $Z_{\text{min}} = z_1 < z_2 < \dots < z_N = Z_{\text{max}}$.
 It is also assumed that the image plane $s$ of the virtual cameras is bisecting the attenuator in the middle, at depth 
-$z_0 = \frac{Z_{\text{max}} - Z_{\text{min}}}{2}$.
+$Z_s = \frac{Z_{\text{max}} - Z_{\text{min}}}{2}$.
 
 \begin{figure}[htb]
 	\centering
@@ -165,12 +165,12 @@ $z_0 = \frac{Z_{\text{max}} - Z_{\text{min}}}{2}$.
 
 The setup for the oblique projection type is illustrated in figure~\ref{fig:ray_casting_oblique_projection}.
 Let $\theta_i$ denote the angle of the \mbox{$i$-th} oblique view from the light field.
-Following the notation in previous sections, the linear index $m = m(i, k)$ indentifies the ray $(\theta_i, s(k))$.
+Following the notation in previous sections, the linear index $m = m(i, k)$ identifies the ray $(\theta_i, s(k))$.
 The intersection of ray $m$ with the \mbox{$n$-th} layer is simply
 \begin{equation}\label{eq:layer_intersection}
 	h(m, n) = s(k) + \Delta z \tan (\theta_i), 
 \end{equation}
-where $\Delta z = z_0 - z_n$ is the displacement of layer $n$ from the image plane.
+where $\Delta z = Z_s - z_n$ is the displacement of layer $n$ from the image plane.
 The next step is to compute the pixel index at the point $h(m, n)$.
 The shift in pixel units can directly be derived from the shift in equation~\ref{eq:layer_intersection} given the pixel size $\Delta s$, yielding
 \begin{equation}
@@ -182,10 +182,10 @@ Finally, this information is stored in the propagation matrix with the assignmen
 
 \subsection*{Perspective Projection}
 
-For the perspective projection, it is assumed that the \mbox{$(u, v)$-plane} (or \mbox{$u$-plane} here) is at depth $Z_u$, with a distance $z_0 - Z_u$ from the image plane.
-Again, let $m = m(i, k)$ be the index that identifieds the ray $(u(i), s(k))$.
+For the perspective projection, it is assumed that the \mbox{$(u, v)$-plane} (or \mbox{$u$-plane} here) is at depth $Z_u$, with a distance $Z_s - Z_u$ from the image plane.
+Again, let $m = m(i, k)$ be the index that identifies the ray $(u(i), s(k))$.
 Finding the coordinates of the ray $(u, s)$ on a layer is similar to the re-parameterization in equation~\ref{eq:two_plane_reparameterization}.
-Setting $\gamma = \frac{z_0 - Z_u}{z_n - Z_u}$ for layer $n$, the formula for the intersection is
+Setting $\gamma = \frac{Z_s - Z_u}{z_n - Z_u}$ for layer $n$, the formula for the intersection is
 \begin{equation}
 	h(m, n) = \gamma (s(k) - u(i)) + u(i).
 \end{equation}
