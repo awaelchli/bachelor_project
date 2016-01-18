@@ -1,4 +1,4 @@
-\begin{thebibliography}{20}
+\begin{thebibliography}{23}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -81,11 +81,30 @@ M.~Jiang and G.~Wang.
 \newblock In \emph{Conference Record of the Thirty-Fifth Asilomar Conference on
   Signals, Systems and Computers}, volume~1, pages 360--364, 2001.
 
+\bibitem[Kim et~al.(2011)Kim, Hornung, Heinzle, Matusik, and
+  Gross]{StereoscopyFromLightFields}
+C.~Kim, A.~Hornung, S.~Heinzle, W.~Matusik, and M.~Gross.
+\newblock Multi-perspective stereoscopy from light fields.
+\newblock \emph{ACM Trans. Graph.}, 30\penalty0 (6):\penalty0 190:1--190:10,
+  2011.
+
 \bibitem[Levoy and Hanrahan(1996)]{LightFieldRendering}
 M.~Levoy and P.~Hanrahan.
 \newblock Light field rendering.
 \newblock In \emph{Proceedings of the International Conference on Computer
   Graphics and Interactive Techniques (SIGGRAPH '96)}, pages 31--42, 1996.
+
+\bibitem[Liang and Ramamoorthi(2015)]{LightTransportFrameworkLightFieldCameras}
+C.-K. Liang and R.~Ramamoorthi.
+\newblock A light transport framework for lenslet light field cameras.
+\newblock \emph{ACM Trans. Graph.}, 34\penalty0 (2):\penalty0 16:1--16:19,
+  2015.
+
+\bibitem[Lu et~al.(2009)Lu, Wang, Chen, Xie, Qin, Pang, and Heng]{SARTGPU}
+Y.~Lu, W.~Wang, S.~Chen, Y.~Xie, J.~Qin, W.-M. Pang, and P.-A. Heng.
+\newblock Accelerating algebraic reconstruction using {CUDA}-enabled {GPU}.
+\newblock In \emph{Sixth International Conference on Computer Graphics, Imaging
+  and Visualization}, pages 480--485. IEEE, 2009.
 
 \bibitem[Narain et~al.(2015)Narain, Albert, Bulbul, Ward, Banks, and
   O'Brien]{FocusCuesMultiPlaneDisplays}
