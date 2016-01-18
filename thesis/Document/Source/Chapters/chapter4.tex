@@ -1,10 +1,6 @@
 \chapter{Spectral Analysis}
-
+\label{chp:spectral_analysis}
 %TODO: Introduction to fourier transform: Why is it needed/important
-%TODO: Explain relation of depth in fourier transform
-% -> Example: fourier transform of plane at constant depth (att. layer) is along a line in fourier space with certain slope. 
-% -> Show example with simple texture + fourier transform
-%TODO: Explain the spectral support of LF
 %TODO: Fourier slice theorem
 
 This chapter is intended to give an overview of the spectral properties and limitations specific to multiplicative light field displays.
@@ -28,12 +24,12 @@ According to the Fourier integral theorem, if both $f$ and $\hat{f}$ are absolut
 is well-defined.
 The domain of $f$ is called the \textbf{spatial domain} and the domain of $\hat{f}$ is referred to as the \textbf{frequency domain}.
 An important property of the Fourier transform is that a convolution in the spatial domain becomes a multiplication in the frequency domain, or in other words, 
-\begin{equation}
+\begin{equation}\label{eq:convolution_theorem_1}
 	\widehat{(f \ast g)}(\xi) = \hat{f}(\xi) \cdot \hat{g}(\xi)
 \end{equation}
 for integrable functions $f, g \colon \mathbb{R}^n \to \mathbb{C}$.
 On the other hand, a multiplication in the spatial domain becomes a convolution in the frequency domain after applying the Fourier transform, that is
-\begin{equation}
+\begin{equation}\label{eq:convolution_theorem_2}
 	\widehat{(f \cdot g)}(\xi) = (\hat{f} \ast \hat{g})(\xi).
 \end{equation}
 
@@ -42,7 +38,7 @@ On the other hand, a multiplication in the spatial domain becomes a convolution 
 
 Consider a scene with a bounded depth range between $Z_{\text{min}}$ and $Z_{\text{max}}$.
 The two objects at the boundaries are shown in figure~\ref{fig:two_objects}, with the virtual image $s$ plane between them.
-The consequent 2D light field $L(u, s)$ (or EPI) is shown in figure~\ref{fig:epi_two_objects}.
+The consequent 2D light field $L(u, s)$ (or EPI) is depicted in figure~\ref{fig:epi_two_objects}.
 From equation~\ref{eq:disparity_for_two_plane_parameterization} it follows that objects appear in the EPI with a slope $\frac{\textrm{d}u}{\textrm{d}s} = \frac{z - Z_u}{z - Z_s}$.
 Substituting $z$ with $Z_\text{min}$ and $Z_\text{max}$ gives the slopes for the red and blue objects at the boundary, defining the range of slopes in the EPI for objects between the two.
 
@@ -60,6 +56,11 @@ Therefore, the region of support for a continuous light field with bounded depth
 A similar expression follows for the 4D light field, defining a 4D hyperfan for the region of support as derived by~\cite{LinearVolumetricFocus}.
 Note that occlusions as well as specular reflections are not incorporated in the above expression.
 These effects introduce additional discontinuities in the EPI that result in a high frequency response possibly outside the fan defined in equation~\ref{eq:region_of_support_for_light_field}.
+
+In the case of sampled light fields, aliasing can occur due to a small sampling rate in either angular- or spatial direction.
+\cite{PlenopticSampling} analytically derived the minimum sampling rate required for alias-free light field rendering and proposed a reconstruction filter from known depth boundaries.
+The region of support $\mathcal{S}(\xi_u, \xi_s)$ can also be thought of an ideal filter.
+As equation~\ref{eq:convolution_theorem_1} shows, multiplying $\mathcal{S}(\xi_u, \xi_s)$ in the frequency domain is equivalent to a convolution in the spatial domain.
 
 %TODO: Come up with a good way to arrange subfigures
 \begin{figure}[htb]
@@ -94,6 +95,9 @@ These effects introduce additional discontinuities in the EPI that result in a h
 
 \section{Spectral Support of Multiplicative Displays}
 \label{sec:Spectral_Support_for_Display}
+
+With light field displays, it is of course desirable to achieve the same spectral coverage for the emitted light field as for the original one.
+Again, the analysis starts with the assumption of a continuous light field and an attenuator with $N$ continuously varying layers.
 
 Now, consider a single attenuation layer. 
 The light field emitted by this layer has constant depth and thus, the lines in the EPI all have the same slope.
