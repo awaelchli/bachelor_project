@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  18 JAN 2016 22:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014/W32TeX) (preloaded format=pdflatex 2015.5.11)  19 JAN 2016 02:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -963,16 +963,16 @@ l.74 \newpage
 
  (./Chapters/chapter1.tex
 Chapter 1.
-) [1
+[1
 
 
 
-]
+]) [2]
 \openout2 = `Chapters/chapter2.aux'.
 
  (./Chapters/chapter2.tex
 Chapter 2.
-(../Figures/two-plane-parameterization.tex) [2
+(../Figures/two-plane-parameterization.tex) [3
 
 
 
@@ -985,7 +985,7 @@ Overfull \hbox (66.60094pt too wide) in paragraph at lines 95--101
 $-plane is sam-pled on a grid $\OML/cmm/m/it/10 G[] \OT1/cmr/m/n/10 = []$
  []
 
-[3]
+[4]
 LaTeX Font Info:    Try loading font information for OMS+cmr on input line 102.
 
  (c:/texlive/2014/texmf-dist/tex/latex/base/omscmr.fd
@@ -993,11 +993,11 @@ File: omscmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 (Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 102.
- [4]
+ [5]
 (../Figures/perspective-projection-shift.tex)
-(../Figures/perspective-projection-sheared.tex) [5]
+(../Figures/perspective-projection-sheared.tex) [6]
 (../Figures/epi_dice_overview.tex
-<../Figures/epi_1x500x1000x1000/overview.png, id=212, 1003.75pt x 617.30624pt>
+<../Figures/epi_1x500x1000x1000/overview.png, id=218, 1003.75pt x 617.30624pt>
 File: ../Figures/epi_1x500x1000x1000/overview.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/overview.png>
@@ -1005,7 +1005,7 @@ Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/overview.png used on in
 put line 25.
 (pdftex.def)             Requested size: 92.3553pt x 56.79851pt.
 ) (../Figures/epi_dice_1.tex
-<../Figures/epi_1x500x1000x1000/scanY=379.png, id=213, 1003.75pt x 501.875pt>
+<../Figures/epi_1x500x1000x1000/scanY=379.png, id=219, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=379.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=379.png>
@@ -1013,7 +1013,7 @@ Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/scanY=379.png used on i
 nput line 25.
 (pdftex.def)             Requested size: 92.3553pt x 46.17764pt.
 ) (../Figures/epi_dice_2.tex
-<../Figures/epi_1x500x1000x1000/scanY=641.png, id=214, 1003.75pt x 501.875pt>
+<../Figures/epi_1x500x1000x1000/scanY=641.png, id=220, 1003.75pt x 501.875pt>
 File: ../Figures/epi_1x500x1000x1000/scanY=641.png Graphic file (type png)
 
 <use ../Figures/epi_1x500x1000x1000/scanY=641.png>
@@ -1022,7 +1022,7 @@ nput line 25.
 (pdftex.def)             Requested size: 92.3553pt x 46.17764pt.
 )
 (../Figures/epi_dice_overview_rectified.tex
-<../Figures/epi_1x500x1000x1000/rectified/overview.png, id=215, 752.8125pt x 61
+<../Figures/epi_1x500x1000x1000/rectified/overview.png, id=221, 752.8125pt x 61
 7.30624pt>
 File: ../Figures/epi_1x500x1000x1000/rectified/overview.png Graphic file (type 
 png)
@@ -1032,7 +1032,7 @@ used on input line 25.
 (pdftex.def)             Requested size: 69.26648pt x 56.79851pt.
 )
 (../Figures/epi_dice_1_rectified.tex
-<../Figures/epi_1x500x1000x1000/rectified/scanY=379.png, id=216, 752.8125pt x 5
+<../Figures/epi_1x500x1000x1000/rectified/scanY=379.png, id=222, 752.8125pt x 5
 01.875pt>
 File: ../Figures/epi_1x500x1000x1000/rectified/scanY=379.png Graphic file (type
  png)
@@ -1042,7 +1042,7 @@ Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/rectified/scanY=379.png
 (pdftex.def)             Requested size: 69.26648pt x 46.17764pt.
 )
 (../Figures/epi_dice_2_rectified.tex
-<../Figures/epi_1x500x1000x1000/rectified/scanY=641.png, id=217, 752.8125pt x 5
+<../Figures/epi_1x500x1000x1000/rectified/scanY=641.png, id=223, 752.8125pt x 5
 01.875pt>
 File: ../Figures/epi_1x500x1000x1000/rectified/scanY=641.png Graphic file (type
  png)
@@ -1051,7 +1051,7 @@ Package pdftex.def Info: ../Figures/epi_1x500x1000x1000/rectified/scanY=641.png
  used on input line 28.
 (pdftex.def)             Requested size: 69.26648pt x 46.17764pt.
 ))
-[6 <../Figures/epi_1x500x1000x1000/overview.png (PNG copy)> <../Figures/epi_1x5
+[7 <../Figures/epi_1x500x1000x1000/overview.png (PNG copy)> <../Figures/epi_1x5
 00x1000x1000/scanY=379.png (PNG copy)> <../Figures/epi_1x500x1000x1000/scanY=64
 1.png (PNG copy)> <../Figures/epi_1x500x1000x1000/rectified/overview.png (PNG c
 opy)> <../Figures/epi_1x500x1000x1000/rectified/scanY=379.png (PNG copy)> <../F
@@ -1061,20 +1061,20 @@ igures/epi_1x500x1000x1000/rectified/scanY=641.png (PNG copy)>]
 
 (./Chapters/chapter3.tex
 Chapter 3.
-[7
+[8
 
 
 
 
-] (../Figures/radon_transform_2D.tex) [8] [9]
+] (../Figures/radon_transform_2D.tex) [9] [10]
 (../Figures/ray_casting_oblique_projection.tex)
-(../Figures/ray_casting_perspective_projection.tex) [10]) [11]
+(../Figures/ray_casting_perspective_projection.tex) [11]) [12]
 \openout2 = `Chapters/chapter4.aux'.
 
 
 (./Chapters/chapter4.tex
 Chapter 4.
-[12
+[13
 
 
 
@@ -1082,19 +1082,19 @@ Chapter 4.
 ] (../Figures/spectral_support/two_objects.tex)
 (../Figures/spectral_support/epi_two_objects.tex)
 (../Figures/spectral_support/epi_fourier_transform.tex)
-<../Figures/spectral_support/fft_red_and_blue.png, id=322, 1003.75pt x 1003.75p
+<../Figures/spectral_support/fft_red_and_blue.png, id=328, 1003.75pt x 1003.75p
 t>
 File: ../Figures/spectral_support/fft_red_and_blue.png Graphic file (type png)
  <use ../Figures/spectral_support/fft_red_and_blue.png>
 Package pdftex.def Info: ../Figures/spectral_support/fft_red_and_blue.png used 
 on input line 86.
 (pdftex.def)             Requested size: 85.35591pt x 85.35826pt.
-) [13] [14 <../Figures/spectral_support/fft_red_and_blue.png (PNG copy)>]
+) [14] [15 <../Figures/spectral_support/fft_red_and_blue.png (PNG copy)>]
 \openout2 = `Chapters/appendix.aux'.
 
  (./Chapters/appendix.tex
 Appendix A.
-<../Figures/placeholder.jpg, id=341, 301.125pt x 401.5pt>
+<../Figures/placeholder.jpg, id=348, 301.125pt x 401.5pt>
 File: ../Figures/placeholder.jpg Graphic file (type jpg)
 
 <use ../Figures/placeholder.jpg>
@@ -1109,17 +1109,17 @@ File: ../Figures/placeholder.jpg Graphic file (type jpg)
 <use ../Figures/placeholder.jpg>
 Package pdftex.def Info: ../Figures/placeholder.jpg used on input line 67.
 (pdftex.def)             Requested size: 90.33818pt x 120.45091pt.
-) [15
+) [16
 
 
 
 
-] [16 <../Figures/placeholder.jpg>]
+] [17 <../Figures/placeholder.jpg>]
 (./thesis.lot)
 \tf@lot=\write8
 \openout8 = `thesis.lot'.
 
- [17
+ [18
 
 
 
@@ -1127,12 +1127,12 @@ Package pdftex.def Info: ../Figures/placeholder.jpg used on input line 67.
 \tf@lof=\write9
 \openout9 = `thesis.lof'.
 
- (./thesis.bbl [18
+ (./thesis.bbl [19
 
-] [19
+] [20
 
 ])
-<Erklaerung.pdf, id=382, 597.23125pt x 845.1575pt>
+<Erklaerung.pdf, id=389, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
  <use Erklaerung.pdf>
 Package pdftex.def Info: Erklaerung.pdf used on input line 109.
@@ -1142,8 +1142,8 @@ File: Erklaerung.pdf Graphic file (type pdf)
 <use Erklaerung.pdf>
 Package pdftex.def Info: Erklaerung.pdf used on input line 109.
 (pdftex.def)             Requested size: 597.22978pt x 845.15544pt.
- [20]
-<Erklaerung.pdf, id=400, page=1, 597.23125pt x 845.1575pt>
+ [21]
+<Erklaerung.pdf, id=407, page=1, 597.23125pt x 845.1575pt>
 File: Erklaerung.pdf Graphic file (type pdf)
 
 <use Erklaerung.pdf, page 1>
@@ -1167,7 +1167,7 @@ File: Erklaerung.pdf Graphic file (type pdf)
 <use Erklaerung.pdf, page 1>
 Package pdftex.def Info: Erklaerung.pdf, page1 used on input line 109.
 (pdftex.def)             Requested size: 597.25711pt x 845.19412pt.
- [21 <./Erklaerung.pdf>]
+ [22 <./Erklaerung.pdf>]
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 111.
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 111.
  (./thesis.aux
@@ -1176,21 +1176,14 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 111.
 (./Chapters/chapter4.aux) (./Chapters/appendix.aux))
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 111.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 111.
-
-
-Package rerunfilecheck Warning: File `thesis.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `thesis.out':
-(rerunfilecheck)             Before: 64187B9C1C51935A76FBF665FAC61971;1399
-(rerunfilecheck)             After:  B916B5BEDEC53ECFB8AE1B7F5748B58C;1400.
+Package rerunfilecheck Info: File `thesis.out' has not changed.
+(rerunfilecheck)             Checksum: FC29459B90CD972613C26287A7FB676A;1401.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 111.
  ) 
 Here is how much of TeX's memory you used:
- 30937 strings out of 494931
- 708596 string characters out of 6178405
- 865944 words of memory out of 5000000
+ 30940 strings out of 494931
+ 708627 string characters out of 6178405
+ 866947 words of memory out of 5000000
  33382 multiletter control sequences out of 15000+600000
  8714 words of font info for 33 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
@@ -1211,10 +1204,10 @@ blic/amsfonts/cm/cmsy5.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfo
 nts/cm/cmsy7.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmt
 i10.pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.
 pfb><c:/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb>
-Output written on thesis.pdf (25 pages, 2377106 bytes).
+Output written on thesis.pdf (26 pages, 2379458 bytes).
 PDF statistics:
- 510 PDF objects out of 1000 (max. 8388607)
- 441 compressed objects within 5 object streams
- 130 named destinations out of 1000 (max. 500000)
+ 517 PDF objects out of 1000 (max. 8388607)
+ 447 compressed objects within 5 object streams
+ 133 named destinations out of 1000 (max. 500000)
  249 words of extra memory for PDF output out of 10000 (max. 10000000)
 
