@@ -34,6 +34,8 @@ for i = 2 : n
     
     c = conv2(c, ffts{i}, 'same');
     
+    fprintf('Done with convolution %i \n', i);
+    
 end
 
 %% Display

@@ -8,11 +8,11 @@ inputEPI = 'thesis/Document/Figures/epi_1x500x1000x1000/scanY=641.png';
 % inputEPI = 'lightFields/constant/one_object4.png';
 % inputEPI = 'lightFields/constant/one_object4.png';
 % inputEPI = 'lightFields/constant/two_objects.png';
-inputEPI = 'lightFields/constant/set1/layer3.png';
+inputEPI = 'lightFields/constant/set1/layer1.png';
 % inputEPI = 'lightFields/constant/three_dice_lambertian.png';
 
 % Name and location to store the fourier image as .mat file
-output = 'output/fft_layer_3.mat';
+output = 'output/fft_layer_1.mat';
 
 %% Read input
 I = imread(inputEPI);
@@ -43,6 +43,30 @@ imshow(Igray);
 f = fft2(double(Igray));
 % Putting DC in the middle:
 f = fftshift(f);
+
+%% Masking
+
+cut_off = 300;
+
+Z_u = -10;
+Z_s = 0;
+z = 1;
+
+ds_du = (z - Z_s) / (z - Z_u);
+epsilon = 2;
+
+xi_s = linspace(-500, 500, 1000);
+xi_u = linspace(500, -500, 1000)';
+
+xi_s = repmat(xi_s, [size(xi_u, 1), 1]);
+xi_u = repmat(xi_u, [1, size(xi_s, 2)]);
+
+inds = abs(ds_du * xi_s + xi_u) <= epsilon & abs(xi_s) <= cut_off;
+
+f(~inds) = 0;
+
+%% Display spectrum
+
 % Taking the spectrum with log scaling
 spectrum = log(1 + abs(f));
 % Finding maximum in spectrum:
@@ -52,8 +76,6 @@ minimum = min(min(spectrum));
 spectrum = (spectrum - minimum) / (maximum - minimum);
 
 save(output, 'f', 'spectrum');
-
-%% Display spectrum
 
 figure;
 subplot(1, 2, 1);
