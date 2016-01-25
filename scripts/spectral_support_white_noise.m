@@ -15,25 +15,32 @@ ds_du = linspace(-0.5, 0.5, N);
 sz = [height, width];
 fs = cell(1, N);
 
-figure;
-
 for i = 1 : N
     
     xi_s = linspace(-width / 2, width / 2, width);
     xi_u = linspace(height / 2, -height / 2, height)';
     xi_s = repmat(xi_s, [size(xi_u, 1), 1]);
     xi_u = repmat(xi_u, [1, size(xi_s, 2)]);
+    
+    
+    magnitude_dist = mvnpdf([xi_u(:) xi_s(:)], [0, 0], [10000, 10000]);
+    magnitude_dist = reshape(magnitude_dist, sz);
+    figure(1); imagesc(magnitude_dist); colormap jet;
+    
+%     magnitude_dist = exp(magnitude_dist);
+    
 
     cut_off_mask = abs(xi_s) <= spatial_cut_off;
 %     mask = normpdf(ds_du(i) * xi_s + xi_u, 0, 2);
     mask = abs(ds_du(i) * xi_s + xi_u) <= epsilon;
 
-    f_rand = 100 * (rand(sz) + 1i * rand(sz));
+    f_rand = magnitude_dist .* (rand(sz) + 1i * rand(sz));
     f_rand = f_rand .* mask;
     f_rand(~cut_off_mask) = 0;
     
     fs{i} = f_rand;
     
+    figure(2);
     subplot(1, N, i);
     imagesc(log(1 + abs(fs{i})));
     axis equal image;
