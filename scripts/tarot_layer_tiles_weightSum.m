@@ -61,6 +61,7 @@ for index = 1 : size(tileIndices, 1)
         rec = FastReconstructionForResampledLF(lightField, attenuatorTile, tileSamplingPlane);
         
         rec.verbose = 0;
+        rec.iterations = 6;
         rec.computeAttenuationLayers();
         
         tileValues = attenuatorTile.attenuationValues;
