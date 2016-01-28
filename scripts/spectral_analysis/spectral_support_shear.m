@@ -10,8 +10,8 @@ N = 2;
 row = 240;
 width = 639;
 
-% p = 9 / 480;
-% f0 = 1 / (2 * p);
+p = 9 / 480;
+f0 = 1 / (2 * p);
 
 layers = zeros(N, width);
 
@@ -34,7 +34,7 @@ end
 
 %% Shear the 1D Fourier image to create slanted line in 2D spectrum
 
-sz = 1001;
+sz = 3001;
 slopes = [-0.5, 0.5, 0 0.25, -0.25];
 domain = -(width - 1) / 2 : (width - 1) / 2;
 
@@ -70,12 +70,17 @@ for i = 2 : N
     
     fprintf('Convolution %i ... ', i - 1);
     
-    c = conv2(c, fs2D{i}, 'full');
+    c = conv2(c, fs2D{i}, 'same');
     
     fprintf('Done\n');
 end
 
-figure; imagesc(log(1 + abs(c))); axis equal image; colormap jet;
+step = 2 * f0 / width;
+labelsX = -step * (sz - 1) / 2 : step : step * (sz - 1) / 2;
+labelsY = labelsX;
+
+figure; imagesc(labelsX, labelsY, log(1 + abs(c))); axis equal image; colormap jet;
+set(gca, 'Ydir', 'normal');
 
 %% Save convolution
 
