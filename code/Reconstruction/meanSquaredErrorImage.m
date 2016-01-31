@@ -1,9 +1,12 @@
-function [ errorImage, rmse ] = meanSquaredErrorImage( image1, image2 )
+function [ errorImage, rmse, psnr ] = meanSquaredErrorImage( image1, image2 )
 
-errorImage = 255^2 * (image1 - image2) .^ 2;
+errorImage = (255 * (image1 - image2)) .^ 2;
 errorImage = sum(errorImage, 3);
 
-rmse = sqrt(mean(errorImage(:)));
+mse = mean(errorImage(:));
+rmse = sqrt(mse);
+psnr = 10 * log10((255^2) / mse);
+
 errorImage = errorImage / (255^2);
 
 end
