@@ -2,6 +2,7 @@
 *.asv
 */output/*
 output/*
+results/*
 /lightFields/rx_watch/*
 /lightFields/rx_elephant/*
 /lightFields/fruits/*
