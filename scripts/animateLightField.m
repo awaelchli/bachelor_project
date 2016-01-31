@@ -29,6 +29,7 @@ figure;
 while(true)
     for i = 1 : prod(angularResolution)
         image(squeeze(lightfield(i, :, :, :)));
+        axis equal image;
         pause(0.05);
     end
 end
