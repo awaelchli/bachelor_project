@@ -1,10 +1,10 @@
 function layersWithMarkers = addMarkersToLayers(layers, markerSize)
 
     padding = 2 * markerSize - 1;
-    layersWithMarkers = zeros(size(layers) + [0, 2 * padding, 2 * padding, 0]);
+    layersWithMarkers = zeros(size(layers) + [0, 0, 2 * padding, 0]);
     
     for i = 1 : size(layers, 1)
-        layersWithMarkers(i, :, :, :) = padarray(layers(i, :, :, :), [0, padding, padding], 1);
+        layersWithMarkers(i, :, :, :) = padarray(layers(i, :, :, :), [0, 0, padding], 1);
     end
     
     resolution = [size(layersWithMarkers, 2), size(layersWithMarkers, 3)];
