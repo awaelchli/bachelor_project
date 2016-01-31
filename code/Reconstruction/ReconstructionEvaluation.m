@@ -9,6 +9,7 @@ classdef ReconstructionEvaluation < handle
         filenameReconstructionOfView = 'Reconstruction_of_view_(%i, %i)';
         filenameErrorForView = 'MSE_for_view_(%i,%i)';
         filenameRMSEFile = 'RMSE.txt';
+        filenamePSNRFile = 'PSNR.txt';
     end
     
     properties (SetAccess = protected)
@@ -108,28 +109,44 @@ classdef ReconstructionEvaluation < handle
         
         function displayErrorImages(this)
             RMSEoutput = '';
+            PSNRoutput = '';
             for i = 1 : this.numberOfReconstructions
                 currentCameraIndex = this.reconstructionIndices(i, :);
-                [~, rmse] = this.displaySingleErrorImage(currentCameraIndex);
+                [~, rmse, psnr] = this.displaySingleErrorImage(currentCameraIndex);
                 RMSEoutput = this.appendRMSEOutput(RMSEoutput, currentCameraIndex, rmse);
+                PSNRoutput = this.appendPSNROutput(PSNRoutput, currentCameraIndex, psnr);
             end
-            % Print RMSE to console
+            % Print RMSE and PSNR to console
             fprintf(RMSEoutput);
+            fprintf(PSNRoutput);
         end
         
         function storeErrorImages(this)
             this.createOutputFolderIfNotExists();
             
             errorImages = cell(1, this.numberOfReconstructions);
+            
+            rmses = zeros(this.numberOfReconstructions, 1);
+            psnrs = zeros(this.numberOfReconstructions, 1);
+            
             RMSEoutput = '';
+            PSNRoutput = '';
             for i = 1 : this.numberOfReconstructions
                 currentCameraIndex = this.reconstructionIndices(i, :);
-                [errorImage, rmse] = this.getErrorForView(currentCameraIndex);
+                [errorImage, rmse, psnr] = this.getErrorForView(currentCameraIndex);
                 errorImages{i} = errorImage;
                 RMSEoutput = this.appendRMSEOutput(RMSEoutput, currentCameraIndex, rmse);
+                PSNRoutput = this.appendPSNROutput(PSNRoutput, currentCameraIndex, psnr);
+                
+                rmses(i) = rmse;
+                psnrs(i) = psnr;
             end
             
+            RMSEoutput = ReconstructionEvaluation.appendAverageRMSE(RMSEoutput, mean(rmses));
+            PSNRoutput = ReconstructionEvaluation.appendAveragePSNR(PSNRoutput, mean(psnrs));
+            
             ReconstructionEvaluation.writeRMSEToTextFile(RMSEoutput, this.outputFolder);
+            ReconstructionEvaluation.writePSNRToTextFile(PSNRoutput, this.outputFolder);
             
             minErrors = cellfun(@(im) min(im(:)), errorImages);
             maxErrors = cellfun(@(im) max(im(:)), errorImages);
@@ -207,8 +224,8 @@ classdef ReconstructionEvaluation < handle
             imwrite(reconstructedView, [this.outputFolder '/' filename '.' ReconstructionEvaluation.imageOutputType]);
         end
         
-        function [errorImage, rmse] = displaySingleErrorImage(this, cameraIndex)
-            [errorImage, rmse] = this.getErrorForView(cameraIndex);
+        function [errorImage, rmse, psnr] = displaySingleErrorImage(this, cameraIndex)
+            [errorImage, rmse, psnr] = this.getErrorForView(cameraIndex);
             displayTitle = sprintf('MSE for view (%i, %i)', cameraIndex);
             figure('Name', 'Mean-Square-Error for reconstructed view');
             imshow(errorImage, []);
@@ -221,10 +238,10 @@ classdef ReconstructionEvaluation < handle
             viewFromOriginal = squeeze(viewFromOriginal);
         end
         
-        function [errorImage, rmse] = getErrorForView(this, cameraIndex)
+        function [errorImage, rmse, psnr] = getErrorForView(this, cameraIndex)
             viewFromOriginal = this.getReplicatedOriginalView(cameraIndex);
             viewFromReconstruction = this.getReplicatedReconstructedView(cameraIndex);
-            [errorImage, rmse] = meanSquaredErrorImage(viewFromReconstruction, viewFromOriginal);
+            [errorImage, rmse, psnr] = meanSquaredErrorImage(viewFromReconstruction, viewFromOriginal);
         end
         
         function layers = getReplicatedAttenuationLayers(this, layerNumbers)
@@ -262,8 +279,26 @@ classdef ReconstructionEvaluation < handle
             fclose(rmseFileID);
         end
         
+        function writePSNRToTextFile(text, outputFolder)
+            psnrFileID = fopen([outputFolder '/' ReconstructionEvaluation.filenamePSNRFile], 'wt');
+            fprintf(psnrFileID, text);
+            fclose(psnrFileID);
+        end
+        
         function RMSEoutput = appendRMSEOutput(RMSEoutput, cameraIndex, rmse)
             RMSEoutput = sprintf('%sRMSE for view (%i, %i): %f \n', RMSEoutput, cameraIndex(1), cameraIndex(2), rmse);
+        end
+        
+        function PSNRoutput = appendPSNROutput(PSNRoutput, cameraIndex, psnr)
+            PSNRoutput = sprintf('%sPSNR for view (%i, %i): %f \n', PSNRoutput, cameraIndex(1), cameraIndex(2), psnr);
+        end
+        
+        function RMSEoutput = appendAverageRMSE(RMSEoutput, avgrmse)
+            RMSEoutput = sprintf('%sAverage: %f \n', RMSEoutput, avgrmse);
+        end
+        
+        function PSNRoutput = appendAveragePSNR(PSNRoutput, avgpsnr)
+            PSNRoutput = sprintf('%sAverage: %f \n', PSNRoutput, avgpsnr);
         end
         
         function valid = folderExists(folder)
