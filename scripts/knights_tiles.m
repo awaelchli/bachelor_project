@@ -3,15 +3,17 @@ actualThickness = 16;
 
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/knights/rectified/', 'png', [17, 17], 0.3);
-editor.angularSliceY(17 : -2 : 1);
-editor.angularSliceX(17 : -2 : 1);
+editor.inputFromImageCollection('lightFields/knights/rectified/', 'png', [17, 17], 1);
+editor.angularSliceY(17 : -1 : 1);
+editor.angularSliceX(17 : -1 : 1);
 
 actualLayerWidth = editor.spatialResolution(2) / editor.spatialResolution(1) * actualLayerHeight;
 attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = 1 * [actualLayerHeight, actualLayerWidth];
 
-editor.distanceBetweenTwoCameras = [30, 30] / 1.7;
+% editor.distanceBetweenTwoCameras = [30, 30] / 1.7;
+% editor.distanceBetweenTwoCameras = [30, 30] / 2.7;
+editor.distanceBetweenTwoCameras = [30, 30] / 3;
 editor.cameraPlaneZ = 200;
 editor.sensorSize = attenuatorSize;
 editor.sensorPlaneZ = 0;
@@ -19,7 +21,7 @@ lightField = editor.getPerspectiveLightField();
 
 numberOfLayers = 5;
 attenuatorThickness = actualThickness;
-layerResolution = round(1 * lightField.spatialResolution);
+layerResolution = round(0.5 * lightField.spatialResolution);
 
 attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenuatorThickness, lightField.channels);
 
@@ -76,12 +78,12 @@ for index = 1 : size(tileIndices, 1)
         attenuatorTile = Attenuator(numberOfLayers, tile.planeResolution, tile.planeSize, attenuatorThickness, lightField.channels);
         attenuatorTile.translate(tile.planeCenter);
         
-        tileSamplingPlane = SensorPlane(ceil(2 * tile.planeResolution), 1 * tile.planeSize, lightField.sensorPlane.z);
+        tileSamplingPlane = SensorPlane(ceil(1 * 1 * tile.planeResolution), 1 * tile.planeSize, lightField.sensorPlane.z);
         tileSamplingPlane.translate(tile.planeCenter);
         rec = FastReconstructionForResampledLF(lightField, attenuatorTile, tileSamplingPlane);
         
-        rec.verbose = 0;
-        rec.solver = @linearLeastSquares;
+        rec.verbose = 1;
+        rec.solver = @sart;
         rec.iterations = 6;
         rec.computeAttenuationLayers();
         
@@ -141,6 +143,8 @@ evaluation.displayErrorImages();
 
 %% Store evaluation data to output folder
 
+evaluation.outputFolder = 'results/knights_tiles3x3x256x256_overlap0.5_5layers_resolution17x17x1024x1024_SART_6iter/';
+
 W = (weightSumMatrix - min(weightSumMatrix(:))) / (max(weightSumMatrix(:)) - min(weightSumMatrix(:)));
 imwrite(squeeze(W(1, :, :, :)), [evaluation.outputFolder, 'blendingMaskSum.png']);
 
@@ -155,3 +159,9 @@ evaluation.evaluateViews(indices);
 evaluation.storeReconstructedViews();
 evaluation.storeErrorImages();
 evaluation.storeLayers(1 : numberOfLayers);
+
+save([evaluation.outputFolder 'evaluation.mat'], 'evaluation', '-v7.3');
+
+%% Print layers
+evaluation.printLayers([1, 2; 3, 4], 18);
+evaluation.printLayers(5, 18);
