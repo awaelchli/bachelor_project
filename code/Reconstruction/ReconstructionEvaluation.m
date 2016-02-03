@@ -20,6 +20,8 @@ classdef ReconstructionEvaluation < handle
     properties (SetAccess = private)
         reconstructionIndices;
         replicationSizes = [1, 1, 1, 1, 1];
+        mse = inf;
+        psnr = -inf;
     end
     
     properties (Dependent, SetAccess = private)
@@ -142,8 +144,12 @@ classdef ReconstructionEvaluation < handle
                 psnrs(i) = psnr;
             end
             
-            RMSEoutput = ReconstructionEvaluation.appendAverageRMSE(RMSEoutput, mean(rmses));
-            PSNRoutput = ReconstructionEvaluation.appendAveragePSNR(PSNRoutput, mean(psnrs));
+            this.mse = mean(rmses .^ 2, 1);
+            rmse = sqrt(this.mse);
+            this.psnr = 10 * log10((255^2) / this.mse);
+            
+            RMSEoutput = ReconstructionEvaluation.appendAverageRMSE(RMSEoutput, rmse);
+            PSNRoutput = ReconstructionEvaluation.appendAveragePSNR(PSNRoutput, psnr);
             
             ReconstructionEvaluation.writeRMSEToTextFile(RMSEoutput, this.outputFolder);
             ReconstructionEvaluation.writePSNRToTextFile(PSNRoutput, this.outputFolder);
@@ -294,11 +300,11 @@ classdef ReconstructionEvaluation < handle
         end
         
         function RMSEoutput = appendAverageRMSE(RMSEoutput, avgrmse)
-            RMSEoutput = sprintf('%sAverage: %f \n', RMSEoutput, avgrmse);
+            RMSEoutput = sprintf('%sTotal RMSE: %f \n', RMSEoutput, avgrmse);
         end
         
         function PSNRoutput = appendAveragePSNR(PSNRoutput, avgpsnr)
-            PSNRoutput = sprintf('%sAverage: %f \n', PSNRoutput, avgpsnr);
+            PSNRoutput = sprintf('%sTotal PSNR: %f \n', PSNRoutput, avgpsnr);
         end
         
         function valid = folderExists(folder)
