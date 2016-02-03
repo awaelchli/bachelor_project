@@ -6,7 +6,7 @@ classdef ReconstructionEvaluation < handle
     end
     
     properties (Constant, Hidden)
-        filenameReconstructionOfView = 'Reconstruction_of_view_(%i, %i)';
+        filenameReconstructionOfView = 'Reconstruction_of_view_(%i,%i)';
         filenameErrorForView = 'MSE_for_view_(%i,%i)';
         filenameRMSEFile = 'RMSE.txt';
         filenamePSNRFile = 'PSNR.txt';
