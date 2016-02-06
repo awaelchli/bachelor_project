@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 06-Feb-2016 20:28:53
+% Last Modified by GUIDE v2.5 06-Feb-2016 23:40:31
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -159,10 +159,20 @@ if n == 0
 elseif rem(sqrt(n), 1) == 0
     set(handles.editAngularResY, 'String', sqrt(n)); 
     set(handles.editAngularResX, 'String', sqrt(n));
+    
+    % Fill in default slice indices
+    set(handles.editAngularIndFromY, 'String', '1');
+    set(handles.editAngularIndStepY, 'String', '1');
+    set(handles.editAngularIndToY, 'String', sqrt(n));
+    set(handles.editAngularIndFromX, 'String', '1');
+    set(handles.editAngularIndStepX, 'String', '1');
+    set(handles.editAngularIndToX, 'String', sqrt(n));
 else
     set(handles.editAngularResY, 'String', 1); 
     set(handles.editAngularResX, 'String', n);
 end
+
+
 
 
 function editAngularResY_Callback(hObject, eventdata, handles)
@@ -174,10 +184,17 @@ function editAngularResY_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of editAngularResY as a double
 
 gui_clear_warning(handles.textImportInfo);
+val = str2double(get(hObject, 'String'));
 
-if isnan(str2double(get(hObject, 'String')))
+if isnan(val)
     gui_warning(handles.textImportInfo, 'Invalid angular resolution');
+    return;
 end
+
+% Update slice indices
+set(handles.editAngularIndFromY, 'String', '1');
+set(handles.editAngularIndStepY, 'String', '1');
+set(handles.editAngularIndToY, 'String', val);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -203,11 +220,17 @@ function editAngularResX_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of editAngularResX as a double
 
 gui_clear_warning(handles.textImportInfo);
+val = str2double(get(hObject, 'String'));
 
-if isnan(str2double(get(hObject, 'String')))
+if isnan(val)
     gui_warning(handles.textImportInfo, 'Invalid angular resolution');
+    return;
 end
 
+% Update slice indices
+set(handles.editAngularIndFromX, 'String', '1');
+set(handles.editAngularIndStepX, 'String', '1');
+set(handles.editAngularIndToX, 'String', val);
 
 % --- Executes during object creation, after setting all properties.
 function editAngularResX_CreateFcn(hObject, eventdata, handles)
@@ -237,6 +260,13 @@ function checkboxInvY_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of checkboxInvY
 
+from = get(handles.editAngularIndFromY, 'String');
+stepval = str2double(get(handles.editAngularIndStepY, 'String'));
+to = get(handles.editAngularIndToY, 'String');
+set(handles.editAngularIndFromY, 'String', to);
+set(handles.editAngularIndStepY, 'String', -stepval);
+set(handles.editAngularIndToY, 'String', from);
+
 
 % --- Executes on button press in checkboxInvX.
 function checkboxInvX_Callback(hObject, eventdata, handles)
@@ -245,6 +275,13 @@ function checkboxInvX_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkboxInvX
+
+from = get(handles.editAngularIndFromX, 'String');
+stepval = str2double(get(handles.editAngularIndStepX, 'String'));
+to = get(handles.editAngularIndToX, 'String');
+set(handles.editAngularIndFromX, 'String', to);
+set(handles.editAngularIndStepX, 'String', -stepval);
+set(handles.editAngularIndToX, 'String', from);
 
 
 % --- Executes on button press in btnLoad.
@@ -631,19 +668,147 @@ if(~handles.data.animationState)
     set(handles.btnAnimate, 'Enable', 'on');
 end
 
-% switch handles.data.animationState
-%     case 1 % Animation running
-%         handles.data.animationState = 0;
-%         set(hObject, 'String', 'Start Animation');
-%     case 0 % Animation stopped
-%         handles.data.animationState = 1;
-%         set(hObject, 'String', 'Stop Animation');
-%         gui_animateLightField( handles.data.lightfield.lightFieldData, handles );
-% end
-
 
 % --- Executes during object creation, after setting all properties.
 function btnAnimate_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to btnAnimate (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
+
+
+
+function editAngularIndFromY_Callback(hObject, eventdata, handles)
+% hObject    handle to editAngularIndFromY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editAngularIndFromY as text
+%        str2double(get(hObject,'String')) returns contents of editAngularIndFromY as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editAngularIndFromY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editAngularIndFromY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editAngularIndStepY_Callback(hObject, eventdata, handles)
+% hObject    handle to editAngularIndStepY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editAngularIndStepY as text
+%        str2double(get(hObject,'String')) returns contents of editAngularIndStepY as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editAngularIndStepY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editAngularIndStepY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editAngularIndToY_Callback(hObject, eventdata, handles)
+% hObject    handle to editAngularIndToY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editAngularIndToY as text
+%        str2double(get(hObject,'String')) returns contents of editAngularIndToY as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editAngularIndToY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editAngularIndToY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editAngularIndFromX_Callback(hObject, eventdata, handles)
+% hObject    handle to editAngularIndFromX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editAngularIndFromX as text
+%        str2double(get(hObject,'String')) returns contents of editAngularIndFromX as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editAngularIndFromX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editAngularIndFromX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editAngularIndStepX_Callback(hObject, eventdata, handles)
+% hObject    handle to editAngularIndStepX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editAngularIndStepX as text
+%        str2double(get(hObject,'String')) returns contents of editAngularIndStepX as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editAngularIndStepX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editAngularIndStepX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editAngularIndToX_Callback(hObject, eventdata, handles)
+% hObject    handle to editAngularIndToX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editAngularIndToX as text
+%        str2double(get(hObject,'String')) returns contents of editAngularIndToX as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editAngularIndToX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editAngularIndToX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

@@ -25,6 +25,13 @@ sensorSize = [str2double(get(handles.editSensorSizeY, 'String')), str2double(get
 cameraPlaneZ = str2double(get(handles.editCameraPlaneZ, 'String'));
 sensorPlaneZ = str2double(get(handles.editSensorPlaneZ, 'String'));
 
+sliceFromY = str2double(get(handles.editAngularIndFromY, 'String'));
+sliceStepY = str2double(get(handles.editAngularIndStepY, 'String'));
+sliceToY = str2double(get(handles.editAngularIndToY, 'String'));
+
+sliceFromX = str2double(get(handles.editAngularIndFromX, 'String'));
+sliceStepX = str2double(get(handles.editAngularIndStepX, 'String'));
+sliceToX = str2double(get(handles.editAngularIndToX, 'String'));
 
 if any(isnan(baseline))
     gui_warning(handles.textImportInfo, 'Invalid baseline');
@@ -49,6 +56,14 @@ if isnan(sensorPlaneZ)
     return;
 end
 handles.data.editor.sensorPlaneZ = sensorPlaneZ;
+
+if any(isnan([sliceFromY, sliceStepY, sliceToY, sliceFromX, sliceStepX, sliceToX]))
+    gui_warning(handles.textImportInfo, 'Invalid angular slice');
+    return;
+end
+
+handles.data.editor.angularSliceY(sliceFromY : sliceStepY : sliceToY);
+handles.data.editor.angularSliceX(sliceFromX : sliceStepX : sliceToX);
 
 lightfield = handles.data.editor.getPerspectiveLightField();
             
