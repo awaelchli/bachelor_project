@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 06-Feb-2016 02:11:38
+% Last Modified by GUIDE v2.5 06-Feb-2016 20:28:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,7 +55,9 @@ function main_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for main
 handles.output = hObject;
 
-handles.editor = LightFieldEditor();
+handles.data = struct;
+handles.data.editor = LightFieldEditor();
+handles.data.animationState = 0;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -106,6 +108,21 @@ function popupProjectionType_Callback(hObject, eventdata, handles)
 % Hints: contents = cellstr(get(hObject,'String')) returns popupProjectionType contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupProjectionType
 
+switch get(hObject, 'Value')
+    case 1 % Projection
+        set(handles.editFOVY, 'Enable', 'Off');
+        set(handles.editFOVX, 'Enable', 'Off');
+        set(handles.editBaselineY, 'Enable', 'On');
+        set(handles.editBaselineX, 'Enable', 'On');
+        set(handles.editCameraPlaneZ, 'Enable', 'On');
+    case 2 % Oblique
+        set(handles.editFOVY, 'Enable', 'On');
+        set(handles.editFOVX, 'Enable', 'On');
+        set(handles.editBaselineY, 'Enable', 'Off');
+        set(handles.editBaselineX, 'Enable', 'Off');
+        set(handles.editCameraPlaneZ, 'Enable', 'Off');
+end
+
 
 % --- Executes during object creation, after setting all properties.
 function popupProjectionType_CreateFcn(hObject, eventdata, handles)
@@ -126,8 +143,26 @@ function btnBrowse_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-path = uigetdir('');
+gui_clear_warning(handles.textImportInfo);
+
+path = fullfile([uigetdir(''), filesep]);
 set(handles.editPath, 'String', path);
+
+% Predict angular resolution
+filetypeStr = get(handles.popupFileType, 'String');
+filetypeVal = get(handles.popupFileType, 'Value');
+filetype = filetypeStr(filetypeVal, :);
+imageList = dir([path '*.' filetype]);
+n = numel(imageList);
+if n == 0
+    gui_warning(handles.textImportInfo, 'No images found');
+elseif rem(sqrt(n), 1) == 0
+    set(handles.editAngularResY, 'String', sqrt(n)); 
+    set(handles.editAngularResX, 'String', sqrt(n));
+else
+    set(handles.editAngularResY, 'String', 1); 
+    set(handles.editAngularResX, 'String', n);
+end
 
 
 function editAngularResY_Callback(hObject, eventdata, handles)
@@ -137,6 +172,12 @@ function editAngularResY_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of editAngularResY as text
 %        str2double(get(hObject,'String')) returns contents of editAngularResY as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid angular resolution');
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -160,6 +201,12 @@ function editAngularResX_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of editAngularResX as text
 %        str2double(get(hObject,'String')) returns contents of editAngularResX as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid angular resolution');
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -206,27 +253,27 @@ function btnLoad_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-inputFolder = fullfile(get(handles.editPath, 'String'), filesep);
-angularResY = str2double(get(handles.editAngularResY, 'String'));
-angularResX = str2double(get(handles.editAngularResX, 'String'));
-angularResolution = [angularResY, angularResX];
-resizeScale = get(handles.sliderSpatialScale, 'Value');
-
-val = get(handles.popupDataType, 'Value');
-switch val
-    case 1 % Image Collection
-        handles.editor.inputFromImageCollection(inputFolder, 'png', angularResolution, resizeScale);
-    case 2 % MATLAB File
-    case 3 % Lytro File
-end
+set(handles.textImportInfo, 'String', 'Loading ...');
+drawnow;
 
 val = get(handles.popupProjectionType, 'Value');
 switch val
-    case 1 % Perspective
-        lightfield = handles.editor.getPerspectiveLightField();
-    case 2 % Oblique
-        lightfield = handles.editor.getOrthographicLightField();
+    case 1
+        lightfield = gui_load_lightfield_p(handles);
+    case 2
+        lightfield = gui_load_lightfield_o(handles);
 end
+
+if(~isempty(lightfield))
+    set(handles.textImportInfo, 'String', 'Loading ... Done.');
+end
+
+handles.data.lightfield = lightfield;
+set(handles.btnAnimate, 'Enable', 'on');
+
+% Update handles structure
+guidata(hObject, handles);
+
 
 % --- Executes on slider movement.
 function sliderSpatialScale_Callback(hObject, eventdata, handles)
@@ -236,6 +283,9 @@ function sliderSpatialScale_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'Value') returns position of slider
 %        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+s = sprintf('%.2f', get(hObject, 'Value'));
+set(handles.editSpatialScale, 'String', s);
 
 
 % --- Executes during object creation, after setting all properties.
@@ -271,3 +321,329 @@ function popupDataType_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on slider movement.
+function sliderAngularScale_Callback(hObject, eventdata, handles)
+% hObject    handle to sliderAngularScale (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'Value') returns position of slider
+%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+
+s = sprintf('%.2f', get(hObject, 'Value'));
+set(handles.editAngularScale, 'String', s);
+
+
+% --- Executes during object creation, after setting all properties.
+function sliderAngularScale_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to sliderAngularScale (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: slider controls usually have a light gray background.
+if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor',[.9 .9 .9]);
+end
+
+
+
+function editFOVY_Callback(hObject, eventdata, handles)
+% hObject    handle to editFOVY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editFOVY as text
+%        str2double(get(hObject,'String')) returns contents of editFOVY as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid field of view');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function editFOVY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editFOVY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editFOVX_Callback(hObject, eventdata, handles)
+% hObject    handle to editFOVX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editFOVX as text
+%        str2double(get(hObject,'String')) returns contents of editFOVX as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid field of view');
+end
+
+% --- Executes during object creation, after setting all properties.
+function editFOVX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editFOVX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in popupFileType.
+function popupFileType_Callback(hObject, eventdata, handles)
+% hObject    handle to popupFileType (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupFileType contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupFileType
+
+
+% --- Executes during object creation, after setting all properties.
+function popupFileType_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupFileType (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editBaselineY_Callback(hObject, eventdata, handles)
+% hObject    handle to editBaselineY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editBaselineY as text
+%        str2double(get(hObject,'String')) returns contents of editBaselineY as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid baseline');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function editBaselineY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editBaselineY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editBaselineX_Callback(hObject, eventdata, handles)
+% hObject    handle to editBaselineX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editBaselineX as text
+%        str2double(get(hObject,'String')) returns contents of editBaselineX as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid baseline');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function editBaselineX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editBaselineX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editCameraPlaneZ_Callback(hObject, eventdata, handles)
+% hObject    handle to editCameraPlaneZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editCameraPlaneZ as text
+%        str2double(get(hObject,'String')) returns contents of editCameraPlaneZ as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid Z value for camera plane');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function editCameraPlaneZ_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editCameraPlaneZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function editSpatialScale_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editSpatialScale (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+% --- Executes during object creation, after setting all properties.
+function editAngularScale_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editAngularScale (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+
+
+function editSensorSizeY_Callback(hObject, eventdata, handles)
+% hObject    handle to editSensorSizeY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editSensorSizeY as text
+%        str2double(get(hObject,'String')) returns contents of editSensorSizeY as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid size for image plane');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function editSensorSizeY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editSensorSizeY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editSensorSizeX_Callback(hObject, eventdata, handles)
+% hObject    handle to editSensorSizeX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editSensorSizeX as text
+%        str2double(get(hObject,'String')) returns contents of editSensorSizeX as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid size for image plane');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function editSensorSizeX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editSensorSizeX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editSensorPlaneZ_Callback(hObject, eventdata, handles)
+% hObject    handle to editSensorPlaneZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editSensorPlaneZ as text
+%        str2double(get(hObject,'String')) returns contents of editSensorPlaneZ as a double
+
+gui_clear_warning(handles.textImportInfo);
+
+if isnan(str2double(get(hObject, 'String')))
+    gui_warning(handles.textImportInfo, 'Invalid Z value for image plane');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function editSensorPlaneZ_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editSensorPlaneZ (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in btnAnimate.
+function btnAnimate_Callback(hObject, eventdata, handles)
+% hObject    handle to btnAnimate (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if(~handles.data.animationState)
+    handles.data.animationState = 1;
+    set(handles.btnAnimate, 'Enable', 'off');
+    drawnow;
+    gui_animateLightField( handles.data.lightfield.lightFieldData, handles );
+    handles.data.animationState = 0;
+    set(handles.btnAnimate, 'Enable', 'on');
+end
+
+% switch handles.data.animationState
+%     case 1 % Animation running
+%         handles.data.animationState = 0;
+%         set(hObject, 'String', 'Start Animation');
+%     case 0 % Animation stopped
+%         handles.data.animationState = 1;
+%         set(hObject, 'String', 'Stop Animation');
+%         gui_animateLightField( handles.data.lightfield.lightFieldData, handles );
+% end
+
+
+% --- Executes during object creation, after setting all properties.
+function btnAnimate_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to btnAnimate (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
