@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 07-Feb-2016 14:31:09
+% Last Modified by GUIDE v2.5 07-Feb-2016 16:59:57
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -856,6 +856,12 @@ val = round(get(hObject, 'Value'));
 set(handles.textLayers, 'String', val);
 set(hObject, 'Value', val);
 
+thickness = str2double(get(handles.editThickness, 'String'));
+n = val;
+spacing = thickness / (n - 1);
+
+set(handles.editSpacing, 'String', spacing);
+
 % --- Executes during object creation, after setting all properties.
 function sliderLayers_CreateFcn(hObject, eventdata, handles)
 % hObject    handle to sliderLayers (see GCBO)
@@ -1205,8 +1211,26 @@ function btnRunOptimization_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+attenuator = gui_create_attenuator(handles);
+if isempty(attenuator)
+    return;
+end
+handles.data.attenuator = attenuator;
+
+switch get(handles.checkboxTiling, 'Value')
+    case 0 % Tiling off
+        attenuator = gui_run_optimization_no_tiles(handles);
+    case 1 % Tiling on
+        attenuator = gui_run_optimization_tiles(handles);
+end
+
+if isempty(attenuator)
+    return;
+end
+handles.data.attenuator = attenuator;
 handles.data.axesLayersDisplayMode = handles.constants.displayMode.layers;
 handles.data.axesLayersPage = 1;
+
 guidata(hObject, handles);
 
 
@@ -1273,3 +1297,207 @@ function checkboxGrayscale_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkboxGrayscale
+
+
+
+function editOutputFolder_Callback(hObject, eventdata, handles)
+% hObject    handle to editOutputFolder (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editOutputFolder as text
+%        str2double(get(hObject,'String')) returns contents of editOutputFolder as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editOutputFolder_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editOutputFolder (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in btnBrowseOutput.
+function btnBrowseOutput_Callback(hObject, eventdata, handles)
+% hObject    handle to btnBrowseOutput (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in checkboxSaveLayers.
+function checkboxSaveLayers_Callback(hObject, eventdata, handles)
+% hObject    handle to checkboxSaveLayers (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkboxSaveLayers
+
+
+% --- Executes on button press in checkboxReconstructedViews.
+function checkboxReconstructedViews_Callback(hObject, eventdata, handles)
+% hObject    handle to checkboxReconstructedViews (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkboxReconstructedViews
+
+
+% --- Executes on button press in checkboxErrorImages.
+function checkboxErrorImages_Callback(hObject, eventdata, handles)
+% hObject    handle to checkboxErrorImages (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkboxErrorImages
+
+
+% --- Executes on button press in checkboxBackProjection.
+function checkboxBackProjection_Callback(hObject, eventdata, handles)
+% hObject    handle to checkboxBackProjection (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkboxBackProjection
+
+
+
+function editPrintFrom_Callback(hObject, eventdata, handles)
+% hObject    handle to editPrintFrom (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editPrintFrom as text
+%        str2double(get(hObject,'String')) returns contents of editPrintFrom as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editPrintFrom_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editPrintFrom (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editPrintTo_Callback(hObject, eventdata, handles)
+% hObject    handle to editPrintTo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editPrintTo as text
+%        str2double(get(hObject,'String')) returns contents of editPrintTo as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editPrintTo_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editPrintTo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editMatrixSizeY_Callback(hObject, eventdata, handles)
+% hObject    handle to editMatrixSizeY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editMatrixSizeY as text
+%        str2double(get(hObject,'String')) returns contents of editMatrixSizeY as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editMatrixSizeY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editMatrixSizeY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editMatrixSizeX_Callback(hObject, eventdata, handles)
+% hObject    handle to editMatrixSizeX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editMatrixSizeX as text
+%        str2double(get(hObject,'String')) returns contents of editMatrixSizeX as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editMatrixSizeX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editMatrixSizeX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in checkboxMarkers.
+function checkboxMarkers_Callback(hObject, eventdata, handles)
+% hObject    handle to checkboxMarkers (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkboxMarkers
+
+
+
+function editMarkerSize_Callback(hObject, eventdata, handles)
+% hObject    handle to editMarkerSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editMarkerSize as text
+%        str2double(get(hObject,'String')) returns contents of editMarkerSize as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editMarkerSize_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editMarkerSize (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in btnGeneratePDF.
+function btnGeneratePDF_Callback(hObject, eventdata, handles)
+% hObject    handle to btnGeneratePDF (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in btnSave.
+function btnSave_Callback(hObject, eventdata, handles)
+% hObject    handle to btnSave (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
