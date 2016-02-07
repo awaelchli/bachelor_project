@@ -1,20 +1,24 @@
 % Actual sizes in millimeters
 actualLayerWidth = 90;
 actualLayerHeight = 90;
-actualThickness = 15.2;
+actualThickness = 16;
 
 attenuatorSize = [actualLayerHeight, actualLayerWidth];
 samplingPlaneSize = attenuatorSize;
 
 editor = LightFieldEditor();
-editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/', 'png', [17, 17], 0.5);
-editor.angularSliceY(17 : -3 : 1);
-editor.angularSliceX(17 : -3 : 1);
-editor.distanceBetweenTwoCameras = [5.76, 5.76] * 6;
+editor.inputFromImageCollection('lightFields/tarot/small_angular_extent/rectified/', 'png', [17, 17], 0.5);
+editor.angularSliceY(17 : -1 : 1);
+editor.angularSliceX(17 : -1 : 1);
+
+baseline = [190, 190];
+% baseline = [300, 300];
+% editor.distanceBetweenTwoCameras = [5.76, 5.76] * 6;
+editor.distanceBetweenTwoCameras = baseline ./ (editor.angularResolution - 1);
 % editor.distanceBetweenTwoCameras = [1.8, 1.8] * 6;
 editor.cameraPlaneZ = 80 * 6;
 editor.sensorSize = attenuatorSize;
-editor.sensorPlaneZ = -0.5;
+editor.sensorPlaneZ = -1;
 
 lightField = editor.getPerspectiveLightField();
 
@@ -26,7 +30,7 @@ attenuator = Attenuator(numberOfLayers, layerResolution, attenuatorSize, attenua
 
 %% Compute tile positions
 
-tileResolution = 2 * [100, 100];
+tileResolution = 2 * [128, 128];
 tileOverlap = ceil(0.5 * tileResolution);
 tiledPlane = TiledPixelPlane(attenuator.planeResolution, attenuator.planeSize);
 tiledPlane.regularTiling(tileResolution, tileOverlap);
@@ -56,11 +60,11 @@ for index = 1 : size(tileIndices, 1)
         attenuatorTile = Attenuator(numberOfLayers, tile.planeResolution, tile.planeSize, attenuatorThickness, lightField.channels);
         attenuatorTile.translate(tile.planeCenter);
         
-        tileSamplingPlane = SensorPlane(ceil(2 * tile.planeResolution), 1 * tile.planeSize, attenuatorTile.layerPositionZ(1));
+        tileSamplingPlane = SensorPlane(ceil(1 * tile.planeResolution), 1 * tile.planeSize, attenuatorTile.layerPositionZ(1));
         tileSamplingPlane.translate(tile.planeCenter);
         rec = FastReconstructionForResampledLF(lightField, attenuatorTile, tileSamplingPlane);
         
-        rec.verbose = 0;
+        rec.verbose = 1;
         rec.iterations = 6;
         rec.computeAttenuationLayers();
         
@@ -114,9 +118,10 @@ rec.constructPropagationMatrix();
 rec.usePropagationMatrixForReconstruction(rec.propagationMatrix);
 
 evaluation = rec.evaluation();
-evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
-evaluation.displayReconstructedViews();
-evaluation.displayErrorImages();
+evaluation.outputFolder = 'results/baseline_adjustment/baseline_scaled_shifted/';
+% evaluation.evaluateViews([3, 1; 3, 2; 3, 3; 3, 4; 3, 5; 3, 6]);
+% evaluation.displayReconstructedViews();
+% evaluation.displayErrorImages();
 
 %% Store evaluation data to output folder
 
@@ -134,3 +139,8 @@ evaluation.evaluateViews(indices);
 evaluation.storeReconstructedViews();
 evaluation.storeErrorImages();
 evaluation.storeLayers(1 : numberOfLayers);
+
+%% Print
+
+evaluation.printLayers([1, 2; 3, 4], 18);
+evaluation.printLayers(5, 18);
