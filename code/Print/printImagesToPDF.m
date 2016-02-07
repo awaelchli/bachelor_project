@@ -33,7 +33,7 @@ function printImagesToPDF( outputFolder, filename, images, printSize, arrangemen
     set(fig, 'PaperType', 'A4')
     set(fig, 'PaperOrientation', 'portrait')
     
-    print('-dpdf', '-r0', [outputFolder, filename, '.pdf']);
+    print(fig, '-dpdf', '-r0', [outputFolder, filename, '.pdf']);
     
     close(fig);
     
