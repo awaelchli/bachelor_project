@@ -1,6 +1,6 @@
 function layersWithMarkers = addMarkersToLayers(layers, markerSize)
 
-    padding = 2 * markerSize - 1;
+    padding = max(0, 2 * markerSize - 1);
     layersWithMarkers = zeros(size(layers) + [0, 0, 2 * padding, 0]);
     
     for i = 1 : size(layers, 1)
