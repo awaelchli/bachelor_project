@@ -1211,6 +1211,8 @@ function btnRunOptimization_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+gui_clear_warning(handles.textOptimizationInfo);
+
 attenuator = gui_create_attenuator(handles);
 if isempty(attenuator)
     return;
@@ -1232,6 +1234,8 @@ handles.data.axesLayersDisplayMode = handles.constants.displayMode.layers;
 handles.data.axesLayersPage = 1;
 
 guidata(hObject, handles);
+gui_enable_layer_preview(handles, 'on');
+gui_display_layers(handles);
 
 
 % --- Executes on button press in checkboxTiling.
@@ -1267,11 +1271,10 @@ if isempty(handles.data.lightfield)
 end
 
 attenuator = gui_create_attenuator(handles);
-handles.data.attenuator = attenuator;
-
 if isempty(attenuator) 
     return;
 end
+handles.data.attenuator = attenuator;
 
 set(handles.textOptimizationInfo, 'String', 'Running back-projection ... ');
 drawnow;
@@ -1283,10 +1286,7 @@ handles.data.axesLayersDisplayMode = handles.constants.displayMode.backprojectio
 handles.data.axesLayersPage = 1;
 guidata(hObject, handles);
 
-set(handles.btnNextLayer, 'Enable', 'on');
-set(handles.btnPrevLayer, 'Enable', 'on');
-set(handles.textLayerPage, 'Enable', 'on');
-
+gui_enable_layer_preview(handles, 'on');
 gui_display_layers(handles);
 
 

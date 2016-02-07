@@ -58,7 +58,7 @@ for index = 1 : size(tileIndices, 1)
         attenuatorTile.translate(tile.planeCenter);
         
         % HARD-CODED sampling density
-        tileSamplingPlane = SensorPlane(ceil(1 * tile.planeResolution), 1 * tile.planeSize, handles.data.lightfield.sensorPlane.z);
+        tileSamplingPlane = SensorPlane(ceil(1 * tile.planeResolution), 1 * tile.planeSize, attenuatorTile.layerPositionZ(1));
         tileSamplingPlane.translate(tile.planeCenter);
         rec = FastReconstructionForResampledLF(handles.data.lightfield, attenuatorTile, tileSamplingPlane);
         
@@ -95,7 +95,8 @@ elapsed = toc(ticStart);
 set(handles.textOptimizationInfo, 'String', sprintf('Done. Elapsed time is %.0f seconds', elapsed));
 
 attenuationValues = tileSumMatrix ./ weightSumMatrix;
-attenuator.attenuationValues = attenuationValues;
+handles.data.attenuator.attenuationValues = attenuationValues;
+attenuator = handles.data.attenuator;
 
 end
 
