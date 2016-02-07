@@ -1,0 +1,28 @@
+ant:
+<ant>
+  <mkdir dir="C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution" />
+  <mkdir dir="C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing" />
+  <mkdir dir="C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution_files_only" />
+</ant>
+mcc -C -o Layered3D -W WinMain:Layered3D -T link:exe -d C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing -v C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\main.m 
+Compiler version: 6.0 (R2015a)
+Dependency analysis by REQUIREMENTS.
+[Warning: Adding path "C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui" to
+Compiler path instance.] 
+Parsing file "C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\main.m"
+	(Referenced from: "Compiler Command Line").
+Deleting 5 temporary MEX authorization files.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc20627_5580.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc10052_5580.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc31317_5580.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc13730_5580.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc30831_5580.auth'.
+Generating file "C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing\readme.txt".
+Packaging...
+Adding custom icon C:\Program Files\MATLAB\MATLAB Production Server\R2015a\toolbox\compiler\Resources\default_icon.ico to C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing\Layered3D.exe.
+Attempting to embed the CTF archive into the application C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing\Layered3D.exe.
+Finished embedding CTF archive. Deleting the external CTF archive.
+Creating the bundle...
+Web based installer created at C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution\MyAppInstaller_web.exe.
+Packaging complete.
+Elapsed packaging time was: 4 minutes and 44 seconds.
