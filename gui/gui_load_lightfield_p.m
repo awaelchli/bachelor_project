@@ -7,15 +7,31 @@ inputFolder = fullfile(get(handles.editPath, 'String'), filesep);
 angularResY = str2double(get(handles.editAngularResY, 'String'));
 angularResX = str2double(get(handles.editAngularResX, 'String'));
 angularResolution = [angularResY, angularResX];
-resizeScale = get(handles.sliderSpatialScale, 'Value');
 
+if any(isnan(angularResolution))
+    gui_warning(handles.textImportInfo, 'Invalid angular resolution');
+    return;
+end
+
+resizeScale = get(handles.sliderSpatialScale, 'Value');
 filetypeStr = get(handles.popupFileType, 'String');
 filetypeVal = get(handles.popupFileType, 'Value');
 filetype = filetypeStr(filetypeVal, :);
 
 switch get(handles.popupDataType, 'Value')
     case 1 % Image Collection
-        handles.data.editor.inputFromImageCollection(inputFolder, filetype, angularResolution, resizeScale);
+        try
+            handles.data.editor.inputFromImageCollection(inputFolder, filetype, angularResolution, resizeScale);
+        catch me
+            if strcmp(me.identifier, 'inputFromImageCollection:wrongAngularResolution')
+                gui_warning(handles.textImportInfo, 'Invalid angular resolution');
+                return;
+            end
+            if strcmp(me.identifier, 'inputFromImageCollection:invalidFolder')
+                gui_warning(handles.textImportInfo, 'Path is not a folder');
+                return;
+            end
+        end
     case 2 % MATLAB File
     case 3 % Lytro File
 end

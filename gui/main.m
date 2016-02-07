@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 07-Feb-2016 03:06:00
+% Last Modified by GUIDE v2.5 07-Feb-2016 14:31:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -55,9 +55,16 @@ function main_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for main
 handles.output = hObject;
 
+handles.constants.displayMode.layers = 100;
+handles.constants.displayMode.backprojection = 101;
+
 handles.data = struct;
 handles.data.editor = LightFieldEditor();
 handles.data.animationState = 0;
+handles.data.lightfield = [];
+handles.data.attenuator = [];
+handles.data.axesLayersDisplayMode = handles.constants.displayMode.layers;
+handles.data.axesLayersPage = 1;
 
 % Update handles structure
 guidata(hObject, handles);
@@ -298,23 +305,30 @@ function btnLoad_Callback(hObject, eventdata, handles)
 set(handles.textImportInfo, 'String', 'Loading ...');
 drawnow;
 
-val = get(handles.popupProjectionType, 'Value');
-switch val
+switch get(handles.popupProjectionType, 'Value')
     case 1
         lightfield = gui_load_lightfield_p(handles);
     case 2
         lightfield = gui_load_lightfield_o(handles);
 end
 
-if(~isempty(lightfield))
-    set(handles.textImportInfo, 'String', 'Loading ... Done.');
+if(isempty(lightfield))
+   set(handles.textImportInfo, 'String', 'Loading error'); 
+   return;
 end
-
 handles.data.lightfield = lightfield;
+
+set(handles.textImportInfo, 'String', 'Loading ... Done.');
 set(handles.btnAnimate, 'Enable', 'on');
 
 % Update handles structure
 guidata(hObject, handles);
+
+% Update layer size and resolution
+set(handles.editLayerSizeY, 'String', get(handles.editSensorSizeY, 'String'));
+set(handles.editLayerSizeX, 'String', get(handles.editSensorSizeX, 'String'));
+set(handles.editLayerResY, 'String', handles.data.lightfield.spatialResolution(1));
+set(handles.editLayerResX, 'String', handles.data.lightfield.spatialResolution(2));
 
 
 % --- Executes on slider movement.
@@ -592,6 +606,7 @@ gui_clear_warning(handles.textImportInfo);
 
 if isnan(str2double(get(hObject, 'String')))
     gui_warning(handles.textImportInfo, 'Invalid size for image plane');
+    return;
 end
 
 
@@ -621,6 +636,7 @@ gui_clear_warning(handles.textImportInfo);
 
 if isnan(str2double(get(hObject, 'String')))
     gui_warning(handles.textImportInfo, 'Invalid size for image plane');
+    return;
 end
 
 
@@ -868,6 +884,11 @@ function editThickness_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of editThickness as text
 %        str2double(get(hObject,'String')) returns contents of editThickness as a double
 
+thickness = str2double(get(hObject, 'String'));
+n = get(handles.sliderLayers, 'Value');
+spacing = thickness / (n - 1);
+
+set(handles.editSpacing, 'String', spacing);
 
 % --- Executes during object creation, after setting all properties.
 function editThickness_CreateFcn(hObject, eventdata, handles)
@@ -891,6 +912,11 @@ function editSpacing_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of editSpacing as text
 %        str2double(get(hObject,'String')) returns contents of editSpacing as a double
 
+spacing = str2double(get(hObject, 'String'));
+n = get(handles.sliderLayers, 'Value');
+thickness = (n - 1) * spacing;
+
+set(handles.editThickness, 'String', thickness);
 
 % --- Executes during object creation, after setting all properties.
 function editSpacing_CreateFcn(hObject, eventdata, handles)
@@ -975,18 +1001,18 @@ end
 
 
 
-function edit29_Callback(hObject, eventdata, handles)
-% hObject    handle to edit29 (see GCBO)
+function editTileResY_Callback(hObject, eventdata, handles)
+% hObject    handle to editTileResY (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit29 as text
-%        str2double(get(hObject,'String')) returns contents of edit29 as a double
+% Hints: get(hObject,'String') returns contents of editTileResY as text
+%        str2double(get(hObject,'String')) returns contents of editTileResY as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit29_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit29 (see GCBO)
+function editTileResY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editTileResY (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -998,18 +1024,18 @@ end
 
 
 
-function edit30_Callback(hObject, eventdata, handles)
-% hObject    handle to edit30 (see GCBO)
+function editTileResX_Callback(hObject, eventdata, handles)
+% hObject    handle to editTileResX (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit30 as text
-%        str2double(get(hObject,'String')) returns contents of edit30 as a double
+% Hints: get(hObject,'String') returns contents of editTileResX as text
+%        str2double(get(hObject,'String')) returns contents of editTileResX as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit30_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit30 (see GCBO)
+function editTileResX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editTileResX (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -1105,12 +1131,26 @@ function btnNextLayer_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles.data.axesLayersPage = min(handles.data.axesLayersPage + 1, handles.data.attenuator.numberOfLayers);
+set(handles.textLayerPageNumber, 'String', handles.data.axesLayersPage);
+
+gui_display_layers(handles);
+
+guidata(hObject, handles);
+
 
 % --- Executes on button press in btnPrevLayer.
 function btnPrevLayer_Callback(hObject, eventdata, handles)
 % hObject    handle to btnPrevLayer (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+handles.data.axesLayersPage = max(1, handles.data.axesLayersPage - 1);
+set(handles.textLayerPageNumber, 'String', handles.data.axesLayersPage);
+
+gui_display_layers(handles);
+
+guidata(hObject, handles);
 
 
 % --- Executes on selection change in popupAlgorithm.
@@ -1165,6 +1205,10 @@ function btnRunOptimization_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+handles.data.axesLayersDisplayMode = handles.constants.displayMode.layers;
+handles.data.axesLayersPage = 1;
+guidata(hObject, handles);
+
 
 % --- Executes on button press in checkboxTiling.
 function checkboxTiling_Callback(hObject, eventdata, handles)
@@ -1173,3 +1217,59 @@ function checkboxTiling_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 % Hint: get(hObject,'Value') returns toggle state of checkboxTiling
+
+switch get(hObject, 'Value')
+    case 1 % Tiling on
+        set(handles.editTileResY, 'Enable', 'on');
+        set(handles.editTileResX, 'Enable', 'on');
+        set(handles.sliderOverlap, 'Enable', 'on');
+        set(handles.textOverlap, 'Enable', 'on');
+    case 0 % Tiling off
+        set(handles.editTileResY, 'Enable', 'off');
+        set(handles.editTileResX, 'Enable', 'off');
+        set(handles.sliderOverlap, 'Enable', 'off');
+        set(handles.textOverlap, 'Enable', 'off');
+end
+
+% --- Executes on button press in btnBackProject.
+function btnBackProject_Callback(hObject, eventdata, handles)
+% hObject    handle to btnBackProject (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+if isempty(handles.data.lightfield)
+    gui_warning(handles.textOptimizationInfo, 'No light field loaded');
+    return;
+end
+
+attenuator = gui_create_attenuator(handles);
+handles.data.attenuator = attenuator;
+
+if isempty(attenuator) 
+    return;
+end
+
+set(handles.textOptimizationInfo, 'String', 'Running back-projection ... ');
+drawnow;
+b = gui_backprojection(handles);
+handles.data.backprojection = b;
+set(handles.textOptimizationInfo, 'String', 'Running back-projection ... Done.');
+
+handles.data.axesLayersDisplayMode = handles.constants.displayMode.backprojection;
+handles.data.axesLayersPage = 1;
+guidata(hObject, handles);
+
+set(handles.btnNextLayer, 'Enable', 'on');
+set(handles.btnPrevLayer, 'Enable', 'on');
+set(handles.textLayerPage, 'Enable', 'on');
+
+gui_display_layers(handles);
+
+
+% --- Executes on button press in checkboxGrayscale.
+function checkboxGrayscale_Callback(hObject, eventdata, handles)
+% hObject    handle to checkboxGrayscale (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: get(hObject,'Value') returns toggle state of checkboxGrayscale
