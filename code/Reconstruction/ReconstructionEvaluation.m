@@ -191,7 +191,7 @@ classdef ReconstructionEvaluation < handle
             end
         end
         
-        function printLayers(this, arrangementMatrix, markerSize)
+        function printLayers(this, arrangementMatrix, markerSize, varargin)
             this.createOutputFolderIfNotExists();
             
             layerNumbers = unique(arrangementMatrix(arrangementMatrix ~= 0));
@@ -204,8 +204,12 @@ classdef ReconstructionEvaluation < handle
             
             filename = ['Print_Layers' sprintf('-%i', reshape(layerNumbers, 1, []))];
             
+            if nargin == 4
+                filename = varargin{1};
+            end
+            
             % Account for added marker padding before printing to pdf
-            padding = 2 * markerSize - 1;
+            padding = max(0, 2 * markerSize - 1);
             paddedSize = this.attenuator.pixelSize * 2 * padding;
             printSize = this.attenuator.planeSize + paddedSize;
             
