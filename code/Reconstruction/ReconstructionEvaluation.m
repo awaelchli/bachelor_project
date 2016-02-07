@@ -210,7 +210,7 @@ classdef ReconstructionEvaluation < handle
             
             % Account for added marker padding before printing to pdf
             padding = max(0, 2 * markerSize - 1);
-            paddedSize = this.attenuator.pixelSize * 2 * padding;
+            paddedSize = this.attenuator.pixelSize .* 2 .* [0, padding];
             printSize = this.attenuator.planeSize + paddedSize;
             
             printImagesToPDF(this.outputFolder, filename, layersWithMarkers, printSize, arrangementMatrix);
