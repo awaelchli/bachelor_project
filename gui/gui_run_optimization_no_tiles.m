@@ -35,7 +35,7 @@ ticStart = tic;
 rec.computeAttenuationLayers();
 elapsed = toc(ticStart);
 
-set(handles.textOptimizationInfo, 'String', sprintf('Done. Elapsed time is %.0f seconds', elapsed));
+set(handles.textOptimizationInfo, 'String', sprintf('Done. Elapsed time is %.0f seconds.', elapsed));
 drawnow;
 
 attenuator = rec.attenuator;

@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 07-Feb-2016 16:59:57
+% Last Modified by GUIDE v2.5 07-Feb-2016 21:52:41
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -63,8 +63,10 @@ handles.data.editor = LightFieldEditor();
 handles.data.animationState = 0;
 handles.data.lightfield = [];
 handles.data.attenuator = [];
+handles.data.evaluation = [];
 handles.data.axesLayersDisplayMode = handles.constants.displayMode.layers;
 handles.data.axesLayersPage = 1;
+handles.data.backprojection = [];
 
 % Update handles structure
 guidata(hObject, handles);
@@ -303,6 +305,7 @@ function btnLoad_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 set(handles.textImportInfo, 'String', 'Loading ...');
+set(hObject, 'Enable', 'off');
 drawnow;
 
 switch get(handles.popupProjectionType, 'Value')
@@ -314,11 +317,13 @@ end
 
 if(isempty(lightfield))
    set(handles.textImportInfo, 'String', 'Loading error'); 
+   set(hObject, 'Enable', 'on');
    return;
 end
 handles.data.lightfield = lightfield;
 
 set(handles.textImportInfo, 'String', 'Loading ... Done.');
+set(hObject, 'Enable', 'on');
 set(handles.btnAnimate, 'Enable', 'on');
 
 % Update handles structure
@@ -1219,12 +1224,17 @@ if isempty(attenuator)
 end
 handles.data.attenuator = attenuator;
 
+set(hObject, 'Enable', 'off');
+drawnow;
+
 switch get(handles.checkboxTiling, 'Value')
     case 0 % Tiling off
         attenuator = gui_run_optimization_no_tiles(handles);
     case 1 % Tiling on
         attenuator = gui_run_optimization_tiles(handles);
 end
+
+set(hObject, 'Enable', 'on');
 
 if isempty(attenuator)
     return;
@@ -1233,8 +1243,17 @@ handles.data.attenuator = attenuator;
 handles.data.axesLayersDisplayMode = handles.constants.displayMode.layers;
 handles.data.axesLayersPage = 1;
 
+set(handles.textOptimizationInfo, 'String', [get(handles.textOptimizationInfo, 'String'), ' Forward-Projection ... ']);
+drawnow;
+
+evaluation = gui_reconstruct_lightfield(handles);
+handles.data.evaluation = evaluation;
+
+set(handles.textOptimizationInfo, 'String', [get(handles.textOptimizationInfo, 'String'), 'Done.']);
+
 guidata(hObject, handles);
 gui_enable_layer_preview(handles, 'on');
+gui_enable_reconstruction_preview(handles, 'on');
 gui_display_layers(handles);
 
 
@@ -1277,10 +1296,12 @@ end
 handles.data.attenuator = attenuator;
 
 set(handles.textOptimizationInfo, 'String', 'Running back-projection ... ');
+set(hObject, 'Enable', 'off');
 drawnow;
 b = gui_backprojection(handles);
 handles.data.backprojection = b;
 set(handles.textOptimizationInfo, 'String', 'Running back-projection ... Done.');
+set(hObject, 'Enable', 'on');
 
 handles.data.axesLayersDisplayMode = handles.constants.displayMode.backprojection;
 handles.data.axesLayersPage = 1;
@@ -1327,6 +1348,14 @@ function btnBrowseOutput_Callback(hObject, eventdata, handles)
 % hObject    handle to btnBrowseOutput (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+path = uigetdir('', 'Select a Folder for the Output');
+if path == 0 % User cancelled
+    return;
+end
+
+path = fullfile(path, filesep);
+set(handles.editOutputFolder, 'String', path);
 
 
 % --- Executes on button press in checkboxSaveLayers.
@@ -1465,6 +1494,12 @@ function checkboxMarkers_Callback(hObject, eventdata, handles)
 
 % Hint: get(hObject,'Value') returns toggle state of checkboxMarkers
 
+switch get(hObject, 'Value')
+    case 0
+        set(handles.editMarkerSize, 'Enable', 'off');
+    case 1
+        set(handles.editMarkerSize, 'Enable', 'on');
+end
 
 
 function editMarkerSize_Callback(hObject, eventdata, handles)
@@ -1495,9 +1530,142 @@ function btnGeneratePDF_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+gui_clear_warning(handles.textPrintInfo);
+
+if isempty(handles.data.evaluation)
+    guy_warning(handles.textPrintInfo, 'Nothing to print');
+    return;
+end
+
+gui_generate_PDF(handles);
+
 
 % --- Executes on button press in btnSave.
 function btnSave_Callback(hObject, eventdata, handles)
 % hObject    handle to btnSave (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+gui_clear_warning(handles.textSaveInfo);
+
+outputFolder = get(handles.editOutputFolder, 'String');
+if ~isdir(outputFolder)
+    gui_warning(handles.textSaveInfo, 'Path is not a folder');
+    return;
+end
+
+set(hObject, 'Enable', 'Off');
+gui_save_results(handles);
+set(hObject, 'Enable', 'On');
+
+
+
+function editRecIndexY_Callback(hObject, eventdata, handles)
+% hObject    handle to editRecIndexY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editRecIndexY as text
+%        str2double(get(hObject,'String')) returns contents of editRecIndexY as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editRecIndexY_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editRecIndexY (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+
+function editRecIndexX_Callback(hObject, eventdata, handles)
+% hObject    handle to editRecIndexX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of editRecIndexX as text
+%        str2double(get(hObject,'String')) returns contents of editRecIndexX as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function editRecIndexX_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to editRecIndexX (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in popupReconstructionPreview.
+function popupReconstructionPreview_Callback(hObject, eventdata, handles)
+% hObject    handle to popupReconstructionPreview (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupReconstructionPreview contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupReconstructionPreview
+
+
+% --- Executes during object creation, after setting all properties.
+function popupReconstructionPreview_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupReconstructionPreview (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on button press in btnShowReconstruction.
+function btnShowReconstruction_Callback(hObject, eventdata, handles)
+% hObject    handle to btnShowReconstruction (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes during object creation, after setting all properties.
+function textImportInfo_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textImportInfo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+set(hObject, 'String', '');
+
+
+% --- Executes during object creation, after setting all properties.
+function textOptimizationInfo_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textOptimizationInfo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+set(hObject, 'String', '');
+
+
+% --- Executes during object creation, after setting all properties.
+function textSaveInfo_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textSaveInfo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+set(hObject, 'String', '');
+
+
+% --- Executes during object creation, after setting all properties.
+function textPrintInfo_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to textPrintInfo (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+set(hObject, 'String', '');
