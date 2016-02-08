@@ -101,6 +101,20 @@ classdef ReconstructionEvaluation < handle
             end
         end
         
+        function displaySingleReconstructedView(this, cameraIndex, varargin)
+            reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
+            
+            if nargin == 3
+                axes(varargin{1});
+                imshow(reconstructedView);
+            else
+                displayTitle = sprintf('Reconstruction of view (%i, %i)', cameraIndex);
+                figure('Name', 'Light field reconstruction from attenuation layers');
+                imshow(reconstructedView);
+                title(displayTitle);
+            end
+        end
+        
         function storeReconstructedViews(this)
             this.createOutputFolderIfNotExists();
             
@@ -121,6 +135,20 @@ classdef ReconstructionEvaluation < handle
             % Print RMSE and PSNR to console
             fprintf(RMSEoutput);
             fprintf(PSNRoutput);
+        end
+        
+        function [errorImage, rmse, psnr] = displaySingleErrorImage(this, cameraIndex, varargin)
+            [errorImage, rmse, psnr] = this.getErrorForView(cameraIndex);
+            
+            if nargin == 3
+                axes(varargin{1})
+                imshow(errorImage, []);
+            else
+                displayTitle = sprintf('MSE for view (%i, %i)', cameraIndex);
+                figure('Name', 'Mean-Square-Error for reconstructed view');
+                imshow(errorImage, []);
+                title(displayTitle);
+            end
         end
         
         function storeErrorImages(this)
@@ -220,26 +248,10 @@ classdef ReconstructionEvaluation < handle
     
     methods (Access = private)
         
-        function displaySingleReconstructedView(this, cameraIndex)
-            reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
-            displayTitle = sprintf('Reconstruction of view (%i, %i)', cameraIndex);
-            figure('Name', 'Light field reconstruction from attenuation layers');
-            imshow(reconstructedView);
-            title(displayTitle);
-        end
-        
         function storeSingleReconstructedView(this, cameraIndex)
             filename = sprintf(ReconstructionEvaluation.filenameReconstructionOfView, cameraIndex);
             reconstructedView = getReplicatedReconstructedView(this, cameraIndex);
             imwrite(reconstructedView, [this.outputFolder '/' filename '.' ReconstructionEvaluation.imageOutputType]);
-        end
-        
-        function [errorImage, rmse, psnr] = displaySingleErrorImage(this, cameraIndex)
-            [errorImage, rmse, psnr] = this.getErrorForView(cameraIndex);
-            displayTitle = sprintf('MSE for view (%i, %i)', cameraIndex);
-            figure('Name', 'Mean-Square-Error for reconstructed view');
-            imshow(errorImage, []);
-            title(displayTitle);
         end
         
         function viewFromOriginal = getReplicatedOriginalView(this, cameraIndex)
