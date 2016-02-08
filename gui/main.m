@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 07-Feb-2016 21:52:41
+% Last Modified by GUIDE v2.5 08-Feb-2016 19:03:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -334,6 +334,8 @@ set(handles.editLayerSizeY, 'String', get(handles.editSensorSizeY, 'String'));
 set(handles.editLayerSizeX, 'String', get(handles.editSensorSizeX, 'String'));
 set(handles.editLayerResY, 'String', handles.data.lightfield.spatialResolution(1));
 set(handles.editLayerResX, 'String', handles.data.lightfield.spatialResolution(2));
+
+gui_display_image(handles.axesLFPreview);
 
 
 % --- Executes on slider movement.
@@ -1669,3 +1671,24 @@ function textPrintInfo_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 set(hObject, 'String', '');
+
+
+% --------------------------------------------------------------------
+function menuExamples_Callback(hObject, eventdata, handles)
+% hObject    handle to menuExamples (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function menu_settings_Callback(hObject, eventdata, handles)
+% hObject    handle to menu_settings (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+
+% --------------------------------------------------------------------
+function menuItem_locateLytro_Callback(hObject, eventdata, handles)
+% hObject    handle to menuItem_locateLytro (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
