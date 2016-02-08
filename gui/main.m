@@ -1236,8 +1236,6 @@ switch get(handles.checkboxTiling, 'Value')
         attenuator = gui_run_optimization_tiles(handles);
 end
 
-set(hObject, 'Enable', 'on');
-
 if isempty(attenuator)
     return;
 end
@@ -1252,12 +1250,12 @@ evaluation = gui_reconstruct_lightfield(handles);
 handles.data.evaluation = evaluation;
 
 set(handles.textOptimizationInfo, 'String', [get(handles.textOptimizationInfo, 'String'), 'Done.']);
+set(hObject, 'Enable', 'on');
 
 guidata(hObject, handles);
 gui_enable_layer_preview(handles, 'on');
 gui_enable_reconstruction_preview(handles, 'on');
 gui_display_layers(handles);
-
 
 % --- Executes on button press in checkboxTiling.
 function checkboxTiling_Callback(hObject, eventdata, handles)
@@ -1570,6 +1568,8 @@ function editRecIndexY_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of editRecIndexY as text
 %        str2double(get(hObject,'String')) returns contents of editRecIndexY as a double
 
+set(hObject, 'ForegroundColor', 'Black');
+
 
 % --- Executes during object creation, after setting all properties.
 function editRecIndexY_CreateFcn(hObject, eventdata, handles)
@@ -1592,6 +1592,8 @@ function editRecIndexX_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of editRecIndexX as text
 %        str2double(get(hObject,'String')) returns contents of editRecIndexX as a double
+
+set(hObject, 'ForegroundColor', 'Black');
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1635,6 +1637,8 @@ function btnShowReconstruction_Callback(hObject, eventdata, handles)
 % hObject    handle to btnShowReconstruction (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+gui_display_reconstruction_or_error(handles);
 
 
 % --- Executes during object creation, after setting all properties.

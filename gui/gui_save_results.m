@@ -1,5 +1,7 @@
 function gui_save_results( handles )
 
+gui_evaluate_all_views(handles);
+
 outputFolder = get(handles.editOutputFolder, 'String');
 saveCount = 0;
 

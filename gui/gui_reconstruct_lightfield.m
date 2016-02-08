@@ -15,14 +15,5 @@ rec.usePropagationMatrixForReconstruction(rec.propagationMatrix);
 
 evaluation = rec.evaluation;
 
-indY = 1 : rec.lightField.angularResolution(1);
-indX = 1 : rec.lightField.angularResolution(2);
-indY = repmat(indY, numel(indX), 1);
-indX = repmat(indX, 1, size(indY, 2));
-indices = [indY(:), indX(:)];
-
-evaluation.evaluateViews(indices);
-
-
 end
 
