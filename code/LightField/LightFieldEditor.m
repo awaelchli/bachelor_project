@@ -91,7 +91,7 @@ classdef LightFieldEditor < handle
             this.initSliceIndices([angularResolution, ceil(resizeScale * this.input.spatialResolution), this.input.channels]);
         end
         
-        function inputFromRawLightField(this, lightField)
+        function inputFromRawLightField(this, lightField, varargin)
             if(~isa(lightField, 'LightField'))
                 errorStruct.message = 'Input light field must be of type LightField.';
                 errorStruct.identifier = 'inputFromRawLightField:invalidLightFieldType';
@@ -105,6 +105,10 @@ classdef LightFieldEditor < handle
             this.input.channels = lightField.channels;
             
             this.input.lightField = lightField;
+            
+            if nargin == 3
+                this.input.resizeScale = varargin{1};
+            end
             
             this.initSliceIndices([this.input.angularResolution, this.input.spatialResolution, this.input.channels]);
         end
