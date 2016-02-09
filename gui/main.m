@@ -57,6 +57,7 @@ handles.output = hObject;
 
 handles.constants.displayMode.layers = 100;
 handles.constants.displayMode.backprojection = 101;
+handles.constants.lytroSettingsFile = './lytro_settings.mat';
 
 handles.data = struct;
 handles.data.editor = LightFieldEditor();
@@ -154,39 +155,13 @@ function btnBrowse_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textImportInfo);
 
-path = uigetdir('', 'Select a Folder');
-if path == 0 % User cancelled
-    return;
+switch get(handles.popupDataType, 'Value')
+    case 1 % Image folder
+        gui_browse_for_image_folder(handles);
+    case 2 % MATLAB file
+    case 3 % Lytro file
+        gui_browse_for_lytro_file(handles);
 end
-
-path = fullfile([path, filesep]);
-set(handles.editPath, 'String', path);
-
-% Predict angular resolution
-filetypeStr = get(handles.popupFileType, 'String');
-filetypeVal = get(handles.popupFileType, 'Value');
-filetype = filetypeStr(filetypeVal, :);
-imageList = dir([path '*.' filetype]);
-n = numel(imageList);
-if n == 0
-    gui_warning(handles.textImportInfo, 'No images found');
-elseif rem(sqrt(n), 1) == 0
-    set(handles.editAngularResY, 'String', sqrt(n)); 
-    set(handles.editAngularResX, 'String', sqrt(n));
-    
-    % Fill in default slice indices
-    set(handles.editAngularIndFromY, 'String', '1');
-    set(handles.editAngularIndStepY, 'String', '1');
-    set(handles.editAngularIndToY, 'String', sqrt(n));
-    set(handles.editAngularIndFromX, 'String', '1');
-    set(handles.editAngularIndStepX, 'String', '1');
-    set(handles.editAngularIndToX, 'String', sqrt(n));
-else
-    set(handles.editAngularResY, 'String', 1); 
-    set(handles.editAngularResX, 'String', n);
-end
-
-
 
 
 function editAngularResY_Callback(hObject, eventdata, handles)
@@ -201,7 +176,7 @@ gui_clear_warning(handles.textImportInfo);
 val = str2double(get(hObject, 'String'));
 
 if isnan(val)
-    gui_warning(handles.textImportInfo, 'Invalid angular resolution');
+%     gui_warning(handles.textImportInfo, 'Invalid angular resolution');
     return;
 end
 
@@ -237,7 +212,7 @@ gui_clear_warning(handles.textImportInfo);
 val = str2double(get(hObject, 'String'));
 
 if isnan(val)
-    gui_warning(handles.textImportInfo, 'Invalid angular resolution');
+%     gui_warning(handles.textImportInfo, 'Invalid angular resolution');
     return;
 end
 
@@ -304,38 +279,19 @@ function btnLoad_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-set(handles.textImportInfo, 'String', 'Loading ...');
-set(hObject, 'Enable', 'off');
-drawnow;
+handles.data.editor = LightFieldEditor();
+gui_clear_warning(handles.textImportInfo);
 
-switch get(handles.popupProjectionType, 'Value')
-    case 1
-        lightfield = gui_load_lightfield_p(handles);
-    case 2
-        lightfield = gui_load_lightfield_o(handles);
+switch get(handles.popupDataType, 'Value')
+    case 1 % Folder with images
+        gui_load_light_field_from_image_collection(hObject, handles);
+    case 2 % MATLAB file
+        gui_warning(handles.textImportInfo, 'Not yet implemented');
+    case 3 % Lytro file
+        gui_load_light_field_from_lytro_file(hObject, handles);
 end
 
-if(isempty(lightfield))
-   set(handles.textImportInfo, 'String', 'Loading error'); 
-   set(hObject, 'Enable', 'on');
-   return;
-end
-handles.data.lightfield = lightfield;
-
-set(handles.textImportInfo, 'String', 'Loading ... Done.');
-set(hObject, 'Enable', 'on');
-set(handles.btnAnimate, 'Enable', 'on');
-
-% Update handles structure
-guidata(hObject, handles);
-
-% Update layer size and resolution
-set(handles.editLayerSizeY, 'String', get(handles.editSensorSizeY, 'String'));
-set(handles.editLayerSizeX, 'String', get(handles.editSensorSizeX, 'String'));
-set(handles.editLayerResY, 'String', handles.data.lightfield.spatialResolution(1));
-set(handles.editLayerResX, 'String', handles.data.lightfield.spatialResolution(2));
-
-gui_display_image(handles.axesLFPreview);
+set(hObject, 'Enable', 'On');
 
 
 % --- Executes on slider movement.
@@ -379,6 +335,48 @@ function popupDataType_Callback(hObject, eventdata, handles)
 
 % Hints: contents = cellstr(get(hObject,'String')) returns popupDataType contents as cell array
 %        contents{get(hObject,'Value')} returns selected item from popupDataType
+
+switch get(hObject, 'Value')
+    case 1 % Folder with images
+        gui_enable_all_import_controls(handles);
+        set(handles.popupProjectionType, 'Value', 1);
+        set(handles.editFOVY, 'Enable', 'off');
+        set(handles.editFOVX, 'Enable', 'off');
+        set(handles.checkboxInvY, 'Value', 0);
+        set(handles.checkboxInvX, 'Value', 0);
+        set(handles.popupFileType, 'Value', 1);
+        set(handles.sliderSpatialScale, 'Value', 1);
+        set(handles.editBaselineY, 'String', 1);
+        set(handles.editBaselineX, 'String', 1);
+        set(handles.editCameraPlaneZ, 'String', 1);
+        set(handles.editSensorSizeY, 'String', 1);
+        set(handles.editSensorSizeX, 'String', 1);
+        set(handles.editSensorPlaneZ, 'String', 0);
+        set(handles.editPath, 'String', '');
+    case 2 % MATLAB file
+        gui_enable_all_import_controls(handles);
+        
+    case 3 % Lytro file
+        gui_enable_all_import_controls(handles);
+        set(handles.popupProjectionType, 'Enable', 'off');
+        set(handles.editFOVY, 'Enable', 'off');
+        set(handles.editFOVX, 'Enable', 'off');
+        set(handles.checkboxInvY, 'Value', 0);
+        set(handles.checkboxInvX, 'Value', 0);
+        set(handles.popupFileType, 'Enable', 'off');
+        set(handles.sliderSpatialScale, 'Value', 1);
+        set(handles.editBaselineY, 'String', 1);
+        set(handles.editBaselineX, 'String', 1);
+        set(handles.editCameraPlaneZ, 'String', 1);
+        set(handles.editSensorSizeY, 'String', 1);
+        set(handles.editSensorSizeX, 'String', 1);
+        set(handles.editSensorPlaneZ, 'String', 0);
+        set(handles.editPath, 'String', '');
+        set(handles.editAngularResY, 'Enable', 'off');
+        set(handles.editAngularResX, 'Enable', 'off');
+        set(handles.checkboxInvY, 'Enable', 'off');
+        set(handles.checkboxInvX, 'Enable', 'off');
+end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -430,9 +428,9 @@ function editFOVY_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textImportInfo);
 
-if isnan(str2double(get(hObject, 'String')))
-    gui_warning(handles.textImportInfo, 'Invalid field of view');
-end
+% if isnan(str2double(get(hObject, 'String')))
+%     gui_warning(handles.textImportInfo, 'Invalid field of view');
+% end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -459,9 +457,9 @@ function editFOVX_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textImportInfo);
 
-if isnan(str2double(get(hObject, 'String')))
-    gui_warning(handles.textImportInfo, 'Invalid field of view');
-end
+% if isnan(str2double(get(hObject, 'String')))
+%     gui_warning(handles.textImportInfo, 'Invalid field of view');
+% end
 
 % --- Executes during object creation, after setting all properties.
 function editFOVX_CreateFcn(hObject, eventdata, handles)
@@ -510,9 +508,9 @@ function editBaselineY_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textImportInfo);
 
-if isnan(str2double(get(hObject, 'String')))
-    gui_warning(handles.textImportInfo, 'Invalid baseline');
-end
+% if isnan(str2double(get(hObject, 'String')))
+%     gui_warning(handles.textImportInfo, 'Invalid baseline');
+% end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -539,9 +537,9 @@ function editBaselineX_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textImportInfo);
 
-if isnan(str2double(get(hObject, 'String')))
-    gui_warning(handles.textImportInfo, 'Invalid baseline');
-end
+% if isnan(str2double(get(hObject, 'String')))
+%     gui_warning(handles.textImportInfo, 'Invalid baseline');
+% end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -568,9 +566,9 @@ function editCameraPlaneZ_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textImportInfo);
 
-if isnan(str2double(get(hObject, 'String')))
-    gui_warning(handles.textImportInfo, 'Invalid Z value for camera plane');
-end
+% if isnan(str2double(get(hObject, 'String')))
+%     gui_warning(handles.textImportInfo, 'Invalid Z value for camera plane');
+% end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -611,10 +609,10 @@ function editSensorSizeY_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textImportInfo);
 
-if isnan(str2double(get(hObject, 'String')))
-    gui_warning(handles.textImportInfo, 'Invalid size for image plane');
-    return;
-end
+% if isnan(str2double(get(hObject, 'String')))
+%     gui_warning(handles.textImportInfo, 'Invalid size for image plane');
+%     return;
+% end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -641,10 +639,10 @@ function editSensorSizeX_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textImportInfo);
 
-if isnan(str2double(get(hObject, 'String')))
-    gui_warning(handles.textImportInfo, 'Invalid size for image plane');
-    return;
-end
+% if isnan(str2double(get(hObject, 'String')))
+%     gui_warning(handles.textImportInfo, 'Invalid size for image plane');
+%     return;
+% end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -671,9 +669,9 @@ function editSensorPlaneZ_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textImportInfo);
 
-if isnan(str2double(get(hObject, 'String')))
-    gui_warning(handles.textImportInfo, 'Invalid Z value for image plane');
-end
+% if isnan(str2double(get(hObject, 'String')))
+%     gui_warning(handles.textImportInfo, 'Invalid Z value for image plane');
+% end
 
 
 % --- Executes during object creation, after setting all properties.
@@ -1696,3 +1694,5 @@ function menuItem_locateLytro_Callback(hObject, eventdata, handles)
 % hObject    handle to menuItem_locateLytro (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+lytro_settings;

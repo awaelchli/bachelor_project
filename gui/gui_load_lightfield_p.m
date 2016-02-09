@@ -8,7 +8,7 @@ angularResY = str2double(get(handles.editAngularResY, 'String'));
 angularResX = str2double(get(handles.editAngularResX, 'String'));
 angularResolution = [angularResY, angularResX];
 
-if any(isnan(angularResolution))
+if any(isnan(angularResolution)) || any(angularResolution < 1) || any(rem(angularResolution, 1) ~= 0)
     gui_warning(handles.textImportInfo, 'Invalid angular resolution');
     return;
 end
@@ -18,22 +18,17 @@ filetypeStr = get(handles.popupFileType, 'String');
 filetypeVal = get(handles.popupFileType, 'Value');
 filetype = filetypeStr(filetypeVal, :);
 
-switch get(handles.popupDataType, 'Value')
-    case 1 % Image Collection
-        try
-            handles.data.editor.inputFromImageCollection(inputFolder, filetype, angularResolution, resizeScale);
-        catch me
-            if strcmp(me.identifier, 'inputFromImageCollection:wrongAngularResolution')
-                gui_warning(handles.textImportInfo, 'Invalid angular resolution');
-                return;
-            end
-            if strcmp(me.identifier, 'inputFromImageCollection:invalidFolder')
-                gui_warning(handles.textImportInfo, 'Path is not a folder');
-                return;
-            end
-        end
-    case 2 % MATLAB File
-    case 3 % Lytro File
+try
+    handles.data.editor.inputFromImageCollection(inputFolder, filetype, angularResolution, resizeScale);
+catch me
+    if strcmp(me.identifier, 'inputFromImageCollection:wrongAngularResolution')
+        gui_warning(handles.textImportInfo, 'Invalid angular resolution');
+        return;
+    end
+    if strcmp(me.identifier, 'inputFromImageCollection:invalidFolder')
+        gui_warning(handles.textImportInfo, 'Path is not a folder');
+        return;
+    end
 end
 
 baseline = [str2double(get(handles.editBaselineY, 'String')), str2double(get(handles.editBaselineX, 'String'))];
@@ -49,13 +44,13 @@ sliceFromX = str2double(get(handles.editAngularIndFromX, 'String'));
 sliceStepX = str2double(get(handles.editAngularIndStepX, 'String'));
 sliceToX = str2double(get(handles.editAngularIndToX, 'String'));
 
-if any(isnan(baseline))
+if any(isnan(baseline)) || any(baseline <= 0) 
     gui_warning(handles.textImportInfo, 'Invalid baseline');
     return;
 end
 handles.data.editor.distanceBetweenTwoCameras = baseline ./ (handles.data.editor.angularResolution - 1);
 
-if any(isnan(sensorSize))
+if any(isnan(sensorSize)) || any(sensorSize <= 0) 
     gui_warning(handles.textImportInfo, 'Invalid size of image plane');
     return;
 end
@@ -73,8 +68,25 @@ if isnan(sensorPlaneZ)
 end
 handles.data.editor.sensorPlaneZ = sensorPlaneZ;
 
-if any(isnan([sliceFromY, sliceStepY, sliceToY, sliceFromX, sliceStepX, sliceToX]))
-    gui_warning(handles.textImportInfo, 'Invalid angular slice');
+if any(isnan([sliceFromY, sliceToY])) || any([sliceFromY, sliceToY] < [1, 1]) || ... 
+   any([sliceFromY, sliceToY] > handles.data.editor.angularResolution(1))
+    gui_warning(handles.textImportInfo, 'Invalid range for angular slice for Y');
+    return;
+end
+
+if any(isnan([sliceFromX, sliceToX])) || any([sliceFromX, sliceToX] < [1, 1]) || ... 
+   any([sliceFromX, sliceToX] > handles.data.editor.angularResolution(2))
+    gui_warning(handles.textImportInfo, 'Invalid range for angular slice for X');
+    return;
+end
+
+if isnan(sliceStepY) || rem(sliceStepY, 1) ~= 0 || (sliceToY - sliceFromY) * sign(sliceStepY) < 0
+    gui_warning(handles.textImportInfo, 'Invalid step for angular slice Y');
+    return;
+end
+
+if isnan(sliceStepX) || rem(sliceStepX, 1) ~= 0 || (sliceToX - sliceFromX) * sign(sliceStepX) < 0
+    gui_warning(handles.textImportInfo, 'Invalid step for angular slice X');
     return;
 end
 
