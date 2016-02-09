@@ -1226,12 +1226,16 @@ handles.data.attenuator = attenuator;
 
 set(hObject, 'Enable', 'off');
 drawnow;
-
-switch get(handles.checkboxTiling, 'Value')
-    case 0 % Tiling off
-        attenuator = gui_run_optimization_no_tiles(handles);
-    case 1 % Tiling on
-        attenuator = gui_run_optimization_tiles(handles);
+try
+    switch get(handles.checkboxTiling, 'Value')
+        case 0 % Tiling off
+            attenuator = gui_run_optimization_no_tiles(handles);
+        case 1 % Tiling on
+            attenuator = gui_run_optimization_tiles(handles);
+    end
+catch ex
+    set(hObject, 'Enable', 'on');
+    rethrow(ex);
 end
 
 if isempty(attenuator)
@@ -1244,7 +1248,12 @@ handles.data.axesLayersPage = 1;
 set(handles.textOptimizationInfo, 'String', [get(handles.textOptimizationInfo, 'String'), ' Forward-Projection ... ']);
 drawnow;
 
-evaluation = gui_reconstruct_lightfield(handles);
+try
+    evaluation = gui_reconstruct_lightfield(handles);
+catch ex
+    set(hObject, 'Enable', 'on');
+    rethrow(ex);
+end
 handles.data.evaluation = evaluation;
 
 set(handles.textOptimizationInfo, 'String', [get(handles.textOptimizationInfo, 'String'), 'Done.']);
@@ -1296,7 +1305,12 @@ handles.data.attenuator = attenuator;
 set(handles.textOptimizationInfo, 'String', 'Running back-projection ... ');
 set(hObject, 'Enable', 'off');
 drawnow;
-b = gui_backprojection(handles);
+try
+    b = gui_backprojection(handles);
+catch ex
+    set(hObject, 'Enable', 'on');
+    rethrow(ex);
+end
 handles.data.backprojection = b;
 set(handles.textOptimizationInfo, 'String', 'Running back-projection ... Done.');
 set(hObject, 'Enable', 'on');
