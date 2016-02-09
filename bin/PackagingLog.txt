@@ -4,25 +4,33 @@ ant:
   <mkdir dir="C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing" />
   <mkdir dir="C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution_files_only" />
 </ant>
-mcc -C -o Layered3D -W WinMain:Layered3D -T link:exe -d C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing -v C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\main.m 
+mcc -C -o Layered3D -W WinMain:Layered3D -T link:exe -d C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing -v C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\main.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\PropagationMatrix\AbstractPropagationMatrix.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\Reconstruction\AbstractReconstruction.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\Print\addMarkersToLayers.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\Attenuator.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\LightField\CameraPlane.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\computeCenteredGridPositions.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\gui_animateLightField.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\gui_backprojection.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\gui_clear_warning.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\gui_create_attenuator.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\gui_display_layers.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\gui_load_lightfield_o.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\gui_load_lightfield_p.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\gui_warning.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\LightField\LightField.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\LightField\LightFieldEditor.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\LightField\LightFieldO.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\LightField\LightFieldP.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\main.fig -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\Reconstruction\meanSquaredErrorImage.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\Plane\PixelPlane.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\Print\printImagesToPDF.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\PropagationMatrix\PropagationMatrix.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\Reconstruction\ReconstructionEvaluation.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\Reconstruction\ReconstructionForResampledLF.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\Optimization\sart.m -a C:\Users\Adrian\Documents\MATLAB\bachelor_project\code\LightField\SensorPlane.m 
 Compiler version: 6.0 (R2015a)
 Dependency analysis by REQUIREMENTS.
 [Warning: Adding path "C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui" to
 Compiler path instance.] 
 Parsing file "C:\Users\Adrian\Documents\MATLAB\bachelor_project\gui\main.m"
 	(Referenced from: "Compiler Command Line").
-Deleting 5 temporary MEX authorization files.
-Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc20627_5580.auth'.
-Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc10052_5580.auth'.
-Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc31317_5580.auth'.
-Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc13730_5580.auth'.
-Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_015cc30831_5580.auth'.
+Deleting 13 temporary MEX authorization files.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc2694_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc82_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc31320_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc13428_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc7754_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc9783_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc21584_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc30165_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc21899_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc21127_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc91_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc3173_12220.auth'.
+Removing: 'C:\Users\Adrian\AppData\Local\Temp\mathworks_tmp_02fbc31944_12220.auth'.
 Generating file "C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing\readme.txt".
 Packaging...
 Adding custom icon C:\Program Files\MATLAB\MATLAB Production Server\R2015a\toolbox\compiler\Resources\default_icon.ico to C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing\Layered3D.exe.
 Attempting to embed the CTF archive into the application C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_testing\Layered3D.exe.
 Finished embedding CTF archive. Deleting the external CTF archive.
 Creating the bundle...
-Web based installer created at C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution\MyAppInstaller_web.exe.
+Web based installer created at C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution\Layered3D_webinstall.exe.
 Packaging complete.
-Elapsed packaging time was: 4 minutes and 44 seconds.
+Elapsed packaging time was: 6 minutes and 46 seconds.
