@@ -7,12 +7,8 @@ if ~exist(handles.constants.lytroSettingsFile, 'file')
 end
 load(handles.constants.lytroSettingsFile, 'lytroPath');
 
-% Read the light field file
+% Read the light field filename
 lytroFile = get(handles.editPath, 'String');
-if ~exist(lytroFile, 'file')
-    gui_warning(handles.textImportInfo, 'Invalid path');
-    return;
-end
 
 set(handles.textImportInfo, 'String', 'Loading ...');
 set(hObject, 'Enable', 'off');
@@ -56,21 +52,29 @@ if isnan(sensorPlaneZ)
 end
 handles.data.editor.sensorPlaneZ = sensorPlaneZ;
 
-if all(isnan([sliceFromY, sliceToY, sliceFromX, sliceToX, sliceStepY, sliceStepX]))
-    % Assume user wants full resolution 
-    % Load the light field
+% Load the light field
+try
     [lightFieldData, metadata] = loadLightFieldFromLytroFile(lytroFile, lytroPath);
-    lightFieldRaw = LightField(lightFieldData);
-    handles.data.editor.inputFromRawLightField(lightFieldRaw, resizeScale);
-    
-else % User has specified angular slices before the load operation
-    
-    % Load the light field ...
-    [lightFieldData, metadata] = loadLightFieldFromLytroFile(lytroFile, lytroPath);
-    lightFieldRaw = LightField(lightFieldData);
-    handles.data.editor.inputFromRawLightField(lightFieldRaw, resizeScale);
-    
-    % ... and check if slices are valid for the light field
+catch ex
+    if strcmp('loadLightFieldFromLytroFile:DatabaseNotFound', ex.identifier)
+        gui_warning(handles.textImportInfo, 'Could not find WhiteImageDatabase.mat file');
+        set(hObject, 'Enable', 'on');
+        lytro_settings;
+        return;
+    elseif strcmp('loadLightFieldFromLytroFile:FileNotFound', ex.identifier)
+        gui_warning(handles.textImportInfo, 'Invalid path');
+        set(hObject, 'Enable', 'on');
+        return;
+    else
+        throw(ex);
+    end
+end
+lightFieldRaw = LightField(lightFieldData);
+handles.data.editor.inputFromRawLightField(lightFieldRaw, resizeScale);
+
+if ~all(isnan([sliceFromY, sliceToY, sliceFromX, sliceToX, sliceStepY, sliceStepX]))
+    % User has specified angular slices before the load operation
+    % Check if slices are valid for the light field
     if any(isnan([sliceFromY, sliceToY])) || any([sliceFromY, sliceToY] < [1, 1]) || ... 
        any([sliceFromY, sliceToY] > handles.data.editor.angularResolution(1))
         gui_warning(handles.textImportInfo, 'Invalid range for angular slice for Y');

@@ -7,11 +7,15 @@ file = fullfile(lytroFile);
 whiteImageDatabasePath = fullfile(lytroCameraPath, 'WhiteImageDatabase.mat');
 
 if(~exist(whiteImageDatabasePath, 'file'))
-    error('The file "%s" does not exist.', whiteImageDatabasePath);
+    errorStruct.message = sprintf('The file "%s" does not exist.', whiteImageDatabasePath);
+    errorStruct.identifier = 'loadLightFieldFromLytroFile:DatabaseNotFound';
+    error(errorStruct);
 end
 
 if(~exist(file, 'file'))
-    error('The file "%s" does not exist.', file);
+    errorStruct.message = sprintf('The file "%s" does not exist.', file);
+    errorStruct.identifier = 'loadLightFieldFromLytroFile:FileNotFound';
+    error(errorStruct);
 end
 
 FileOptions = LFDefaultField('FileOptions', 'SaveResult', true);
@@ -27,9 +31,10 @@ LFUtilDecodeLytroFolder(file, FileOptions, DecodeOptions, []);
 [path, name, ~] = fileparts(file);
 load([path filesep name '_Decoded.mat']);
 
-lightFieldData = LFHistEqualize(LF);
+lightFieldData = LF;
+
 lightFieldData = lightFieldData(:, :, :, :, 1 : 3);
-lightFieldData = single(lightFieldData);
+lightFieldData = im2single(lightFieldData);
 metadata = LFMetadata;
 
 end
