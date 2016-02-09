@@ -21,7 +21,14 @@ samplingPlaneSize = layerSize;
 
 % HARD-Coded sampling density
 resamplingPlane = SensorPlane(round( 1 * layerResolution), 1 * samplingPlaneSize, handles.data.attenuator.layerPositionZ(1));
-rec = FastReconstructionForResampledLF(handles.data.lightfield, handles.data.attenuator, resamplingPlane);
+
+switch get(handles.popupProjectionType, 'Value')
+    case 1
+        rec = FastReconstructionForResampledLF(handles.data.lightfield, handles.data.attenuator, resamplingPlane);
+    case 2
+        rec = ReconstructionForOrthographicLF(handles.data.lightfield, handles.data.attenuator);
+end
+
 % evaluation = rec.evaluation();
 
 rec.verbose = 1;

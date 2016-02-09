@@ -5,7 +5,13 @@ attenuatorSize = handles.data.attenuator.planeSize;
 sensorPlaneZ = handles.data.lightfield.sensorPlane.z;
 
 resamplingPlane = SensorPlane(round(1 * layerResolution), attenuatorSize, sensorPlaneZ);
-rec = ReconstructionForResampledLF(handles.data.lightfield, handles.data.attenuator, resamplingPlane);
+
+switch get(handles.popupProjectionType, 'Value')
+    case 1
+        rec = ReconstructionForResampledLF(handles.data.lightfield, handles.data.attenuator, resamplingPlane);
+    case 2
+        rec = ReconstructionForOrthographicLF(handles.data.lightfield, handles.data.attenuator);
+end
 
 rec.constructPropagationMatrix();
 b = rec.backprojectLightField();
