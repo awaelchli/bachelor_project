@@ -109,7 +109,7 @@ classdef AbstractReconstruction < handle
             P = this.propagationMatrix.formSparseMatrix();
             l = this.getLightFieldForOptimization().vectorizeData();
             
-            backProjection = P' * l;
+            backProjection = P' * double(l);
             
             backProjection = backProjection ./ repmat(sum(P, 1)', [1, this.lightField.channels]);
             backProjection = permute(backProjection, [2, 1]);
@@ -137,7 +137,7 @@ classdef AbstractReconstruction < handle
             x0 = log(this.attenuator.vectorizeData());
             
             % Solve the optimization problem using the provided solver
-            attenuationValuesLogDomain = this.solver(P, lightFieldVectorLogDomain, x0, lb, ub, this.iterations);
+            attenuationValuesLogDomain = this.solver(P, double(lightFieldVectorLogDomain), x0, lb, ub, this.iterations);
             
             attenuationValues = exp(attenuationValuesLogDomain);
             
