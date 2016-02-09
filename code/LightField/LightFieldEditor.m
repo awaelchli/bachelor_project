@@ -204,10 +204,10 @@ classdef LightFieldEditor < handle
                     
                     imageIndex = (angularSlicesY(y) - 1) * this.input.angularResolution(2) + angularSlicesX(x);
                     
-                    image = im2single(imread([this.input.folder imageList(imageIndex).name]));
-                    image = imresize(image, this.input.resizeScale, LightFieldEditor.resizeInterpolationMethod);
-                    image = image(spatialSlicesY, spatialSlicesX, channelSlices);
-                    this.lightFieldData(y, x, :, :, :) = image;
+                    img = im2single(imread([this.input.folder imageList(imageIndex).name], 'BackgroundColor', [1, 1, 1]));
+                    img = imresize(img, this.input.resizeScale, LightFieldEditor.resizeInterpolationMethod);
+                    img = img(spatialSlicesY, spatialSlicesX, channelSlices);
+                    this.lightFieldData(y, x, :, :, :) = img;
                 end
             end
         end
