@@ -25,7 +25,7 @@ LFUtilProcessWhiteImages(lytroCameraPath);
 LFUtilDecodeLytroFolder(file, FileOptions, DecodeOptions, []);
 
 [path, name, ~] = fileparts(file);
-load([path '/' name '_Decoded.mat']);
+load([path filesep name '_Decoded.mat']);
 
 lightFieldData = LFHistEqualize(LF);
 lightFieldData = lightFieldData(:, :, :, :, 1 : 3);
