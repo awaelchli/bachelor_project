@@ -1,5 +1,6 @@
 function [ attenuator ] = gui_run_optimization_no_tiles( handles )
 
+attenuator = [];
 
 iterations = str2double(get(handles.editIterations, 'String'));
 if isnan(iterations) || iterations <= 0 || rem(iterations, 1) ~= 0
