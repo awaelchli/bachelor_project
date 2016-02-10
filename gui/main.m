@@ -22,7 +22,7 @@ function varargout = main(varargin)
 
 % Edit the above text to modify the response to help main
 
-% Last Modified by GUIDE v2.5 08-Feb-2016 19:03:52
+% Last Modified by GUIDE v2.5 10-Feb-2016 18:55:09
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -119,18 +119,19 @@ function popupProjectionType_Callback(hObject, eventdata, handles)
 %        contents{get(hObject,'Value')} returns selected item from popupProjectionType
 
 switch get(hObject, 'Value')
-    case 1 % Projection
-        set(handles.editFOVY, 'Enable', 'Off');
-        set(handles.editFOVX, 'Enable', 'Off');
-        set(handles.editBaselineY, 'Enable', 'On');
-        set(handles.editBaselineX, 'Enable', 'On');
-        set(handles.editCameraPlaneZ, 'Enable', 'On');
+    case 1 % Perspective
+        set([handles.editFOVY, handles.editFOVX], 'Enable', 'Off');
+        set([handles.editBaselineY, handles.editBaselineX, handles.editCameraPlaneZ], 'Enable', 'On');
+        set(handles.checkboxTiling, 'Value', 1);
+        set([handles.editTileResY, handles.editTileResX, handles.sliderOverlap, handles.textOverlap, ...
+             handles.checkboxTiling], 'Enable', 'On'); 
     case 2 % Oblique
-        set(handles.editFOVY, 'Enable', 'On');
-        set(handles.editFOVX, 'Enable', 'On');
-        set(handles.editBaselineY, 'Enable', 'Off');
-        set(handles.editBaselineX, 'Enable', 'Off');
-        set(handles.editCameraPlaneZ, 'Enable', 'Off');
+        set([handles.editFOVY, handles.editFOVX], 'Enable', 'On');
+        set([handles.editBaselineY, handles.editBaselineX, handles.editCameraPlaneZ], 'Enable', 'Off');
+        % Tiling not supported for oblique projection
+        set(handles.checkboxTiling, 'Value', 0);
+        set([handles.editTileResY, handles.editTileResX, handles.sliderOverlap, handles.textOverlap, ...
+             handles.checkboxTiling], 'Enable', 'Off'); 
 end
 
 
@@ -1218,6 +1219,11 @@ function btnRunOptimization_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textOptimizationInfo);
 
+if isempty(handles.data.lightfield)
+    gui_warning(handles.textOptimizationInfo, 'No light field loaded');
+    return;
+end
+
 attenuator = gui_create_attenuator(handles);
 if isempty(attenuator)
     return;
@@ -1239,6 +1245,7 @@ catch ex
 end
 
 if isempty(attenuator)
+    set(hObject, 'Enable', 'on');
     return;
 end
 handles.data.attenuator = attenuator;
@@ -1263,6 +1270,7 @@ guidata(hObject, handles);
 gui_enable_layer_preview(handles, 'on');
 gui_enable_reconstruction_preview(handles, 'on');
 gui_display_layers(handles);
+gui_update_layerNumbers_for_print(handles);
 
 % --- Executes on button press in checkboxTiling.
 function checkboxTiling_Callback(hObject, eventdata, handles)
@@ -1545,7 +1553,7 @@ function btnGeneratePDF_Callback(hObject, eventdata, handles)
 gui_clear_warning(handles.textPrintInfo);
 
 if isempty(handles.data.evaluation)
-    guy_warning(handles.textPrintInfo, 'Nothing to print');
+    gui_warning(handles.textPrintInfo, 'Nothing to print');
     return;
 end
 
@@ -1560,6 +1568,11 @@ function btnSave_Callback(hObject, eventdata, handles)
 
 gui_clear_warning(handles.textSaveInfo);
 
+if isempty(handles.data.evaluation)
+    gui_warning(handles.textSaveInfo, 'No data available to save');
+    return;
+end
+
 outputFolder = get(handles.editOutputFolder, 'String');
 if ~isdir(outputFolder)
     gui_warning(handles.textSaveInfo, 'Path is not a folder');
@@ -1567,7 +1580,12 @@ if ~isdir(outputFolder)
 end
 
 set(hObject, 'Enable', 'Off');
-gui_save_results(handles);
+try
+    gui_save_results(handles);
+catch ex
+    set(hObject, 'Enable', 'On');
+    rethrow(ex);
+end
 set(hObject, 'Enable', 'On');
 
 
@@ -1710,3 +1728,26 @@ function menuItem_locateLytro_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 lytro_settings;
+
+
+% --- Executes on selection change in popupSizeUnit.
+function popupSizeUnit_Callback(hObject, eventdata, handles)
+% hObject    handle to popupSizeUnit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupSizeUnit contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupSizeUnit
+
+
+% --- Executes during object creation, after setting all properties.
+function popupSizeUnit_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupSizeUnit (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
