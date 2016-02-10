@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="2293061156" file="C:\Users\Adrian\Documents\MATLAB\bachelor_project\Layered3D.prj" location="C:\Users\Adrian\Documents\MATLAB\bachelor_project" name="Layered3D" preferred-package-location="C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="1712872850" file="C:\Users\Adrian\Documents\MATLAB\bachelor_project\Layered3D.prj" location="C:\Users\Adrian\Documents\MATLAB\bachelor_project" name="Layered3D" preferred-package-location="C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>Layered3D</param.appname>
     <param.icon />
     <param.icons />
@@ -30,10 +30,10 @@
       <item>35001</item>
     </param.required.mcr.products>
     <param.web.mcr>true</param.web.mcr>
-    <param.package.mcr>false</param.package.mcr>
+    <param.package.mcr>true</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
     <param.web.mcr.name>Layered3D_webinstall</param.web.mcr.name>
-    <param.package.mcr.name>MyAppInstaller_mcr</param.package.mcr.name>
+    <param.package.mcr.name>Layered3D_full</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
     <param.windows.command.prompt>true</param.windows.command.prompt>
     <param.create.log>false</param.create.log>
@@ -57,9 +57,7 @@
       <param.target.type />
       <param.support.packages />
       <param.web.mcr />
-      <param.package.mcr />
       <param.no.mcr />
-      <param.package.mcr.name />
       <param.no.mcr.name />
       <param.windows.command.prompt />
       <param.create.log />
@@ -92,6 +90,7 @@
       <file>${PROJECT_ROOT}\code\Reconstruction\FastReconstructionForResampledLF.m</file>
       <file>${PROJECT_ROOT}\code\Reconstruction\meanSquaredErrorImage.m</file>
       <file>${PROJECT_ROOT}\code\Reconstruction\ReconstructionEvaluation.m</file>
+      <file>${PROJECT_ROOT}\code\Reconstruction\ReconstructionForOrthographicLF.m</file>
       <file>${PROJECT_ROOT}\code\Reconstruction\ReconstructionForResampledLF.m</file>
       <file>${PROJECT_ROOT}\gui\gui_animateLightField.m</file>
       <file>${PROJECT_ROOT}\gui\gui_backprojection.m</file>
@@ -117,6 +116,7 @@
       <file>${PROJECT_ROOT}\gui\gui_run_optimization_tiles.m</file>
       <file>${PROJECT_ROOT}\gui\gui_sart.m</file>
       <file>${PROJECT_ROOT}\gui\gui_save_results.m</file>
+      <file>${PROJECT_ROOT}\gui\gui_update_layerNumbers_for_print.m</file>
       <file>${PROJECT_ROOT}\gui\gui_warning.m</file>
       <file>${PROJECT_ROOT}\gui\lytro_settings.fig</file>
       <file>${PROJECT_ROOT}\gui\lytro_settings.m</file>
