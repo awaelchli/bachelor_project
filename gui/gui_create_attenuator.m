@@ -12,18 +12,18 @@ if get(handles.checkboxGrayscale, 'Value')
     channels = 1;
 end
 
-if isnan(thickness)
-    gui_warning(handles.textOptimizationInfo, 'Invalid attenuator thickness');
+if isnan(thickness) || thickness <= 0
+    gui_warning(handles.textOptimizationInfo, 'Attenuator thickness must be a positive number');
     return;
 end
 
-if any(isnan(layerSize))
-    gui_warning(handles.textOptimizationInfo, 'Invalid layer size');
+if any(isnan(layerSize)) || any(layerSize <= 0)
+    gui_warning(handles.textOptimizationInfo, 'Layer size must be a positive number');
     return;
 end
 
-if any(isnan(layerResolution))
-    gui_warning(handles.textOptimizationInfo, 'Invalid layer resolution');
+if any(isnan(layerResolution)) || any(layerResolution <= 0) || any(rem(layerResolution, 1) ~= 0)
+    gui_warning(handles.textOptimizationInfo, 'Layer resolution must be a positive integer');
     return;
 end
 
