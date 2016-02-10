@@ -231,7 +231,12 @@ classdef ReconstructionEvaluation < handle
             end
             
             filename = ['Print_Layers' sprintf('-%i', reshape(layerNumbers, 1, []))];
+            printSizeScale = 1;
             
+            if nargin == 5
+                filename = varargin{1};
+                printSizeScale = varargin{2}; % Scaling for the size depending on the metric unit
+            end
             if nargin == 4
                 filename = varargin{1};
             end
@@ -240,6 +245,9 @@ classdef ReconstructionEvaluation < handle
             padding = max(0, 2 * markerSize - 1);
             paddedSize = this.attenuator.pixelSize .* 2 .* [0, padding];
             printSize = this.attenuator.planeSize + paddedSize;
+            
+            % Scale if unit is not millimeter
+            printSize = printSize * printSizeScale;
             
             printImagesToPDF(this.outputFolder, filename, layersWithMarkers, printSize, arrangementMatrix);
         end
