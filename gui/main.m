@@ -57,7 +57,11 @@ handles.output = hObject;
 
 handles.constants.displayMode.layers = 100;
 handles.constants.displayMode.backprojection = 101;
-handles.constants.lytroSettingsFile = './lytro_settings.mat';
+if isdeployed
+    handles.constants.lytroSettingsFile = fullfile(ctfroot, 'lytro_settings.mat');
+else
+    handles.constants.lytroSettingsFile = './lytro_settings.mat';
+end
 
 handles.data = struct;
 handles.data.editor = LightFieldEditor();

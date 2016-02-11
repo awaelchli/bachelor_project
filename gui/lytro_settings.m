@@ -55,7 +55,11 @@ function lytro_settings_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for lytro_settings
 handles.output = hObject;
 handles.mainFigure = hObject;
-handles.constants.lytroSettingsFile = './lytro_settings.mat';
+if isdeployed
+    handles.constants.lytroSettingsFile = fullfile(ctfroot, 'lytro_settings.mat');
+else
+    handles.constants.lytroSettingsFile = './lytro_settings.mat';
+end
 
 % Update handles structure
 guidata(hObject, handles);
@@ -75,7 +79,7 @@ else % Settings file does not yet exist
 end
 
 info = ['In order to load Lytro light fields, a calibration database is needed. ' ...
-            'This database is created once the lytro software is installed. ' ...
+            'This database is created once the Lytro software is installed. ' ...
             'The default location is: ' defaultLytroPath];
 set(handles.textLytroInfo, 'String', info);
 
@@ -133,7 +137,7 @@ function btnSave_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 lytroPath = get(handles.editPath, 'String');
-save('./lytro_settings.mat', 'lytroPath', '-append');
+save(handles.constants.lytroSettingsFile, 'lytroPath', '-append');
 close(handles.mainFigure);
 
 
