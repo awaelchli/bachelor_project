@@ -43,6 +43,12 @@ matrix = matrix';
 
 
 [ filename, path, ~ ] = uiputfile('*.pdf', 'Save PDF', ['Print_Layers' sprintf('-%i', (from : to)')]);
+
+if filename == 0 || path == 0
+    % User cancelled the operation
+    return;
+end
+
 [ ~, name, ~] = fileparts(filename); 
 
 handles.data.evaluation.outputFolder = path;
