@@ -114,6 +114,12 @@ set(handles.editLayerSizeX, 'String', get(handles.editSensorSizeX, 'String'));
 set(handles.editLayerResY, 'String', handles.data.lightfield.spatialResolution(1));
 set(handles.editLayerResX, 'String', handles.data.lightfield.spatialResolution(2));
 
+if handles.data.lightfield.channels == 1
+    set(handles.checkboxGrayscale, 'Value', 1);
+else
+    set(handles.checkboxGrayscale, 'Value', 0);
+end
+
 gui_display_image(handles.axesLFPreview);
 
 end
