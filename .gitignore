@@ -16,6 +16,7 @@ results/*
 /lightFields/bunny/rectified/*
 lightFields/4x4_cube.mat
 lightFields/coke.mat
+lightFields/dice/perspective/baseline4/17x17x1000x1000/*
 *.lfr
 *.lfp
 lightFields/cubes.mat
