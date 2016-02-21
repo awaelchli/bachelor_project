@@ -24,13 +24,15 @@ handles.data.evaluation.evaluateViews(indices);
 switch get(handles.popupReconstructionPreview, 'Value')
     case 1 % Display reconstructed view
         handles.data.evaluation.displaySingleReconstructedView(indices, handles.axesReconstruction);
-        axes(handles.axesReconstruction);
         colorbar('off');
         axis equal image;
+        if handles.data.attenuator.channels == 1
+            colormap(handles.axesReconstruction, gray);
+        end
     case 2 % Display error view
         handles.data.evaluation.displaySingleErrorImage(indices, handles.axesReconstruction);
         axes(handles.axesReconstruction);
-        colormap('jet');
+        colormap(handles.axesReconstruction, 'jet');
         colorbar('eastoutside');
         axis equal image;
 end
