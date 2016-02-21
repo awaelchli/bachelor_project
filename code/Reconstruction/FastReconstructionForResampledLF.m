@@ -56,6 +56,11 @@ classdef FastReconstructionForResampledLF < ReconstructionForResampledLF
                     end
                 end
             end
+            
+            if strcmp(this.layerInterpolation, ReconstructionForResampledLF.bilinearInterpolation) % Bilinear interpolation
+                numberOfNonZeros = 4 * numberOfNonZeros;
+            end
+            
         end
         
     end

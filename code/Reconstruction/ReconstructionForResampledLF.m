@@ -2,11 +2,14 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
     
     properties (Constant)
         interpolationMethod = 'linear';
+        bilinearInterpolation = 'bi-linear';
+        nearestInterpolation = 'nearest';
     end
     
     properties (SetAccess = private)
         resampledLightField;
         samplingPlane;
+        layerInterpolation = ReconstructionForResampledLF.nearestInterpolation;
     end
     
     methods
@@ -71,35 +74,77 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
                           layerIntersectionMatrixX, ...
                           validIntersections ] = this.attenuator.positionToPixelCoordinates(positionsOnLayerMatrixY, positionsOnLayerMatrixX);
                         
-                        pixelIndexOnLayerMatrixY = round(layerIntersectionMatrixY);
-                        pixelIndexOnLayerMatrixX = round(layerIntersectionMatrixX);
-                        
-                        weightsForLayerMatrix = this.computeRayIntersectionWeights(pixelIndexOnLayerMatrixY, ...
-                                                                                   pixelIndexOnLayerMatrixX, ...
-                                                                                   layerIntersectionMatrixY, ...
-                                                                                   layerIntersectionMatrixX);
-                        
-                                                                               
-                                                                               
                         invalidRayIndicesForLayerY = ~sum(validIntersections, 2);
                         invalidRayIndicesForLayerX = ~sum(validIntersections, 1);
                         
                         validRayIndicesY = ~(invalidRayIndicesForSensorY | invalidRayIndicesForLayerY);
                         validRayIndicesX = ~(invalidRayIndicesForSensorX | invalidRayIndicesForLayerX);
                         
-                        layerPixelIndicesY = pixelIndexOnLayerMatrixY(validRayIndicesY, validRayIndicesX); % column vector
-                        layerPixelIndicesX = pixelIndexOnLayerMatrixX(validRayIndicesY, validRayIndicesX); % row vector
-                        
                         pixelIndicesOnSensorY = pixelIndexOnSensorMatrixY(validRayIndicesY, validRayIndicesX); % column vector
                         pixelIndicesOnSensorX = pixelIndexOnSensorMatrixX(validRayIndicesY, validRayIndicesX); % row vector
                         
-                        weightsForLayerMatrix = weightsForLayerMatrix(validRayIndicesY, validRayIndicesX);
+                        if strcmp(this.layerInterpolation, ReconstructionForResampledLF.nearestInterpolation) % Nearest neighbor
+                            
+                            pixelIndexOnLayerMatrixY = round(layerIntersectionMatrixY);
+                            pixelIndexOnLayerMatrixX = round(layerIntersectionMatrixX);
+
+                            weightsForLayerMatrix = this.computeRayIntersectionWeights(pixelIndexOnLayerMatrixY, ...
+                                                                                       pixelIndexOnLayerMatrixX, ...
+                                                                                       layerIntersectionMatrixY, ...
+                                                                                       layerIntersectionMatrixX);
+
+                            layerPixelIndicesY = pixelIndexOnLayerMatrixY(validRayIndicesY, validRayIndicesX); % column vector
+                            layerPixelIndicesX = pixelIndexOnLayerMatrixX(validRayIndicesY, validRayIndicesX); % row vector
+
+                            weightsForLayerMatrix = weightsForLayerMatrix(validRayIndicesY, validRayIndicesX);
+
+                            this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
+                                                                 pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
+                                                                 layer, ...
+                                                                 layerPixelIndicesY, layerPixelIndicesX, ...
+                                                                 weightsForLayerMatrix);
                         
-                        this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
-                                                             pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
-                                                             layer, ...
-                                                             layerPixelIndicesY, layerPixelIndicesX, ...
-                                                             weightsForLayerMatrix);
+                        elseif strcmp(this.layerInterpolation, ReconstructionForResampledLF.bilinearInterpolation) % Bilinear interpolation
+                            
+                            x1 = floor(layerIntersectionMatrixX);
+                            x2 = ceil(layerIntersectionMatrixX);
+                            y1 = floor(layerIntersectionMatrixY);
+                            y2 = ceil(layerIntersectionMatrixY);
+                            
+                            % Bilinear interpolation weights (grid size is 1)
+                            w11 = (x2 - layerIntersectionMatrixX) .* (y2 - layerIntersectionMatrixY);
+                            w21 = (layerIntersectionMatrixX - x1) .* (y2 - layerIntersectionMatrixY);
+                            w12 = (x2 - layerIntersectionMatrixX) .* (layerIntersectionMatrixY - y1);
+                            w22 = (layerIntersectionMatrixX - x1) .* (layerIntersectionMatrixY - y1);
+                            
+                            x1 = x1(validRayIndicesY, validRayIndicesX);
+                            x2 = x2(validRayIndicesY, validRayIndicesX);
+                            y1 = y1(validRayIndicesY, validRayIndicesX);
+                            y2 = y2(validRayIndicesY, validRayIndicesX);
+                            
+                            w11 = w11(validRayIndicesY, validRayIndicesX);
+                            w21 = w21(validRayIndicesY, validRayIndicesX);
+                            w12 = w12(validRayIndicesY, validRayIndicesX);
+                            w22 = w22(validRayIndicesY, validRayIndicesX);
+                            
+                            
+                            this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
+                                                                 pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
+                                                                 layer, y1, x1, w11);
+                            
+                            this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
+                                                                 pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
+                                                                 layer, y1, x2, w21);
+                                                          
+                            this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
+                                                                 pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
+                                                                 layer, y2, x1, w12);
+                                                            
+                            this.propagationMatrix.submitEntries(camIndexY, camIndexX, ...
+                                                                 pixelIndicesOnSensorY, pixelIndicesOnSensorX, ...
+                                                                 layer, y2, x2, w22);
+                            
+                        end
                     end
                     
                     this.progressUpdateForMatrixConstruction(camIndexY, camIndexX);
@@ -109,6 +154,14 @@ classdef ReconstructionForResampledLF < AbstractReconstruction
         
         function evaluation = evaluation(this)
             evaluation = ReconstructionEvaluation(this, this.resampledLightField);
+        end
+        
+        function bilinearLayerInterpolation(this)
+            this.layerInterpolation = ReconstructionForResampledLF.bilinearInterpolation;
+        end
+        
+        function nearestLayerInterpolation(this)
+            this.layerInterpolation = ReconstructionForResampledLF.nearestInterpolation;
         end
         
     end
