@@ -1,7 +1,6 @@
-function [lightFieldData, metadata] = loadLightFieldFromLytroFile( lytroFile, lytroCameraPath )
+function [lightFieldData, metadata] = loadLightFieldFromLytroFile( lytroFile, lytroCameraPath, varargin)
 % lytroFile:                Path to the .lfr file
 % lytroCameraPath:          Path to the installed camera, usually in C:/Users/username/AppData/Local/Lytro/cameras/.
-
 
 file = fullfile(lytroFile);
 whiteImageDatabasePath = fullfile(lytroCameraPath, 'WhiteImageDatabase.mat');
@@ -22,7 +21,10 @@ FileOptions = LFDefaultField('FileOptions', 'SaveResult', true);
 FileOptions = LFDefaultField('FileOptions', 'SaveFnamePattern', '%s_Decoded.mat');
 
 DecodeOptions = LFDefaultField('DecodeOptions', 'WhiteImageDatabasePath', whiteImageDatabasePath);
-DecodeOptions = LFDefaultField('DecodeOptions', 'OptionalTasks', {'ColourCorrect'});
+
+if nargin == 3 && strcmpi(varargin{1}, 'ColourCorrect')
+    DecodeOptions = LFDefaultField('DecodeOptions', 'OptionalTasks', {'ColourCorrect'});
+end
 
 LFUtilUnpackLytroArchive(lytroCameraPath);
 LFUtilProcessWhiteImages(lytroCameraPath);
