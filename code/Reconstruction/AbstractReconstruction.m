@@ -69,7 +69,9 @@ classdef AbstractReconstruction < handle
             
         end
         
-        function reconstructedLF = reconstructLightField(this)
+        function [ reconstructedLF, varargout ] = reconstructLightField(this)
+            
+            nargoutchk(1, 2);
             
             attenuationValues = this.attenuator.vectorizeData();
             reconstructionVector = this.propagationMatrixForReconstruction.formSparseMatrix() * log(attenuationValues);
@@ -78,6 +80,12 @@ classdef AbstractReconstruction < handle
             reconstructionData = reshape(reconstructionVector, [this.propagationMatrixForReconstruction.lightFieldSubscriptRange, this.lightField.channels]);
             reconstructionData = exp(reconstructionData);
             reconstructedLF = LightField(reconstructionData);
+            
+            if nargout == 2
+                % compute MSE
+                diff = reshape(reconstructedLF.lightFieldData - this.getLightFieldForOptimization().lightFieldData, [], 1);
+                varargout{1} = sum((diff * 255) .^2) / (prod(reconstructedLF.resolution) * reconstructedLF.channels);
+            end
             
         end
         

@@ -18,7 +18,11 @@ switch get(handles.popupProjectionType, 'Value')
 end
 rec.constructPropagationMatrix();
 rec.usePropagationMatrixForReconstruction(rec.propagationMatrix);
-% rec.reconstructLightField();
+
+[~, mse] =  rec.reconstructLightField();
+
+set(handles.textRMSE, 'String', sprintf('%.3f', sqrt(mse)));
+set(handles.textPSNR, 'String', sprintf('%.3f dB', 10 * log10(255^2 / mse)));
 
 evaluation = rec.evaluation;
 
