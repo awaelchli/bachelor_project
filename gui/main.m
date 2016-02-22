@@ -1235,6 +1235,8 @@ end
 handles.data.attenuator = attenuator;
 
 set(hObject, 'Enable', 'off');
+set(handles.textRMSE, 'String', '');
+set(handles.textPSNR, 'String', '');
 drawnow;
 try
     switch get(handles.checkboxTiling, 'Value')
