@@ -29,6 +29,14 @@ if get(handles.checkboxBackProjection, 'Value') && ~isempty(handles.data.backpro
     end
     saveCount = saveCount + 1;
 end
+if get(handles.checkboxSaveMATFiles, 'Value') && ~isempty(handles.data.evaluation)
+    % Save relevant data to MATLAB files
+    attenuator = handles.data.attenuator;
+    evaluation = handles.data.evaluation;
+    save(fullfile(outputFolder, 'attenuator.mat'), 'attenuator', '-v7.3');
+    save(fullfile(outputFolder, 'evaluation.mat'), 'evaluation', '-v7.3');
+    saveCount = saveCount + 1;
+end
 
 set(handles.textSaveInfo, 'String', 'Saving data ... Done.');
 drawnow;
