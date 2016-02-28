@@ -31,6 +31,7 @@ if get(handles.checkboxBackProjection, 'Value') && ~isempty(handles.data.backpro
 end
 if get(handles.checkboxSaveMATFiles, 'Value') && ~isempty(handles.data.evaluation)
     % Save relevant data to MATLAB files
+    handles.data.evaluation.outputFolder = outputFolder;
     attenuator = handles.data.attenuator;
     evaluation = handles.data.evaluation;
     save(fullfile(outputFolder, 'attenuator.mat'), 'attenuator', '-v7.3');
