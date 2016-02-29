@@ -164,6 +164,7 @@ switch get(handles.popupDataType, 'Value')
     case 1 % Image folder
         gui_browse_for_image_folder(handles);
     case 2 % MATLAB file
+        gui_browse_for_matlab_file(handles);
     case 3 % Lytro file
         gui_browse_for_lytro_file(handles);
 end
@@ -360,7 +361,15 @@ switch get(hObject, 'Value')
         set(handles.editPath, 'String', '');
     case 2 % MATLAB file
         gui_enable_all_import_controls(handles);
-        
+        set(handles.checkboxInvY, 'Value', 0);
+        set(handles.checkboxInvX, 'Value', 0);
+        set(handles.editAngularResY, 'Enable', 'off');
+        set(handles.editAngularResX, 'Enable', 'off');
+        set(handles.editFOVY, 'Enable', 'off');
+        set(handles.editFOVX, 'Enable', 'off');
+        set(handles.popupProjectionType, 'Value', 1);
+        set(handles.popupFileType, 'Enable', 'off');
+        set(handles.popupProjectionType, 'Enable', 'off');
     case 3 % Lytro file
         gui_enable_all_import_controls(handles);
         set(handles.popupProjectionType, 'Enable', 'off');
