@@ -177,7 +177,7 @@ classdef ReconstructionEvaluation < handle
             this.psnr = 10 * log10((255^2) / this.mse);
             
             RMSEoutput = ReconstructionEvaluation.appendAverageRMSE(RMSEoutput, rmse);
-            PSNRoutput = ReconstructionEvaluation.appendAveragePSNR(PSNRoutput, psnr);
+            PSNRoutput = ReconstructionEvaluation.appendAveragePSNR(PSNRoutput, this.psnr);
             
             ReconstructionEvaluation.writeRMSEToTextFile(RMSEoutput, this.outputFolder);
             ReconstructionEvaluation.writePSNRToTextFile(PSNRoutput, this.outputFolder);
