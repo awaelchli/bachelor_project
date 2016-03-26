@@ -1,7 +1,0 @@
-5x5 views
-cameraPlaneDistance = 8;
-distanceBetweenCameras = [.05, .05]; 
-fov = deg2rad([60, 45]);
-
-NumberOfLayers = 3;
-distanceBetweenLayers = 1.5;
