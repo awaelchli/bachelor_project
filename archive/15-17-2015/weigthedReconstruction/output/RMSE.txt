@@ -1,5 +1,0 @@
-RMSE for view (3, 1): 21.646724 
-RMSE for view (3, 2): 23.678552 
-RMSE for view (3, 3): 24.697767 
-RMSE for view (3, 4): 21.479520 
-RMSE for view (3, 5): 25.007913 
