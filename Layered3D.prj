@@ -1,9 +1,9 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="1712872850" file="C:\Users\Adrian\Documents\MATLAB\bachelor_project\Layered3D.prj" location="C:\Users\Adrian\Documents\MATLAB\bachelor_project" name="Layered3D" preferred-package-location="C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="326670684" file="C:\Users\Adrian\Documents\MATLAB\bachelor_project\Layered3D.prj" location="C:\Users\Adrian\Documents\MATLAB\bachelor_project" name="Layered3D" preferred-package-location="C:\Users\Adrian\Documents\MATLAB\bachelor_project\bin\for_redistribution" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>Layered3D</param.appname>
     <param.icon />
     <param.icons />
-    <param.version>1.0</param.version>
+    <param.version>1.1</param.version>
     <param.authnamewatermark>Adrian Wälchli</param.authnamewatermark>
     <param.email>aedu.waelchli@gmail.com</param.email>
     <param.company />
@@ -41,7 +41,6 @@
     <unset>
       <param.icon />
       <param.icons />
-      <param.version />
       <param.company />
       <param.summary />
       <param.description />
@@ -96,6 +95,7 @@
       <file>${PROJECT_ROOT}\gui\gui_backprojection.m</file>
       <file>${PROJECT_ROOT}\gui\gui_browse_for_image_folder.m</file>
       <file>${PROJECT_ROOT}\gui\gui_browse_for_lytro_file.m</file>
+      <file>${PROJECT_ROOT}\gui\gui_browse_for_matlab_file.m</file>
       <file>${PROJECT_ROOT}\gui\gui_clear_warning.m</file>
       <file>${PROJECT_ROOT}\gui\gui_create_attenuator.m</file>
       <file>${PROJECT_ROOT}\gui\gui_display_image.m</file>
