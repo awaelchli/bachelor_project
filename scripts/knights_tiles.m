@@ -67,6 +67,8 @@ tileBlendingMask = min(tileBlendingMask, tileBlendingMask(end : -1 : 1, end : -1
 tileBlendingMask = tileBlendingMask.^2;
 % tileBlendingMask = (tileBlendingMask - min(tileBlendingMask(:))) / (max(tileBlendingMask(:)) - min(tileBlendingMask(:)));
 
+start = tic;
+
 for index = 1 : size(tileIndices, 1)
         tic
         tileY = tileIndices(index, 1);
@@ -84,7 +86,7 @@ for index = 1 : size(tileIndices, 1)
         
         rec.verbose = 1;
         rec.solver = @sart;
-        rec.iterations = 100;
+        rec.iterations = 50;
         rec.computeAttenuationLayers();
         
         tileValues = attenuatorTile.attenuationValues;
@@ -112,6 +114,8 @@ for index = 1 : size(tileIndices, 1)
         eval.storeLayers(1 : attenuator.numberOfLayers);
         toc
 end
+
+fprintf('Total time for optimization is %.3f minutes', toc(start) / 60);
 
 attenuationValues = tileSumMatrix ./ weightSumMatrix;
 attenuator.attenuationValues = attenuationValues;
@@ -143,7 +147,7 @@ evaluation = rec.evaluation();
 
 %% Store evaluation data to output folder
 
-evaluation.outputFolder = 'results/knights_tiles3x3x256x256_overlap0.5_5layers_resolution9x9x512x512_SART_100iter/';
+evaluation.outputFolder = 'output/knights/2/';
 
 W = (weightSumMatrix - min(weightSumMatrix(:))) / (max(weightSumMatrix(:)) - min(weightSumMatrix(:)));
 imwrite(squeeze(W(1, :, :, :)), [evaluation.outputFolder, 'blendingMaskSum.png']);
@@ -156,7 +160,7 @@ indX = repmat(indX, 1, size(indY, 2));
 
 indices = [indY(:), indX(:)];
 evaluation.evaluateViews(indices);
-% evaluation.storeReconstructedViews();
+evaluation.storeReconstructedViews();
 evaluation.storeErrorImages();
 evaluation.storeLayers(1 : numberOfLayers);
 
