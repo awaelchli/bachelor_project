@@ -28,3 +28,9 @@ thesis/Document/Figures/texput.aux
 *_Decoded*
 lightFields/cube_close2.lfx
 lytro_settings.mat
+bin/PackagingLog.txt
+bin/for_testing/*
+bin/for_redistribution/Layered3D_full.exe
+matFileTest.m
+testO.mat
+test.mat
