@@ -1,6 +1,20 @@
 function [ attenuator ] = solveTiles( lightField, params )
-%SOLVETILES Summary of this function goes here
-%   Detailed explanation goes here
+%SOLVETILES Solves for a tiled attenuator
+%
+%   lightField                                  The lightfield (of class LightField)
+%
+%   params.numberOfLayers                       The number of layers that should be solved for
+%   params.layerResolution                      Resolution of a attenuation layer
+%   params.attenuatorSize                       Size of the attenuator (Y, X)
+%   params.attenuatorThickness                  Thickness of the attenuator (from first to last layer, in Z-direction)
+%   params.tileResolution                       The resolution of a single tile
+%   params.tileOverlap                          Overlap of the tiles (0 to 1)
+%   params.tileResolutionMultiplier             Multiplies the tile resolution by this factor for oversampling
+%   params.tileSizeMultiplier                   Multiplies the size of each tile by this factor
+%   params.verbose                              Verbose mode, true or false
+%   params.solver                               Function handle to the solver that should be used
+%   params.iterations                           The number of iterations the solver should perform
+%   params.outputFolder                         Output folder for the results
 
     
     attenuator = Attenuator(params.numberOfLayers, params.layerResolution, params.attenuatorSize, params.attenuatorThickness, lightField.channels);
