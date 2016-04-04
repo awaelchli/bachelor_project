@@ -33,8 +33,9 @@ params.solver = @sart;
 params.iterations = 6;
 params.outputFolder = 'output/';
 
+tic;
 [ attenuator ] = solveTiles(lightField, params);
-
+fprintf('Total time for optimization is %.3f minutes', toc / 60);
 
 %% Show the layers
 % close all;
